@@ -1,0 +1,7 @@
+genomicranges
+=============
+
+.. toctree::
+   :maxdepth: 4
+
+   genomicranges

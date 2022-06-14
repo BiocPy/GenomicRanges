@@ -1,0 +1,45 @@
+genomicranges package
+=====================
+
+Submodules
+----------
+
+genomicranges.GenomicRanges module
+----------------------------------
+
+.. automodule:: genomicranges.GenomicRanges
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+genomicranges.gtf module
+------------------------
+
+.. automodule:: genomicranges.gtf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+genomicranges.ucsc module
+-------------------------
+
+.. automodule:: genomicranges.ucsc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+genomicranges.utils module
+--------------------------
+
+.. automodule:: genomicranges.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: genomicranges
+   :members:
+   :undoc-members:
+   :show-inheritance:
