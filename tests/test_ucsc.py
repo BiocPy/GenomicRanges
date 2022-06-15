@@ -10,7 +10,6 @@ __license__ = "MIT"
 
 def test_ucsc():
     gr = GenomicRanges.fromUCSC("hg19")
-    print(gr)
     assert gr is not None
     assert gr.len() > 0
     assert len(gr) == gr.len()
