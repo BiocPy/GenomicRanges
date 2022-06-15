@@ -49,9 +49,9 @@ subject = GenomicRanges.fromUCSC(genome="hg38")
 query = GenomicRanges.fromPandas(
     pd.DataFrame(
         {
-            "seqname": ["chr1", "chr2", "chr3"],
-            "start": [100, 115, 119],
-            "end": [103, 116, 120],
+            "seqnames": ["chr1", "chr2", "chr3"],
+            "starts": [100, 115, 119],
+            "ends": [103, 116, 120],
         }
     )
 )
@@ -59,6 +59,8 @@ query = GenomicRanges.fromPandas(
 hits = subject.nearest(query)
 print(hits)
 ```
+
+For more use cases, checkout the [documentation](https://biocpy.github.io/GenomicRanges/)
 
 
 <!-- pyscaffold-notes -->
