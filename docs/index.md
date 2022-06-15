@@ -14,6 +14,7 @@ pip install genomicranges
 ## Contents
 
 * [Overview](readme)
+* [Tutorial](tutorial)
 * [License](license)
 * [Authors](authors)
 * [Changelog](changelog)
