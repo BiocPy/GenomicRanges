@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>genomicranges.gtf &mdash; GenomicRanges 0.1 documentation</title>
+  <title>genomicranges.gtf &mdash; GenomicRanges 0.1.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../../index.html" class="icon icon-home"> GenomicRanges
           </a>
               <div class="version">
-                0.1
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -40,6 +40,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -83,24 +84,6 @@
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
-<div class="viewcode-block" id="parse_attribute"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.gtf.parse_attribute">[docs]</a><span class="k">def</span> <span class="nf">parse_attribute</span><span class="p">(</span><span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Extract a key from the gtf/gff attribute string</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        attr (str): attribute string</span>
-<span class="sd">        key (str): key to extract</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Union[None, str]: value if key exists else `None`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">attr</span><span class="p">:</span>
-        <span class="n">tstr</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">tstrval</span> <span class="o">=</span> <span class="n">tstr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">tstrval</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
-
-
 <div class="viewcode-block" id="parse_all_attribute"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.gtf.parse_all_attribute">[docs]</a><span class="k">def</span> <span class="nf">parse_all_attribute</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Extract all keys from the gtf/gff attribute string</span>
 
@@ -137,11 +120,11 @@
             <span class="n">path</span><span class="p">,</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">[</span>
-                <span class="s2">&quot;seqname&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;seqnames&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;source&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;feature&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;start&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;end&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;starts&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ends&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;score&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;strand&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;frame&quot;</span><span class="p">,</span>
@@ -154,11 +137,11 @@
             <span class="n">path</span><span class="p">,</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">[</span>
-                <span class="s2">&quot;seqname&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;seqnames&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;source&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;feature&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;start&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;end&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;starts&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ends&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;score&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;strand&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;frame&quot;</span><span class="p">,</span>

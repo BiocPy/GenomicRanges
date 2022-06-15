@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>genomicranges.utils &mdash; GenomicRanges 0.1 documentation</title>
+  <title>genomicranges.utils &mdash; GenomicRanges 0.1.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../../index.html" class="icon icon-home"> GenomicRanges
           </a>
               <div class="version">
-                0.1
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -40,6 +40,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -82,20 +83,22 @@
 <div class="viewcode-block" id="split_pandas_df"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.split_pandas_df">[docs]</a><span class="k">def</span> <span class="nf">split_pandas_df</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
     <span class="c1"># add index and group by</span>
     <span class="n">data</span><span class="p">[</span><span class="s2">&quot;_index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">groups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;seqname&quot;</span><span class="p">)</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
 
     <span class="c1"># generate NCLS indexes for each seqname</span>
     <span class="n">indexes</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">rows</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
         <span class="n">indexes</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncls</span><span class="o">.</span><span class="n">NCLS</span><span class="p">(</span>
-            <span class="n">rows</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">rows</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">rows</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">starts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">ends</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="n">ranges</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-        <span class="p">{</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">seqname</span><span class="p">,</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">end</span><span class="p">}</span>
+        <span class="p">{</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">seqnames</span><span class="p">,</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">starts</span><span class="p">,</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">ends</span><span class="p">}</span>
     <span class="p">)</span>
 
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;seqname&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="s2">&quot;_index&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;ends&quot;</span><span class="p">,</span> <span class="s2">&quot;_index&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="kc">None</span>
 

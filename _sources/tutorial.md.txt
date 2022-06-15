@@ -46,3 +46,14 @@ query = GenomicRanges.fromPandas(
 hits = subject.nearest(query)
 print(hits)
 ```
+
+### Slice a GenomicRanges
+
+You can slice a `GenomicRange` object using the subset (`[`) operator
+
+```python
+subject = GenomicRanges.fromUCSC(genome="hg38")
+
+# first thousand features of the object
+subset = subject[1:1000]
+```
