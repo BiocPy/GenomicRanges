@@ -11,7 +11,7 @@ __license__ = "MIT"
 def test_should_pass():
     df_gr = pd.DataFrame(
         {
-            "seqname": [
+            "seqnames": [
                 "chr1",
                 "chr2",
                 "chr2",
@@ -23,8 +23,8 @@ def test_should_pass():
                 "chr3",
                 "chr3",
             ],
-            "start": range(100, 110),
-            "end": range(110, 120),
+            "starts": range(100, 110),
+            "ends": range(110, 120),
             "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
             "score": range(0, 10),
             "GC": [random() for _ in range(10)],

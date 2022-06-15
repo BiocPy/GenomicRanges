@@ -1,4 +1,4 @@
-from ast import Num
+from ast import Num, Slice
 from typing import Union, List, Dict
 import pandas as pd
 import ncls
@@ -117,7 +117,7 @@ class GenomicRanges:
                 r = self.ranges.iloc[self._iterIdx]
                 m = (
                     self.metadata.iloc[self._iterIdx]
-                    if self.metadata
+                    if self.metadata is not None
                     else None
                 )
         except IndexError:
@@ -137,6 +137,59 @@ class GenomicRanges:
             str: what the instance holds
         """
         return f"<GenomicRanges> contains {len(self.index.keys())} chromosomes, {self.ranges.shape[0]} intervals"
+
+    def __getitem__(self, args: Union[Slice, List[int]]) -> "GenomicRanges":
+        """Slice the object
+
+        Args:
+            args (Union[Slice, List[int]]): A slice object or a list of indices to subset
+
+        Raises:
+            Exception: args must be either a slice or list of indices less than the shape
+            IndexError: indices exceeds the dataset dimensions
+
+        Returns:
+            GenomicRanges: a subset GenomicRanges object
+        """
+        argmin = float("-inf")
+        argmax = float("inf")
+        if isinstance(args, slice):
+            argmin = args.start
+            argmax = args.stop
+        elif isinstance(args, list):
+            argmin = min(args)
+            argmax = max(args)
+        else:
+            raise Exception(
+                f"{args} must be either a slice or list of indices."
+            )
+
+        if argmin == float("-inf") or argmax == float("inf"):
+            raise Exception(f"slice not supported")
+
+        # check if all indices are less than (min and max)
+        for i in [argmin, argmax]:
+            if i > self.ranges.shape[0]:
+                logging.error(f"Indices must be between {self.ranges.shape}")
+                return IndexError(f"index: {i} out of range")
+
+        arg_slices = self.indices[args]
+
+        df = self.ranges.iloc[arg_slices, :]
+        if self.metadata is not None:
+            df = pd.concat(
+                [
+                    df,
+                    self.metadata.iloc[
+                        arg_slices,
+                    ],
+                ],
+                ignore_index=False,
+                axis=1,
+            )
+
+        (indexes, indices, ranges, metadata) = split_pandas_df(df)
+        return GenomicRanges(indexes, indices, ranges, metadata)
 
     def nearest(
         self, x: "GenomicRanges", k: int = 1
@@ -172,8 +225,8 @@ class GenomicRanges:
             pd.DataFrame: Pandas DataFrame
         """
         df = self.ranges
-        if self.metadata:
-            df = pd.concat([df, self.metadata])
+        if self.metadata is not None:
+            df = pd.concat([df, self.metadata], ignore_index=False, axis=1)
 
         return df
 
@@ -183,7 +236,7 @@ class GenomicRanges:
 
         Args:
             data (pd.DataFrame): a Pandas DataFrame object containing genomic positions.
-                Must contain `seqname`, `start` & `end` columns.
+                Must contain `seqnames`, `starts` & `ends` columns.
 
         Raises:
             Exception: Validation Error
@@ -193,15 +246,15 @@ class GenomicRanges:
         """
 
         # validation:
-        # if `seqname`, `start` and `end` don't exist, abort!
-        if not set(["seqname", "start", "end"]).issubset(
+        # if `seqnames`, `starts` and `ends` don't exist, abort!
+        if not set(["seqnames", "starts", "ends"]).issubset(
             set(data.columns.tolist())
         ):
             logging.error(
-                f"DataFrame does not contain columns: `seqname`, `start` and `end`"
+                f"DataFrame does not contain columns: `seqnames`, `starts` and `ends`"
             )
             raise Exception(
-                f"DataFrame does not contain columns: `seqname`, `start` and `end`"
+                f"DataFrame does not contain columns: `seqnames`, `starts` and `ends`"
             )
 
         (indexes, indices, ranges, metadata) = split_pandas_df(data)

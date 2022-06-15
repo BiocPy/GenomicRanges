@@ -10,24 +10,6 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def parse_attribute(attr: str, key: str) -> Union[None, str]:
-    """Extract a key from the gtf/gff attribute string
-
-    Args:
-        attr (str): attribute string
-        key (str): key to extract
-
-    Returns:
-        Union[None, str]: value if key exists else `None`
-    """
-    if key in attr:
-        tstr = attr.split(key, 1)
-        tstrval = tstr[1].split(";", 1)
-        return tstrval[0][1:]
-    else:
-        return None
-
-
 def parse_all_attribute(row: str) -> dict:
     """Extract all keys from the gtf/gff attribute string
 
@@ -64,11 +46,11 @@ def parse_gtf(path: str, compressed: bool) -> pd.DataFrame:
             path,
             sep="\t",
             names=[
-                "seqname",
+                "seqnames",
                 "source",
                 "feature",
-                "start",
-                "end",
+                "starts",
+                "ends",
                 "score",
                 "strand",
                 "frame",
@@ -81,11 +63,11 @@ def parse_gtf(path: str, compressed: bool) -> pd.DataFrame:
             path,
             sep="\t",
             names=[
-                "seqname",
+                "seqnames",
                 "source",
                 "feature",
-                "start",
-                "end",
+                "starts",
+                "ends",
                 "score",
                 "strand",
                 "frame",

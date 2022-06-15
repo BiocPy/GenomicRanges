@@ -9,7 +9,7 @@ __license__ = "MIT"
 
 df_gr = pd.DataFrame(
     {
-        "seqname": [
+        "seqnames": [
             "chr1",
             "chr2",
             "chr2",
@@ -21,8 +21,8 @@ df_gr = pd.DataFrame(
             "chr3",
             "chr3",
         ],
-        "start": range(100, 110),
-        "end": range(110, 120),
+        "starts": range(100, 110),
+        "ends": range(110, 120),
         "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
         "score": range(0, 10),
         "GC": [random() for _ in range(10)],
@@ -43,9 +43,9 @@ def test_granges():
     test_gr = GenomicRanges.fromPandas(
         pd.DataFrame(
             {
-                "seqname": ["chr1", "chr2", "chr3"],
-                "start": [100, 115, 119],
-                "end": [103, 116, 120],
+                "seqnames": ["chr1", "chr2", "chr3"],
+                "starts": [100, 115, 119],
+                "ends": [103, 116, 120],
             }
         )
     )
@@ -53,3 +53,17 @@ def test_granges():
     hits = gr.nearest(test_gr)
     print(hits)
     assert hits is not None
+
+
+def test_granges_slices():
+    subset_gr = gr[5:8]
+
+    assert subset_gr is not None
+    assert len(subset_gr) == 3
+
+
+def test_export():
+    df = gr.toDF()
+
+    assert df is not None
+    assert df.shape[0] == len(gr)
