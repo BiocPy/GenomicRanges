@@ -295,3 +295,28 @@ class GenomicRanges:
         (indexes, indices, ranges, metadata) = split_pandas_df(data)
 
         return GenomicRanges(indexes, indices, ranges, metadata)
+
+
+    def __array_ufunc__(self, func, method, *inputs, **kwargs) -> "GenomicRanges":
+        """Interface numpy array methods
+
+        Usage:
+            np.sqrt(gr)
+
+        Raises:
+            Exception: Input not supported
+
+        Returns:
+            GenomicRanges: granges after the function is applied
+        """
+
+        input = inputs[0]
+        if not isinstance(input, GenomicRanges):
+            raise Exception("input not supported")
+
+        for col in input.metadata.columns:
+            if pd.api.types.is_numeric_dtype(input.metadata[col]):
+                new_col = getattr(func, method)(input.metadata[col], **kwargs)
+                input.metadata[col]= new_col
+
+        return input
