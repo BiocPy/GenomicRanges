@@ -1,212 +1,744 @@
-from ast import Num, Slice
-from typing import Union, List, Dict
+from typing import (
+    Union,
+    List,
+    Mapping,
+    Any,
+    Optional,
+    Sequence,
+    Tuple,
+    MutableMapping,
+    Callable,
+)
+from collections import OrderedDict
 import pandas as pd
 import ncls
-import logging
+
+from biocframe import BiocFrame
+from .SeqInfo import SeqInfo
+
 from .ucsc import access_gtf_ucsc
 from .gtf import parse_gtf
-from .utils import split_pandas_df
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-class GenomicRanges:
-    """GenomicRanges class to represent genomic locations"""
+class GenomicRanges(BiocFrame):
+    """Class GenomicRanges to represent genomic regions and annotations"""
+
+    required_columns = ["seqnames", "starts", "ends", "strand"]
 
     def __init__(
         self,
-        index: Dict[str, Union[ncls.NCLS32, ncls.NCLS64]],
-        indices: List[Num],
-        ranges: pd.DataFrame,
-        metadata: Union[pd.DataFrame, None] = None,
+        data: Optional[Mapping[str, Union[List[Any], Mapping]]] = ...,
+        numberOfRows: Optional[int] = None,
+        rowNames: Optional[Sequence[str]] = None,
+        columnNames: Optional[Sequence[str]] = None,
+        metadata: Optional[Mapping] = None,
     ) -> None:
-        """Initialize an instance of GenomicRanges
+        super().__init__(data, numberOfRows, rowNames, columnNames, metadata)
+
+        self._setIndex()
+
+    @staticmethod
+    def buildIndex(
+        seqnames: Union[Sequence[str], pd.Series],
+        starts: Union[Sequence[int], pd.Series],
+        ends: Union[Sequence[int], pd.Series],
+    ) -> Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]]:
+        """Given genomic positions, builds an NCLS index
 
         Args:
-            index (Dict[str, Union[ncls.NCLS32, ncls.NCLS64]]): Nested Containment List index
-            indices (List[Num]): indices that map between `index`, `ranges` and `metadata`
-            ranges (pd.DataFrame): intervals as pandas dataframe
-            metadata (Union[pd.DataFrame, None], optional): additional metadata as pandas dataframe. Defaults to None.
-        """
-        self.index = index
-        self.indices = indices
-        self.ranges = ranges
-        self.metadata = metadata
-        self._iterIdx = 0
-
-    def seqnames(self) -> pd.Series:
-        """access sequences or chromosome names
+            seqnames (Union[Sequence[str], pd.Series]): sequence or chromosome names
+            starts (Union[Sequence[int], pd.Series]): genomic start interval
+            ends (Union[Sequence[int], pd.Series]): genomic end interval
 
         Returns:
-            pd.Series: sequence information across all positions
+            Tuple[Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]], pd.DataFrame]: a tuple containing
+                an NCLS for each chromsome and a pandas Dataframe of all ranges.
         """
-        logging.info(self.ranges["seqnames"].value_counts())
-        return self.ranges["seqnames"]
+        ranges = pd.DataFrame({"seqnames": seqnames, "starts": starts, "ends": ends})
+        ranges["_index"] = range(0, ranges.shape[0])
+        groups = ranges.groupby("seqnames")
 
-    def ranges(self) -> pd.DataFrame:
-        """return the genomic positions
+        # generate NCLS indexes for each seqname
+        indexes = {}
+        for group, rows in groups:
+            indexes[group] = ncls.NCLS(
+                rows.starts.astype(int).values,
+                rows.ends.astype(int).values,
+                rows._index.astype(int).values,
+            )
+
+        return indexes
+
+    def _setIndex(self):
+        """Internal function to set or update NCLS index
+        """
+        self._index = GenomicRanges.buildIndex(
+            self.column("seqnames"), self.column("starts"), self.column("ends")
+        )
+
+    def _validate(self):
+        """internal function to validate GenomicRanges
+        """
+
+        if "strand" not in self._data:
+            self._data["strand"] = ["*"] * len(self._data["starts"])
+
+            if self._columnNames is not None:
+                self._columnNames.append("strand")
+
+        super()._validate()
+        self._validate_ranges()
+
+    def _validate_ranges(self):
+        """Internal function to validate genomic ranges
+
+        Raises:
+            ValueError: if missing required columns
+        """
+        missing = list(set(self.required_columns).difference(set(self.columnNames)))
+
+        if len(missing) > 0:
+            raise ValueError(
+                f"data must contain {self.required_columns}. missing {missing}"
+            )
+
+    @property
+    def seqnames(self) -> Sequence[str]:
+        """Get sequence or chromosome names
 
         Returns:
-            pd.DataFrame: Dataframe containing the genomic positions
+            Sequence[str]: list of all chromosome names
         """
-        return self.ranges
+        return self.column("seqnames")
 
-    def strand(self) -> pd.Series:
-        """access strand information (if available)
+    @property
+    def start(self) -> Sequence[int]:
+        """Get sequence or chromosome start positions
 
         Returns:
-            pd.Series: strand across all columns
+            Sequence[int]: list of all chromosome start positions
         """
-        logging.info(self.ranges["strand"].value_counts())
-        return self.ranges["strand"]
+        return self.column("starts")
+
+    @property
+    def end(self) -> Sequence[int]:
+        """Get sequence or chromosome end positions
+
+        Returns:
+            Sequence[int]: list of all chromosome end positions
+        """
+        return self.column("ends")
+
+    def ranges(
+        self, return_type: Optional[Callable] = None
+    ) -> Union[pd.DataFrame, MutableMapping, "GenomicRanges"]:
+        """Get the genomic positions
+
+        Args:
+            return_type (Callable, optional): format to return genomic positions. 
+                Defaults to dictionary structure. currently supports `pd.DataFrame`.
+
+        Raises:
+            ValueError: `return_type` is not supported
+
+        Returns:
+            Union[pd.DataFrame, MutableMapping, "GenomicRanges"]: genomic regions
+        """
+
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+        }
+
+        if return_type is None:
+            return obj
+        else:
+            try:
+                return return_type(obj)
+            except Exception as e:
+                raise ValueError(f"{return_type} not supported, {str(e)}")
+
+    def range(
+        self, return_type: Optional[Callable] = None
+    ) -> Union[pd.DataFrame, MutableMapping, "GenomicRanges"]:
+        """Get the genomic positions
+
+        Args:
+            return_type (Callable, optional): format to return genomic positions. 
+                Defaults to dictionary structure. currently supports `pd.DataFrame`.
+
+        Raises:
+            ValueError: `return_type` is not supported
+
+        Returns:
+            Union[pd.DataFrame, MutableMapping, "GenomicRanges"]: genomic regions
+        """
+
+        return self.ranges(return_type=return_type)
+
+    @property
+    def strand(self) -> Optional[Sequence[str]]:
+        """Get strand information (if available)
+
+        Returns:
+            Optional[Sequence[str]]: strand across all positions or None
+        """
+        return self.column("strand")
+
+    @property
+    def width(self) -> Sequence[int]:
+        """Get widths of each interval
+
+        Returns:
+            Sequence[int]: width of each interval
+        """
+
+        widths = []
+
+        for _, row in self:
+            widths.append(row["ends"] - row["starts"])
+
+        return widths
+
+    @property
+    def seqInfo(self) -> Optional["SeqInfo"]:
+        """Get the sequence information object (if available)
+
+        Returns:
+            SeqInfo: Sequence information
+        """
+
+        if self._metadata and "seqInfo" in self._metadata:
+            return self._metadata["seqInfo"]
+
+        return None
+
+    @seqInfo.setter
+    def seqInfo(self, seqInfo: "SeqInfo"):
+        """Set sequence information
+
+        Raises:
+            ValueError: seqInfo is a `SeqInfo` class object
+
+        Args:
+            seqinfo ("SeqInfo"): sequence information
+        """
+
+        if not isinstance(seqInfo, SeqInfo):
+            raise ValueError("seqInfo is not a `SeqInfo` class object")
+
+        if self._metadata is None:
+            self._metadata = {}
+
+        self._metadata["seqInfo"] = seqInfo
 
     def granges(self) -> "GenomicRanges":
-        """GenomicRanges object with only ranges (no metadata)
+        """New GenomicRanges object with only ranges (`seqnames`, `starts and `ends`)
 
         Returns:
             GenomicRanges: Genomic Ranges with only ranges
         """
-        return GenomicRanges(self.index, self.indices, self.ranges)
+        return GenomicRanges(
+            {
+                "seqnames": self.column("seqnames"),
+                "starts": self.column("starts"),
+                "ends": self.column("ends"),
+                "strand": self.column("strand"),
+            }
+        )
 
-    def mcols(self) -> pd.DataFrame:
-        """Access metadata information about positions
+    def mcols(
+        self, return_type: Optional[Callable] = None
+    ) -> Union[pd.DataFrame, MutableMapping]:
+        """Access metadata about positions
 
-        Returns:
-            pd.DataFrame: metadata across all genomic positions
-        """
-        return self.metadata
-
-    def len(self) -> Num:
-        """Number of intervals
-
-        Returns:
-            Num: number of genomic internals
-        """
-        return self.ranges.shape[0]
-
-    def length(self) -> Num:
-        """Number of intervals
-
-        Returns:
-            Num: number of genomic internals
-        """
-        return self.len()
-
-    def __len__(self):
-        """Number of intervals
-
-        Returns:
-            Num: number of genomic internals
-        """
-        return self.len()
-
-    def __iter__(self) -> "GenomicRanges":
-        """Iterator"""
-        return self
-
-    def __next__(self) -> tuple:
-        """Get value from current iteration
+        Args:
+            return_type (Callable, optional): format to return metadata. 
+                Defaults to dictionary structure. currently supports `pd.DataFrame`.
 
         Raises:
-            StopIteration: when Index is out of range
+            ValueError: `return_type` is not supported
+
+        Returns:
+            Union[pd.DataFrame, MutableMapping]: metadata columns without positions
         """
-        try:
-            if self._iterIdx < self.ranges.shape[0]:
-                r = self.ranges.iloc[self._iterIdx]
-                m = (
-                    self.metadata.iloc[self._iterIdx]
-                    if self.metadata is not None
-                    else None
-                )
-        except IndexError:
-            self._iterIdx = 0
-            raise StopIteration()
 
-        self._iterIdx += 1
-        if self._iterIdx > self.ranges.shape[0]:
-            raise StopIteration()
+        new_data = OrderedDict()
+        for k in self.columnNames:
+            if k not in self.required_columns:
+                new_data[k] = self.column(k)
 
-        return (r, m)
+        if return_type is None:
+            return new_data
+        else:
+            try:
+                return return_type(new_data)
+            except Exception as e:
+                raise ValueError(f"{return_type} not supported, {str(e)}")
 
     def __str__(self) -> str:
-        """string representation
-
-        Returns:
-            str: what the instance holds
+        pattern = """
+        Class GenomicRanges with {} intervals and {} metadata columns
+          columnNames: {}
         """
-        return f"<GenomicRanges> contains {len(self.index.keys())} chromosomes, {self.ranges.shape[0]} intervals"
+        return pattern.format(self.dims[0], self.dims[1] - 3, self.columnNames)
 
-    def __getitem__(self, args: Union[Slice, List[int]]) -> "GenomicRanges":
-        """Slice the object
+    def __getitem__(
+        self, args: Union[Sequence[str], Tuple[Sequence, Optional[Sequence]]]
+    ) -> "GenomicRanges":
+        """Slice a GenomicRanges object
 
         Args:
-            args (Union[Slice, List[int]]): A slice object or a list of indices to subset
+            args (Union[Sequence[str], Tuple[Sequence, Optional[Sequence]]]): indices to slice.
+                Sequence[str]: Slice by column names
+                Tuple[Sequence, Optional[Sequence]]]: slice by indices along the row and column axes.
+
+        Returns:
+            GenomicRanges: returns a new GenomicRanges object with the subset
+        """
+        new_frame = super().__getitem__(args)
+        return GenomicRanges(
+            new_frame._data,
+            new_frame._numberOfRows,
+            new_frame._rowNames,
+            new_frame._columnNames,
+            new_frame._metadata,
+        )
+
+    def _adjustInterval(
+        self,
+        row: MutableMapping[str, Any],
+        shiftStart: Optional[int] = 0,
+        shiftEnd: Optional[int] = 0,
+    ) -> Tuple[int, int]:
+        """internal function to shift genomic intervals
+
+        Args:
+            row (MutableMapping[str, Any]): a row from GenomicRanges
+            shiftStart (int, optional): number of positions to shift start by. Defaults to 0.
+            shiftEnd (int, optional): number of positions to shift end by. Defaults to 0.
+
+        Returns:
+            adjusted genomic intervals
+        """
+        return (row["starts"] + shiftStart, row["ends"] + shiftEnd)
+
+    def flank(
+        self,
+        width: int,
+        start: Optional[bool] = True,
+        both: Optional[bool] = False,
+        ignoreStrand: Optional[bool] = False,
+    ) -> "GenomicRanges":
+        """Recover regions flanking the set of ranges represented by the GenomicRanges object
+
+        Args:
+            width (int): width to flank by
+            start (bool, optional): only flank starts?. Defaults to True.
+            both (bool, optional): both starts and ends?. Defaults to False.
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with the flanked intervals
+        """
+        new_starts = []
+        new_ends = []
+
+        all_starts = self.column("starts")
+        all_ends = self.column("ends")
+        all_strands = self.column("strand")
+
+        # figure out which position to pin, start or end?
+        start_flags = [start] * len(all_strands)
+        if not ignoreStrand:
+            start_flags = [
+                start != (all_strands[i] == "-") for i in range(len(all_strands))
+            ]
+
+        # if both is true, then depending on start_flag, we extend it out
+        # I couldn't understand the scenario's with witdh <=0,
+        # so refer to the R implementation here
+        for idx in range(len(start_flags)):
+            sf = start_flags[idx]
+            tstart = 0
+            if both:
+                tstart = (
+                    all_starts[idx] - abs(width)
+                    if sf
+                    else all_ends[idx] - abs(width) + 1
+                )
+            else:
+                if width >= 0:
+                    tstart = all_starts[idx] - abs(width) if sf else all_ends[idx] + 1
+                else:
+                    tstart = all_starts[idx] if sf else all_ends[idx] + abs(width) + 1
+
+            new_starts.append(tstart)
+            new_ends.append(tstart + (width * (2 if both else 1) - 1))
+
+        new_data = self._data.copy()
+        new_data["starts"] = new_starts
+        new_data["ends"] = new_ends
+
+        return GenomicRanges(
+            new_data,
+            numberOfRows=self._numberOfRows,
+            rowNames=self._rowNames,
+            columnNames=self._columnNames,
+            metadata=self._metadata,
+        )
+
+    def resize(
+        self,
+        width: int,
+        fix: Optional[str] = "start",
+        ignoreStrand: Optional[bool] = False,
+    ) -> "GenomicRanges":
+        """Resize intervals based on strand in the `GenomicRanges` object
+
+        Args:
+            width (int): width to resize
+            fix (Optional[str], optional): fix positions by `start` or `end`. Defaults to "start".
+            ignoreStrand (Optional[bool], optional): ignore strand?. Defaults to False.
 
         Raises:
-            Exception: args must be either a slice or list of indices less than the shape
-            IndexError: indices exceeds the dataset dimensions
+            ValueError: parameter fix is neither `start` nor `end`
 
         Returns:
-            GenomicRanges: a subset GenomicRanges object
+            GenomicRanges: a new GenomicRanges object with the resized intervals
         """
-        argmin = float("-inf")
-        argmax = float("inf")
-        if isinstance(args, slice):
-            argmin = args.start
-            argmax = args.stop
-        elif isinstance(args, list):
-            argmin = min(args)
-            argmax = max(args)
-        else:
-            raise Exception(
-                f"{args} must be either a slice or list of indices."
-            )
 
-        if argmin == float("-inf") or argmax == float("inf"):
-            raise Exception(f"slice not supported")
+        if fix not in ["start", "end"]:
+            raise ValueError(f"`fix` must be either 'start' or 'end', provided {fix}")
 
-        # check if all indices are less than (min and max)
-        for i in [argmin, argmax]:
-            if i > self.ranges.shape[0]:
-                logging.error(f"Indices must be between {self.ranges.shape}")
-                return IndexError(f"index: {i} out of range")
+        new_starts = []
+        new_ends = []
 
-        arg_slices = self.indices[args]
+        all_starts = self.column("starts")
+        all_ends = self.column("ends")
+        all_strands = self.column("strand")
 
-        df = self.ranges.iloc[arg_slices, :]
-        if self.metadata is not None:
-            df = pd.concat(
-                [
-                    df,
-                    self.metadata.iloc[
-                        arg_slices,
-                    ],
-                ],
-                ignore_index=False,
-                axis=1,
-            )
+        # figure out which position to pin, start or end?
+        start_flags = [fix == "start"] * len(all_strands)
+        if not ignoreStrand:
+            start_flags = [
+                start_flags[i] != (all_strands[i] == "-")
+                for i in range(len(all_strands))
+            ]
 
-        (indexes, indices, ranges, metadata) = split_pandas_df(df)
-        return GenomicRanges(indexes, indices, ranges, metadata)
+        for idx in range(len(start_flags)):
+            sf = start_flags[idx]
+            tstart = all_starts[idx] if sf else all_ends[idx] - width + 1
 
-    def nearest(
-        self, x: "GenomicRanges", k: int = 1
-    ) -> List[Union[int, List[int]]]:
-        """Find nearest neighbors that overlap with the positions in `x`
+            new_starts.append(tstart)
+            new_ends.append(tstart + width - 1)
+
+        new_data = self._data.copy()
+        new_data["starts"] = new_starts
+        new_data["ends"] = new_ends
+
+        return GenomicRanges(
+            new_data,
+            numberOfRows=self._numberOfRows,
+            rowNames=self._rowNames,
+            columnNames=self._columnNames,
+            metadata=self._metadata,
+        )
+
+    def shift(self, shift: Optional[int] = 0) -> "GenomicRanges":
+        """Shift all intervals
 
         Args:
-            x (GenomicRanges): input genomic positions to find
-            k (int, optional): find k nearest neighbors ?. Defaults to 1.
+            shift (Optional[int], optional): shift interval. Defaults to 0.
 
         Returns:
-            List[Union[int, List[int]]]: Possible hits
+            GenomicRanges: a new GenomicRanges object with the shifted intervals
+        """
+        if shift == 0:
+            return self
+
+        all_starts = [x + shift for x in self.column("starts")]
+        all_ends = [x + shift for x in self.column("ends")]
+
+        new_data = self._data.copy()
+        new_data["starts"] = all_starts
+        new_data["ends"] = all_ends
+
+        return GenomicRanges(
+            new_data,
+            numberOfRows=self._numberOfRows,
+            rowNames=self._rowNames,
+            columnNames=self._columnNames,
+            metadata=self._metadata,
+        )
+
+    def promoters(
+        self, upstream: Optional[int] = 2000, downstream: Optional[int] = 200
+    ) -> "GenomicRanges":
+        """Extend intervals to promoter regions
+
+        Args:
+            upstream (Optional[int], optional): number of positions to extend in the 5' direction . Defaults to 2000.
+            downstream (Optional[int], optional): number of positions to extend in the 3' direction. Defaults to 200.
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with the extended intervals for promoter regions
+        """
+        all_starts = self.column("starts")
+        all_ends = self.column("ends")
+        all_strands = self.column("strand")
+
+        start_flags = [all_strands[i] != "-" for i in range(len(all_strands))]
+
+        new_starts = [
+            (
+                all_starts[idx] - upstream
+                if start_flags[idx]
+                else all_ends[idx] - downstream + 1
+            )
+            for idx in range(len(start_flags))
+        ]
+        new_ends = [
+            (
+                all_starts[idx] + downstream - 1
+                if start_flags[idx]
+                else all_ends[idx] + upstream
+            )
+            for idx in range(len(start_flags))
+        ]
+
+        new_data = self._data.copy()
+        new_data["starts"] = new_starts
+        new_data["ends"] = new_ends
+
+        return GenomicRanges(
+            new_data,
+            numberOfRows=self._numberOfRows,
+            rowNames=self._rowNames,
+            columnNames=self._columnNames,
+            metadata=self._metadata,
+        )
+
+    def restrict(
+        self,
+        start: Optional[int] = None,
+        end: Optional[int] = None,
+        keepAllRanges: Optional[bool] = False,
+    ) -> "GenomicRanges":
+        """Restrict intervals to a given start and end positions across all chormosomes
+
+        Args:
+            start (Optional[int], optional): start position. Defaults to None.
+            end (Optional[int], optional): end position. Defaults to None.
+            keepAllRanges (Optional[bool], optional): Keep intervals that do not overlap with start and end?. Defaults to False.
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with restricted intervals
+        """
+        all_starts = self.column("starts")
+        all_ends = self.column("ends")
+
+        new_data = self._data.copy()
+
+        new_starts = all_starts.copy()
+        if start:
+            new_starts = [(start if x < start else x) for x in all_starts]
+
+        new_ends = all_ends.copy()
+        if end:
+            new_ends = [(end if x > end else x) for x in all_ends]
+
+        new_data["starts"] = new_starts
+        new_data["ends"] = new_ends
+
+        new_rowNames = self._rowNames.copy()
+
+        if not keepAllRanges:
+            keepers = []
+            # find intervals indices that overlap with the given start and end
+            for idx in range(len(all_starts)):
+                keep = False
+                if start and (all_starts[idx] <= start <= all_ends[idx]):
+                    keep = True
+
+                if end and (all_starts[idx] <= end <= all_ends[idx]):
+                    keep = True
+
+                if keep:
+                    keepers.append(idx)
+
+            for col in self._columnNames:
+                new_data[col] = [new_data[col][x] for x in keepers]
+
+            if self._rowNames:
+                new_rowNames = [new_rowNames[x] for x in keepers]
+
+        return GenomicRanges(
+            new_data,
+            columnNames=self._columnNames,
+            rowNames=new_rowNames,
+            metadata=self._metadata,
+        )
+
+    def trim(self) -> "GenomicRanges":
+        """Trim sequences outside of bounds for non-circular chromosomes
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with trimmed positions
+        """
+
+        # let just print a warning, shouldn't be an error
+        warning_msg = """
+        Not enough information to trim,
+        GenomicRanges object does not contain sequence information.
+        """
+        if not self.seqInfo:
+            print(warning_msg)
+            return self
+
+        if self._metadata is None:
+            print(warning_msg)
+            return self
+
+        if self._metadata["seqInfo"] is None:
+            print(warning_msg)
+            return self
+
+        seqinfos = self.seqInfo
+        seqlengths = seqinfos.seqlengths
+        isCircular = seqinfos.isCircular
+
+        if seqlengths is None:
+            print(warning_msg)
+            return self
+
+        if isCircular is None:
+            print("considering all sequences as non-circular...")
+
+        all_chrs = self.column("seqnames")
+        all_ends = self.column("ends")
+
+        new_data = self._data.copy()
+        new_rowNames = self._rowNames.copy()
+
+        keepers = []
+        for idx in range(len(all_chrs)):
+            keep = True
+            t_chr = all_chrs[idx]
+            if (
+                isCircular is not None
+                and isCircular[t_chr] is False
+                and all_ends[idx] > seqlengths[t_chr]
+            ):
+                keep = False
+
+            if keep:
+                keepers.append(idx)
+
+        for col in self._columnNames:
+            new_data[col] = [new_data[col][x] for x in keepers]
+
+        if self._rowNames:
+            new_rowNames = [new_rowNames[x] for x in keepers]
+
+        return GenomicRanges(
+            new_data,
+            columnNames=self._columnNames,
+            rowNames=new_rowNames,
+            metadata=self._metadata,
+        )
+
+    def narrow(
+        self,
+        start: Optional[int] = None,
+        width: Optional[int] = None,
+        end: Optional[int] = None,
+    ) -> "GenomicRanges":
+        """Narrow genomic positions by provided start, width and end parameters. 
+            Important: these parameters are relative shift in positions for each interval.
+
+        Args:
+            start (Optional[int], optional): relative start position. Defaults to None.
+            width (Optional[int], optional): relative end position. Defaults to None.
+            end (Optional[int], optional): relative width of the interval. Defaults to None.
+
+        Raises:
+            ValueError: when parameters were set incorrectly
+
+        Returns:
+            GenomicRanges:  a new GenomicRanges object with narrow positions
+        """
+        if start is not None and end is not None and width is not None:
+            raise ValueError(
+                "only provide two of the three parameters - start, end and width but not all"
+            )
+
+        if width is not None:
+            if start is None and end is None:
+                raise ValueError(
+                    "if width is provided, either start or end must be provided"
+                )
+
+        new_starts = []
+        new_ends = []
+
+        all_starts = self.column("starts")
+        all_ends = self.column("ends")
+
+        if start:
+            new_starts = [x + start - 1 for x in all_starts]
+        else:
+            new_starts = all_starts.copy()
+
+        if end:
+            new_ends = [x + end - 1 for x in all_starts]
+        else:
+            new_ends = all_ends
+
+        if width:
+            if start is None:
+                new_starts = [x - width + 1 for x in new_ends]
+            elif end is None:
+                new_ends = [x + width - 1 for x in new_starts]
+            else:
+                raise ValueError(
+                    "if width is provided, either start or end must be provided"
+                )
+
+        new_data = self._data.copy()
+        new_data["starts"] = new_starts
+        new_data["ends"] = new_ends
+
+        return GenomicRanges(
+            new_data,
+            numberOfRows=self._numberOfRows,
+            rowNames=self._rowNames,
+            columnNames=self._columnNames,
+            metadata=self._metadata,
+        )
+
+    # inter range methods
+    def nearest(self, x: "GenomicRanges", k: int = 1) -> List[Optional[List[int]]]:
+        """Find nearest positions that overlap with the each genomics interval in `x`. 
+            For each interval in `x`, returns list of indices that match.
+
+        Args:
+            x (GenomicRanges): input GenomicRanges to find nearest positions
+            k (int, optional): find k nearest positions. Defaults to 1.
+
+        Returns:
+            List[Optional[List[int]]]: List of possible hit indices for each interval in `x`
         """
         hits = []
-        for gr in x:
-            grhits = self.index[gr[0]["seqnames"]].find_overlap(
-                gr[0]["starts"], gr[0]["ends"]
+        for _, row in x:
+            grhits = self._index[row["seqnames"]].find_overlap(
+                row["starts"], row["ends"]
             )
             counter = 0
             tmp_hits = []
@@ -216,19 +748,8 @@ class GenomicRanges:
                 else:
                     break
             hits.append(tmp_hits if len(tmp_hits) > 0 else None)
+
         return hits
-
-    def toDF(self) -> pd.DataFrame:
-        """Export or Convert `GenomicRanges` to Pandas DataFrame
-
-        Returns:
-            pd.DataFrame: Pandas DataFrame
-        """
-        df = self.ranges
-        if self.metadata is not None:
-            df = pd.concat([df, self.metadata], ignore_index=False, axis=1)
-
-        return df
 
     @staticmethod
     def fromPandas(data: pd.DataFrame) -> "GenomicRanges":
@@ -238,31 +759,24 @@ class GenomicRanges:
             data (pd.DataFrame): a Pandas DataFrame object containing genomic positions.
                 Must contain `seqnames`, `starts` & `ends` columns.
 
-        Raises:
-            Exception: Validation Error
-
         Returns:
             GenomicRanges: An Object representing genomic positions
         """
 
-        # validation:
-        # if `seqnames`, `starts` and `ends` don't exist, abort!
-        if not set(["seqnames", "starts", "ends"]).issubset(
-            set(data.columns.tolist())
-        ):
-            logging.error(
-                f"DataFrame does not contain columns: `seqnames`, `starts` and `ends`"
-            )
-            raise Exception(
-                f"DataFrame does not contain columns: `seqnames`, `starts` and `ends`"
-            )
+        obj = OrderedDict()
 
-        (indexes, indices, ranges, metadata) = split_pandas_df(data)
-        return GenomicRanges(indexes, indices, ranges, metadata)
+        for col in data.columns:
+            obj[col] = data[col].to_list()
+
+        rindex = None
+        if data.index is not None:
+            rindex = data.index.to_list()
+
+        return GenomicRanges(obj, rowNames=rindex, columnNames=data.columns.to_list())
 
     @staticmethod
     def fromGTF(file: str) -> "GenomicRanges":
-        """Load a GTF file as GenomicRanges
+        """Load a genome annotation from GTF file as `GenomicRanges`
 
         Args:
             file (str): path to gtf file
@@ -273,50 +787,21 @@ class GenomicRanges:
         compressed = True if file.endswith("gz") else False
         data = parse_gtf(file, compressed=compressed)
 
-        (indexes, indices, ranges, metadata) = split_pandas_df(data)
-
-        return GenomicRanges(indexes, indices, ranges, metadata)
+        return GenomicRanges.fromPandas(data)
 
     @staticmethod
     def fromUCSC(genome: str, type: str = "refGene") -> "GenomicRanges":
-        """Load a GTF file from UCSC as GenomicRanges
+        """Load a genome annotation from UCSC as `GenomicRanges`
 
         Args:
             genome (str): genome shortcode; e.g. hg19, hg38, mm10 etc
             type (str): One of refGene, ensGene, knownGene or ncbiRefSeq
 
         Returns:
-            GenomicRanges:  An Object representing genomic positions
+            GenomicRanges:  Gene model represented as GenomicRanges
         """
         path = access_gtf_ucsc(genome, type=type)
         compressed = True
         data = parse_gtf(path, compressed=compressed)
 
-        (indexes, indices, ranges, metadata) = split_pandas_df(data)
-
-        return GenomicRanges(indexes, indices, ranges, metadata)
-
-
-    def __array_ufunc__(self, func, method, *inputs, **kwargs) -> "GenomicRanges":
-        """Interface numpy array methods
-
-        Usage:
-            np.sqrt(gr)
-
-        Raises:
-            Exception: Input not supported
-
-        Returns:
-            GenomicRanges: granges after the function is applied
-        """
-
-        input = inputs[0]
-        if not isinstance(input, GenomicRanges):
-            raise Exception("input not supported")
-
-        for col in input.metadata.columns:
-            if pd.api.types.is_numeric_dtype(input.metadata[col]):
-                new_col = getattr(func, method)(input.metadata[col], **kwargs)
-                input.metadata[col]= new_col
-
-        return input
+        return GenomicRanges.fromPandas(data)

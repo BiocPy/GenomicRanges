@@ -1,5 +1,3 @@
-import logging
-
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
@@ -13,21 +11,17 @@ def access_gtf_ucsc(genome: str, type: str = "refGene") -> str:
         type (str): One of refGene, ensGene, knownGene or ncbiRefSeq
 
     Raises:
-        Exception: TypeError, when `type` does not match with a valid input
+        Exception: ValueError, when `type` does not match with a valid input
 
     Returns:
         str: returns the path to the file
     """
-    base_path = (
-        f"http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/"
-    )
+    base_path = f"http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/"
 
     if type not in ["refGene", "ensGene", "knownGene", "ncbiRefSeq"]:
-        logging.error(f"Provided value for type: {type}")
-        logging.error(
-            "type must be one of refGene, ensGene, knownGene or ncbiRefSeq"
+        raise ValueError(
+            f"type must be one of refGene, ensGene, knownGene or ncbiRefSeq, provided {type}"
         )
-        raise Exception("TypeError")
 
     full_path = f"{base_path}/{genome}.{type}.gtf.gz"
 

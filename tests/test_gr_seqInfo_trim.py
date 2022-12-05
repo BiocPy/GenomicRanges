@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 import numpy as np
 from genomicranges.GenomicRanges import GenomicRanges
+from genomicranges.SeqInfo import SeqInfo
 from random import random
 
 __author__ = "jkanche"
@@ -30,15 +31,33 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df_gr)
+seq_obj = {
+    "seqnames": [
+        "chr1",
+        "chr2",
+        "chr3",
+    ],
+    "seqlengths": [110, 112, 118],
+    "isCircular": [True, True, False],
+    "genome": "hg19",
+}
+
+def test_gr_seqInfo():
+    gr = GenomicRanges.fromPandas(df_gr)
+    assert gr is not None
+    assert gr.seqInfo is None
+
+    gr.seqInfo = SeqInfo(seq_obj)
+
+    assert gr.seqInfo is not None
 
 
-def test_numpy_ufunc():
-    res  = np.sin(gr)
-    assert res is not None
-    assert res.len() == df_gr.shape[0]
-    assert len(res) == res.len()
-    assert res.mcols() is not None
-    assert res.mcols().shape[0] == df_gr.shape[0]
-    assert res.granges() is not None
+def test_gr_method_trim():
+    gr = GenomicRanges.fromPandas(df_gr)
+    gr.seqInfo = SeqInfo(seq_obj)
+
+    trimmed_gr = gr.trim()
+
+    assert trimmed_gr is not None
+    assert trimmed_gr.dims == (9, 6)
 
