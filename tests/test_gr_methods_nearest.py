@@ -47,4 +47,3 @@ def test_granges():
 
     hits = gr.nearest(test_gr)
     assert hits is not None
-

@@ -59,4 +59,3 @@ def test_flank_start_false_and_both_true():
     assert flanked_gr is not None
     assert flanked_gr.column("starts") == [103, 92, 119, 125, 95]
     assert flanked_gr.column("ends") == [122, 111, 138, 144, 114]
-

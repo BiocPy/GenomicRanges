@@ -59,4 +59,3 @@ def test_resize_fix_end_ignore_strand():
     assert resized_gr is not None
     assert resized_gr.column("starts") == [103, 114, 119, 125, 102]
     assert resized_gr.column("ends") == [112, 123, 128, 134, 111]
-

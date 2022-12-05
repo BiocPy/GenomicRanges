@@ -9,11 +9,7 @@ __license__ = "MIT"
 
 
 seq_obj = {
-    "seqnames": [
-        "chr1",
-        "chr2",
-        "chr3",
-    ],
+    "seqnames": ["chr1", "chr2", "chr3",],
     "seqlengths": range(100, 103),
     "isCircular": [random() < 0.5 for _ in range(3)],
     "genome": "hg19",
@@ -35,5 +31,3 @@ def test_create_SeqInfo():
 
     assert seq.seqlengths is not None
     assert isinstance(seq.seqlengths, dict)
-
-

@@ -32,12 +32,14 @@ df_gr = pd.DataFrame(
 
 gr = GenomicRanges.fromPandas(df_gr)
 
+
 def test_granges():
     assert gr is not None
     assert len(gr) == df_gr.shape[0]
     assert gr.mcols() is not None
     assert len(gr.mcols().keys()) == df_gr.shape[1] - 4
     assert gr.granges() is not None
+
 
 def test_slices():
     subset_gr = gr[5:8]

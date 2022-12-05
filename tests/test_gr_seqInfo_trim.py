@@ -32,15 +32,12 @@ df_gr = pd.DataFrame(
 )
 
 seq_obj = {
-    "seqnames": [
-        "chr1",
-        "chr2",
-        "chr3",
-    ],
+    "seqnames": ["chr1", "chr2", "chr3",],
     "seqlengths": [110, 112, 118],
     "isCircular": [True, True, False],
     "genome": "hg19",
 }
+
 
 def test_gr_seqInfo():
     gr = GenomicRanges.fromPandas(df_gr)
@@ -60,4 +57,3 @@ def test_gr_method_trim():
 
     assert trimmed_gr is not None
     assert trimmed_gr.dims == (9, 6)
-
