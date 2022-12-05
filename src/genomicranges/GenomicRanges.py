@@ -134,16 +134,17 @@ class GenomicRanges(BiocFrame):
         return self.column("ends")
 
     def ranges(
-        self, return_type: Optional[Callable] = None
+        self, ignoreStrand: bool = False, returnType: Optional[Callable] = None
     ) -> Union[pd.DataFrame, MutableMapping, "GenomicRanges"]:
         """Get the genomic positions
 
         Args:
-            return_type (Callable, optional): format to return genomic positions. 
+            ignoreStrand (bool): ignore strands? Defaults to False.
+            returnType (Callable, optional): format to return genomic positions. 
                 Defaults to dictionary structure. currently supports `pd.DataFrame`.
 
         Raises:
-            ValueError: `return_type` is not supported
+            ValueError: `returnType` is not supported
 
         Returns:
             Union[pd.DataFrame, MutableMapping, "GenomicRanges"]: genomic regions
@@ -156,31 +157,35 @@ class GenomicRanges(BiocFrame):
             "strand": self.column("strand"),
         }
 
-        if return_type is None:
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(obj["seqnames"])
+
+        if returnType is None:
             return obj
         else:
             try:
-                return return_type(obj)
+                return returnType(obj)
             except Exception as e:
-                raise ValueError(f"{return_type} not supported, {str(e)}")
+                raise ValueError(f"{returnType} not supported, {str(e)}")
 
     def range(
-        self, return_type: Optional[Callable] = None
+        self, ignoreStrand: bool = False, returnType: Optional[Callable] = None
     ) -> Union[pd.DataFrame, MutableMapping, "GenomicRanges"]:
         """Get the genomic positions
 
         Args:
-            return_type (Callable, optional): format to return genomic positions. 
+            ignoreStrand (bool): ignore strands? Defaults to False.
+            returnType (Callable, optional): format to return genomic positions.
                 Defaults to dictionary structure. currently supports `pd.DataFrame`.
 
         Raises:
-            ValueError: `return_type` is not supported
+            ValueError: `returnType` is not supported
 
         Returns:
             Union[pd.DataFrame, MutableMapping, "GenomicRanges"]: genomic regions
         """
 
-        return self.ranges(return_type=return_type)
+        return self.ranges(ignoreStrand=ignoreStrand, returnType=returnType)
 
     @property
     def strand(self) -> Optional[Sequence[str]]:
@@ -238,6 +243,19 @@ class GenomicRanges(BiocFrame):
 
         self._metadata["seqInfo"] = seqInfo
 
+    @property
+    def seqlengths(self) -> Optional[MutableMapping[str, int]]:
+        """Get length of each chromosome (if available)
+
+        Returns:
+            Optional[MutableMapping[str, int]]: Sequence lengths
+        """
+
+        if self._metadata and "seqInfo" in self._metadata:
+            return self._metadata["seqInfo"].seqlengths
+
+        return None
+
     def granges(self) -> "GenomicRanges":
         """New GenomicRanges object with only ranges (`seqnames`, `starts and `ends`)
 
@@ -254,16 +272,16 @@ class GenomicRanges(BiocFrame):
         )
 
     def mcols(
-        self, return_type: Optional[Callable] = None
+        self, returnType: Optional[Callable] = None
     ) -> Union[pd.DataFrame, MutableMapping]:
         """Access metadata about positions
 
         Args:
-            return_type (Callable, optional): format to return metadata. 
+            returnType (Callable, optional): format to return metadata. 
                 Defaults to dictionary structure. currently supports `pd.DataFrame`.
 
         Raises:
-            ValueError: `return_type` is not supported
+            ValueError: `returnType` is not supported
 
         Returns:
             Union[pd.DataFrame, MutableMapping]: metadata columns without positions
@@ -274,13 +292,13 @@ class GenomicRanges(BiocFrame):
             if k not in self.required_columns:
                 new_data[k] = self.column(k)
 
-        if return_type is None:
+        if returnType is None:
             return new_data
         else:
             try:
-                return return_type(new_data)
+                return returnType(new_data)
             except Exception as e:
-                raise ValueError(f"{return_type} not supported, {str(e)}")
+                raise ValueError(f"{returnType} not supported, {str(e)}")
 
     def __str__(self) -> str:
         pattern = """
@@ -312,10 +330,7 @@ class GenomicRanges(BiocFrame):
         )
 
     def _adjustInterval(
-        self,
-        row: MutableMapping[str, Any],
-        shiftStart: Optional[int] = 0,
-        shiftEnd: Optional[int] = 0,
+        self, row: MutableMapping[str, Any], shiftStart: int = 0, shiftEnd: int = 0,
     ) -> Tuple[int, int]:
         """internal function to shift genomic intervals
 
@@ -329,12 +344,13 @@ class GenomicRanges(BiocFrame):
         """
         return (row["starts"] + shiftStart, row["ends"] + shiftEnd)
 
+    # intra-range methods
     def flank(
         self,
         width: int,
-        start: Optional[bool] = True,
-        both: Optional[bool] = False,
-        ignoreStrand: Optional[bool] = False,
+        start: bool = True,
+        both: bool = False,
+        ignoreStrand: bool = False,
     ) -> "GenomicRanges":
         """Recover regions flanking the set of ranges represented by the GenomicRanges object
 
@@ -395,17 +411,14 @@ class GenomicRanges(BiocFrame):
         )
 
     def resize(
-        self,
-        width: int,
-        fix: Optional[str] = "start",
-        ignoreStrand: Optional[bool] = False,
+        self, width: int, fix: str = "start", ignoreStrand: bool = False,
     ) -> "GenomicRanges":
         """Resize intervals based on strand in the `GenomicRanges` object
 
         Args:
             width (int): width to resize
-            fix (Optional[str], optional): fix positions by `start` or `end`. Defaults to "start".
-            ignoreStrand (Optional[bool], optional): ignore strand?. Defaults to False.
+            fix (str, optional): fix positions by `start` or `end`. Defaults to "start".
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Raises:
             ValueError: parameter fix is neither `start` nor `end`
@@ -451,11 +464,11 @@ class GenomicRanges(BiocFrame):
             metadata=self._metadata,
         )
 
-    def shift(self, shift: Optional[int] = 0) -> "GenomicRanges":
+    def shift(self, shift: int = 0) -> "GenomicRanges":
         """Shift all intervals
 
         Args:
-            shift (Optional[int], optional): shift interval. Defaults to 0.
+            shift (int, optional): shift interval. Defaults to 0.
 
         Returns:
             GenomicRanges: a new GenomicRanges object with the shifted intervals
@@ -478,14 +491,12 @@ class GenomicRanges(BiocFrame):
             metadata=self._metadata,
         )
 
-    def promoters(
-        self, upstream: Optional[int] = 2000, downstream: Optional[int] = 200
-    ) -> "GenomicRanges":
+    def promoters(self, upstream: int = 2000, downstream: int = 200) -> "GenomicRanges":
         """Extend intervals to promoter regions
 
         Args:
-            upstream (Optional[int], optional): number of positions to extend in the 5' direction . Defaults to 2000.
-            downstream (Optional[int], optional): number of positions to extend in the 3' direction. Defaults to 200.
+            upstream (int, optional): number of positions to extend in the 5' direction . Defaults to 2000.
+            downstream (int, optional): number of positions to extend in the 3' direction. Defaults to 200.
 
         Returns:
             GenomicRanges: a new GenomicRanges object with the extended intervals for promoter regions
@@ -529,14 +540,14 @@ class GenomicRanges(BiocFrame):
         self,
         start: Optional[int] = None,
         end: Optional[int] = None,
-        keepAllRanges: Optional[bool] = False,
+        keepAllRanges: bool = False,
     ) -> "GenomicRanges":
         """Restrict intervals to a given start and end positions across all chormosomes
 
         Args:
             start (Optional[int], optional): start position. Defaults to None.
             end (Optional[int], optional): end position. Defaults to None.
-            keepAllRanges (Optional[bool], optional): Keep intervals that do not overlap with start and end?. Defaults to False.
+            keepAllRanges (bool, optional): Keep intervals that do not overlap with start and end?. Defaults to False.
 
         Returns:
             GenomicRanges: a new GenomicRanges object with restricted intervals
@@ -654,6 +665,7 @@ class GenomicRanges(BiocFrame):
             metadata=self._metadata,
         )
 
+    # TODO: needs checks when relative start, width and end do not agree
     def narrow(
         self,
         start: Optional[int] = None,
@@ -724,7 +736,99 @@ class GenomicRanges(BiocFrame):
         )
 
     # inter range methods
-    def nearest(self, x: "GenomicRanges", k: int = 1) -> List[Optional[List[int]]]:
+
+    def reduce(
+        self,
+        dropEmptyRanges: bool = False,
+        withRevMap: bool = False,
+        minGapwidth: int = 1,
+        ignoreStrand: bool = False,
+    ):
+        pass
+
+    def gaps(self, start: int = 1, end: Optional[MutableMapping[str, int]] = None):
+        pass
+
+    def disjoin(self, x, withRevMap: bool = False, ignoreStrand: bool = False):
+        pass
+
+    def isDisjoint(self, ignoreStrand: bool = False):
+        pass
+
+    def disjointBins(self, ignoreStrand: bool = False):
+        pass
+
+    # set operations
+    def union(self, x: "GenomicRanges") -> "GenomicRanges":
+        pass
+
+    def intersect(self, x: "GenomicRanges") -> "GenomicRanges":
+        pass
+
+    def setdiff(self, x: "GenomicRanges") -> "GenomicRanges":
+        pass
+
+    def punion(self, x: "GenomicRanges") -> "GenomicRanges":
+        pass
+
+    def binnedAverage(bins, numvar: str, varname: str):
+        pass
+
+    def subtract(
+        self, x: "GenomicRanges", minoverlap: int = 1, ignoreStrand: bool = False
+    ):
+        pass
+
+    # integer range methods
+    def coverage(
+        self, method: str, shift: int = 0, width: Optional[int] = None, weight: int = 1
+    ):
+        pass
+
+    # search based methods
+    def findOverlaps(
+        self,
+        query: "GenomicRanges",
+        rtype: str,
+        select: str,
+        numResults: int = 1,
+        mapGap: int = -1,
+        minOverlap: int = 0,
+        ignoreStrand: bool = False,
+    ):
+        pass
+
+    def countOverlaps(
+        self,
+        query: "GenomicRanges",
+        rtype: str,
+        select: str,
+        numResults: int = 1,
+        mapGap: int = -1,
+        minOverlap: int = 0,
+        ignoreStrand: bool = False,
+    ):
+        pass
+
+    def subsetByOverlaps(
+        self,
+        query: "GenomicRanges",
+        rtype: str,
+        select: str,
+        numResults: int = 1,
+        mapGap: int = -1,
+        minOverlap: int = 0,
+        ignoreStrand: bool = False,
+    ):
+        pass
+
+    def nearest(
+        self,
+        query: "GenomicRanges",
+        select: str,
+        k: int = 1,
+        ignoreStrand: bool = False,
+    ) -> List[Optional[List[int]]]:
         """Find nearest positions that overlap with the each genomics interval in `x`. 
             For each interval in `x`, returns list of indices that match.
 
@@ -736,7 +840,7 @@ class GenomicRanges(BiocFrame):
             List[Optional[List[int]]]: List of possible hit indices for each interval in `x`
         """
         hits = []
-        for _, row in x:
+        for _, row in query:
             grhits = self._index[row["seqnames"]].find_overlap(
                 row["starts"], row["ends"]
             )
@@ -750,6 +854,75 @@ class GenomicRanges(BiocFrame):
             hits.append(tmp_hits if len(tmp_hits) > 0 else None)
 
         return hits
+
+    def precede(self, query: "GenomicRanges", select: str):
+        pass
+
+    def follow(self, query: "GenomicRanges", select: str):
+        pass
+
+    def distanceToNearest(self, query: "GenomicRanges"):
+        pass
+
+    # compare and order methods
+
+    def duplicated(
+        self,
+        query: "GenomicRanges",
+        method: str = "auto",
+        incomparables: bool = False,
+        fromLast: bool = False,
+        nmax: Optional[int] = None,
+    ):
+        pass
+
+    def match(query, nomatch: int = -1000000, incomparables: Optional[bool] = None):
+        pass
+
+    def isUnsorted(self, naRM=False, strictly=False, ignoreStrand=False):
+        pass
+
+    def order(naLast=True, descreasing=False, method: str = "auto"):
+        pass
+
+    def sort(self, by: str, decreasing: bool = False, ignoreStrand: bool = False):
+        pass
+
+    def rank(self, tiesMethod: str, naLast=False, method: str = "auto"):
+        pass
+
+    def pcompare(self, query: "GenomicRanges"):
+        pass
+
+    # windowing functions
+    def tile(self, n: int, width: int):
+        pass
+
+    def slidingWindows(self, width: int, step: int = 1):
+        pass
+
+    def tileGenome(self, n: int, tilewidth: int, cutLastTileInChrom: bool = False):
+        pass
+
+    # summary methods
+    def table(self, colName: Optional[str] = None):
+        pass
+
+    def sum(self, colName: str):
+        pass
+
+    def summary(self, colName: str):
+        pass
+
+    def sample(self, k: int = 5) -> "GenomicRanges":
+        pass
+
+    # misc
+    def invertStrand(self) -> "GenomicRanges":
+        pass
+
+    def combine(self, **kwargs) -> "GenomicRanges":
+        pass
 
     @staticmethod
     def fromPandas(data: pd.DataFrame) -> "GenomicRanges":

@@ -65,7 +65,7 @@ class SeqInfo(BiocFrame):
         return self.column("seqnames")
 
     @property
-    def seqlengths(self) -> Optional[MutableMapping[str, bool]]:
+    def seqlengths(self) -> Optional[MutableMapping[str, int]]:
         """Get sequence or chromosome names and their lengths
 
         Returns:
