@@ -15,6 +15,7 @@ import ncls
 
 from biocframe import BiocFrame
 from .SeqInfo import SeqInfo
+from .utils import calc_row_gapwidth, calc_between_gap, calc_end_gap, calc_start_gap
 
 from .ucsc import access_gtf_ucsc
 from .gtf import parse_gtf
@@ -167,25 +168,6 @@ class GenomicRanges(BiocFrame):
                 return returnType(obj)
             except Exception as e:
                 raise ValueError(f"{returnType} not supported, {str(e)}")
-
-    def range(
-        self, ignoreStrand: bool = False, returnType: Optional[Callable] = None
-    ) -> Union[pd.DataFrame, MutableMapping, "GenomicRanges"]:
-        """Get the genomic positions
-
-        Args:
-            ignoreStrand (bool): ignore strands? Defaults to False.
-            returnType (Callable, optional): format to return genomic positions.
-                Defaults to dictionary structure. currently supports `pd.DataFrame`.
-
-        Raises:
-            ValueError: `returnType` is not supported
-
-        Returns:
-            Union[pd.DataFrame, MutableMapping, "GenomicRanges"]: genomic regions
-        """
-
-        return self.ranges(ignoreStrand=ignoreStrand, returnType=returnType)
 
     @property
     def strand(self) -> Optional[Sequence[str]]:
@@ -665,7 +647,7 @@ class GenomicRanges(BiocFrame):
             metadata=self._metadata,
         )
 
-    # TODO: needs checks when relative start, width and end do not agree
+    # TODO: needs checks when relative - {start, width and end} do not agree
     def narrow(
         self,
         start: Optional[int] = None,
@@ -735,19 +717,232 @@ class GenomicRanges(BiocFrame):
             metadata=self._metadata,
         )
 
+    def _calcGapwidths(self, ignoreStrand: bool = False) -> Sequence[int]:
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        df_gr = pd.DataFrame(obj)
+        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        gapwidths = (
+            df_gr["index"]
+            .rolling(2)
+            .apply(
+                lambda x: calc_row_gapwidth(
+                    df_gr.loc[x.index[0], :], df_gr.loc[x.index[1], :]
+                )
+            )
+        )
+
+        return gapwidths
+
     # inter range methods
 
+    # TODO: implement dropEmptyRanges
+    # TODO: this is a very ineffecient implementation, someone can do a better job later.
     def reduce(
         self,
-        dropEmptyRanges: bool = False,
         withRevMap: bool = False,
         minGapwidth: int = 1,
         ignoreStrand: bool = False,
-    ):
-        pass
+    ) -> "GenomicRanges":
+        """Reduce orders the ranges, then merges overlapping or adjacent intervals.
+        
+        Args:
+            withRevMap (bool, optional): return map of indices back to original object?. Defaults to False.
+            minGapwidth (int, optional): Ranges separated by a gap of at least minGapwidth positions are not merged. Defaults to 1.
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
-    def gaps(self, start: int = 1, end: Optional[MutableMapping[str, int]] = None):
-        pass
+        Returns:
+            GenomicRanges: a new GenomicRanges object with reduced intervals
+        """
+
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        df_gr = pd.DataFrame(obj)
+        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+
+        df_gr["gapwidths"] = self._calcGapwidths(ignoreStrand=ignoreStrand)
+        df_gr["gapwidth_flag"] = [
+            (True if (pd.isna(x) or (x == 0)) else x < minGapwidth)
+            for x in df_gr["gapwidths"]
+        ]
+
+        gaps_to_merge = df_gr[df_gr["gapwidth_flag"] == True]
+
+        gaps_merged = gaps_to_merge.groupby(
+            ["seqnames", "strand", "gapwidth_flag"], sort=False
+        ).agg(starts=("starts", min), ends=("ends", max), revmap=("index", list))
+
+        gaps_merged = gaps_merged.reset_index()
+
+        gaps_not_merged = df_gr[df_gr["gapwidth_flag"] == False]
+        gaps_not_merged["revmap"] = gaps_not_merged["index"].apply(lambda x: [x])
+        gaps_not_merged = gaps_not_merged[gaps_merged.columns]
+
+        finale = pd.concat([gaps_merged, gaps_not_merged])
+
+        columns_to_keep = ["seqnames", "strand", "starts", "ends"]
+
+        if withRevMap:
+            columns_to_keep.append("revmap")
+
+        finale = finale[columns_to_keep].sort_values(
+            ["seqnames", "strand", "starts", "ends"]
+        )
+
+        return GenomicRanges.fromPandas(finale)
+
+    def range(
+        self, withRevMap: bool = False, ignoreStrand: bool = False
+    ) -> "GenomicRanges":
+        """Calculate ranges for each chromosome 
+            (minimum of all starts, maximum of all ends) in the object.
+
+            Technically its same as `reduce` with a ridiculously high minGapwidth.
+
+        Args:
+            withRevMap (bool, optional): return map of indices back to original object?. Defaults to False.
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with the new intervals
+        """
+        return self.reduce(
+            withRevMap=withRevMap, minGapwidth=10000000, ignoreStrand=ignoreStrand
+        )
+
+    def _computeSeqLengths(self) -> MutableMapping[str, int]:
+        """Internal function to access seqlengths either from the SeqInfo object 
+            or computes one by looking at the genomic positions.
+
+        Returns:
+            MutableMapping[str, int]: a dict of chromosome names and lengths
+        """
+        seqlengths = self.seqlengths
+
+        if seqlengths is None:
+            seqlengths = {}
+            ranges = self.range()
+            for _, row in ranges:
+                seqlengths[row["seqnames"]] = row["ends"]
+
+        return seqlengths
+
+    def gaps(
+        self, start: int = 1, end: Optional[MutableMapping[str, int]] = None
+    ) -> "GenomicRanges":
+        """Identify gaps in genomic positions for each distinct chromosome and strand combination.
+                Note: May not be the fastest implementation. Ideally this should implement the Maximum Range algorithm.
+
+        Args:
+            start (int, optional): restrict chromosome start position. Defaults to 1.
+            end (Optional[MutableMapping[str, int]], optional): restrict end position for each chromosome. Defaults to None.
+                If None, this tried to use the SeqInfo object if available.
+
+        Returns:
+            GenomicRanges: A new GenomicRanges containing gap regions across chromosome and strand
+        """
+
+        # seqlengths = self._computeSeqLengths()
+        seqlengths = self.seqlengths
+
+        if end is None:
+            end = seqlengths
+
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        df_gr = pd.DataFrame(obj)
+        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+        groups = df_gr.groupby(["seqnames", "strand"])
+
+        missing_intervals = []
+        for name, group in groups:
+            group["iindex"] = range(len(group))
+
+            row = group.iloc[0]
+            tinterval = calc_start_gap(row, name, start)
+            if tinterval is not None:
+                missing_intervals.append(tinterval)
+
+            if group.shape[0] == 1:
+
+                tend = None
+                if end is not None:
+                    tend = end[name[0]]
+
+                tinterval = calc_end_gap(row, name, tend)
+                if tinterval is not None:
+                    missing_intervals.append(tinterval)
+            else:
+                last_row = group.iloc[-1]
+
+                tend = None
+                if end is not None:
+                    tend = end[name[0]]
+
+                tinterval = calc_end_gap(last_row, name, tend)
+                if tinterval is not None:
+                    missing_intervals.append(tinterval)
+
+                def tmp_calc(x):
+                    print("in tmp_calc")
+                    tinterval = calc_between_gap(
+                        group.iloc[int(x.iloc[0])],
+                        group.iloc[int(x.iloc[1])],
+                        name,
+                        start,
+                        tend,
+                    )
+                    if tinterval is not None:
+                        missing_intervals.append(tinterval)
+
+                    return 0
+
+                group["iindex"].rolling(2).apply(tmp_calc)
+
+        if end is not None:
+            groups = df_gr.groupby(["seqnames"])
+            for name, group in groups:
+                strands = group["strand"].unique()
+                missing_strands = list(set(["*", "+", "-"]).difference(set(strands)))
+                for ms in missing_strands:
+                    missing_intervals.append((name, ms, start, end[name]))
+
+        if len(missing_intervals) == 0:
+            # obj = {"seqnames": [], "starts": [], "ends": [], "strand": []}
+            return None
+
+        final_df = pd.DataFrame.from_records(
+            missing_intervals, columns=["seqnames", "strand", "starts", "ends"]
+        )
+
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+
+        return GenomicRanges.fromPandas(final_df)
 
     def disjoin(self, x, withRevMap: bool = False, ignoreStrand: bool = False):
         pass
@@ -766,9 +961,6 @@ class GenomicRanges(BiocFrame):
         pass
 
     def setdiff(self, x: "GenomicRanges") -> "GenomicRanges":
-        pass
-
-    def punion(self, x: "GenomicRanges") -> "GenomicRanges":
         pass
 
     def binnedAverage(bins, numvar: str, varname: str):
@@ -825,7 +1017,7 @@ class GenomicRanges(BiocFrame):
     def nearest(
         self,
         query: "GenomicRanges",
-        select: str,
+        select: str = None,
         k: int = 1,
         ignoreStrand: bool = False,
     ) -> List[Optional[List[int]]]:
@@ -882,7 +1074,7 @@ class GenomicRanges(BiocFrame):
     def isUnsorted(self, naRM=False, strictly=False, ignoreStrand=False):
         pass
 
-    def order(naLast=True, descreasing=False, method: str = "auto"):
+    def order(naLast=True, decreasing=False, method: str = "auto"):
         pass
 
     def sort(self, by: str, decreasing: bool = False, ignoreStrand: bool = False):
