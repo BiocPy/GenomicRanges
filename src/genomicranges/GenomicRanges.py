@@ -15,7 +15,13 @@ import ncls
 
 from biocframe import BiocFrame
 from .SeqInfo import SeqInfo
-from .utils import calc_row_gapwidth, calc_between_gap, calc_end_gap, calc_start_gap
+from .utils import (
+    calc_row_gapwidth,
+    find_disjoin,
+    find_gaps,
+    find_union,
+    find_intersect
+)
 
 from .ucsc import access_gtf_ucsc
 from .gtf import parse_gtf
@@ -850,7 +856,6 @@ class GenomicRanges(BiocFrame):
         self, start: int = 1, end: Optional[MutableMapping[str, int]] = None
     ) -> "GenomicRanges":
         """Identify gaps in genomic positions for each distinct chromosome and strand combination.
-                Note: May not be the fastest implementation. Ideally this should implement the Maximum Range algorithm.
 
         Args:
             start (int, optional): restrict chromosome start position. Defaults to 1.
@@ -879,50 +884,34 @@ class GenomicRanges(BiocFrame):
         df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
         groups = df_gr.groupby(["seqnames", "strand"])
 
-        missing_intervals = []
+        gap_intervals = []
         for name, group in groups:
             group["iindex"] = range(len(group))
 
-            row = group.iloc[0]
-            tinterval = calc_start_gap(row, name, start)
-            if tinterval is not None:
-                missing_intervals.append(tinterval)
+            all_intvals = [
+                (x[0], x[1])
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
+            ]
 
-            if group.shape[0] == 1:
+            end_limit = None
+            if end is not None:
+                if name[0] in end and end[name[0]] is not None:
+                    end_limit = end[name[0]]
 
-                tend = None
-                if end is not None:
-                    tend = end[name[0]]
+            tgaps = find_gaps(all_intvals, start_limit=start, end_limit=end_limit)
 
-                tinterval = calc_end_gap(row, name, tend)
-                if tinterval is not None:
-                    missing_intervals.append(tinterval)
-            else:
-                last_row = group.iloc[-1]
+            for td in tgaps:
+                tmp_start = td[0]
+                if tmp_start < start:
+                    tmp_start = start
 
-                tend = None
-                if end is not None:
-                    tend = end[name[0]]
+                tmp_end = td[1]
+                if end_limit is not None and tmp_end > end_limit:
+                    tmp_end = end_limit
 
-                tinterval = calc_end_gap(last_row, name, tend)
-                if tinterval is not None:
-                    missing_intervals.append(tinterval)
+                td_res = (name[0], name[1], tmp_start, tmp_end)
 
-                def tmp_calc(x):
-                    print("in tmp_calc")
-                    tinterval = calc_between_gap(
-                        group.iloc[int(x.iloc[0])],
-                        group.iloc[int(x.iloc[1])],
-                        name,
-                        start,
-                        tend,
-                    )
-                    if tinterval is not None:
-                        missing_intervals.append(tinterval)
-
-                    return 0
-
-                group["iindex"].rolling(2).apply(tmp_calc)
+                gap_intervals.append(td_res)
 
         if end is not None:
             groups = df_gr.groupby(["seqnames"])
@@ -930,35 +919,205 @@ class GenomicRanges(BiocFrame):
                 strands = group["strand"].unique()
                 missing_strands = list(set(["*", "+", "-"]).difference(set(strands)))
                 for ms in missing_strands:
-                    missing_intervals.append((name, ms, start, end[name]))
+                    gap_intervals.append((name, ms, start, end[name]))
 
-        if len(missing_intervals) == 0:
-            # obj = {"seqnames": [], "starts": [], "ends": [], "strand": []}
+        if len(gap_intervals) == 0:
             return None
 
-        final_df = pd.DataFrame.from_records(
-            missing_intervals, columns=["seqnames", "strand", "starts", "ends"]
-        )
-
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(gap_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-
         return GenomicRanges.fromPandas(final_df)
 
-    def disjoin(self, x, withRevMap: bool = False, ignoreStrand: bool = False):
-        pass
+    def disjoin(
+        self, withRevMap: bool = False, ignoreStrand: bool = False
+    ) -> "GenomicRanges":
+        """Calculate disjoint genomic positions for each distinct chromosome and strand combination.
 
-    def isDisjoint(self, ignoreStrand: bool = False):
-        pass
+        Args:
+            withRevMap (bool, optional):return map of indices back to original object? . Defaults to False.
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
-    def disjointBins(self, ignoreStrand: bool = False):
-        pass
+        Returns:
+            GenomicRanges: A new GenomicRanges containing disjoint ranges across chromosome and strand
+        """
+
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        df_gr = pd.DataFrame(obj)
+        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+        groups = df_gr.groupby(["seqnames", "strand"])
+
+        disjoin_intervals = []
+        for name, group in groups:
+            group["iindex"] = range(len(group))
+
+            all_intvals = [
+                (x[0], x[1])
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
+            ]
+
+            tdisjoin = find_disjoin(all_intvals, withRevMap=withRevMap)
+
+            for td in tdisjoin:
+                td_res = (name[0], name[1], td[0], td[1])
+                if withRevMap:
+                    td_res.append(td[2])
+                disjoin_intervals.append(td_res)
+
+        if len(disjoin_intervals) == 0:
+            return None
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        if withRevMap:
+            columns.append("revmap")
+
+        final_df = pd.DataFrame.from_records(disjoin_intervals, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
+
+    def isDisjoint(self, ignoreStrand: bool = False) -> bool:
+        """Are all ranges (for each chromosome, strand) disjoint?
+
+        Args:
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            bool: True if the intervals are disjoint
+        """
+        new_gr = self.disjoin(ignoreStrand=ignoreStrand)
+
+        return new_gr.shape != self.shape
+
+    # def disjointBins(self, ignoreStrand: bool = False):
+    #     raise NotImplementedError
 
     # set operations
-    def union(self, x: "GenomicRanges") -> "GenomicRanges":
-        pass
+    def union(self, other: "GenomicRanges") -> "GenomicRanges":
+        """Find union of genomic intervals with `other`
+
+        Args:
+            other (GenomicRanges): the other GenomicRanges object
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with 
+                the intervals
+        """
+        a_obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        a_df_gr = pd.DataFrame(a_obj)
+
+        b_obj = {
+            "seqnames": other.column("seqnames"),
+            "starts": other.column("starts"),
+            "ends": other.column("ends"),
+            "strand": other.column("strand"),
+            "index": range(len(other.column("seqnames"))),
+        }
+
+        b_df_gr = pd.DataFrame(b_obj)
+
+        df_gr = pd.concat([a_df_gr, b_df_gr])
+        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+        groups = df_gr.groupby(["seqnames", "strand"])
+
+        union_intervals = []
+        for name, group in groups:
+            print("name, group", name, group)
+            group["iindex"] = range(len(group))
+
+            all_intvals = [
+                (x[0], x[1])
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
+            ]
+
+            tunion = find_union(all_intvals)
+
+            for td in tunion:
+                td_res = (name[0], name[1], td[0], td[1])
+                union_intervals.append(td_res)
+
+        if len(union_intervals) == 0:
+            return None
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(union_intervals, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
+
 
     def intersect(self, x: "GenomicRanges") -> "GenomicRanges":
-        pass
+        """Find intersection of genomic intervals with `other`
+
+        Args:
+            other (GenomicRanges): the other GenomicRanges object
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with 
+                the intervals
+        """
+        a_obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        a_df_gr = pd.DataFrame(a_obj)
+
+        b_obj = {
+            "seqnames": x.column("seqnames"),
+            "starts": x.column("starts"),
+            "ends": x.column("ends"),
+            "strand": x.column("strand"),
+            "index": range(len(x.column("seqnames"))),
+        }
+
+        b_df_gr = pd.DataFrame(b_obj)
+
+        df_gr = pd.concat([a_df_gr, b_df_gr])
+        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+        groups = df_gr.groupby(["seqnames", "strand"])
+
+        intersect_intervals = []
+        for name, group in groups:
+            print("name, group", name, group)
+            group["iindex"] = range(len(group))
+
+            all_intvals = [
+                (x[0], x[1])
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
+            ]
+
+            tintersect = find_intersect(all_intvals)
+
+            for td in tintersect:
+                td_res = (name[0], name[1], td[0], td[1])
+                intersect_intervals.append(td_res)
+
+        if len(intersect_intervals) == 0:
+            return None
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(intersect_intervals, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
 
     def setdiff(self, x: "GenomicRanges") -> "GenomicRanges":
         pass

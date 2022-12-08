@@ -26,8 +26,6 @@ def test_reduce():
 
     reduced_gr = gr.reduce()
 
-    print(reduced_gr._data)
-
     assert reduced_gr is not None
     assert reduced_gr.shape == (4, 4)
     assert reduced_gr.column("seqnames") == ["chr1", "chr2", "chr2", "chr3"]
@@ -95,8 +93,6 @@ def test_gaps_with_start():
 
     gapped_gr = gr.gaps(start=5)
 
-    print(gapped_gr._data)
-
     assert gapped_gr is not None
     assert gapped_gr.column("seqnames") == ["chr1", "chr2", "chr2", "chr3"]
     assert gapped_gr.column("starts") == [5, 5, 104, 5]
@@ -108,8 +104,6 @@ def test_gaps_with_start_filter():
     assert gr is not None
 
     gapped_gr = gr.gaps(start=103)
-
-    print(gapped_gr._data)
 
     assert gapped_gr is not None
     assert gapped_gr.column("seqnames") == ["chr2", "chr3"]
@@ -154,8 +148,36 @@ def test_gaps_with_end():
         120,
     ]
 
-    
     assert gapped_gr.column("strand") == [
-        '*', '+', '-', '*', '+', '-', '-', '-', '*', '+', '-'
+        "*",
+        "+",
+        "-",
+        "*",
+        "+",
+        "-",
+        "-",
+        "-",
+        "*",
+        "+",
+        "-",
     ]
+
+
+def test_disjoin():
+    assert gr is not None
+
+    disjoin_gr = gr.disjoin()
+
+    assert disjoin_gr is not None
+    assert disjoin_gr.column("seqnames") == [
+        "chr1",
+        "chr1",
+        "chr1",
+        "chr2",
+        "chr2",
+        "chr3",
+    ]
+    assert disjoin_gr.column("starts") == [101, 103, 113, 102, 109, 104]
+    assert disjoin_gr.column("ends") == [102, 112, 128, 103, 111, 134]
+    assert disjoin_gr.column("strand") == ["*", "*", "*", "-", "-", "+"]
 
