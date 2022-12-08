@@ -39,7 +39,7 @@
 #     Args:
 #         row (MutableMapping[str, Any]): a row from GenomicRanges
 #         name (Tuple[str, str]): Tuple with chromosome name and strand
-#         end_limit (int): set the chromosome end 
+#         end_limit (int): set the chromosome end
 
 #     Returns:
 #         Tuple: a tuple with the gap interval
@@ -68,7 +68,7 @@
 #         rowl (MutableMapping[str, Any]): a row from GenomicRanges
 #         name (Tuple[str, str]): Tuple with chromosome name and strand
 #         start_limit (int): set the chromosome start
-#         end_limit (int): set the chromosome end 
+#         end_limit (int): set the chromosome end
 
 #     Returns:
 #         Tuple: a tuple with the gap interval
@@ -161,3 +161,42 @@
 #             last_end = current_end
 
 #     return disjoints
+
+# # credits: with help from SO - https://stackoverflow.com/a/31601579
+# def calc_disjoint_intervals(intervals: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+#     """split intervals into a set of disjoint non-overlapping intervals
+
+#     Args:
+#         intervals (List[Tuple[int, int]]): List of input intervals.
+
+#     Returns:
+#         List[Tuple[int, int]]: List of disjoint intervals from input.
+#     """
+#     if len(intervals) < 1:
+#         return intervals
+
+#     disjoint = []
+
+#     # get boundaries
+#     all_starts = [(x[0], 1) for x in intervals]
+#     all_ends = [(x[1] + 1, -1) for x in intervals]
+
+#     delta = None
+#     split_counter = 0
+
+#     all_points = all_starts + all_ends
+
+#     def compare(x, y):
+#         return x[0] - y[0]
+
+#     all_points = sorted(all_points, key=cmp_to_key(compare))
+
+#     disjoint = []
+#     for tint in all_points:
+#         if delta is not None and tint[0] > delta and split_counter != 0:
+#             disjoint.append((delta, tint[0] - 1))
+
+#         delta = tint[0]
+#         split_counter += tint[1]
+
+#     return disjoint

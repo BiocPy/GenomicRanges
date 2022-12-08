@@ -79,8 +79,6 @@ def test_gaps():
 
     gapped_gr = gr.gaps()
 
-    print(gapped_gr._data)
-
     assert gapped_gr is not None
     assert gapped_gr.column("seqnames") == ["chr1", "chr2", "chr2", "chr3"]
     assert gapped_gr.column("starts") == [1, 1, 104, 1]
@@ -116,8 +114,6 @@ def test_gaps_with_end():
     assert gr is not None
 
     gapped_gr = gr.gaps(end={"chr1": 120, "chr2": 120, "chr3": 120})
-
-    print(gapped_gr._data)
 
     assert gapped_gr is not None
     assert gapped_gr.column("seqnames") == [
@@ -180,4 +176,3 @@ def test_disjoin():
     assert disjoin_gr.column("starts") == [101, 103, 113, 102, 109, 104]
     assert disjoin_gr.column("ends") == [102, 112, 128, 103, 111, 134]
     assert disjoin_gr.column("strand") == ["*", "*", "*", "-", "-", "+"]
-

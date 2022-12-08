@@ -4,9 +4,8 @@ from genomicranges.utils import (
     find_union,
     find_gaps,
     find_disjoin,
-    calc_disjoint_intervals,
     find_intersect,
-    find_diff
+    find_diff,
 )
 
 __author__ = "jkanche"
@@ -41,12 +40,12 @@ def test_disjoin():
 
     intervals = a + b
     res1 = find_disjoin(intervals)
-    res2 = calc_disjoint_intervals(intervals)
+    # res2 = calc_disjoint_intervals(intervals)
 
-    assert len(res2) == 6
+    # assert len(res2) == 6
     assert len(res1) == 6
 
-    assert res1 == res2
+    # assert res1 == res2
 
 
 def test_intersect():
@@ -55,6 +54,7 @@ def test_intersect():
     assert res is not None
     assert len(res) == 1
     assert res == [(101, 128)]
+
 
 def test_diff():
     res = find_diff(a, b)

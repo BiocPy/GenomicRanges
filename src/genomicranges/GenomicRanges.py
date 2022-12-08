@@ -20,7 +20,8 @@ from .utils import (
     find_disjoin,
     find_gaps,
     find_union,
-    find_intersect
+    find_intersect,
+    find_diff,
 )
 
 from .ucsc import access_gtf_ucsc
@@ -1038,7 +1039,6 @@ class GenomicRanges(BiocFrame):
 
         union_intervals = []
         for name, group in groups:
-            print("name, group", name, group)
             group["iindex"] = range(len(group))
 
             all_intvals = [
@@ -1059,7 +1059,6 @@ class GenomicRanges(BiocFrame):
         final_df = pd.DataFrame.from_records(union_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
-
 
     def intersect(self, x: "GenomicRanges") -> "GenomicRanges":
         """Find intersection of genomic intervals with `other`
@@ -1097,7 +1096,6 @@ class GenomicRanges(BiocFrame):
 
         intersect_intervals = []
         for name, group in groups:
-            print("name, group", name, group)
             group["iindex"] = range(len(group))
 
             all_intvals = [
@@ -1120,7 +1118,78 @@ class GenomicRanges(BiocFrame):
         return GenomicRanges.fromPandas(final_df)
 
     def setdiff(self, x: "GenomicRanges") -> "GenomicRanges":
-        pass
+        """Find set difference of genomic intervals with `other`
+
+        Args:
+            other (GenomicRanges): the other GenomicRanges object
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object with 
+                the diff intervals
+        """
+        a_obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        a_df_gr = pd.DataFrame(a_obj)
+
+        b_obj = {
+            "seqnames": x.column("seqnames"),
+            "starts": x.column("starts"),
+            "ends": x.column("ends"),
+            "strand": x.column("strand"),
+            "index": range(len(x.column("seqnames"))),
+        }
+
+        b_df_gr = pd.DataFrame(b_obj)
+
+        only_seqnames = pd.concat(
+            [a_df_gr[["seqnames", "strand"]], b_df_gr[["seqnames", "strand"]]]
+        )
+        only_seqnames["seqstrand"] = only_seqnames["seqnames"] + only_seqnames["strand"]
+
+        unique_seqs = list(only_seqnames["seqstrand"].unique())
+
+        diff_ints = []
+        for name in unique_seqs:
+            ustrand = name[-1]
+            chrom = name[:-1]
+
+            a_set = a_df_gr[
+                (a_df_gr["seqnames"] == chrom) & (a_df_gr["strand"] == ustrand)
+            ]
+
+            if len(a_set) == 0:
+                continue
+            a_intvals = [
+                (x[0], x[1])
+                for x in zip(a_set["starts"].to_list(), a_set["ends"].to_list())
+            ]
+
+            b_set = b_df_gr[
+                (b_df_gr["seqnames"] == chrom) & (b_df_gr["strand"] == ustrand)
+            ]
+            b_intvals = [
+                (x[0], x[1])
+                for x in zip(b_set["starts"].to_list(), b_set["ends"].to_list())
+            ]
+
+            tdiff = find_diff(a_intvals, b_intvals)
+            for td in tdiff:
+                td_res = (chrom, ustrand, td[0], td[1])
+                diff_ints.append(td_res)
+
+        if len(diff_ints) == 0:
+            return None
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(diff_ints, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
 
     def binnedAverage(bins, numvar: str, varname: str):
         pass

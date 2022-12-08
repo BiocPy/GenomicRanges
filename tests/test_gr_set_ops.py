@@ -79,3 +79,16 @@ def test_intersect():
     assert int_gr.column("ends") == [128, 126, 124, 123, 134, 130]
     assert int_gr.column("strand") == ["*", "+", "*", "-", "+", "-"]
 
+
+def test_diff():
+    assert g_src is not None
+    assert g_tgt is not None
+
+    diff_gr = g_src.setdiff(g_tgt)
+
+    assert diff_gr is not None
+    assert diff_gr.shape == (3, 4)
+    assert diff_gr.column("seqnames") == ["chr1", "chr3", "chr3"]
+    assert diff_gr.column("starts") == [126, 104, 129]
+    assert diff_gr.column("ends") == [128, 106, 134]
+    assert diff_gr.column("strand") == ["*", "+", "+"]
