@@ -11,6 +11,7 @@ from typing import (
 )
 from collections import OrderedDict
 import pandas as pd
+import numpy as np
 import ncls
 
 from biocframe import BiocFrame
@@ -22,6 +23,8 @@ from .utils import (
     find_union,
     find_intersect,
     find_diff,
+    compute_mean,
+    create_np_interval_vector,
 )
 
 from .ucsc import access_gtf_ucsc
@@ -1191,8 +1194,73 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    def binnedAverage(bins, numvar: str, varname: str):
-        pass
+    def binnedAverage(self, scorename: str, bins: "GenomicRanges", outname: str):
+
+        if scorename not in self.columnNames:
+            raise ValueError(f"{scorename} is not a valid column name")
+
+        values = self.column(scorename)
+
+        if not all((isinstance(x, int) or isinstance(x, float)) for x in values):
+            raise Exception(
+                f"{scorename} is not a valid column, its neither ints not floats"
+            )
+
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "index": range(len(self.column("seqnames"))),
+            "values": values,
+        }
+
+        df_gr = pd.DataFrame(obj)
+        df_gr = df_gr.sort_values(by=["seqnames", "starts", "ends"])
+        # groups = df_gr.groupby(["seqnames"])
+
+        tagt_obj = {
+            "seqnames": bins.column("seqnames"),
+            "starts": bins.column("starts"),
+            "ends": bins.column("ends"),
+        }
+
+        tgt_gr = pd.DataFrame(tagt_obj)
+        tgt_gr = tgt_gr.sort_values(by=["seqnames", "starts", "ends"])
+        tgt_groups = tgt_gr.groupby(["seqnames"])
+
+        result = []
+
+        for name, group in tgt_groups:
+            src_intervals = df_gr[df_gr["seqnames"] == name]
+
+            if len(src_intervals) == 0:
+                continue
+
+            all_intvals = [
+                (x[0], x[1])
+                for x in zip(
+                    src_intervals["starts"].to_list(), src_intervals["ends"].to_list()
+                )
+            ]
+
+            # all_means = compute_mean(all_intvals, src_intervals["values"].to_list())
+            _, np_sum = compute_mean(
+                intervals=all_intvals, values=src_intervals["values"].to_list()
+            )
+
+            for _, tint in group.iterrows():
+                vec = np_sum[tint["starts"] - 1 : tint["ends"]]
+                vec_mean = np.sum(vec) / np.count_nonzero(vec)
+
+                result.append((name, tint["starts"], tint["ends"], "*", vec_mean))
+
+        if len(result) == 0:
+            return None
+
+        columns = ["seqnames", "starts", "ends", "strand", outname]
+        final_df = pd.DataFrame.from_records(result, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
 
     def subtract(
         self, x: "GenomicRanges", minoverlap: int = 1, ignoreStrand: bool = False

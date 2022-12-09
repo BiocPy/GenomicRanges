@@ -408,3 +408,19 @@ def find_diff(
                 final.append(result)
 
     return final
+
+
+def compute_mean(intervals: List[Tuple[int, int]], values: List[int]) -> np.ndarray:
+    max_end = None
+    if max_end is None:
+        max_end = max([x[1] for x in intervals])
+
+    np_cov = np.zeros(max_end)
+    np_sum = np.zeros(max_end)
+
+    for idx in range(len(intervals)):
+        i = intervals[idx]
+        np_cov[i[0] - 1 : i[1]] += 1
+        np_sum[i[0] - 1 : i[1]] += values[idx]
+
+    return (np_cov, np_sum)
