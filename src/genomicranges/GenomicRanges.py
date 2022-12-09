@@ -1194,7 +1194,25 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    def binnedAverage(self, scorename: str, bins: "GenomicRanges", outname: str):
+    def binnedAverage(
+        self, scorename: str, bins: "GenomicRanges", outname: str
+    ) -> "GenomicRanges":
+        """Calculate average for a score column across all bins, then
+            set a column called outname with those values
+
+        Args:
+            scorename (str): the column to compute averages on
+            bins (GenomicRanges): bins you want to use
+            outname (str): new column name to add to bins
+
+        Raises:
+            ValueError: if scorename column does not exist
+            Exception: scorename is not all ints or floats
+
+        Returns:
+            GenomicRanges: a new GenomicRanges with a column containing
+                the averages
+        """
 
         if scorename not in self.columnNames:
             raise ValueError(f"{scorename} is not a valid column name")
