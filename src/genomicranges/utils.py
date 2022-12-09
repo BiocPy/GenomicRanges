@@ -57,17 +57,19 @@ def create_np_interval_vector(
     withRevMap: bool = False,
     forceSize: Optional[int] = None,
     dontSum: bool = False,
+    value: int = 1,
 ) -> Tuple[np.ndarray, Optional[List]]:
-    """Represent intervals as numpy vector
+    """Represent intervals/calculate coverage
 
     Args:
         intervals (List[Tuple[int, int]]): input interval vector
         withRevMap (bool, optional): return map of indices. Defaults to False.
         forceSize (Optional[int], optional): force size of the array.
-        dontSum (bool, optional): do not sum
+        dontSum (bool, optional): do not sum. Defaults to False.
+        value (int, optional): default value to increment. Defaults to 1.
 
     Returns:
-        Tuple[np.ndarray, Optional[List]]: a numpy array representing the intervals
+        Tuple[np.ndarray, Optional[List]]: a numpy array representing coverage from the intervals
     """
     if len(intervals) < 1:
         return intervals
@@ -75,7 +77,7 @@ def create_np_interval_vector(
     max_end = forceSize
     if max_end is None:
         max_end = max([x[1] for x in intervals])
-    np_intvals = np.zeros(max_end)
+    cov = np.zeros(max_end)
 
     revmap = None
     if withRevMap:
@@ -85,14 +87,14 @@ def create_np_interval_vector(
         i = intervals[idx]
 
         if dontSum:
-            np_intvals[i[0] - 1 : i[1]] = 1
+            cov[i[0] - 1 : i[1]] = value
         else:
-            np_intvals[i[0] - 1 : i[1]] += 1
+            cov[i[0] - 1 : i[1]] += value
 
         if withRevMap:
-            tmp = [revmap[x].append(idx + 1) for x in range(i[0] - 1, i[1])]
+            _ = [revmap[x].append(idx + 1) for x in range(i[0] - 1, i[1])]
 
-    return np_intvals, revmap
+    return cov, revmap
 
 
 def find_unary_union(

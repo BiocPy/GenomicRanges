@@ -1168,6 +1168,7 @@ class GenomicRanges(BiocFrame):
 
             if len(a_set) == 0:
                 continue
+
             a_intvals = [
                 (x[0], x[1])
                 for x in zip(a_set["starts"].to_list(), a_set["ends"].to_list())
@@ -1280,16 +1281,62 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    def subtract(
-        self, x: "GenomicRanges", minoverlap: int = 1, ignoreStrand: bool = False
-    ):
-        pass
+    # def subtract(
+    #     self, x: "GenomicRanges", minoverlap: int = 1, ignoreStrand: bool = False
+    # ):
+    #     pass
 
     # integer range methods
     def coverage(
-        self, method: str, shift: int = 0, width: Optional[int] = None, weight: int = 1
-    ):
-        pass
+        self, shift: int = 0, width: Optional[int] = None, weight: int = 1
+    ) -> MutableMapping[str, np.ndarray]:
+        """Calculate coverage
+
+        Args:
+            shift (int, optional): shift all genomic positions. Defaults to 0.
+            width (Optional[int], optional): restrict the width of all chromosomes. Defaults to None.
+            weight (int, optional): weight to use. Defaults to 1.
+
+        Returns:
+            MutableMapping[str, np.ndarray]: _description_
+        """
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        df_gr = pd.DataFrame(obj)
+        df_gr = df_gr.sort_values(by=["seqnames", "starts", "ends"])
+        groups = df_gr.groupby(["seqnames"])
+
+        shift_arr = None
+        if shift > 0:
+            shift_arr = np.zeros(shift)
+
+        result = {}
+        for name, group in groups:
+
+            all_intvals = [
+                (x[0], x[1])
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
+            ]
+
+            cov, _ = create_np_interval_vector(intervals=all_intvals, withRevMap=False)
+
+            if shift > 0:
+                cov = np.concatenate((shift_arr, cov))
+
+            if weight > 0:
+                cov = cov * weight
+
+            if width is not None:
+                cov = cov[:width]
+
+            result[name] = cov
+
+        return result
 
     # search based methods
     def findOverlaps(
