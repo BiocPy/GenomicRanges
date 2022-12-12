@@ -25,6 +25,8 @@ from .utils import (
     find_diff,
     compute_mean,
     create_np_interval_vector,
+    OVERLAP_QUERY_TYPES,
+    find_overlaps,
 )
 
 from .ucsc import access_gtf_ucsc
@@ -858,7 +860,7 @@ class GenomicRanges(BiocFrame):
 
     def gaps(
         self, start: int = 1, end: Optional[MutableMapping[str, int]] = None
-    ) -> "GenomicRanges":
+    ) -> Optional["GenomicRanges"]:
         """Identify gaps in genomic positions for each distinct chromosome and strand combination.
 
         Args:
@@ -867,7 +869,7 @@ class GenomicRanges(BiocFrame):
                 If None, this tried to use the SeqInfo object if available.
 
         Returns:
-            GenomicRanges: A new GenomicRanges containing gap regions across chromosome and strand
+            Optional["GenomicRanges"]: A new GenomicRanges containing gap regions across chromosome and strand
         """
 
         # seqlengths = self._computeSeqLengths()
@@ -935,7 +937,7 @@ class GenomicRanges(BiocFrame):
 
     def disjoin(
         self, withRevMap: bool = False, ignoreStrand: bool = False
-    ) -> "GenomicRanges":
+    ) -> Optional["GenomicRanges"]:
         """Calculate disjoint genomic positions for each distinct chromosome and strand combination.
 
         Args:
@@ -943,7 +945,7 @@ class GenomicRanges(BiocFrame):
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Returns:
-            GenomicRanges: A new GenomicRanges containing disjoint ranges across chromosome and strand
+            Optional["GenomicRanges"]: A new GenomicRanges containing disjoint ranges across chromosome and strand
         """
 
         obj = {
@@ -1055,22 +1057,19 @@ class GenomicRanges(BiocFrame):
                 td_res = (name[0], name[1], td[0], td[1])
                 union_intervals.append(td_res)
 
-        if len(union_intervals) == 0:
-            return None
-
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(union_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    def intersect(self, x: "GenomicRanges") -> "GenomicRanges":
+    def intersect(self, x: "GenomicRanges") -> Optional["GenomicRanges"]:
         """Find intersection of genomic intervals with `other`
 
         Args:
             other (GenomicRanges): the other GenomicRanges object
 
         Returns:
-            GenomicRanges: a new GenomicRanges object with 
+            Optional["GenomicRanges"]: a new GenomicRanges object with 
                 the intervals
         """
         a_obj = {
@@ -1120,14 +1119,14 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    def setdiff(self, x: "GenomicRanges") -> "GenomicRanges":
+    def setdiff(self, x: "GenomicRanges") -> Optional["GenomicRanges"]:
         """Find set difference of genomic intervals with `other`
 
         Args:
             other (GenomicRanges): the other GenomicRanges object
 
         Returns:
-            GenomicRanges: a new GenomicRanges object with 
+            Optional["GenomicRanges"]: a new GenomicRanges object with 
                 the diff intervals
         """
         a_obj = {
@@ -1249,32 +1248,36 @@ class GenomicRanges(BiocFrame):
 
         result = []
 
+        cache_intvals = {}
+
         for name, group in tgt_groups:
             src_intervals = df_gr[df_gr["seqnames"] == name]
 
             if len(src_intervals) == 0:
                 continue
 
-            all_intvals = [
-                (x[0], x[1])
-                for x in zip(
-                    src_intervals["starts"].to_list(), src_intervals["ends"].to_list()
-                )
-            ]
+            if name not in cache_intvals:
+                all_intvals = [
+                    (x[0], x[1])
+                    for x in zip(
+                        src_intervals["starts"].to_list(),
+                        src_intervals["ends"].to_list(),
+                    )
+                ]
 
-            # all_means = compute_mean(all_intvals, src_intervals["values"].to_list())
-            _, np_sum = compute_mean(
-                intervals=all_intvals, values=src_intervals["values"].to_list()
-            )
+                _, np_sum = compute_mean(
+                    intervals=all_intvals, values=src_intervals["values"].to_list()
+                )
+
+                cache_intvals[name] = np_sum
+
+            np_sum = cache_intvals[name]
 
             for _, tint in group.iterrows():
                 vec = np_sum[tint["starts"] - 1 : tint["ends"]]
                 vec_mean = np.sum(vec) / np.count_nonzero(vec)
 
                 result.append((name, tint["starts"], tint["ends"], "*", vec_mean))
-
-        if len(result) == 0:
-            return None
 
         columns = ["seqnames", "starts", "ends", "strand", outname]
         final_df = pd.DataFrame.from_records(result, columns=columns)
@@ -1290,7 +1293,7 @@ class GenomicRanges(BiocFrame):
     def coverage(
         self, shift: int = 0, width: Optional[int] = None, weight: int = 1
     ) -> MutableMapping[str, np.ndarray]:
-        """Calculate coverage
+        """Calculate coverage for each chromosome
 
         Args:
             shift (int, optional): shift all genomic positions. Defaults to 0.
@@ -1342,38 +1345,182 @@ class GenomicRanges(BiocFrame):
     def findOverlaps(
         self,
         query: "GenomicRanges",
-        rtype: str,
-        select: str,
-        numResults: int = 1,
-        mapGap: int = -1,
-        minOverlap: int = 0,
+        queryType: str = "any",
+        maxGap: int = -1,
+        minOverlap: int = 1,
         ignoreStrand: bool = False,
-    ):
-        pass
+    ) -> Optional["GenomicRanges"]:
+        """Find overlaps between subject (self) and a query genomic ranges.
+
+        Args:
+            query (GenomicRanges): query genomic ranges.
+            queryType (str, optional): overlap query type, must be one of 
+                    "any": any overlap is good
+                    "start": overlap at the beginning of the intervals
+                    "end": must overlap at the end of the intervals
+                    "within": Fully contain the query interval. 
+                Defaults to any.
+            maxGap (int, optional): maximum gap allowed in the overlap. Defaults to -1 (no gap allowed).
+            minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            Optional["GenomicRanges"]: A GenomicRanges object with the same length as query, 
+                containing hits to overlapping indices.
+        """
+
+        if queryType not in OVERLAP_QUERY_TYPES:
+            raise ValueError(f"{queryType} must be one of {OVERLAP_QUERY_TYPES}")
+
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "index": range(len(self.column("seqnames"))),
+            "strand": self.column("strand"),
+        }
+
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        df_gr = pd.DataFrame(obj)
+        df_gr = df_gr.sort_values(by=["seqnames", "starts", "ends"])
+        # groups = df_gr.groupby(["seqnames"])
+
+        tagt_obj = {
+            "seqnames": query.column("seqnames"),
+            "starts": query.column("starts"),
+            "ends": query.column("ends"),
+            "strand": query.column("strand"),
+        }
+
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        tgt_gr = pd.DataFrame(tagt_obj)
+        tgt_gr = tgt_gr.sort_values(by=["seqnames", "starts", "ends"])
+        tgt_groups = tgt_gr.groupby(["seqnames", "strand"])
+
+        result = []
+        for name, group in tgt_groups:
+            chrom = name[0]
+            ustrand = name[1]
+            src_intervals = df_gr[
+                (df_gr["seqnames"] == chrom) & (df_gr["strand"] == ustrand)
+            ]
+
+            if len(src_intervals) == 0:
+                continue
+
+            subject_intvals = [
+                (x[0], x[1])
+                for x in zip(
+                    src_intervals["starts"].to_list(), src_intervals["ends"].to_list()
+                )
+            ]
+
+            query_intvals = [
+                (x[0], x[1])
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
+            ]
+
+            thits = find_overlaps(
+                subject_intvals,
+                query_intvals,
+                maxGap=maxGap,
+                minOverlap=minOverlap,
+                queryType=queryType,
+            )
+
+            for th in thits:
+                tindices = []
+                for i in th[2]:
+                    tindices.append(df_gr["index"][i])
+                result.append((chrom, ustrand, th[0][0], th[0][1], tindices))
+
+        if len(result) == 0:
+            return None
+
+        columns = ["seqnames", "strand", "starts", "ends", "hits"]
+        final_df = pd.DataFrame.from_records(result, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
 
     def countOverlaps(
         self,
         query: "GenomicRanges",
-        rtype: str,
-        select: str,
-        numResults: int = 1,
-        mapGap: int = -1,
-        minOverlap: int = 0,
+        queryType: str = "any",
+        maxGap: int = -1,
+        minOverlap: int = 1,
         ignoreStrand: bool = False,
-    ):
-        pass
+    ) -> List[int]:
+        """Count overlaps between subject (self) and a query genomic ranges.
+
+        Args:
+            query (GenomicRanges): query genomic ranges.
+            queryType (str, optional): overlap query type, must be one of 
+                    "any": any overlap is good
+                    "start": overlap at the beginning of the intervals
+                    "end": must overlap at the end of the intervals
+                    "within": Fully contain the query interval. 
+                Defaults to any.
+            maxGap (int, optional): maximum gap allowed in the overlap. Defaults to -1 (no gap allowed).
+            minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            List[int]: number of overlaps for each interval in query
+        """
+        result = self.findOverlaps(
+            query=query,
+            queryType=queryType,
+            maxGap=maxGap,
+            minOverlap=minOverlap,
+            ignoreStrand=ignoreStrand,
+        )
+
+        hits = result.column("hits")
+        return [len(ht) for ht in hits]
 
     def subsetByOverlaps(
         self,
         query: "GenomicRanges",
-        rtype: str,
-        select: str,
-        numResults: int = 1,
-        mapGap: int = -1,
-        minOverlap: int = 0,
+        queryType: str = "any",
+        maxGap: int = -1,
+        minOverlap: int = 1,
         ignoreStrand: bool = False,
-    ):
-        pass
+    ) -> Optional["GenomicRanges"]:
+        """Find overlaps between subject (self) and a query genomic ranges.
+
+        Args:
+            query (GenomicRanges): query genomic ranges.
+            queryType (str, optional): overlap query type, must be one of 
+                    "any": any overlap is good
+                    "start": overlap at the beginning of the intervals
+                    "end": must overlap at the end of the intervals
+                    "within": Fully contain the query interval. 
+                Defaults to any.
+            maxGap (int, optional): maximum gap allowed in the overlap. Defaults to -1 (no gap allowed).
+            minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            Optional["GenomicRanges"]: A GenomicRanges object with the same length as query, 
+                containing hits to overlapping indices.
+        """
+        result = self.findOverlaps(
+            query=query,
+            queryType=queryType,
+            maxGap=maxGap,
+            minOverlap=minOverlap,
+            ignoreStrand=ignoreStrand,
+        )
+        hits = result.column("hits")
+        hit_counts = [len(ht) for ht in hits]
+        indices = [idx for idx in range(len(hit_counts)) if hit_counts[idx] > 0]
+
+        print(indices)
+        return query[indices, :]
 
     def nearest(
         self,

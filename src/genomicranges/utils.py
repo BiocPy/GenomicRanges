@@ -412,7 +412,18 @@ def find_diff(
     return final
 
 
-def compute_mean(intervals: List[Tuple[int, int]], values: List[int]) -> np.ndarray:
+def compute_mean(
+    intervals: List[Tuple[int, int]], values: Union[List[int], List[float]]
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Compute coverage and sum ndarrays
+
+    Args:
+        intervals (List[Tuple[int, int]]): input interval list
+        values (Union[List[int], List[float]]): an int or float vector with the same size as intervals
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays
+    """
     max_end = None
     if max_end is None:
         max_end = max([x[1] for x in intervals])
@@ -426,3 +437,139 @@ def compute_mean(intervals: List[Tuple[int, int]], values: List[int]) -> np.ndar
         np_sum[i[0] - 1 : i[1]] += values[idx]
 
     return (np_cov, np_sum)
+
+
+def compute_mean(
+    intervals: List[Tuple[int, int]], values: Union[List[int], List[float]]
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Compute coverage and sum ndarrays
+
+    Args:
+        intervals (List[Tuple[int, int]]): input interval list
+        values (Union[List[int], List[float]]): an int or float vector with the same size as intervals
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays
+    """
+    max_end = None
+    if max_end is None:
+        max_end = max([x[1] for x in intervals])
+
+    np_cov = np.zeros(max_end)
+    np_sum = np.zeros(max_end)
+
+    for idx in range(len(intervals)):
+        i = intervals[idx]
+        np_cov[i[0] - 1 : i[1]] += 1
+        np_sum[i[0] - 1 : i[1]] += values[idx]
+
+    return (np_cov, np_sum)
+
+
+OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
+
+
+def find_overlaps(
+    subject: List[Tuple[int, int]],
+    query: List[Tuple[int, int]],
+    maxGap: int = -1,
+    minOverlap: int = 1,
+    queryType: str = "any",
+) -> List[Tuple[Tuple[int, int], int, List[int]]]:
+    """Find overlaps between subject and query
+
+    Args:
+        subject (List[Tuple[int, int]]): intervals
+        query (List[Tuple[int, int]]): query intervals
+        maxGap (int, optional): maximum gap allowed. Defaults to -1 for no gaps.
+        minOverlap (int, optional): minimum overlap needed for intervals to be considered as overlapping. Defaults to 1.
+        queryType (str, optional): query type, one of any
+                "any": any overlap is good
+                "start": overlap at the beginning of the intervals
+                "end": must overlap at the end of the intervals
+                "within": Fully contain the query interval. 
+            Defaults to "any".
+
+    Raises:
+        ValueError: query type is incorrect
+
+    Returns:
+        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals with their overlaps
+    """
+    if queryType not in OVERLAP_QUERY_TYPES:
+        raise ValueError(f"{queryType} must be one of {OVERLAP_QUERY_TYPES}")
+
+    subject_ints, subject_revmap = create_np_interval_vector(
+        intervals=subject, withRevMap=True
+    )
+
+    hits = []
+    for idx in range(len(query)):
+        q = query[idx]
+        vec = subject_ints[q[0] - 1 + maxGap : q[1] + abs(maxGap)]
+        overlaps = np.where(vec > 0)[0]
+
+        if len(overlaps) < minOverlap:
+            continue
+
+        indices = subject_revmap[q[0] - 1 + maxGap : q[1] + abs(maxGap)]
+
+        if queryType == "start":
+            indices = indices[0]
+        elif queryType == "end":
+            indices = indices[-1]
+        else:
+            indices = list(set([item for sublist in indices for item in sublist]))
+            if queryType == "within":
+                tmp_idx = []
+                for qidx in indices:
+                    if subject[idx][0] <= q[0] and subject[idx][1] >= q[1]:
+                        tmp_idx.append(qidx)
+
+                indices = tmp_idx
+
+        hits.append(((q[0], q[1]), idx + 1, indices))
+
+    return hits
+
+
+def find_nearest(
+    subject: List[Tuple[int, int]],
+    query: List[Tuple[int, int]],
+    stepstart: int = 3,
+    stepend: int = 3,
+) -> List[Tuple[Tuple[int, int], int, List[int]]]:
+    """Find nearest intervals in subject for even interval in query
+
+    Args:
+        subject (List[Tuple[int, int]]): intervals
+        query (List[Tuple[int, int]]): query intervals
+        maxGap (int, optional): maximum gap allowed. Defaults to -1 for no gaps.
+        stepstart (int, optional): step start. Defaults to 3.
+        stepend (int, optional): step end. Defaults to 3.
+
+    Returns:
+        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals with their overlaps
+    """
+    _, subject_revmap = create_np_interval_vector(intervals=subject, withRevMap=True)
+
+    hits = []
+    for idx in range(len(query)):
+        q = query[idx]
+        print("q", q)
+
+        matches = 0
+        counter = 0
+        while matches == 0:
+            indices = subject_revmap[
+                q[0] - 1 - (counter * stepstart) : q[1] + (counter * stepend)
+            ]
+            indices = list(set([item for sublist in indices for item in sublist]))
+
+            matches = len(indices)
+            counter += 1
+
+        print("matches", matches)
+        hits.append(((q[0], q[1]), idx + 1, matches, min(counter * stepstart, counter* stepend)))
+
+    return hits
