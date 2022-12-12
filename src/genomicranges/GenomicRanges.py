@@ -12,7 +12,6 @@ from typing import (
 from collections import OrderedDict
 import pandas as pd
 import numpy as np
-import ncls
 
 from biocframe import BiocFrame
 from .SeqInfo import SeqInfo
@@ -27,6 +26,7 @@ from .utils import (
     create_np_interval_vector,
     OVERLAP_QUERY_TYPES,
     find_overlaps,
+    find_nearest,
 )
 
 from .ucsc import access_gtf_ucsc
@@ -52,46 +52,46 @@ class GenomicRanges(BiocFrame):
     ) -> None:
         super().__init__(data, numberOfRows, rowNames, columnNames, metadata)
 
-        self._setIndex()
+        # self._setIndex()
 
-    @staticmethod
-    def buildIndex(
-        seqnames: Union[Sequence[str], pd.Series],
-        starts: Union[Sequence[int], pd.Series],
-        ends: Union[Sequence[int], pd.Series],
-    ) -> Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]]:
-        """Given genomic positions, builds an NCLS index
+    # @staticmethod
+    # def buildIndex(
+    #     seqnames: Union[Sequence[str], pd.Series],
+    #     starts: Union[Sequence[int], pd.Series],
+    #     ends: Union[Sequence[int], pd.Series],
+    # ) -> Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]]:
+    #     """Given genomic positions, builds an NCLS index
 
-        Args:
-            seqnames (Union[Sequence[str], pd.Series]): sequence or chromosome names
-            starts (Union[Sequence[int], pd.Series]): genomic start interval
-            ends (Union[Sequence[int], pd.Series]): genomic end interval
+    #     Args:
+    #         seqnames (Union[Sequence[str], pd.Series]): sequence or chromosome names
+    #         starts (Union[Sequence[int], pd.Series]): genomic start interval
+    #         ends (Union[Sequence[int], pd.Series]): genomic end interval
 
-        Returns:
-            Tuple[Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]], pd.DataFrame]: a tuple containing
-                an NCLS for each chromsome and a pandas Dataframe of all ranges.
-        """
-        ranges = pd.DataFrame({"seqnames": seqnames, "starts": starts, "ends": ends})
-        ranges["_index"] = range(0, ranges.shape[0])
-        groups = ranges.groupby("seqnames")
+    #     Returns:
+    #         Tuple[Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]], pd.DataFrame]: a tuple containing
+    #             an NCLS for each chromsome and a pandas Dataframe of all ranges.
+    #     """
+    #     ranges = pd.DataFrame({"seqnames": seqnames, "starts": starts, "ends": ends})
+    #     ranges["_index"] = range(0, ranges.shape[0])
+    #     groups = ranges.groupby("seqnames")
 
-        # generate NCLS indexes for each seqname
-        indexes = {}
-        for group, rows in groups:
-            indexes[group] = ncls.NCLS(
-                rows.starts.astype(int).values,
-                rows.ends.astype(int).values,
-                rows._index.astype(int).values,
-            )
+    #     # generate NCLS indexes for each seqname
+    #     indexes = {}
+    #     for group, rows in groups:
+    #         indexes[group] = ncls.NCLS(
+    #             rows.starts.astype(int).values,
+    #             rows.ends.astype(int).values,
+    #             rows._index.astype(int).values,
+    #         )
 
-        return indexes
+    #     return indexes
 
-    def _setIndex(self):
-        """Internal function to set or update NCLS index
-        """
-        self._index = GenomicRanges.buildIndex(
-            self.column("seqnames"), self.column("starts"), self.column("ends")
-        )
+    # def _setIndex(self):
+    #     """Internal function to set or update NCLS index
+    #     """
+    #     self._index = GenomicRanges.buildIndex(
+    #         self.column("seqnames"), self.column("starts"), self.column("ends")
+    #     )
 
     def _validate(self):
         """internal function to validate GenomicRanges
@@ -1409,7 +1409,11 @@ class GenomicRanges(BiocFrame):
                 (df_gr["seqnames"] == chrom) & (df_gr["strand"] == ustrand)
             ]
 
+            src_intvals_map = src_intervals["index"].to_list()
+
             if len(src_intervals) == 0:
+                for _, g in group.iterrows():
+                    result.append((chrom, ustrand, g["starts"], g["ends"], []))
                 continue
 
             subject_intvals = [
@@ -1433,9 +1437,7 @@ class GenomicRanges(BiocFrame):
             )
 
             for th in thits:
-                tindices = []
-                for i in th[2]:
-                    tindices.append(df_gr["index"][i])
+                tindices = [src_intvals_map[i - 1] for i in th[2]]
                 result.append((chrom, ustrand, th[0][0], th[0][1], tindices))
 
         if len(result) == 0:
@@ -1454,7 +1456,7 @@ class GenomicRanges(BiocFrame):
         minOverlap: int = 1,
         ignoreStrand: bool = False,
     ) -> List[int]:
-        """Count overlaps between subject (self) and a query genomic ranges.
+        """Count overlaps between `subject` (self) and a `query` genomic ranges.
 
         Args:
             query (GenomicRanges): query genomic ranges.
@@ -1479,6 +1481,9 @@ class GenomicRanges(BiocFrame):
             ignoreStrand=ignoreStrand,
         )
 
+        if result is None:
+            return None
+
         hits = result.column("hits")
         return [len(ht) for ht in hits]
 
@@ -1490,7 +1495,7 @@ class GenomicRanges(BiocFrame):
         minOverlap: int = 1,
         ignoreStrand: bool = False,
     ) -> Optional["GenomicRanges"]:
-        """Find overlaps between subject (self) and a query genomic ranges.
+        """Subset `subject` (self) with overlaps in `query` genomic ranges.
 
         Args:
             query (GenomicRanges): query genomic ranges.
@@ -1505,8 +1510,8 @@ class GenomicRanges(BiocFrame):
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Returns:
-            Optional["GenomicRanges"]: A GenomicRanges object with the same length as query, 
-                containing hits to overlapping indices.
+            Optional["GenomicRanges"]: A GenomicRanges object containings only subsets 
+                for overlaps in query.
         """
         result = self.findOverlaps(
             query=query,
@@ -1515,54 +1520,129 @@ class GenomicRanges(BiocFrame):
             minOverlap=minOverlap,
             ignoreStrand=ignoreStrand,
         )
+
+        if result is None:
+            return None
+
         hits = result.column("hits")
         hit_counts = [len(ht) for ht in hits]
         indices = [idx for idx in range(len(hit_counts)) if hit_counts[idx] > 0]
 
-        print(indices)
         return query[indices, :]
 
-    def nearest(
+    def _generic_search(
         self,
         query: "GenomicRanges",
-        select: str = None,
-        k: int = 1,
         ignoreStrand: bool = False,
-    ) -> List[Optional[List[int]]]:
-        """Find nearest positions that overlap with the each genomics interval in `x`. 
-            For each interval in `x`, returns list of indices that match.
-
-        Args:
-            x (GenomicRanges): input GenomicRanges to find nearest positions
-            k (int, optional): find k nearest positions. Defaults to 1.
+        stepstart: int = 3,
+        stepend: int = 3,
+    ) -> Optional["GenomicRanges"]:
+        """Internal function to search self and a query genomic ranges object
 
         Returns:
-            List[Optional[List[int]]]: List of possible hit indices for each interval in `x`
+            Optional["GenomicRanges"]: a new GenomicRanges object that has the same length as query
+                but contains `hits` to indices and `distance`.
         """
-        hits = []
-        for _, row in query:
-            grhits = self._index[row["seqnames"]].find_overlap(
-                row["starts"], row["ends"]
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "index": range(len(self.column("seqnames"))),
+            "strand": self.column("strand"),
+        }
+
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        subject_gr = pd.DataFrame(obj)
+        subject_gr = subject_gr.sort_values(by=["seqnames", "starts", "ends"])
+        # groups = df_gr.groupby(["seqnames"])
+
+        query_obj = {
+            "seqnames": query.column("seqnames"),
+            "starts": query.column("starts"),
+            "ends": query.column("ends"),
+            "strand": query.column("strand"),
+        }
+
+        if ignoreStrand:
+            query_obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        query_gr = pd.DataFrame(query_obj)
+        query_gr = query_gr.sort_values(by=["seqnames", "starts", "ends"])
+        query_groups = query_gr.groupby(["seqnames", "strand"])
+
+        result = []
+        for name, group in query_groups:
+            chrom = name[0]
+            ustrand = name[1]
+            src_intervals = subject_gr[
+                (subject_gr["seqnames"] == chrom) & (subject_gr["strand"] == ustrand)
+            ]
+
+            src_intvals_map = src_intervals["index"].to_list()
+
+            if len(src_intervals) == 0:
+                for _, g in group.iterrows():
+                    result.append((chrom, ustrand, g["starts"], g["ends"], [], None))
+                continue
+
+            subject_intvals = [
+                (x[0], x[1])
+                for x in zip(
+                    src_intervals["starts"].to_list(), src_intervals["ends"].to_list()
+                )
+            ]
+
+            query_intvals = [
+                (x[0], x[1])
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
+            ]
+
+            thits = find_nearest(
+                subject_intvals, query_intvals, stepstart=stepstart, stepend=stepend
             )
-            counter = 0
-            tmp_hits = []
-            for i in grhits:
-                if counter < k:
-                    tmp_hits.append(i[2])
-                else:
-                    break
-            hits.append(tmp_hits if len(tmp_hits) > 0 else None)
+            for th in thits:
+                tindices = [src_intvals_map[i - 1] for i in th[2]]
+                result.append((chrom, ustrand, th[0][0], th[0][1], tindices, th[3]))
 
-        return hits
+        if len(result) == 0:
+            return None
 
-    def precede(self, query: "GenomicRanges", select: str):
-        pass
+        columns = ["seqnames", "strand", "starts", "ends", "hits", "distance"]
+        final_df = pd.DataFrame.from_records(result, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
 
-    def follow(self, query: "GenomicRanges", select: str):
-        pass
+    def nearest(
+        self, query: "GenomicRanges", ignoreStrand: bool = False,
+    ) -> Optional["GenomicRanges"]:
+        """Find nearest positions that overlap with the each genomics interval in `query`.
+            Adds a new column to query called `hits`.
 
-    def distanceToNearest(self, query: "GenomicRanges"):
-        pass
+        Args:
+            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            ignoreStrand (bool, optional): ignore strand? Defaults to False.
+
+        Returns:
+            "GenomicRanges": List of possible hit indices for each interval in `query`
+        """
+        return self._generic_search(query=query, ignoreStrand=ignoreStrand)
+
+    def precede(
+        self, query: "GenomicRanges", ignoreStrand: bool = False,
+    ) -> Optional["GenomicRanges"]:
+        return self._generic_search(query=query, ignoreStrand=ignoreStrand, stepend=0)
+
+    def follow(
+        self, query: "GenomicRanges", ignoreStrand: bool = False,
+    ) -> Optional["GenomicRanges"]:
+        return self._generic_search(query=query, ignoreStrand=ignoreStrand, stepstart=0)
+
+    def distanceToNearest(
+        self, query: "GenomicRanges", ignoreStrand: bool = False,
+    ) -> Optional["GenomicRanges"]:
+        return self._generic_search(query=query, ignoreStrand=ignoreStrand)
 
     # compare and order methods
 

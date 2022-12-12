@@ -529,7 +529,6 @@ def find_overlaps(
                 indices = tmp_idx
 
         hits.append(((q[0], q[1]), idx + 1, indices))
-
     return hits
 
 
@@ -556,20 +555,38 @@ def find_nearest(
     hits = []
     for idx in range(len(query)):
         q = query[idx]
-        print("q", q)
 
         matches = 0
         counter = 0
+        indices = []
         while matches == 0:
-            indices = subject_revmap[
+            slices = subject_revmap[
                 q[0] - 1 - (counter * stepstart) : q[1] + (counter * stepend)
             ]
-            indices = list(set([item for sublist in indices for item in sublist]))
+
+            indices = list(set([item for sublist in slices for item in sublist]))
 
             matches = len(indices)
             counter += 1
 
-        print("matches", matches)
-        hits.append(((q[0], q[1]), idx + 1, matches, min(counter * stepstart, counter* stepend)))
+            if q[0] - 1 - (counter * stepstart) < 1 and q[1] + (
+                counter * stepend
+            ) > len(subject_revmap):
+                matches = -1
 
+            if stepend == 0 and q[0] - 1 - (counter * stepstart) < 1:
+                matches = -1
+
+            if stepstart == 0 and (counter * stepend) > len(subject_revmap):
+                matches = -1
+
+        hits.append(
+            (
+                (q[0], q[1]),
+                idx + 1,
+                indices,
+                min(counter * stepstart, counter * stepend),
+            )
+        )
+        
     return hits
