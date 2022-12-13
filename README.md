@@ -1,11 +1,11 @@
 # GenomicRanges
 
-Python equivalent to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html) to represent genomic locations and support genomic analysis. It uses efficient structures already available in the Python/Pandas/numpy eco-system adds an familiar interfaces.
+Container class to represent genomic locations and support genomic analysis in Python similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 
 ## Install
 
-Package is deployed to [PyPI](https://pypi.org/project/genomicranges/)
+Package is published to [PyPI](https://pypi.org/project/genomicranges/)
 
 ```shell
 pip install genomicranges
@@ -13,21 +13,34 @@ pip install genomicranges
 
 ## Usage
 
-The package provide several ways to represent genomic intervals
+The package provide several ways to represent genomic annotations and intervals.
 
-### Pandas DataFrame
+### Initialize a `GenomicRanges` object
+#### Pandas DataFrame
 
-A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into `GenomicRanges`.
+A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into `GenomicRanges`. ***Intervals are inclusive on both ends.***
 
-***Note: The DataFrame must contain columns `seqname`, `start` and `end` that represent chromosome and genomic coordinates.***
+***Note: The DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
 
 ```python
 from genomicranges import GenomicRanges
+import pandas as pd
 
-gr = GenomicRanges.fromPandas(<PANDAS DATA FRAME>)
+df = pd.DataFrame(
+    {
+        "seqnames": ["chr1", "chr2", "chr1", "chr3", "chr2"],
+        "starts": [101, 102, 103, 104, 109],
+        "ends": [112, 103, 128, 134, 111],
+        "strand": ["*", "-", "*", "+", "-"],
+        "score": range(0, 5),
+        "GC": [random() for _ in range(5)],
+    }
+)
+
+gr = GenomicRanges.fromPandas(df)
 ```
 
-### From UCSC or GTF file
+#### From UCSC or GTF file
 
 Methods are available to easily access UCSC genomes or load a genome annotation from GTF
 
@@ -41,7 +54,7 @@ gr = GenomicRanges.fromUCSC(genome="hg19")
 
 ### Interval Operations
 
-Currently supports [Nearest Genomic positions operation](https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesIntroduction.html#finding-the-nearest-genomic-position-in-granges-objects) in Bioconductor, but more coming soon.
+Currently supports most commonly used [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 ```python
 subject = GenomicRanges.fromUCSC(genome="hg38")
@@ -60,7 +73,7 @@ hits = subject.nearest(query)
 print(hits)
 ```
 
-For more use cases, checkout the [documentation](https://biocpy.github.io/GenomicRanges/)
+Checkout the [documentation](https://biocpy.github.io/GenomicRanges/) for more usecases.
 
 
 <!-- pyscaffold-notes -->

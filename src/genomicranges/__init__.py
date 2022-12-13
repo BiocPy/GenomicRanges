@@ -22,3 +22,4 @@ finally:
     del version, PackageNotFoundError
 
 from .GenomicRanges import GenomicRanges
+from .SeqInfo import SeqInfo

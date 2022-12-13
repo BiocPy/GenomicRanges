@@ -1,4 +1,4 @@
-from typing import Union
+from typing import MutableMapping
 import pandas as pd
 import logging
 from joblib import Parallel, delayed
@@ -10,14 +10,14 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def parse_all_attribute(row: str) -> dict:
+def parse_all_attribute(row: str) -> MutableMapping:
     """Extract all keys from the gtf/gff attribute string
 
     Args:
         row (str): a row from GTF
 
     Returns:
-        dict: map of keys and its values
+        MutableMapping: dict containing extracted keys and their values
     """
     attr = row["group"]
     infos = attr.split(";")
