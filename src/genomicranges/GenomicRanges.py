@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 import math
 import random
+import logging
 
 from biocframe import BiocFrame
 from .SeqInfo import SeqInfo
@@ -656,21 +657,21 @@ class GenomicRanges(BiocFrame):
             GenomicRanges: a new GenomicRanges object with trimmed positions
         """
 
-        # let just print a warning, shouldn't be an error
+        # let just show a warning, shouldn't be an error
         warning_msg = """
         Not enough information to trim,
         GenomicRanges object does not contain sequence information.
         """
         if not self.seqInfo:
-            print(warning_msg)
+            logging.warning(warning_msg)
             return self
 
         if self._metadata is None:
-            print(warning_msg)
+            logging.warning(warning_msg)
             return self
 
         if self._metadata["seqInfo"] is None:
-            print(warning_msg)
+            logging.warning(warning_msg)
             return self
 
         seqinfos = self.seqInfo
@@ -678,11 +679,11 @@ class GenomicRanges(BiocFrame):
         isCircular = seqinfos.isCircular
 
         if seqlengths is None:
-            print(warning_msg)
+            logging.warning(warning_msg)
             return self
 
         if isCircular is None:
-            print("considering all sequences as non-circular...")
+            logging.warning("considering all sequences as non-circular...")
 
         all_chrs = self.column("seqnames")
         all_ends = self.column("ends")
@@ -1838,9 +1839,6 @@ class GenomicRanges(BiocFrame):
             GenomicRanges: a new GenomicRanges object.
         """
         sample = random.sample(range(len(self)), k=k)
-
-        print("sample, ", sample)
-
         return self[sample, :]
 
     def invertStrand(self) -> "GenomicRanges":

@@ -623,14 +623,12 @@ def slide_intervals(
         end (int): end interval
         step (int): width or step of each interval
     """
-    print("chrom, strand, start, end", chrom, strand, start, end, width, step)
     bins = []
 
     if end - width < start:
         bins.append((chrom, strand, start, end))
     else:
         for i in range(start, end - width + 2, step):
-            print("iter, i", (chrom, strand, i, min(i + width - 1, end)))
             bins.append((chrom, strand, i, min(i + width - 1, end)))
 
     return bins
