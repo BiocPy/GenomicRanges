@@ -12,6 +12,7 @@ from typing import (
 from collections import OrderedDict
 import pandas as pd
 import numpy as np
+import math
 
 from biocframe import BiocFrame
 from .SeqInfo import SeqInfo
@@ -27,6 +28,8 @@ from .utils import (
     OVERLAP_QUERY_TYPES,
     find_overlaps,
     find_nearest,
+    split_intervals,
+    slide_intervals,
 )
 
 from .ucsc import access_gtf_ucsc
@@ -826,7 +829,7 @@ class GenomicRanges(BiocFrame):
             GenomicRanges: a new GenomicRanges object with the new intervals
         """
         return self.reduce(
-            withRevMap=withRevMap, minGapwidth=10000000, ignoreStrand=ignoreStrand
+            withRevMap=withRevMap, minGapwidth=100000000000, ignoreStrand=ignoreStrand
         )
 
     def _computeSeqLengths(self) -> MutableMapping[str, int]:
@@ -1661,14 +1664,113 @@ class GenomicRanges(BiocFrame):
         return rank
 
     # windowing functions
-    def tile(self, n: int, width: int):
-        pass
+    def tileByRange(
+        self, n: Optional[int] = None, width: Optional[int] = None
+    ) -> "GenomicRanges":
+        """Split each range into chunks by 
+                n (number of sub intervals) or width (intervals with equal width).
+            Either n or width must be provided but not both.
 
-    def slidingWindows(self, width: int, step: int = 1):
-        pass
+        Args:
+            n (Optional[int], optional): number of intervals to split into. Defaults to None.
+            width (Optional[int], optional): width of each interval. Defaults to None.
 
-    def tileGenome(self, n: int, tilewidth: int, cutLastTileInChrom: bool = False):
-        pass
+        Raises:
+            ValueError: when both n and width are both provided.
+
+        Returns: 
+            "GenomicRanges": a new GenomicRanges with the split ranges.
+        """
+        if n is not None and width is not None:
+            raise ValueError("either n or width must be provided but not both")
+
+        ranges = self.range()
+
+        all_intervals = []
+        for _, val in ranges:
+            twidth = None
+            if n is not None:
+                twidth = int((val["ends"] - val["starts"]) / n)
+            elif width is not None:
+                twidth = width
+
+            all_intervals.extend(
+                split_intervals(
+                    val["seqnames"], val["strand"], val["starts"], val["ends"], twidth
+                )
+            )
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
+
+    def tile(
+        self, n: Optional[int] = None, width: Optional[int] = None
+    ) -> "GenomicRanges":
+        """Split each interval by 
+                n (number of sub intervals) or width (intervals with equal width).
+            Either n or width must be provided but not both.
+
+        Args:
+            n (Optional[int], optional): number of intervals to split into. Defaults to None.
+            width (Optional[int], optional): width of each interval. Defaults to None.
+
+        Raises:
+            ValueError: when both n and width are both provided.
+
+        Returns: 
+            "GenomicRanges": a new GenomicRanges with the split ranges.
+        """
+        if n is not None and width is not None:
+            raise ValueError("either n or width must be provided but not both")
+
+        all_intervals = []
+        for _, val in self:
+            twidth = None
+            if n is not None:
+                twidth = math.ceil((val["ends"] - val["starts"] + 1) / (n))
+            elif width is not None:
+                twidth = width
+
+            all_intervals.extend(
+                split_intervals(
+                    val["seqnames"], val["strand"], val["starts"], val["ends"], twidth
+                )
+            )
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
+
+    def slidingWindows(self, width: int, step: int = 1) -> "GenomicRanges":
+        """slide along each interval by width (intervals with equal width) and step.
+
+        Args:
+            width (Optional[int], optional): width of each interval. Defaults to None.
+            step (int, optional), step interval, Defaults to 1.
+
+        Returns: 
+            "GenomicRanges": a new GenomicRanges with the sliding ranges.
+        """
+        all_intervals = []
+        for _, val in self:
+            all_intervals.extend(
+                slide_intervals(
+                    val["seqnames"],
+                    val["strand"],
+                    val["starts"],
+                    val["ends"],
+                    width=width,
+                    step=step,
+                )
+            )
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
 
     # summary methods
     def table(self, colName: Optional[str] = None):
@@ -1689,6 +1791,41 @@ class GenomicRanges(BiocFrame):
 
     def combine(self, **kwargs) -> "GenomicRanges":
         pass
+
+    @staticmethod
+    def tileGenome(
+        seqlengths: MutableMapping, n: Optional[int] = None, width: Optional[int] = None
+    ) -> "GenomicRanges":
+        """Create new genomic regions by partitioning a specified genome.
+
+        Args:
+            seqlengths (MutableMapping): sequence lengths of each chromosome.
+            n (Optional[int], optional): number of intervals to split into. Defaults to None.
+            width (Optional[int], optional): width of each interval. Defaults to None.
+
+        Raises:
+            ValueError: either n or width must be provided but not both
+
+        Returns:
+            GenomicRanges: a new GenomicRanges with the tile regions.
+        """
+        if n is not None and width is not None:
+            raise ValueError("either n or width must be provided but not both")
+
+        all_intervals = []
+        for key, val in seqlengths.items():
+            twidth = None
+            if n is not None:
+                twidth = math.ceil(val / n)
+            elif width is not None:
+                twidth = width
+
+            all_intervals.extend(split_intervals(key, "*", 1, val, twidth))
+
+        columns = ["seqnames", "strand", "starts", "ends"]
+        final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
+        return GenomicRanges.fromPandas(final_df)
 
     @staticmethod
     def fromPandas(data: pd.DataFrame) -> "GenomicRanges":
