@@ -1,101 +1,248 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial &mdash; GenomicRanges 0.1.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>Tutorial - GenomicRanges 0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="License" href="license.html" />
-    <link rel="prev" title="GenomicRanges" href="readme.html" /> 
-</head>
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> GenomicRanges
-          </a>
-              <div class="version">
-                0.1.1
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">GenomicRanges 0.2 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">GenomicRanges 0.2 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#pandas-dataframe">Pandas DataFrame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#from-ucsc-or-gtf-file">From UCSC or GTF file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#interval-operations">Interval Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#slice-a-genomicranges">Slice a GenomicRanges</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#initialize-a-genomicranges-object">Initialize a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#get-and-set-methods">Get and Set methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#slice-operations">Slice operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#iterate-over-rows">Iterate over rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#intra-range-transformations">Intra-range transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#inter-range-methods">Inter-range methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#set-operations-on-genomic-ranges">Set operations on genomic ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#compute-over-bins">Compute over bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#overlap-based-methods">Overlap based methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#search-operations">Search operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#concatenate-genomicranges-objects-by-rows">Concatenate GenomicRanges objects by rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#misc-operations">Misc operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Module Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/genomicranges.html">genomicranges package</a></li>
+</ul>
+</li>
 </ul>
 
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">GenomicRanges</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Tutorial</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/tutorial.md.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
-<p>The package provide several ways to represent genomic intervals</p>
-<section id="pandas-dataframe">
-<h2>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Permalink to this heading"></a></h2>
-<p>A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>.</p>
-<p><em><strong>Note: The DataFrame must contain columns <code class="docutils literal notranslate"><span class="pre">seqname</span></code>, <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> that represent chromosome and genomic coordinates.</strong></em></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+</div>
 
-<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PANDAS</span> <span class="n">DATA</span> <span class="n">FRAME</span><span class="o">&gt;</span><span class="p">)</span>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h1>
+<p>The package provide classes to represent genomic locations and methods to perform interval based operations. <em><strong>Intervals are inclusive on both ends.</strong></em></p>
+<p>For detailed description of these methods, checkout <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">GenomicRanges documentation</a></p>
+</section>
+<section id="initialize-a-genomicranges-object">
+<h1>Initialize a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object<a class="headerlink" href="#initialize-a-genomicranges-object" title="Permalink to this heading">#</a></h1>
+<section id="pandas-dataframe">
+<h2>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Permalink to this heading">#</a></h2>
+<p>A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert a DataFrame into <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>.</p>
+<p><em><strong>Note: The DataFrame must contain columns <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>, <code class="docutils literal notranslate"><span class="pre">starts</span></code> and <code class="docutils literal notranslate"><span class="pre">ends</span></code> to represent genomic coordinates.</strong></em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="from-ucsc-or-gtf-file">
-<h2>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Permalink to this heading"></a></h2>
-<p>Methods are available to easily access UCSC genomes or load a genome annotation from GTF</p>
+<h2>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Permalink to this heading">#</a></h2>
+<p>Methods are available to access UCSC genomes or load a genome annotation from GTF</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 
 <span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromGTF</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
@@ -104,67 +251,451 @@
 </pre></div>
 </div>
 </section>
-<section id="interval-operations">
-<h2>Interval Operations<a class="headerlink" href="#interval-operations" title="Permalink to this heading"></a></h2>
-<p>Currently supports <a class="reference external" href="https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesIntroduction.html#finding-the-nearest-genomic-position-in-granges-objects">Nearest Genomic positions operation</a> in Bioconductor, but more coming soon.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromUCSC</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg38&quot;</span><span class="p">)</span>
+<section id="set-sequence-information">
+<h2>Set sequence information<a class="headerlink" href="#set-sequence-information" title="Permalink to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">seq_obj</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,],</span>
+    <span class="s2">&quot;seqlengths&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">103</span><span class="p">),</span>
+    <span class="s2">&quot;isCircular&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span>
+    <span class="s2">&quot;genome&quot;</span><span class="p">:</span> <span class="s2">&quot;hg19&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
-<span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span>
+<span class="n">seq</span> <span class="o">=</span> <span class="n">SeqInfo</span><span class="p">(</span><span class="n">seq_obj</span><span class="p">)</span>
+
+<span class="n">gr</span><span class="o">.</span><span class="n">seqInfo</span> <span class="o">=</span> <span class="n">seq</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="get-and-set-methods">
+<h1>Get and Set methods<a class="headerlink" href="#get-and-set-methods" title="Permalink to this heading">#</a></h1>
+<p>Getters are available to access various properties.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># access sequence names</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">seqnames</span>
+
+<span class="c1"># access all start positions</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">starts</span>
+
+<span class="c1"># access annotation information if available</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">seqInfo</span>
+
+<span class="c1"># compute and return the widths of each region</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">width</span>
+
+<span class="c1"># score if available</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">score</span>
+
+<span class="c1"># access metadata columns, everything other than genomic locations</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="setters">
+<h2>Setters<a class="headerlink" href="#setters" title="Permalink to this heading">#</a></h2>
+<p>Set properties in class</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">NEW</span> <span class="n">ARRAY</span> <span class="n">OF</span> <span class="n">VALUES</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="access-any-column">
+<h2>Access any column<a class="headerlink" href="#access-any-column" title="Permalink to this heading">#</a></h2>
+<p>Aside from the default getters, <code class="docutils literal notranslate"><span class="pre">column</span></code> methods provides a way to quicky access any column in the object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
+
+<span class="n">gr</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="access-ranges">
+<h2>Access ranges<a class="headerlink" href="#access-ranges" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ranges()</span></code> is a generic method to access only the genomic locations as dictionary, pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> or something else. you can use any container representation based on a dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># default to dict</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">ranges</span><span class="p">()</span>
+
+<span class="c1"># as pandas DataFrame</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">ranges</span><span class="p">(</span><span class="n">returnType</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">granges()</span></code> method returns a new <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object of just the genomic locations</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">granges</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="slice-operations">
+<h1>Slice operations<a class="headerlink" href="#slice-operations" title="Permalink to this heading">#</a></h1>
+<p>You can slice a <code class="docutils literal notranslate"><span class="pre">GenomicRange</span></code> object using the subset (<code class="docutils literal notranslate"><span class="pre">[</span></code>) operator.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># slice the first 5 rows</span>
+<span class="n">gr</span><span class="p">[:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="c1"># slice 1,3 and 5th rows</span>
+<span class="n">gr</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">:]</span>
+</pre></div>
+</div>
+</section>
+<section id="iterate-over-rows">
+<h1>Iterate over rows<a class="headerlink" href="#iterate-over-rows" title="Permalink to this heading">#</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gr</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="intra-range-transformations">
+<h1>Intra-range transformations<a class="headerlink" href="#intra-range-transformations" title="Permalink to this heading">#</a></h1>
+<p>For detailed description of these methods, checkout <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">GenomicRanges documentation</a></p>
+<ul class="simple">
+<li><p>flank: flank the intervals based on start or end or both.</p></li>
+<li><p>shift: shifts all the ranges specified by the shift argument.</p></li>
+<li><p>resize: resizes the ranges to the specified width where either the start, end, or center is used as an anchor</p></li>
+<li><p>narrow: narrows the ranges</p></li>
+<li><p>promoters: promoters generates promoter ranges for each range relative to the TSS.The promoter range is expanded around the TSS according to the upstream and downstream parameters.</p></li>
+<li><p>restrict: restricts the ranges to the interval(s) specified by the start and end arguments</p></li>
+<li><p>trim: trims out-of-bound ranges located on non-circular sequences whose length is not NA.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># flank</span>
+<span class="n">flanked_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">flank</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">both</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># shift</span>
+<span class="n">shifted_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># resize</span>
+<span class="n">resized_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fix</span><span class="o">=</span><span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># narrow</span>
+<span class="n">narrow_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># promoters</span>
+<span class="n">prom_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">promoters</span><span class="p">()</span>
+
+<span class="c1"># restrict</span>
+<span class="n">restrict_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">restrict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">114</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">keepAllRanges</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># trim</span>
+<span class="n">trimmed_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">trim</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="inter-range-methods">
+<h1>Inter-range methods<a class="headerlink" href="#inter-range-methods" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>range: returns a new GenomicRanges object containing range bounds for each distinct (seqname, strand) pairing.</p></li>
+<li><p>reduce: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.</p></li>
+<li><p>gaps: Finds gaps in the GenomicRanges object for each distinct (seqname, strand) pairing</p></li>
+<li><p>disjoin: Finds disjoint intervals across all locations for each distinct (seqname, strand) pairing.</p></li>
+<li><p>isDisjoint: Is the object contain disjoint intervals for each distinct (seqname, strand) pairing?</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># range</span>
+<span class="n">range_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">range</span><span class="p">()</span>
+
+<span class="c1"># reduce</span>
+<span class="n">reduced_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">minGapwidth</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">withRevMap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># gaps</span>
+<span class="n">gapped_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">103</span><span class="p">)</span> <span class="c1"># OR </span>
+<span class="n">gapped_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">})</span>
+
+<span class="c1"># disjoin</span>
+<span class="n">disjoin_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">disjoin</span><span class="p">()</span>
+
+<span class="c1"># isDisjoint</span>
+<span class="n">isdisjoin</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">isDisjoint</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="set-operations-on-genomic-ranges">
+<h1>Set operations on genomic ranges<a class="headerlink" href="#set-operations-on-genomic-ranges" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>union: compute union of intervals across object</p></li>
+<li><p>intersect: compute intersection or finds overlapping intervals</p></li>
+<li><p>setdiff: compute set difference</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df_src</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">g_src</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df_src</span><span class="p">)</span>
+
+<span class="n">df_tgt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">111</span><span class="p">),</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="mi">131</span><span class="p">),</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">g_tgt</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df_tgt</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># union</span>
+<span class="n">union_gr</span> <span class="o">=</span> <span class="n">g_src</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">g_tgt</span><span class="p">)</span>
+
+<span class="n">int_gr</span> <span class="o">=</span> <span class="n">g_src</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">g_tgt</span><span class="p">)</span>
+
+<span class="n">diff_gr</span> <span class="o">=</span> <span class="n">g_src</span><span class="o">.</span><span class="n">setdiff</span><span class="p">(</span><span class="n">g_tgt</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-over-bins">
+<h1>Compute over bins<a class="headerlink" href="#compute-over-bins" title="Permalink to this heading">#</a></h1>
+<section id="summary-stats-for-column">
+<h2>Summary stats for column<a class="headerlink" href="#summary-stats-for-column" title="Permalink to this heading">#</a></h2>
+<p>one can use Pandas for this</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="binnedaverage">
+<h2><code class="docutils literal notranslate"><span class="pre">binnedAverage</span></code><a class="headerlink" href="#binnedaverage" title="Permalink to this heading">#</a></h2>
+<p>compute binned average for different positions</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">109</span><span class="p">],})</span>
+
+<span class="n">bins_gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
+
+<span class="n">subject</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">111</span><span class="p">),</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="mi">131</span><span class="p">),</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">subject_gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+
+
+<span class="c1"># Compute binned average</span>
+<span class="n">binned_avg_gr</span> <span class="o">=</span> <span class="n">g_tgt</span><span class="o">.</span><span class="n">binnedAverage</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="n">bins_gr</span><span class="p">,</span> <span class="n">scorename</span><span class="o">=</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;binned_score&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>now you might wonder how can I generate these bin?</p>
+</section>
+<section id="generate-tiles-or-bins-from-genomicranges">
+<h2>Generate tiles or bins from <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#generate-tiles-or-bins-from-genomicranges" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tile</span></code>: splits each genomic region by n (number of regions) or by width (maximum width of each tile)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slidingWindows</span></code>: Generates sliding windows within each range, by width and step.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># tiles</span>
+<span class="n">tiles</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># slidingwindows</span>
+<span class="n">tiles</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">slidingWindows</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-tiles-from-genome">
+<h2>Generate tiles from Genome<a class="headerlink" href="#generate-tiles-from-genome" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">tileGenome</span></code> returns a set of genomic regions that form a partitioning of the specified genome.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">seqlengths</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+
+<span class="n">tiles</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">tileGenome</span><span class="p">(</span><span class="n">seqlengths</span><span class="o">=</span><span class="n">seqlengths</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="coverage">
+<h2>Coverage<a class="headerlink" href="#coverage" title="Permalink to this heading">#</a></h2>
+<p>computes number of ranges that overlap for each position in the range.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res_vector</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="overlap-based-methods">
+<h1>Overlap based methods<a class="headerlink" href="#overlap-based-methods" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>findOverlaps: find overlaps between two GenomicRanges object</p></li>
+<li><p>countOverlaps: count overlaps between two GenomicRanges object</p></li>
+<li><p>subsetByOverlaps: subset a GenomicRanges object if it overlaps with the ranges in the query</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df_subject</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">subject</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df_subject</span><span class="p">)</span>
+
+<span class="n">df_query</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">]}</span>
+<span class="p">)</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df_query</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># findOverlaps</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">findOverlaps</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">queryType</span><span class="o">=</span><span class="s2">&quot;within&quot;</span><span class="p">)</span>
+
+<span class="c1"># countOverlaps</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">countOverlaps</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+<span class="c1"># subsetByOverlaps</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">subsetByOverlaps</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="search-operations">
+<h1>Search operations<a class="headerlink" href="#search-operations" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>nearest: Performs nearest neighbor search along any direction (both upstream and downstream)</p></li>
+<li><p>follow: Performs nearest neighbor search only along downstream</p></li>
+<li><p>precede: Performs nearest neighbor search only along upstream</p></li>
+<li><p>distanceToNearest: calculate distance to nearest location</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">find_regions</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span>
     <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="p">{</span>
-            <span class="s2">&quot;seqname&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">119</span><span class="p">],</span>
-            <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">103</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">],</span>
+            <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">1190</span><span class="p">],</span>
+            <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">203</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">1200</span><span class="p">],</span>
         <span class="p">}</span>
     <span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">hits</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span>
+<span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">find_regions</span><span class="p">)</span>
+
+<span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span><span class="n">test_gr</span><span class="p">)</span>
+
+<span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span><span class="n">test_gr</span><span class="p">)</span>
+
+<span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">distanceToNearest</span><span class="p">(</span><span class="n">test_gr</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="slice-a-genomicranges">
-<h2>Slice a GenomicRanges<a class="headerlink" href="#slice-a-genomicranges" title="Permalink to this heading"></a></h2>
-<p>You can slice a <code class="docutils literal notranslate"><span class="pre">GenomicRange</span></code> object using the subset (<code class="docutils literal notranslate"><span class="pre">[</span></code>) operator</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromUCSC</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg38&quot;</span><span class="p">)</span>
+<section id="comparison-rank-and-order-operations">
+<h1>Comparison, rank and order operations<a class="headerlink" href="#comparison-rank-and-order-operations" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>duplicated: if any of the ranges are duplicated</p></li>
+<li><p>match: Element wise comparison to find exact match intervals.</p></li>
+<li><p>isUnsorted: if the object is not sorted</p></li>
+<li><p>order: Get the order of indices for sorting.</p></li>
+<li><p>sort: Sort the GenomicRanges object.</p></li>
+<li><p>rank: for each interval identifies its position is a sorted order</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># duplicated</span>
+<span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span>
 
-<span class="c1"># first thousand features of the object</span>
-<span class="n">subset</span> <span class="o">=</span> <span class="n">subject</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">1000</span><span class="p">]</span>
+<span class="c1"># match</span>
+<span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:])</span>
+
+<span class="c1"># is unsorted?</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">isUnsorted</span><span class="p">()</span>
+
+<span class="c1"># order</span>
+<span class="n">order</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">order</span><span class="p">()</span>
+
+<span class="c1"># sort</span>
+<span class="n">sorted_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+<span class="c1"># rank</span>
+<span class="n">rank</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
+<section id="concatenate-genomicranges-objects-by-rows">
+<h1>Concatenate GenomicRanges objects by rows<a class="headerlink" href="#concatenate-genomicranges-objects-by-rows" title="Permalink to this heading">#</a></h1>
+<p>concatenate any number of GenomicRanges objects</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concat_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">,</span> <span class="n">gr3</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="misc-operations">
+<h1>Misc operations<a class="headerlink" href="#misc-operations" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>invertStrand: flip the strand for each interval</p></li>
+<li><p>sample: randomly choose k intervals</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># invert strand</span>
+<span class="n">inv_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">invertStrand</span><span class="p">()</span>
+
+<span class="c1"># sample</span>
+<span class="n">samp_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="readme.html" class="btn btn-neutral float-left" title="GenomicRanges" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, jkanche.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+        </article>
       </div>
-    </section>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="license.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">License</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="readme.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">GenomicRanges</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, jkanche
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
 </html>
