@@ -1991,3 +1991,4 @@ class GenomicRanges(BiocFrame):
         data = parse_gtf(path, compressed=compressed)
 
         return GenomicRanges.fromPandas(data)
+
