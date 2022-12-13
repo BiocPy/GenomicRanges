@@ -13,6 +13,7 @@ from collections import OrderedDict
 import pandas as pd
 import numpy as np
 import math
+import random
 
 from biocframe import BiocFrame
 from .SeqInfo import SeqInfo
@@ -250,6 +251,60 @@ class GenomicRanges(BiocFrame):
 
         if self._metadata and "seqInfo" in self._metadata:
             return self._metadata["seqInfo"].seqlengths
+
+        return None
+
+    @property
+    def score(self) -> Optional[Sequence[Union[int, float]]]:
+        """Get the score (if available).
+
+        Returns:
+             Optional[Sequence[Union[int, float]]]: score
+        """
+
+        if "score" in self._columnNames:
+            return self.data["score"]
+
+        return None
+
+    @score.setter
+    def score(self, score: Sequence[Union[int, float]]):
+        """Get the score (if available).
+
+        Args:
+            score (Sequence[Union[int, float]]): score values to set.
+
+        Returns:
+             Optional[Sequence[Union[int, float]]]: score
+        """
+
+        self["score"] = score
+        return self
+
+    @property
+    def isCircular(self) -> Optional[MutableMapping[str, bool]]:
+        """are the sequences circular?
+
+        Returns:
+            Optional[MutableMapping[str, bool]]: a dict for each chromosome 
+                and if its circular or not.
+        """
+
+        if self._metadata and "seqInfo" in self._metadata:
+            return self._metadata["seqInfo"].isCircular
+
+        return None
+
+    @property
+    def genome(self) -> Optional[str]:
+        """Genome information.
+
+        Returns:
+            Optional[str]: the genome
+        """
+
+        if self._metadata and "seqInfo" in self._metadata:
+            return self._metadata["seqInfo"].genome
 
         return None
 
@@ -1772,25 +1827,80 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    # summary methods
-    def table(self, colName: Optional[str] = None):
-        pass
-
-    def sum(self, colName: str):
-        pass
-
-    def summary(self, colName: str):
-        pass
-
+    # misc methods
     def sample(self, k: int = 5) -> "GenomicRanges":
-        pass
+        """Randomly sample `k` intervals from the Object.
 
-    # misc
+        Args:
+            k (int, optional): number of intervals to sample. Defaults to 5.
+
+        Returns:
+            GenomicRanges: a new GenomicRanges object.
+        """
+        sample = random.sample(range(len(self)), k=k)
+
+        print("sample, ", sample)
+
+        return self[sample, :]
+
     def invertStrand(self) -> "GenomicRanges":
-        pass
+        """Invert strand information for each interval.
 
-    def combine(self, **kwargs) -> "GenomicRanges":
-        pass
+        Returns:
+            GenomicRanges: new GenomicRanges object.
+        """
+        convertor = {"+": "-", "-": "+", "*": "*"}
+        inverts = [convertor[idx] for idx in self.column("strand")]
+
+        new_data = self._data.copy()
+        new_data["strand"] = inverts
+
+        return GenomicRanges(
+            new_data,
+            numberOfRows=self._numberOfRows,
+            rowNames=self._rowNames,
+            columnNames=self._columnNames,
+            metadata=self._metadata,
+        )
+
+    def concat(self, *granges:"GenomicRanges") -> "GenomicRanges":
+        """Concatenate GenomicRanges objects.
+
+        Args:
+            granges ("GenomicRanges"): "GenomicRanges" to concatenate. 
+
+        Raises:
+            TypeError: if any of the provided objects are not "GenomicRanges".
+
+        Returns:
+            GenomicRanges: new concatenated "GenomicRanges" object.
+        """
+        all_granges = [isinstance(gr, GenomicRanges) for gr in granges]
+
+        if not all(all_granges):
+            raise TypeError("all provided objects are not GenomicRanges objects")
+
+        all_columns = [gr.columnNames for gr in granges]
+        all_columns.append(self.columnNames)
+        all_unique_columns = list(set([item for sublist in all_columns for item in sublist]))
+
+        new_data = OrderedDict()
+        for col in all_unique_columns:
+            if col not in new_data:
+                new_data[col] = []
+
+            for gr in granges:
+                if col in gr.columnNames:
+                    new_data[col].extend(gr.column(col))
+                else:
+                    new_data[col].extend([None] * len(gr))
+
+            if col in self.columnNames:
+                    new_data[col].extend(self.column(col))
+            else:
+                new_data[col].extend([None] * len(self))
+
+        return GenomicRanges(new_data, columnNames=all_unique_columns)
 
     @staticmethod
     def tileGenome(
