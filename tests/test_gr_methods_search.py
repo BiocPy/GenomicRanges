@@ -50,6 +50,7 @@ def test_nearest():
     assert query_hits is not None
     assert query_hits.column("hits") == [[4], [3], []]
 
+
 def test_precede():
     assert gr is not None
 
@@ -69,6 +70,7 @@ def test_precede():
 
     assert query_hits is not None
     assert query_hits.column("hits") == [[4], [3], []]
+
 
 def test_follow():
     assert gr is not None

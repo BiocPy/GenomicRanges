@@ -38,6 +38,7 @@ def test_sample():
     assert result is not None
     assert result.shape[0] == 3
 
+
 def test_concat():
     df_tgt = pd.DataFrame(
         {

@@ -96,4 +96,3 @@ def test_rank():
 
     assert result is not None
     assert result == [2, 4, 5, 3, 0, 1, 6, 7, 8, 9]
-

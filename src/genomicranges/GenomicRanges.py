@@ -1863,7 +1863,7 @@ class GenomicRanges(BiocFrame):
             metadata=self._metadata,
         )
 
-    def concat(self, *granges:"GenomicRanges") -> "GenomicRanges":
+    def concat(self, *granges: "GenomicRanges") -> "GenomicRanges":
         """Concatenate GenomicRanges objects.
 
         Args:
@@ -1882,7 +1882,9 @@ class GenomicRanges(BiocFrame):
 
         all_columns = [gr.columnNames for gr in granges]
         all_columns.append(self.columnNames)
-        all_unique_columns = list(set([item for sublist in all_columns for item in sublist]))
+        all_unique_columns = list(
+            set([item for sublist in all_columns for item in sublist])
+        )
 
         new_data = OrderedDict()
         for col in all_unique_columns:
@@ -1896,7 +1898,7 @@ class GenomicRanges(BiocFrame):
                     new_data[col].extend([None] * len(gr))
 
             if col in self.columnNames:
-                    new_data[col].extend(self.column(col))
+                new_data[col].extend(self.column(col))
             else:
                 new_data[col].extend([None] * len(self))
 

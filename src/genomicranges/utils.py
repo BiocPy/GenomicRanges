@@ -588,11 +588,11 @@ def find_nearest(
                 min(counter * stepstart, counter * stepend),
             )
         )
-        
+
     return hits
 
 
-def split_intervals(chrom: str, strand:str, start:int, end:int, step: int):
+def split_intervals(chrom: str, strand: str, start: int, end: int, step: int):
     """split an interval range into equal bins. pretty much a fancy range function.
         realizes the range.
 
@@ -604,12 +604,15 @@ def split_intervals(chrom: str, strand:str, start:int, end:int, step: int):
         step (int): width or step of each interval
     """
     bins = []
-    for i in range(start, end+1, step):
-        bins.append((chrom, strand, i, min(i+step-1, end)))
+    for i in range(start, end + 1, step):
+        bins.append((chrom, strand, i, min(i + step - 1, end)))
 
     return bins
 
-def slide_intervals(chrom: str, strand:str, start:int, end:int, width:int, step: int):
+
+def slide_intervals(
+    chrom: str, strand: str, start: int, end: int, width: int, step: int
+):
     """Sliding intervals. pretty much a fancy range function.
         realizes the range.
 
@@ -623,11 +626,11 @@ def slide_intervals(chrom: str, strand:str, start:int, end:int, width:int, step:
     print("chrom, strand, start, end", chrom, strand, start, end, width, step)
     bins = []
 
-    if end-width < start:
+    if end - width < start:
         bins.append((chrom, strand, start, end))
     else:
-        for i in range(start, end-width + 2, step):
-            print("iter, i", (chrom, strand, i, min(i+width-1, end)))
-            bins.append((chrom, strand, i, min(i+width-1, end)))
+        for i in range(start, end - width + 2, step):
+            print("iter, i", (chrom, strand, i, min(i + width - 1, end)))
+            bins.append((chrom, strand, i, min(i + width - 1, end)))
 
     return bins
