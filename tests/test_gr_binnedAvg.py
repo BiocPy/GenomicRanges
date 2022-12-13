@@ -43,4 +43,4 @@ def test_binned_average():
     res = g_tgt.binnedAverage(bins=g_src, scorename="score", outname="binned_score")
 
     assert res is not None
-    assert res.column("binned_score") == [8.0]
+    assert res.column("binned_score") == [2.6]

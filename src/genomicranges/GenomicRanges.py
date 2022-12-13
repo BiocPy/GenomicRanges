@@ -777,19 +777,7 @@ class GenomicRanges(BiocFrame):
             GenomicRanges: a new GenomicRanges object with reduced intervals
         """
 
-        obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "strand": self.column("strand"),
-            "index": range(len(self.column("seqnames"))),
-        }
-
-        if ignoreStrand:
-            obj["strand"] = ["*"] * len(self.column("seqnames"))
-
-        df_gr = pd.DataFrame(obj)
-        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+        df_gr = self._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
 
         df_gr["gapwidths"] = self._calcGapwidths(ignoreStrand=ignoreStrand)
         df_gr["gapwidth_flag"] = [
@@ -878,16 +866,7 @@ class GenomicRanges(BiocFrame):
         if end is None:
             end = seqlengths
 
-        obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "strand": self.column("strand"),
-            "index": range(len(self.column("seqnames"))),
-        }
-
-        df_gr = pd.DataFrame(obj)
-        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+        df_gr = self._generic_pandas_ranges(sort=True)
         groups = df_gr.groupby(["seqnames", "strand"])
 
         gap_intervals = []
@@ -948,19 +927,7 @@ class GenomicRanges(BiocFrame):
             Optional["GenomicRanges"]: A new GenomicRanges containing disjoint ranges across chromosome and strand
         """
 
-        obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "strand": self.column("strand"),
-            "index": range(len(self.column("seqnames"))),
-        }
-
-        if ignoreStrand:
-            obj["strand"] = ["*"] * len(self.column("seqnames"))
-
-        df_gr = pd.DataFrame(obj)
-        df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
+        df_gr = self._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
         groups = df_gr.groupby(["seqnames", "strand"])
 
         disjoin_intervals = []
@@ -1018,25 +985,8 @@ class GenomicRanges(BiocFrame):
             GenomicRanges: a new GenomicRanges object with 
                 the intervals
         """
-        a_obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "strand": self.column("strand"),
-            "index": range(len(self.column("seqnames"))),
-        }
-
-        a_df_gr = pd.DataFrame(a_obj)
-
-        b_obj = {
-            "seqnames": other.column("seqnames"),
-            "starts": other.column("starts"),
-            "ends": other.column("ends"),
-            "strand": other.column("strand"),
-            "index": range(len(other.column("seqnames"))),
-        }
-
-        b_df_gr = pd.DataFrame(b_obj)
+        a_df_gr = self._generic_pandas_ranges(sort=False)
+        b_df_gr = other._generic_pandas_ranges(sort=False)
 
         df_gr = pd.concat([a_df_gr, b_df_gr])
         df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
@@ -1062,7 +1012,7 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    def intersect(self, x: "GenomicRanges") -> Optional["GenomicRanges"]:
+    def intersect(self, other: "GenomicRanges") -> Optional["GenomicRanges"]:
         """Find intersection of genomic intervals with `other`
 
         Args:
@@ -1072,25 +1022,8 @@ class GenomicRanges(BiocFrame):
             Optional["GenomicRanges"]: a new GenomicRanges object with 
                 the intervals
         """
-        a_obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "strand": self.column("strand"),
-            "index": range(len(self.column("seqnames"))),
-        }
-
-        a_df_gr = pd.DataFrame(a_obj)
-
-        b_obj = {
-            "seqnames": x.column("seqnames"),
-            "starts": x.column("starts"),
-            "ends": x.column("ends"),
-            "strand": x.column("strand"),
-            "index": range(len(x.column("seqnames"))),
-        }
-
-        b_df_gr = pd.DataFrame(b_obj)
+        a_df_gr = self._generic_pandas_ranges(sort=False)
+        b_df_gr = other._generic_pandas_ranges(sort=False)
 
         df_gr = pd.concat([a_df_gr, b_df_gr])
         df_gr = df_gr.sort_values(by=["seqnames", "strand", "starts", "ends"])
@@ -1119,7 +1052,7 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return GenomicRanges.fromPandas(final_df)
 
-    def setdiff(self, x: "GenomicRanges") -> Optional["GenomicRanges"]:
+    def setdiff(self, other: "GenomicRanges") -> Optional["GenomicRanges"]:
         """Find set difference of genomic intervals with `other`
 
         Args:
@@ -1129,25 +1062,8 @@ class GenomicRanges(BiocFrame):
             Optional["GenomicRanges"]: a new GenomicRanges object with 
                 the diff intervals
         """
-        a_obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "strand": self.column("strand"),
-            "index": range(len(self.column("seqnames"))),
-        }
-
-        a_df_gr = pd.DataFrame(a_obj)
-
-        b_obj = {
-            "seqnames": x.column("seqnames"),
-            "starts": x.column("starts"),
-            "ends": x.column("ends"),
-            "strand": x.column("strand"),
-            "index": range(len(x.column("seqnames"))),
-        }
-
-        b_df_gr = pd.DataFrame(b_obj)
+        a_df_gr = self._generic_pandas_ranges(sort=False)
+        b_df_gr = other._generic_pandas_ranges(sort=False)
 
         only_seqnames = pd.concat(
             [a_df_gr[["seqnames", "strand"]], b_df_gr[["seqnames", "strand"]]]
@@ -1224,36 +1140,21 @@ class GenomicRanges(BiocFrame):
                 f"{scorename} is not a valid column, its neither ints not floats"
             )
 
-        obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "index": range(len(self.column("seqnames"))),
-            "values": values,
-        }
+        df_gr = self._generic_pandas_ranges(sort=True)
+        df_gr["values"] = values
 
-        df_gr = pd.DataFrame(obj)
-        df_gr = df_gr.sort_values(by=["seqnames", "starts", "ends"])
-        # groups = df_gr.groupby(["seqnames"])
-
-        tagt_obj = {
-            "seqnames": bins.column("seqnames"),
-            "starts": bins.column("starts"),
-            "ends": bins.column("ends"),
-        }
-
-        tgt_gr = pd.DataFrame(tagt_obj)
-        tgt_gr = tgt_gr.sort_values(by=["seqnames", "starts", "ends"])
+        tgt_gr = bins._generic_pandas_ranges(ignoreStrand=True, sort=True)
         tgt_groups = tgt_gr.groupby(["seqnames"])
 
         result = []
-
         cache_intvals = {}
 
         for name, group in tgt_groups:
             src_intervals = df_gr[df_gr["seqnames"] == name]
 
             if len(src_intervals) == 0:
+                for _, g in group.iterrows():
+                    result.append((name, g["starts"], g["ends"], "*", None))
                 continue
 
             if name not in cache_intvals:
@@ -1303,15 +1204,7 @@ class GenomicRanges(BiocFrame):
         Returns:
             MutableMapping[str, np.ndarray]: _description_
         """
-        obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "index": range(len(self.column("seqnames"))),
-        }
-
-        df_gr = pd.DataFrame(obj)
-        df_gr = df_gr.sort_values(by=["seqnames", "starts", "ends"])
+        df_gr = self._generic_pandas_ranges(sort=True)
         groups = df_gr.groupby(["seqnames"])
 
         shift_arr = None
@@ -1320,7 +1213,6 @@ class GenomicRanges(BiocFrame):
 
         result = {}
         for name, group in groups:
-
             all_intvals = [
                 (x[0], x[1])
                 for x in zip(group["starts"].to_list(), group["ends"].to_list())
@@ -1372,33 +1264,9 @@ class GenomicRanges(BiocFrame):
         if queryType not in OVERLAP_QUERY_TYPES:
             raise ValueError(f"{queryType} must be one of {OVERLAP_QUERY_TYPES}")
 
-        obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "index": range(len(self.column("seqnames"))),
-            "strand": self.column("strand"),
-        }
+        df_gr = self._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
+        tgt_gr = query._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
 
-        if ignoreStrand:
-            obj["strand"] = ["*"] * len(self.column("seqnames"))
-
-        df_gr = pd.DataFrame(obj)
-        df_gr = df_gr.sort_values(by=["seqnames", "starts", "ends"])
-        # groups = df_gr.groupby(["seqnames"])
-
-        tagt_obj = {
-            "seqnames": query.column("seqnames"),
-            "starts": query.column("starts"),
-            "ends": query.column("ends"),
-            "strand": query.column("strand"),
-        }
-
-        if ignoreStrand:
-            obj["strand"] = ["*"] * len(self.column("seqnames"))
-
-        tgt_gr = pd.DataFrame(tagt_obj)
-        tgt_gr = tgt_gr.sort_values(by=["seqnames", "starts", "ends"])
         tgt_groups = tgt_gr.groupby(["seqnames", "strand"])
 
         result = []
@@ -1543,33 +1411,9 @@ class GenomicRanges(BiocFrame):
             Optional["GenomicRanges"]: a new GenomicRanges object that has the same length as query
                 but contains `hits` to indices and `distance`.
         """
-        obj = {
-            "seqnames": self.column("seqnames"),
-            "starts": self.column("starts"),
-            "ends": self.column("ends"),
-            "index": range(len(self.column("seqnames"))),
-            "strand": self.column("strand"),
-        }
+        subject_gr = self._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
+        query_gr = query._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
 
-        if ignoreStrand:
-            obj["strand"] = ["*"] * len(self.column("seqnames"))
-
-        subject_gr = pd.DataFrame(obj)
-        subject_gr = subject_gr.sort_values(by=["seqnames", "starts", "ends"])
-        # groups = df_gr.groupby(["seqnames"])
-
-        query_obj = {
-            "seqnames": query.column("seqnames"),
-            "starts": query.column("starts"),
-            "ends": query.column("ends"),
-            "strand": query.column("strand"),
-        }
-
-        if ignoreStrand:
-            query_obj["strand"] = ["*"] * len(self.column("seqnames"))
-
-        query_gr = pd.DataFrame(query_obj)
-        query_gr = query_gr.sort_values(by=["seqnames", "starts", "ends"])
         query_groups = query_gr.groupby(["seqnames", "strand"])
 
         result = []
@@ -1617,8 +1461,8 @@ class GenomicRanges(BiocFrame):
     def nearest(
         self, query: "GenomicRanges", ignoreStrand: bool = False,
     ) -> Optional["GenomicRanges"]:
-        """Find nearest positions that overlap with the each genomics interval in `query`.
-            Adds a new column to query called `hits`.
+        """Search nearest positions both upstream and downstream that overlap with the 
+            each genomics interval in `query`. Adds a new column to query called `hits`.
 
         Args:
             query (GenomicRanges): input GenomicRanges to find nearest positions.
@@ -1632,47 +1476,189 @@ class GenomicRanges(BiocFrame):
     def precede(
         self, query: "GenomicRanges", ignoreStrand: bool = False,
     ) -> Optional["GenomicRanges"]:
+        """Search nearest positions only downstream that overlap with the 
+            each genomics interval in `query`. Adds a new column to query called `hits`.
+
+        Args:
+            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            ignoreStrand (bool, optional): ignore strand? Defaults to False.
+
+        Returns:
+            "GenomicRanges": List of possible hit indices for each interval in `query`
+        """
         return self._generic_search(query=query, ignoreStrand=ignoreStrand, stepend=0)
 
     def follow(
         self, query: "GenomicRanges", ignoreStrand: bool = False,
     ) -> Optional["GenomicRanges"]:
+        """Search nearest positions only upstream that overlap with the 
+            each genomics interval in `query`. Adds a new column to query called `hits`.
+
+        Args:
+            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            ignoreStrand (bool, optional): ignore strand? Defaults to False.
+
+        Returns:
+            "GenomicRanges": List of possible hit indices for each interval in `query`
+        """
         return self._generic_search(query=query, ignoreStrand=ignoreStrand, stepstart=0)
 
     def distanceToNearest(
         self, query: "GenomicRanges", ignoreStrand: bool = False,
     ) -> Optional["GenomicRanges"]:
+        """Search nearest positions only downstream that overlap with the 
+            each genomics interval in `query`. Adds a new column to query called `hits`.
+            Technically same as nearest since we also return `distances`.
+
+        Args:
+            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            ignoreStrand (bool, optional): ignore strand? Defaults to False.
+
+        Returns:
+            "GenomicRanges": List of possible hit indices for each interval in `query`
+        """
         return self._generic_search(query=query, ignoreStrand=ignoreStrand)
 
     # compare and order methods
+    def duplicated(self,) -> Sequence[bool]:
+        """Element wise comparison to find duplicate intervals
 
-    def duplicated(
-        self,
-        query: "GenomicRanges",
-        method: str = "auto",
-        incomparables: bool = False,
-        fromLast: bool = False,
-        nmax: Optional[int] = None,
-    ):
-        pass
+        Returns:
+            Sequence[bool]: True if duplicated else False
+        """
+        df = self._generic_pandas_ranges(sort=False)
+        return df.duplicated().to_list()
 
-    def match(query, nomatch: int = -1000000, incomparables: Optional[bool] = None):
-        pass
+    def match(self, query: "GenomicRanges") -> Sequence[Optional[int]]:
+        """Element wise comparison to exact match intervals.
 
-    def isUnsorted(self, naRM=False, strictly=False, ignoreStrand=False):
-        pass
+        Args:
+            query (GenomicRanges): input GenomicRanges to search matches.
 
-    def order(naLast=True, decreasing=False, method: str = "auto"):
-        pass
+        Returns:
+            Sequence[Optional[int]]: index if able to match else None
+        """
+        df = self._generic_pandas_ranges(sort=False)
 
-    def sort(self, by: str, decreasing: bool = False, ignoreStrand: bool = False):
-        pass
+        hits = []
+        for _, row in query:
+            sliced = df[
+                (df["seqnames"] == row["seqnames"])
+                & (df["strand"] == row["strand"])
+                & (df["starts"] == row["starts"])
+                & (df["ends"] == row["ends"])
+            ]
 
-    def rank(self, tiesMethod: str, naLast=False, method: str = "auto"):
-        pass
+            if len(sliced) == 0:
+                hits.append(None)
+            else:
+                hits.append(list(sliced["index"].unique()))
+        return hits
 
-    def pcompare(self, query: "GenomicRanges"):
-        pass
+    def _generic_pandas_ranges(self, ignoreStrand=False, sort=False) -> pd.DataFrame:
+        """Internal function to create a pandas dataframe from ranges
+
+        Args:
+            ignoreStrand (bool, optional): Ignore strand?. Defaults to False.
+            sort (bool, optional): sort by region?. Defaults to False.
+
+        Returns:
+            pd.DataFrame: a Pandas DataFrame object
+        """
+        obj = {
+            "seqnames": self.column("seqnames"),
+            "starts": self.column("starts"),
+            "ends": self.column("ends"),
+            "strand": self.column("strand"),
+            "index": range(len(self.column("seqnames"))),
+        }
+
+        if ignoreStrand:
+            obj["strand"] = ["*"] * len(self.column("seqnames"))
+
+        df = pd.DataFrame(obj)
+
+        if sort:
+            df = df.sort_values(["seqnames", "strand", "starts", "ends"])
+
+        return df
+
+    def _generic_order(self, ignoreStrand=False) -> Sequence[int]:
+        """Internal function that provides order
+
+        Args:
+            query (GenomicRanges): input GenomicRanges to search matches.
+
+        Returns:
+            Sequence[Optional[int]]: sorted index order
+        """
+        sorted = self._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
+        new_order = sorted["index"]
+
+        return new_order
+
+    def isUnsorted(self, ignoreStrand=False) -> bool:
+        """Are the genomic positions unsorted?
+
+        Args:
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            bool: True if unsorted else False.
+        """
+        order = self._generic_order(ignoreStrand=ignoreStrand)
+        diff = order.diff()
+
+        if any(diff != 1):
+            return True
+
+        return False
+
+    def order(self, decreasing=False) -> Sequence[int]:
+        """Get the order of indices for sorting.
+
+        Args:
+            decreasing (bool, optional): descending order?. Defaults to False.
+
+        Returns:
+            Sequence[int]: order of indices.
+        """
+        order = self._generic_order()
+
+        if decreasing:
+            order = order[::-1]
+        return order.to_list()
+
+    def sort(
+        self, decreasing: bool = False, ignoreStrand: bool = False
+    ) -> "GenomicRanges":
+        """Sort the GenomicRanges object.
+
+        Args:
+            decreasing (bool, optional): decreasing order?. Defaults to False.
+            ignoreStrand (bool, optional): ignore strand?. Defaults to False.
+
+        Returns:
+            "GenomicRanges": a new sorted GenomicRanges object.
+        """
+        order = self._generic_order(ignoreStrand=ignoreStrand)
+
+        if decreasing:
+            order = order[::-1]
+
+        new_order = order.to_list()
+        return self[new_order, :]
+
+    def rank(self) -> Sequence[int]:
+        """Get rank of the GenomicRanges object. 
+            for each interval identifies its position is a sorted order
+
+        Returns:
+            Sequence[int]: list of indices identifying rank.
+        """
+        order = self._generic_order().to_list()
+        rank = [order.index(x) for x in range(len(order))]
+        return rank
 
     # windowing functions
     def tile(self, n: int, width: int):
