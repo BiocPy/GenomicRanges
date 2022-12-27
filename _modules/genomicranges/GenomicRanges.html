@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.2 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.2.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.2 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.2.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.2.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -1252,10 +1252,17 @@
 <span class="sd">        Args:</span>
 <span class="sd">            other (GenomicRanges): the other GenomicRanges object</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            GenomicRanges: a new GenomicRanges object with </span>
 <span class="sd">                the intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;other is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
+
         <span class="n">a_df_gr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">b_df_gr</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -1289,10 +1296,17 @@
 <span class="sd">        Args:</span>
 <span class="sd">            other (GenomicRanges): the other GenomicRanges object</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new GenomicRanges object with </span>
 <span class="sd">                the intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;other is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
+
         <span class="n">a_df_gr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">b_df_gr</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -1329,10 +1343,18 @@
 <span class="sd">        Args:</span>
 <span class="sd">            other (GenomicRanges): the other GenomicRanges object</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
+<span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new GenomicRanges object with </span>
 <span class="sd">                the diff intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;other is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
+
         <span class="n">a_df_gr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">b_df_gr</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -1395,11 +1417,15 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if scorename column does not exist</span>
 <span class="sd">            Exception: scorename is not all ints or floats</span>
+<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            GenomicRanges: a new GenomicRanges with a column containing</span>
 <span class="sd">                the averages</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;bins is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">scorename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columnNames</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scorename</span><span class="si">}</span><span class="s2"> is not a valid column name&quot;</span><span class="p">)</span>
@@ -1473,7 +1499,7 @@
 <span class="sd">            weight (int, optional): weight to use. Defaults to 1.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            MutableMapping[str, np.ndarray]: _description_</span>
+<span class="sd">            MutableMapping[str, np.ndarray]: coverage vector for each chromosome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">df_gr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="n">df_gr</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;seqnames&quot;</span><span class="p">])</span>
@@ -1527,10 +1553,16 @@
 <span class="sd">            minOverlap (int, optional): minimum overlap with query. Defaults to 1. </span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[&quot;GenomicRanges&quot;]: A GenomicRanges object with the same length as query, </span>
 <span class="sd">                containing hits to overlapping indices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;query is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">queryType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OVERLAP_QUERY_TYPES</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">queryType</span><span class="si">}</span><span class="s2"> must be one of </span><span class="si">{</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1609,9 +1641,16 @@
 <span class="sd">            minOverlap (int, optional): minimum overlap with query. Defaults to 1. </span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            List[int]: number of overlaps for each interval in query</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;query is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
+
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findOverlaps</span><span class="p">(</span>
             <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
             <span class="n">queryType</span><span class="o">=</span><span class="n">queryType</span><span class="p">,</span>
@@ -1648,10 +1687,17 @@
 <span class="sd">            minOverlap (int, optional): minimum overlap with query. Defaults to 1. </span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[&quot;GenomicRanges&quot;]: A GenomicRanges object containings only subsets </span>
 <span class="sd">                for overlaps in query.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;query is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
+
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findOverlaps</span><span class="p">(</span>
             <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
             <span class="n">queryType</span><span class="o">=</span><span class="n">queryType</span><span class="p">,</span>
@@ -1678,10 +1724,17 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Internal function to search self and a query genomic ranges object</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new GenomicRanges object that has the same length as query</span>
 <span class="sd">                but contains `hits` to indices and `distance`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;query is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
+
         <span class="n">subject_gr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">query_gr</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1739,6 +1792,9 @@
 <span class="sd">            query (GenomicRanges): input GenomicRanges to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            &quot;GenomicRanges&quot;: List of possible hit indices for each interval in `query`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1754,6 +1810,9 @@
 <span class="sd">            query (GenomicRanges): input GenomicRanges to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            &quot;GenomicRanges&quot;: List of possible hit indices for each interval in `query`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1769,6 +1828,9 @@
 <span class="sd">            query (GenomicRanges): input GenomicRanges to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            &quot;GenomicRanges&quot;: List of possible hit indices for each interval in `query`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1785,6 +1847,9 @@
 <span class="sd">            query (GenomicRanges): input GenomicRanges to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            &quot;GenomicRanges&quot;: List of possible hit indices for each interval in `query`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1806,9 +1871,16 @@
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): input GenomicRanges to search matches.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Sequence[Optional[int]]: index if able to match else None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;query is not a `GenomicRanges` object&quot;</span><span class="p">)</span>
+
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">hits</span> <span class="o">=</span> <span class="p">[]</span>

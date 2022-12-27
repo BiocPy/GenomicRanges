@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="genomicranges" href="modules.html" />
 
     <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>genomicranges package - GenomicRanges 0.2 documentation</title>
+        <title>genomicranges package - GenomicRanges 0.2.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.2 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.2.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.2.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,6 +242,7 @@
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if scorename column does not exist</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><strong>Exception</strong></a> – scorename is not all ints or floats</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if other is not of type <cite>GenomicRanges</cite></p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -299,18 +300,21 @@
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>number of overlaps for each interval in query</p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of overlaps for each interval in query</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.coverage">
-<span class="sig-name descname"><span class="pre">coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.coverage" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.coverage" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculate coverage for each chromosome</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -321,7 +325,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
+<dd class="field-even"><p>coverage vector for each chromosome.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>MutableMapping[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, np.ndarray]</p>
@@ -364,11 +368,14 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>“GenomicRanges”</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>“GenomicRanges”</p>
 </dd>
 </dl>
 </dd></dl>
@@ -423,15 +430,18 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
 <dt>A GenomicRanges object with the same length as query,</dt><dd><p>containing hits to overlapping indices.</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[“GenomicRanges”]</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[“GenomicRanges”]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -472,11 +482,14 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>“GenomicRanges”</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>“GenomicRanges”</p>
 </dd>
 </dl>
 </dd></dl>
@@ -593,15 +606,18 @@ If None, this tried to use the SeqInfo object if available.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><em>GenomicRanges</em></a>) – the other GenomicRanges object</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if other is not of type <cite>GenomicRanges</cite></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
 <dt>a new GenomicRanges object with</dt><dd><p>the intervals</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[“GenomicRanges”]</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[“GenomicRanges”]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -680,11 +696,14 @@ If None, this tried to use the SeqInfo object if available.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>query</strong> (<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><em>GenomicRanges</em></a>) – input GenomicRanges to search matches.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>index if able to match else None</p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Sequence[Optional[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>index if able to match else None</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Sequence[Optional[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -751,11 +770,14 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>“GenomicRanges”</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>“GenomicRanges”</p>
 </dd>
 </dl>
 </dd></dl>
@@ -791,11 +813,14 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>“GenomicRanges”</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>“GenomicRanges”</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1037,15 +1062,18 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><em>GenomicRanges</em></a>) – the other GenomicRanges object</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if other is not of type <cite>GenomicRanges</cite></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
 <dt>a new GenomicRanges object with</dt><dd><p>the diff intervals</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[“GenomicRanges”]</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[“GenomicRanges”]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1157,15 +1185,18 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>GenomicRanges</cite></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
 <dt>A GenomicRanges object containings only subsets</dt><dd><p>for overlaps in query.</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[“GenomicRanges”]</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[“GenomicRanges”]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1274,15 +1305,18 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><em>GenomicRanges</em></a>) – the other GenomicRanges object</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if other is not of type <cite>GenomicRanges</cite></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
 <dt>a new GenomicRanges object with</dt><dd><p>the intervals</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges">GenomicRanges</a></p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges">GenomicRanges</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1475,7 +1509,7 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.utils.compute_mean">
-<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">compute_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/utils.html#compute_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.compute_mean" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">compute_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/utils.html#compute_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.compute_mean" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute coverage and sum ndarrays</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1495,7 +1529,7 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.utils.create_np_interval_vector">
-<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">create_np_interval_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">withRevMap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forceSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dontSum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/utils.html#create_np_interval_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.create_np_interval_vector" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">create_np_interval_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">withRevMap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forceSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dontSum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/utils.html#create_np_interval_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.create_np_interval_vector" title="Permalink to this definition">#</a></dt>
 <dd><p>Represent intervals/calculate coverage</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1727,7 +1761,7 @@ Defaults to dictionary structure. currently supports <cite>pd.DataFrame</cite>.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.utils.np_split_groups_ne">
-<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">np_split_groups_ne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/utils.html#np_split_groups_ne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.np_split_groups_ne" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">np_split_groups_ne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/utils.html#np_split_groups_ne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.np_split_groups_ne" title="Permalink to this definition">#</a></dt>
 <dd><p>Split a numpy array by consecutive values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
