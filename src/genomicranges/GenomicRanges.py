@@ -1040,10 +1040,17 @@ class GenomicRanges(BiocFrame):
         Args:
             other (GenomicRanges): the other GenomicRanges object
 
+        Raises:
+            TypeError: if other is not of type `GenomicRanges`
+
         Returns:
             GenomicRanges: a new GenomicRanges object with 
                 the intervals
         """
+
+        if not isinstance(other, GenomicRanges):
+            raise TypeError("other is not a `GenomicRanges` object")
+
         a_df_gr = self._generic_pandas_ranges(sort=False)
         b_df_gr = other._generic_pandas_ranges(sort=False)
 
@@ -1077,10 +1084,17 @@ class GenomicRanges(BiocFrame):
         Args:
             other (GenomicRanges): the other GenomicRanges object
 
+        Raises:
+            TypeError: if other is not of type `GenomicRanges`
+
         Returns:
             Optional["GenomicRanges"]: a new GenomicRanges object with 
                 the intervals
         """
+
+        if not isinstance(other, GenomicRanges):
+            raise TypeError("other is not a `GenomicRanges` object")
+
         a_df_gr = self._generic_pandas_ranges(sort=False)
         b_df_gr = other._generic_pandas_ranges(sort=False)
 
@@ -1117,10 +1131,18 @@ class GenomicRanges(BiocFrame):
         Args:
             other (GenomicRanges): the other GenomicRanges object
 
+        Raises:
+            TypeError: if other is not of type `GenomicRanges`
+            
+        
         Returns:
             Optional["GenomicRanges"]: a new GenomicRanges object with 
                 the diff intervals
         """
+
+        if not isinstance(other, GenomicRanges):
+            raise TypeError("other is not a `GenomicRanges` object")
+
         a_df_gr = self._generic_pandas_ranges(sort=False)
         b_df_gr = other._generic_pandas_ranges(sort=False)
 
@@ -1183,11 +1205,15 @@ class GenomicRanges(BiocFrame):
         Raises:
             ValueError: if scorename column does not exist
             Exception: scorename is not all ints or floats
+            TypeError: if other is not of type `GenomicRanges`
 
         Returns:
             GenomicRanges: a new GenomicRanges with a column containing
                 the averages
         """
+
+        if not isinstance(bins, GenomicRanges):
+            raise TypeError("bins is not a `GenomicRanges` object")
 
         if scorename not in self.columnNames:
             raise ValueError(f"{scorename} is not a valid column name")
@@ -1261,7 +1287,7 @@ class GenomicRanges(BiocFrame):
             weight (int, optional): weight to use. Defaults to 1.
 
         Returns:
-            MutableMapping[str, np.ndarray]: _description_
+            MutableMapping[str, np.ndarray]: coverage vector for each chromosome.
         """
         df_gr = self._generic_pandas_ranges(sort=True)
         groups = df_gr.groupby(["seqnames"])
@@ -1315,10 +1341,16 @@ class GenomicRanges(BiocFrame):
             minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             Optional["GenomicRanges"]: A GenomicRanges object with the same length as query, 
                 containing hits to overlapping indices.
         """
+
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("query is not a `GenomicRanges` object")
 
         if queryType not in OVERLAP_QUERY_TYPES:
             raise ValueError(f"{queryType} must be one of {OVERLAP_QUERY_TYPES}")
@@ -1397,9 +1429,16 @@ class GenomicRanges(BiocFrame):
             minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             List[int]: number of overlaps for each interval in query
         """
+
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("query is not a `GenomicRanges` object")
+
         result = self.findOverlaps(
             query=query,
             queryType=queryType,
@@ -1436,10 +1475,17 @@ class GenomicRanges(BiocFrame):
             minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             Optional["GenomicRanges"]: A GenomicRanges object containings only subsets 
                 for overlaps in query.
         """
+
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("query is not a `GenomicRanges` object")
+
         result = self.findOverlaps(
             query=query,
             queryType=queryType,
@@ -1466,10 +1512,17 @@ class GenomicRanges(BiocFrame):
     ) -> Optional["GenomicRanges"]:
         """Internal function to search self and a query genomic ranges object
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             Optional["GenomicRanges"]: a new GenomicRanges object that has the same length as query
                 but contains `hits` to indices and `distance`.
         """
+
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("query is not a `GenomicRanges` object")
+
         subject_gr = self._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
         query_gr = query._generic_pandas_ranges(ignoreStrand=ignoreStrand, sort=True)
 
@@ -1527,6 +1580,9 @@ class GenomicRanges(BiocFrame):
             query (GenomicRanges): input GenomicRanges to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             "GenomicRanges": List of possible hit indices for each interval in `query`
         """
@@ -1542,6 +1598,9 @@ class GenomicRanges(BiocFrame):
             query (GenomicRanges): input GenomicRanges to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             "GenomicRanges": List of possible hit indices for each interval in `query`
         """
@@ -1557,6 +1616,9 @@ class GenomicRanges(BiocFrame):
             query (GenomicRanges): input GenomicRanges to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             "GenomicRanges": List of possible hit indices for each interval in `query`
         """
@@ -1573,6 +1635,9 @@ class GenomicRanges(BiocFrame):
             query (GenomicRanges): input GenomicRanges to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             "GenomicRanges": List of possible hit indices for each interval in `query`
         """
@@ -1594,9 +1659,16 @@ class GenomicRanges(BiocFrame):
         Args:
             query (GenomicRanges): input GenomicRanges to search matches.
 
+        Raises:
+            TypeError: if query is not of type `GenomicRanges`
+            
         Returns:
             Sequence[Optional[int]]: index if able to match else None
         """
+
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("query is not a `GenomicRanges` object")
+
         df = self._generic_pandas_ranges(sort=False)
 
         hits = []
