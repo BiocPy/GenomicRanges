@@ -1,6 +1,14 @@
 genomicranges package
 =====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   genomicranges.io
+
 Submodules
 ----------
 
@@ -16,22 +24,6 @@ genomicranges.SeqInfo module
 ----------------------------
 
 .. automodule:: genomicranges.SeqInfo
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-genomicranges.gtf module
-------------------------
-
-.. automodule:: genomicranges.gtf
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-genomicranges.ucsc module
--------------------------
-
-.. automodule:: genomicranges.ucsc
    :members:
    :undoc-members:
    :show-inheritance:

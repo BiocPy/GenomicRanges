@@ -4,15 +4,15 @@ The package provide classes to represent genomic locations and methods to perfor
 
 For detailed description of these methods, checkout [GenomicRanges documentation](https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf)
 
-# Initialize a `GenomicRanges` object
+# Construct a `GenomicRanges` object
 ## Pandas DataFrame
 
-A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert a DataFrame into `GenomicRanges`.
+A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this DataFrame into `GenomicRanges`.
 
 ***Note: The DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
 
 ```python
-from genomicranges import GenomicRanges
+import genomicranges
 import pandas as pd
 
 df = pd.DataFrame(
@@ -26,7 +26,7 @@ df = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df)
+gr = genomicranges.fromPandas(df)
 ```
 
 ## From UCSC or GTF file
@@ -34,11 +34,11 @@ gr = GenomicRanges.fromPandas(df)
 Methods are available to access UCSC genomes or load a genome annotation from GTF
 
 ```python
-from genomicranges import GenomicRanges
+import genomicranges
 
-gr = GenomicRanges.fromGTF(<PATH TO GTF>)
+gr = genomicranges.readGTF(<PATH TO GTF>)
 # OR 
-gr = GenomicRanges.fromUCSC(genome="hg19")
+gr = genomicranges.readUCSC(genome="hg19")
 ```
 
 ## Set sequence information
@@ -216,7 +216,7 @@ df_src = pd.DataFrame(
     }
 )
 
-g_src = GenomicRanges.fromPandas(df_src)
+g_src = genomicranges.fromPandas(df_src)
 
 df_tgt = pd.DataFrame(
     {
@@ -229,7 +229,7 @@ df_tgt = pd.DataFrame(
     }
 )
 
-g_tgt = GenomicRanges.fromPandas(df_tgt)
+g_tgt = genomicranges.fromPandas(df_tgt)
 ```
 
 ```python
@@ -258,7 +258,7 @@ compute binned average for different positions
 ```python
 bins = pd.DataFrame({"seqnames": ["chr1"], "starts": [101], "ends": [109],})
 
-bins_gr = GenomicRanges.fromPandas(bins)
+bins_gr = genomicranges.fromPandas(bins)
 
 subject = pd.DataFrame(
     {
@@ -271,7 +271,7 @@ subject = pd.DataFrame(
     }
 )
 
-subject_gr = GenomicRanges.fromPandas(subject)
+subject_gr = genomicranges.fromPandas(subject)
 
 
 # Compute binned average
@@ -301,7 +301,7 @@ tiles = gr.slidingWindows(width=10)
 ```python
 seqlengths = {"chr1": 100, "chr2": 75, "chr3": 200}
 
-tiles = GenomicRanges.tileGenome(seqlengths=seqlengths, n=10)
+tiles = genomicranges.tileGenome(seqlengths=seqlengths, n=10)
 ```
 
 ## Coverage
@@ -341,13 +341,13 @@ df_subject = pd.DataFrame(
     }
 )
 
-subject = GenomicRanges.fromPandas(df_subject)
+subject = genomicranges.fromPandas(df_subject)
 
 df_query = pd.DataFrame(
     {"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]}
 )
 
-query = GenomicRanges.fromPandas(df_query)
+query = genomicranges.fromPandas(df_query)
 ```
 
 ```python
@@ -371,7 +371,7 @@ res = subject.subsetByOverlaps(query)
 
 ```python
 
-find_regions = GenomicRanges.fromPandas(
+find_regions = genomicranges.fromPandas(
     pd.DataFrame(
         {
             "seqnames": ["chr1", "chr2", "chr3"],

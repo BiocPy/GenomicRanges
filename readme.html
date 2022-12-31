@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Tutorial" href="tutorial.html" /><link rel="prev" title="GenomicRanges" href="index.html" />
 
-    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>GenomicRanges - GenomicRanges 0.2.6 documentation</title>
+    <!-- Generated with Sphinx 6.0.0 and Furo 2022.12.07 -->
+        <title>GenomicRanges - GenomicRanges 0.2.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.2.6 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.2.7 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2.6 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.2.7 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -157,7 +157,7 @@
   <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html#initialize-a-genomicranges-object">Initialize a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#construct-a-genomicranges-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html#get-and-set-methods">Get and Set methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html#slice-operations">Slice operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html#iterate-over-rows">Iterate over rows</a></li>
@@ -174,7 +174,10 @@
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/genomicranges.html">genomicranges package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/genomicranges.io.html">genomicranges.io package</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -230,7 +233,7 @@
 <h4>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Permalink to this heading">#</a></h4>
 <p>A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>. <em><strong>Intervals are inclusive on both ends.</strong></em></p>
 <p><em><strong>Note: The DataFrame must contain columns <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>, <code class="docutils literal notranslate"><span class="pre">starts</span></code> and <code class="docutils literal notranslate"><span class="pre">ends</span></code> to represent genomic coordinates.</strong></em></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -244,18 +247,18 @@
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="from-ucsc-or-gtf-file">
 <h4>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Permalink to this heading">#</a></h4>
 <p>Methods are available to easily access UCSC genomes or load a genome annotation from GTF</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
 
-<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromGTF</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromGTF</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
 <span class="c1"># OR </span>
-<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromUCSC</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromUCSC</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -263,9 +266,9 @@
 <section id="interval-operations">
 <h3>Interval Operations<a class="headerlink" href="#interval-operations" title="Permalink to this heading">#</a></h3>
 <p>Currently supports most commonly used <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html">interval based operations</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromUCSC</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg38&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromUCSC</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg38&quot;</span><span class="p">)</span>
 
-<span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span>
     <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
@@ -368,9 +371,6 @@ information on PyScaffold see https://pyscaffold.org/.</p>
     </aside>
   </div>
 </div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/furo.js"></script>
