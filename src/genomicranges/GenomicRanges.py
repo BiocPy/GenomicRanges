@@ -34,6 +34,8 @@ from .utils import (
     slide_intervals,
 )
 
+from .io.pdf import fromPandas
+
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
@@ -880,7 +882,7 @@ class GenomicRanges(BiocFrame):
             ["seqnames", "strand", "starts", "ends"]
         )
 
-        return GenomicRanges.fromPandas(finale)
+        return fromPandas(finale)
 
     def range(
         self, withRevMap: bool = False, ignoreStrand: bool = False
@@ -984,7 +986,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(gap_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def disjoin(
         self, withRevMap: bool = False, ignoreStrand: bool = False
@@ -1028,7 +1030,7 @@ class GenomicRanges(BiocFrame):
 
         final_df = pd.DataFrame.from_records(disjoin_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def isDisjoint(self, ignoreStrand: bool = False) -> bool:
         """Are all ranges (for each chromosome, strand) disjoint?
@@ -1088,7 +1090,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(union_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def intersect(self, other: "GenomicRanges") -> Optional["GenomicRanges"]:
         """Find intersection of genomic intervals with `other`.
@@ -1135,7 +1137,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(intersect_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def setdiff(self, other: "GenomicRanges") -> Optional["GenomicRanges"]:
         """Find set difference of genomic intervals with `other`.
@@ -1201,7 +1203,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(diff_ints, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def binnedAverage(
         self, scorename: str, bins: "GenomicRanges", outname: str
@@ -1279,7 +1281,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "starts", "ends", "strand", outname]
         final_df = pd.DataFrame.from_records(result, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     # def subtract(
     #     self, x: "GenomicRanges", minoverlap: int = 1, ignoreStrand: bool = False
@@ -1416,7 +1418,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends", "hits"]
         final_df = pd.DataFrame.from_records(result, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def countOverlaps(
         self,
@@ -1579,7 +1581,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends", "hits", "distance"]
         final_df = pd.DataFrame.from_records(result, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def nearest(
         self, query: "GenomicRanges", ignoreStrand: bool = False,
@@ -1846,7 +1848,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def tile(
         self, n: Optional[int] = None, width: Optional[int] = None
@@ -1885,7 +1887,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     def slidingWindows(self, width: int, step: int = 1) -> "GenomicRanges":
         """slide along each interval by `width` (intervals with equal width) and `step`.
@@ -1913,7 +1915,7 @@ class GenomicRanges(BiocFrame):
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-        return GenomicRanges.fromPandas(final_df)
+        return fromPandas(final_df)
 
     # misc methods
     def sample(self, k: int = 5) -> "GenomicRanges":
