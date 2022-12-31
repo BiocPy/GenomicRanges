@@ -23,3 +23,10 @@ finally:
 
 from .GenomicRanges import GenomicRanges
 from .SeqInfo import SeqInfo
+
+from .io.tiling import tileGenome
+
+from .io.gtf import readGTF
+from .io.ucsc import readUCSC
+
+from .io.pdf import fromPandas

@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
 from random import random
+import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -29,13 +30,13 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df_gr)
+gr = genomicranges.fromPandas(df_gr)
 
 
 def test_nearest():
     assert gr is not None
 
-    test_gr = GenomicRanges.fromPandas(
+    test_gr = genomicranges.fromPandas(
         pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -54,7 +55,7 @@ def test_nearest():
 def test_precede():
     assert gr is not None
 
-    test_gr = GenomicRanges.fromPandas(
+    test_gr = genomicranges.fromPandas(
         pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -75,7 +76,7 @@ def test_precede():
 def test_follow():
     assert gr is not None
 
-    test_gr = GenomicRanges.fromPandas(
+    test_gr = genomicranges.fromPandas(
         pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],

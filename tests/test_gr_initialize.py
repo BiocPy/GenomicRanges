@@ -3,6 +3,7 @@ import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
 from biocframe import BiocFrame
 from random import random
+import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -32,7 +33,7 @@ def test_create_gr():
         }
     )
 
-    gr = GenomicRanges.fromPandas(df_gr)
+    gr = genomicranges.fromPandas(df_gr)
 
     assert gr is not None
     assert gr.dims[0] == df_gr.shape[0]
@@ -77,4 +78,4 @@ def test_should_fail():
             }
         )
 
-        GenomicRanges.fromPandas(df_gr)
+        genomicranges.fromPandas(df_gr)

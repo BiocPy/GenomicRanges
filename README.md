@@ -23,7 +23,7 @@ A common representation in Python is a pandas DataFrame for all tabular datasets
 ***Note: The DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
 
 ```python
-from genomicranges import GenomicRanges
+import genomicranges
 import pandas as pd
 
 df = pd.DataFrame(
@@ -37,7 +37,7 @@ df = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df)
+gr = genomicranges.fromPandas(df)
 ```
 
 #### From UCSC or GTF file
@@ -45,11 +45,11 @@ gr = GenomicRanges.fromPandas(df)
 Methods are available to easily access UCSC genomes or load a genome annotation from GTF
 
 ```python
-from genomicranges import GenomicRanges
+import genomicranges
 
-gr = GenomicRanges.fromGTF(<PATH TO GTF>)
+gr = genomicranges.fromGTF(<PATH TO GTF>)
 # OR 
-gr = GenomicRanges.fromUCSC(genome="hg19")
+gr = genomicranges.fromUCSC(genome="hg19")
 ```
 
 ### Interval Operations
@@ -57,9 +57,9 @@ gr = GenomicRanges.fromUCSC(genome="hg19")
 Currently supports most commonly used [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 ```python
-subject = GenomicRanges.fromUCSC(genome="hg38")
+subject = genomicranges.fromUCSC(genome="hg38")
 
-query = GenomicRanges.fromPandas(
+query = genomicranges.fromPandas(
     pd.DataFrame(
         {
             "seqnames": ["chr1", "chr2", "chr3"],

@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from genomicranges.GenomicRanges import GenomicRanges
 from random import random
+import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -30,7 +31,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df_gr)
+gr = genomicranges.fromPandas(df_gr)
 
 
 def test_granges():

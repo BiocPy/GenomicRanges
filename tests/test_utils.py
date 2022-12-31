@@ -1,5 +1,3 @@
-import pytest
-import pandas as pd
 from genomicranges.utils import (
     find_union,
     find_gaps,

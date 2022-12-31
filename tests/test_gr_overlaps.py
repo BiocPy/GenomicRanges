@@ -1,7 +1,6 @@
-import pytest
 import pandas as pd
-from genomicranges.GenomicRanges import GenomicRanges
 from random import random
+import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -29,13 +28,13 @@ df_subject = pd.DataFrame(
     }
 )
 
-subject = GenomicRanges.fromPandas(df_subject)
+subject = genomicranges.fromPandas(df_subject)
 
 df_query = pd.DataFrame(
     {"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]}
 )
 
-query = GenomicRanges.fromPandas(df_query)
+query = genomicranges.fromPandas(df_query)
 
 
 def test_findOverlaps():
@@ -86,7 +85,7 @@ def test_subsetByOverlaps():
         }
     )
 
-    query2 = GenomicRanges.fromPandas(df_query2)
+    query2 = genomicranges.fromPandas(df_query2)
 
     assert subject is not None
     assert query2 is not None

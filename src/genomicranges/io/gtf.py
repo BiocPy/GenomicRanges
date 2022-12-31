@@ -3,6 +3,9 @@ import pandas as pd
 import logging
 from joblib import Parallel, delayed
 
+from ..GenomicRanges import GenomicRanges
+from .pdf import fromPandas
+
 ## Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
 
 __author__ = "jkanche"
@@ -82,3 +85,18 @@ def parse_gtf(path: str, compressed: bool) -> pd.DataFrame:
     gtf.drop(["group"], axis=1)
 
     return gtf
+
+
+def readGTF(file: str) -> GenomicRanges:
+    """Read  GTF file as `GenomicRanges`.
+
+    Args:
+        file (str): path to gtf file
+
+    Returns:
+        GenomicRanges:  a new `GenomicRanges` with the genomic regions.
+    """
+    compressed = True if file.endswith("gz") else False
+    data = parse_gtf(file, compressed=compressed)
+
+    return fromPandas(data)

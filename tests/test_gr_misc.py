@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
 from random import random
+import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -18,7 +19,7 @@ df_src = pd.DataFrame(
     }
 )
 
-g_src = GenomicRanges.fromPandas(df_src)
+g_src = genomicranges.fromPandas(df_src)
 
 
 def test_invert():
@@ -62,7 +63,7 @@ def test_concat():
         }
     )
 
-    g_tgt = GenomicRanges.fromPandas(df_tgt)
+    g_tgt = genomicranges.fromPandas(df_tgt)
     assert g_tgt is not None
 
     result = g_src.concat(g_tgt)

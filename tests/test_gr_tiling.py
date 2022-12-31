@@ -1,6 +1,5 @@
-import pytest
 import pandas as pd
-from genomicranges.GenomicRanges import GenomicRanges
+import genomicranges
 from random import random
 
 __author__ = "jkanche"
@@ -18,7 +17,7 @@ df_src = pd.DataFrame(
     }
 )
 
-g_src = GenomicRanges.fromPandas(df_src)
+g_src = genomicranges.fromPandas(df_src)
 
 
 def test_tile():
@@ -42,7 +41,7 @@ def test_slide():
 def test_tileGenome():
     seqlengths = {"chr1": 100, "chr2": 75, "chr3": 200}
 
-    tiles = GenomicRanges.tileGenome(seqlengths=seqlengths, n=10)
+    tiles = genomicranges.tileGenome(seqlengths=seqlengths, n=10)
 
     assert tiles is not None
     assert tiles.shape == (30, 4)

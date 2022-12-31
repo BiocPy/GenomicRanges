@@ -1,7 +1,6 @@
-import pytest
 import pandas as pd
-from genomicranges.GenomicRanges import GenomicRanges
 from random import random
+import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -9,7 +8,7 @@ __license__ = "MIT"
 
 df_src = pd.DataFrame({"seqnames": ["chr1"], "starts": [101], "ends": [109],})
 
-g_src = GenomicRanges.fromPandas(df_src)
+g_src = genomicranges.fromPandas(df_src)
 
 df_tgt = pd.DataFrame(
     {
@@ -33,7 +32,7 @@ df_tgt = pd.DataFrame(
     }
 )
 
-g_tgt = GenomicRanges.fromPandas(df_tgt)
+g_tgt = genomicranges.fromPandas(df_tgt)
 
 
 def test_binned_average():
