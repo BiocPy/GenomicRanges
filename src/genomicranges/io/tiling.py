@@ -5,6 +5,7 @@ import pandas as pd
 from ..utils import split_intervals
 from ..GenomicRanges import GenomicRanges
 from ..SeqInfo import SeqInfo
+from .pdf import fromPandas
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -49,4 +50,4 @@ def tileGenome(
     columns = ["seqnames", "strand", "starts", "ends"]
     final_df = pd.DataFrame.from_records(all_intervals, columns=columns)
     final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
-    return GenomicRanges.fromPandas(final_df)
+    return fromPandas(final_df)
