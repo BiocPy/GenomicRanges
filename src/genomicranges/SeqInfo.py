@@ -20,7 +20,7 @@ class SeqInfo(BiocFrame):
 
     def __init__(
         self,
-        data: Optional[MutableMapping[str, Union[List[Any], MutableMapping]]] = ...,
+        data: Optional[MutableMapping[str, Union[List[Any], MutableMapping]]] = None,
         numberOfRows: Optional[int] = None,
         rowNames: Optional[Sequence[str]] = None,
         columnNames: Optional[Sequence[str]] = None,
@@ -29,7 +29,7 @@ class SeqInfo(BiocFrame):
         super().__init__(data, numberOfRows, rowNames, columnNames, metadata)
 
     def _validate(self):
-        """internal function to validate SeqInfo
+        """Internal function to validate SeqInfo.
         """
 
         if "genome" in self._data:
@@ -43,10 +43,10 @@ class SeqInfo(BiocFrame):
         self._validate_seqs()
 
     def _validate_seqs(self):
-        """Internal function to validate sequence Information
+        """Internal function to validate sequence information.
 
         Raises:
-            ValueError: if missing required columns
+            ValueError: if missing required columns.
         """
         missing = list(set(self.required_columns).difference(set(self.columnNames)))
 
@@ -57,19 +57,20 @@ class SeqInfo(BiocFrame):
 
     @property
     def seqnames(self) -> Sequence[str]:
-        """Get sequence or chromosome names
+        """Get sequence or chromosome names.
 
         Returns:
-            Sequence[str]: list of all chromosome names
+            Sequence[str]: list of all chromosome names.
         """
         return self.column("seqnames")
 
     @property
     def seqlengths(self) -> Optional[MutableMapping[str, int]]:
-        """Get sequence or chromosome names and their lengths
+        """Get sequence or chromosome names and their lengths.
 
         Returns:
-            MutableMapping[str, int]: dict containing chromosome names with their lengths
+            MutableMapping[str, int]: dict containing chromosome names 
+                with their lengths.
         """
 
         if "seqlengths" not in self._columnNames:
@@ -82,7 +83,8 @@ class SeqInfo(BiocFrame):
         """are the sequences Circular?
 
         Returns:
-            MutableMapping[str, bool]: dict containing chromosome names and if they are circular
+            MutableMapping[str, bool]: dict containing chromosome names 
+                and if they are circular.
         """
 
         if "isCircular" not in self._columnNames:
@@ -92,10 +94,10 @@ class SeqInfo(BiocFrame):
 
     @property
     def genome(self) -> Optional[str]:
-        """Get genome/species information
+        """Get genome/species information.
 
         Returns:
-            str: get species name or genome
+            str: get species name or genome.
         """
 
         if self._metadata and "genome" in self._metadata:

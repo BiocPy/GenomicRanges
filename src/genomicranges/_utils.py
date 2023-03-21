@@ -200,3 +200,44 @@
 #         split_counter += tint[1]
 
 #     return disjoint
+
+        # self._setIndex()
+
+    # @staticmethod
+    # def buildIndex(
+    #     seqnames: Union[Sequence[str], pd.Series],
+    #     starts: Union[Sequence[int], pd.Series],
+    #     ends: Union[Sequence[int], pd.Series],
+    # ) -> Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]]:
+    #     """Given genomic positions, builds an NCLS index
+
+    #     Args:
+    #         seqnames (Union[Sequence[str], pd.Series]): sequence or chromosome names
+    #         starts (Union[Sequence[int], pd.Series]): genomic start interval
+    #         ends (Union[Sequence[int], pd.Series]): genomic end interval
+
+    #     Returns:
+    #         Tuple[Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]], pd.DataFrame]: a tuple containing
+    #             an NCLS for each chromsome and a pandas Dataframe of all ranges.
+    #     """
+    #     ranges = pd.DataFrame({"seqnames": seqnames, "starts": starts, "ends": ends})
+    #     ranges["_index"] = range(0, ranges.shape[0])
+    #     groups = ranges.groupby("seqnames")
+
+    #     # generate NCLS indexes for each seqname
+    #     indexes = {}
+    #     for group, rows in groups:
+    #         indexes[group] = ncls.NCLS(
+    #             rows.starts.astype(int).values,
+    #             rows.ends.astype(int).values,
+    #             rows._index.astype(int).values,
+    #         )
+
+    #     return indexes
+
+    # def _setIndex(self):
+    #     """Internal function to set or update NCLS index
+    #     """
+    #     self._index = GenomicRanges.buildIndex(
+    #         self.column("seqnames"), self.column("starts"), self.column("ends")
+    #     )

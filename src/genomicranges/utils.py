@@ -14,8 +14,8 @@ def calc_row_gapwidth(
         - a number if there is a gap
 
     Args:
-        a (MutableMapping[str, Any]): a row from GenomicRanges
-        b (MutableMapping[str, Any]): a row from GenomicRanges
+        a (MutableMapping[str, Any]): a row from `GenomicRanges`.
+        b (MutableMapping[str, Any]): a row from `GenomicRanges`.
 
     Returns:
         Optional[int]: gapwidth if exists else None
@@ -34,14 +34,15 @@ def calc_row_gapwidth(
 def np_split_groups_ne(
     ary: np.ndarray, step: int = 0
 ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
-    """Split a numpy array by consecutive values
+    """Split a numpy array by consecutive values.
 
     Args:
-        ary (np.ndarray): a numpy array
-        step (int, Optional): value to split consecutive intervals by
+        ary (np.ndarray): a numpy array.
+        step (int, optional): value to split consecutive intervals by.
 
     Returns:
-        Tuple(List[np.ndarray], List[np.ndarray]): tuple with indices and their coverage
+        Tuple(List[np.ndarray], List[np.ndarray]): tuple with indices 
+            and their coverage.
     """
     return [
         (x[0], x[1])
@@ -59,17 +60,18 @@ def create_np_interval_vector(
     dontSum: bool = False,
     value: int = 1,
 ) -> Tuple[np.ndarray, Optional[List]]:
-    """Represent intervals/calculate coverage
+    """Represent intervals/calculate coverage.
 
     Args:
-        intervals (List[Tuple[int, int]]): input interval vector
+        intervals (List[Tuple[int, int]]): input interval vector.
         withRevMap (bool, optional): return map of indices. Defaults to False.
-        forceSize (Optional[int], optional): force size of the array.
+        forceSize (int, optional): force size of the array.
         dontSum (bool, optional): do not sum. Defaults to False.
         value (int, optional): default value to increment. Defaults to 1.
 
     Returns:
-        Tuple[np.ndarray, Optional[List]]: a numpy array representing coverage from the intervals
+        Tuple[np.ndarray, Optional[List]]: a numpy array representing 
+            coverage from the intervals.
     """
     if len(intervals) < 1:
         return intervals
@@ -100,15 +102,15 @@ def create_np_interval_vector(
 def find_unary_union(
     intervals: List[Tuple[int, int]], withRevMap: bool = False
 ) -> Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]:
-    """Union of all overlapping intervals
+    """Union of all overlapping intervals.
 
     Args:
-        intervals (List[Tuple[int, int]]): input interval vector
+        intervals (List[Tuple[int, int]]): input interval vector.
         withRevMap (bool, optional): return map of indices. Defaults to False.
 
     Returns:
-        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List containing tuples with 
-            (start, end, indices) for each contiguous region
+        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
+            containing tuples with (start, end, indices) for each contiguous region.
     """
     np_intvals, revmap = create_np_interval_vector(
         intervals=intervals, withRevMap=withRevMap
@@ -154,16 +156,16 @@ def find_unary_union(
 def find_gaps(
     intervals: List[Tuple[int, int]], start_limit: int = 1, end_limit: int = None
 ) -> List[Tuple[int, int]]:
-    """Find Gaps across all intervals
+    """Find gaps across all intervals.
 
     Args:
-        intervals (List[Tuple[int, int]]): input interval vector
+        intervals (List[Tuple[int, int]]): input interval vector.
         start_limit (int, optional): start for identifying gaps. Defaults to 1.
         end_limit (int, optional): end interval. Defaults to None.
 
     Returns:
         List[Tuple[int, int]]: List of tuples with 
-            (start, end) for each gap
+            (start, end) for each gap.
     """
 
     min_start = start_limit
@@ -209,15 +211,15 @@ def find_gaps(
 def find_disjoin(
     intervals: List[Tuple[int, int]], withRevMap: bool = False
 ) -> Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]:
-    """Find disjoin sets across all intervals
+    """Find disjoint sets across all intervals.
 
     Args:
-        intervals (List[Tuple[int, int]]): input interval vector
+        intervals (List[Tuple[int, int]]): input interval vector.
         withRevMap (bool, optional): return map of indices. Defaults to False.
 
     Returns:
-        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List of tuples with 
-            (start, end)
+        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
+            of tuples with (start, end).
     """
     np_intvals, revmap = create_np_interval_vector(
         intervals=intervals, withRevMap=withRevMap
@@ -272,16 +274,16 @@ def find_disjoin(
 def find_unary_intersect(
     intervals: List[Tuple[int, int]], withRevMap: bool = False, threshold: int = 1
 ) -> Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]:
-    """Intersection of all intervals
+    """Intersection of all intervals.
 
     Args:
-        intervals (List[Tuple[int, int]]): input interval vector
+        intervals (List[Tuple[int, int]]): input interval vector.
         withRevMap (bool, optional): return map of indices?. Defaults to False.
         threshold (int, optional): threshold for cutoff. Defaults to 1.
 
     Returns:
-        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List containing tuples with 
-            (start, end, indices) for each contiguous region
+        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
+            containing tuples with (start, end, indices) for each contiguous region.
     """
     np_intvals, revmap = create_np_interval_vector(
         intervals=intervals, withRevMap=withRevMap
@@ -330,13 +332,13 @@ def find_unary_intersect(
 
 
 def find_union(*intervals: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
-    """Union all intervals, input can be any number of interval lists
+    """Union all intervals, input can be any number of interval lists.
 
     Args:
-        *intervals (List[Tuple[int, int]]): lists containing intervals
+        *intervals (List[Tuple[int, int]]): lists containing intervals.
 
     Returns:
-        List[Tuple[int, int]]: Union of all intervals
+        List[Tuple[int, int]]: Union of all intervals.
     """
     all_intervals = []
     for intval in intervals:
@@ -346,13 +348,13 @@ def find_union(*intervals: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
 
 
 def find_intersect(*intervals: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
-    """Intersection of all intervals, input can be any number of interval lists
+    """Intersection of all intervals, input can be any number of interval lists.
 
     Args:
-        *intervals (List[Tuple[int, int]]): lists containing intervals
+        *intervals (List[Tuple[int, int]]): list containing intervals.
 
     Returns:
-        List[Tuple[int, int]]: Intersection of all intervals
+        List[Tuple[int, int]]: Intersection of all intervals.
     """
     all_intervals = []
     for intval in intervals:
@@ -366,13 +368,13 @@ def find_intersect(*intervals: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
 def find_diff(
     a: List[Tuple[int, int]], b: List[Tuple[int, int]]
 ) -> List[Tuple[int, int]]:
-    """Set difference between intervals in a and b
+    """Set difference between intervals in a and b.
 
     Args:
-        a, b (List[Tuple[int, int]]): lists containing intervals
+        a, b (List[Tuple[int, int]]): lists containing intervals.
 
     Returns:
-        List[Tuple[int, int]]: Intersection of all intervals
+        List[Tuple[int, int]]: Intersection of all intervals.
     """
 
     a_max_end = max([x[1] for x in a])
@@ -415,14 +417,15 @@ def find_diff(
 def compute_mean(
     intervals: List[Tuple[int, int]], values: Union[List[int], List[float]]
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Compute coverage and sum ndarrays
+    """Compute coverage and sum ndarrays.
 
     Args:
-        intervals (List[Tuple[int, int]]): input interval list
-        values (Union[List[int], List[float]]): an int or float vector with the same size as intervals
+        intervals (List[Tuple[int, int]]): input interval list.
+        values (Union[List[int], List[float]]): an int or float vector with the 
+            same size as intervals.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays
+        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays.
     """
     max_end = None
     if max_end is None:
@@ -442,14 +445,15 @@ def compute_mean(
 def compute_mean(
     intervals: List[Tuple[int, int]], values: Union[List[int], List[float]]
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Compute coverage and sum ndarrays
+    """Compute coverage and sum ndarrays.
 
     Args:
-        intervals (List[Tuple[int, int]]): input interval list
-        values (Union[List[int], List[float]]): an int or float vector with the same size as intervals
+        intervals (List[Tuple[int, int]]): input interval list.
+        values (Union[List[int], List[float]]): an int or float vector with 
+            the same size as intervals.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays
+        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays.
     """
     max_end = None
     if max_end is None:
@@ -476,13 +480,14 @@ def find_overlaps(
     minOverlap: int = 1,
     queryType: str = "any",
 ) -> List[Tuple[Tuple[int, int], int, List[int]]]:
-    """Find overlaps between subject and query
+    """Find overlaps between subject and query.
 
     Args:
-        subject (List[Tuple[int, int]]): intervals
-        query (List[Tuple[int, int]]): query intervals
+        subject (List[Tuple[int, int]]): intervals.
+        query (List[Tuple[int, int]]): query intervals.
         maxGap (int, optional): maximum gap allowed. Defaults to -1 for no gaps.
-        minOverlap (int, optional): minimum overlap needed for intervals to be considered as overlapping. Defaults to 1.
+        minOverlap (int, optional): minimum overlap needed for intervals to be 
+            considered as overlapping. Defaults to 1.
         queryType (str, optional): query type, one of any
                 "any": any overlap is good
                 "start": overlap at the beginning of the intervals
@@ -491,10 +496,11 @@ def find_overlaps(
             Defaults to "any".
 
     Raises:
-        ValueError: query type is incorrect
+        ValueError: query type is incorrect.
 
     Returns:
-        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals with their overlaps
+        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals 
+            with their overlaps.
     """
     if queryType not in OVERLAP_QUERY_TYPES:
         raise ValueError(f"{queryType} must be one of {OVERLAP_QUERY_TYPES}")
@@ -538,17 +544,18 @@ def find_nearest(
     stepstart: int = 3,
     stepend: int = 3,
 ) -> List[Tuple[Tuple[int, int], int, List[int]]]:
-    """Find nearest intervals in subject for even interval in query
+    """Find nearest intervals in subject for even interval in query.
 
     Args:
-        subject (List[Tuple[int, int]]): intervals
-        query (List[Tuple[int, int]]): query intervals
+        subject (List[Tuple[int, int]]): intervals.
+        query (List[Tuple[int, int]]): query intervals.
         maxGap (int, optional): maximum gap allowed. Defaults to -1 for no gaps.
         stepstart (int, optional): step start. Defaults to 3.
         stepend (int, optional): step end. Defaults to 3.
 
     Returns:
-        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals with their overlaps
+        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals 
+            with their overlaps.
     """
     _, subject_revmap = create_np_interval_vector(intervals=subject, withRevMap=True)
 
@@ -592,16 +599,21 @@ def find_nearest(
     return hits
 
 
-def split_intervals(chrom: str, strand: str, start: int, end: int, step: int):
+def split_intervals(
+    chrom: str, strand: str, start: int, end: int, step: int
+) -> List[Tuple]:
     """split an interval range into equal bins. pretty much a fancy range function.
         realizes the range.
 
     Args:
-        chrom (str): chrom
-        strand (str): strand
-        start (int): start interval
-        end (int): end interval
-        step (int): width or step of each interval
+        chrom (str): chrom.
+        strand (str): strand.
+        start (int): start interval.
+        end (int): end interval.
+        step (int): width or step of each interval.
+
+    Returns:
+        List[Tuple]: list of internals split into bins.
     """
     bins = []
     for i in range(start, end + 1, step):
@@ -617,11 +629,14 @@ def slide_intervals(
         realizes the range.
 
     Args:
-        chrom (str): chrom
-        strand (str): strand
-        start (int): start interval
-        end (int): end interval
-        step (int): width or step of each interval
+        chrom (str): chrom.
+        strand (str): strand.
+        start (int): start interval.
+        end (int): end interval.
+        step (int): width or step of each interval.
+
+    Returns:
+        List[Tuple]: list of internals split into bins.
     """
     bins = []
 
@@ -632,3 +647,25 @@ def slide_intervals(
             bins.append((chrom, strand, i, min(i + width - 1, end)))
 
     return bins
+
+
+def adjust_interval(
+    row: MutableMapping[str, Any], shiftStart: int = 0, shiftEnd: int = 0,
+) -> Tuple[int, int]:
+    """Shift genomic intervals for a `row` by their `shiftStart` or `shiftEnd`.
+
+    Note: These values can be negative as well. 
+    
+    `start` and `end` cannot be negative after shift! If so, they are set to 0.
+
+    Args:
+        row (MutableMapping[str, Any]): a row from `GenomicRanges`.
+        shiftStart (int, optional): number of positions to shift start by. 
+            Defaults to 0.
+        shiftEnd (int, optional): number of positions to shift end by. 
+            Defaults to 0.
+
+    Returns:
+        Tuple[int, int]: adjusted start and end interval.
+    """
+    return (max(0, row["starts"] + shiftStart), max(0, row["ends"] + shiftEnd))

@@ -16,6 +16,18 @@ pip install genomicranges
 The package provide several ways to represent genomic annotations and intervals.
 
 ### Initialize a `GenomicRanges` object
+
+#### From UCSC or GTF file
+
+Methods are available to easily access UCSC genomes or load a genome annotation from GTF
+
+```python
+import genomicranges
+
+gr = genomicranges.fromGTF(<PATH TO GTF>)
+# OR 
+gr = genomicranges.fromUCSC(genome="hg19")
+```
 #### Pandas DataFrame
 
 A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into `GenomicRanges`. ***Intervals are inclusive on both ends.***
@@ -38,18 +50,6 @@ df = pd.DataFrame(
 )
 
 gr = genomicranges.fromPandas(df)
-```
-
-#### From UCSC or GTF file
-
-Methods are available to easily access UCSC genomes or load a genome annotation from GTF
-
-```python
-import genomicranges
-
-gr = genomicranges.fromGTF(<PATH TO GTF>)
-# OR 
-gr = genomicranges.fromUCSC(genome="hg19")
 ```
 
 ### Interval Operations

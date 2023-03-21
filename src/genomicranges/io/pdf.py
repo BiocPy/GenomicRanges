@@ -12,7 +12,7 @@ def fromPandas(data: pd.DataFrame) -> GenomicRanges:
     """Convert a pandas `Dataframe` to `GenomicRanges`.
 
     Args:
-        data (pd.DataFrame): a Pandas DataFrame object containing genomic positions.
+        data (pd.DataFrame): a Pandas `DataFrame` object containing genomic positions.
             Must contain `seqnames`, `starts` & `ends` columns.
 
     Returns:

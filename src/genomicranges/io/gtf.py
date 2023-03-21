@@ -14,13 +14,13 @@ __license__ = "MIT"
 
 
 def parse_all_attribute(row: str) -> MutableMapping:
-    """Extract all keys from the gtf/gff attribute string
+    """Extract all keys from the gtf/gff attribute string.
 
     Args:
-        row (str): a row from GTF
+        row (str): a row from GTF.
 
     Returns:
-        MutableMapping: dict containing extracted keys and their values
+        MutableMapping: dict containing extracted keys and their values.
     """
     attr = row["group"]
     infos = attr.split(";")
@@ -34,14 +34,14 @@ def parse_all_attribute(row: str) -> MutableMapping:
 
 
 def parse_gtf(path: str, compressed: bool) -> pd.DataFrame:
-    """Read a GTF file as pandas DataFrame
+    """Read a GTF file as pandas DataFrame.
 
     Args:
-        path (str): path to the file
-        compressed (bool): is compression gzip ?
+        path (str): path to the file.
+        compressed (bool): is compression gzip?
 
     Returns:
-        pd.DataFrame: DataFrame representation of the gtf file
+        pd.DataFrame: DataFrame representation of the gtf file.
     """
     logging.info(f"Reading File - {path}")
     if compressed:
@@ -91,7 +91,7 @@ def readGTF(file: str) -> GenomicRanges:
     """Read  GTF file as `GenomicRanges`.
 
     Args:
-        file (str): path to gtf file
+        file (str): path to gtf file.
 
     Returns:
         GenomicRanges:  a new `GenomicRanges` with the genomic regions.

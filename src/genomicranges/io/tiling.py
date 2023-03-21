@@ -21,8 +21,8 @@ def tileGenome(
 
     Args:
         seqlengths (Union[MutableMapping, SeqInfo]): sequence lengths of each chromosome.
-        n (Optional[int], optional): number of intervals to split into. Defaults to None.
-        width (Optional[int], optional): width of each interval. Defaults to None.
+        n (int, optional): number of intervals to split into. Defaults to None.
+        width (int, optional): width of each interval. Defaults to None.
 
     Raises:
         ValueError: either `n` or `width` must be provided but not both.

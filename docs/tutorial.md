@@ -90,7 +90,7 @@ gr.score = [<NEW ARRAY OF VALUES>]
 
 ## Access any column
 
-Aside from the default getters, `column` methods provides a way to quicky access any column in the object.
+Aside from the default getters, `column` methods provides a way to quickly access any column in the object.
 
 ```python
 gr.column("seqnames")
