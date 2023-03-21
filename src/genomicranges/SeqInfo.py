@@ -20,7 +20,7 @@ class SeqInfo(BiocFrame):
 
     def __init__(
         self,
-        data: Optional[MutableMapping[str, Union[List[Any], MutableMapping]]] = None,
+        data: MutableMapping[str, Union[List[Any], MutableMapping]],
         numberOfRows: Optional[int] = None,
         rowNames: Optional[Sequence[str]] = None,
         columnNames: Optional[Sequence[str]] = None,

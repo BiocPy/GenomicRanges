@@ -8,7 +8,7 @@ def calc_row_gapwidth(
     a: MutableMapping[str, Any], b: MutableMapping[str, Any]
 ) -> Optional[int]:
     """Given two genomic positions from GenomicRanges, calculates gapwidth
-        returns 
+    returns 
         - `nan` if the sequences are not comparable
         - 0 if they overlap
         - a number if there is a gap
@@ -42,7 +42,7 @@ def np_split_groups_ne(
 
     Returns:
         Tuple(List[np.ndarray], List[np.ndarray]): tuple with indices 
-            and their coverage.
+        and their coverage.
     """
     return [
         (x[0], x[1])
@@ -71,7 +71,7 @@ def create_np_interval_vector(
 
     Returns:
         Tuple[np.ndarray, Optional[List]]: a numpy array representing 
-            coverage from the intervals.
+        coverage from the intervals.
     """
     if len(intervals) < 1:
         return intervals
@@ -110,7 +110,7 @@ def find_unary_union(
 
     Returns:
         Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
-            containing tuples with (start, end, indices) for each contiguous region.
+        containing tuples with (start, end, indices) for each contiguous region.
     """
     np_intvals, revmap = create_np_interval_vector(
         intervals=intervals, withRevMap=withRevMap
@@ -165,7 +165,7 @@ def find_gaps(
 
     Returns:
         List[Tuple[int, int]]: List of tuples with 
-            (start, end) for each gap.
+        (start, end) for each gap.
     """
 
     min_start = start_limit
@@ -219,7 +219,7 @@ def find_disjoin(
 
     Returns:
         Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
-            of tuples with (start, end).
+        of tuples with (start, end).
     """
     np_intvals, revmap = create_np_interval_vector(
         intervals=intervals, withRevMap=withRevMap
@@ -283,7 +283,7 @@ def find_unary_intersect(
 
     Returns:
         Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
-            containing tuples with (start, end, indices) for each contiguous region.
+        containing tuples with (start, end, indices) for each contiguous region.
     """
     np_intvals, revmap = create_np_interval_vector(
         intervals=intervals, withRevMap=withRevMap
@@ -421,34 +421,6 @@ def compute_mean(
 
     Args:
         intervals (List[Tuple[int, int]]): input interval list.
-        values (Union[List[int], List[float]]): an int or float vector with the 
-            same size as intervals.
-
-    Returns:
-        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays.
-    """
-    max_end = None
-    if max_end is None:
-        max_end = max([x[1] for x in intervals])
-
-    np_cov = np.zeros(max_end)
-    np_sum = np.zeros(max_end)
-
-    for idx in range(len(intervals)):
-        i = intervals[idx]
-        np_cov[i[0] - 1 : i[1]] += 1
-        np_sum[i[0] - 1 : i[1]] += values[idx]
-
-    return (np_cov, np_sum)
-
-
-def compute_mean(
-    intervals: List[Tuple[int, int]], values: Union[List[int], List[float]]
-) -> Tuple[np.ndarray, np.ndarray]:
-    """Compute coverage and sum ndarrays.
-
-    Args:
-        intervals (List[Tuple[int, int]]): input interval list.
         values (Union[List[int], List[float]]): an int or float vector with 
             the same size as intervals.
 
@@ -500,7 +472,7 @@ def find_overlaps(
 
     Returns:
         List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals 
-            with their overlaps.
+        with their overlaps.
     """
     if queryType not in OVERLAP_QUERY_TYPES:
         raise ValueError(f"{queryType} must be one of {OVERLAP_QUERY_TYPES}")
@@ -555,7 +527,7 @@ def find_nearest(
 
     Returns:
         List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals 
-            with their overlaps.
+        with their overlaps.
     """
     _, subject_revmap = create_np_interval_vector(intervals=subject, withRevMap=True)
 
@@ -603,7 +575,7 @@ def split_intervals(
     chrom: str, strand: str, start: int, end: int, step: int
 ) -> List[Tuple]:
     """split an interval range into equal bins. pretty much a fancy range function.
-        realizes the range.
+    realizes the range.
 
     Args:
         chrom (str): chrom.
@@ -626,7 +598,7 @@ def slide_intervals(
     chrom: str, strand: str, start: int, end: int, width: int, step: int
 ):
     """Sliding intervals. pretty much a fancy range function.
-        realizes the range.
+    realizes the range.
 
     Args:
         chrom (str): chrom.
