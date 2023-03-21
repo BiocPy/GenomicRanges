@@ -73,7 +73,7 @@ class GenomicRanges(BiocFrame):
 
     def __init__(
         self,
-        data: Optional[Mapping[str, Union[List[Any], Mapping]]] = None,
+        data: Mapping[str, Union[List[Any], Mapping]],
         numberOfRows: Optional[int] = None,
         rowNames: Optional[Sequence[str]] = None,
         columnNames: Optional[Sequence[str]] = None,
@@ -86,9 +86,9 @@ class GenomicRanges(BiocFrame):
         for each genomic interval.
 
         Args:
-            data (Mapping[str, Union[List[Any], Mapping]], optional): 
-                columns as dictionary, Must contain 
-                `seqnames`, `starts` and `ends` columns. Defaults to None.
+            data (Mapping[str, Union[List[Any], Mapping]]): 
+                columns as dictionary, Must contain `seqnames`, `starts` and 
+                    `ends` columns.
             numberOfRows (int, optional): Number of genomic 
                 intervals (or rows). Defaults to None.
             rowNames (Sequence[str], optional): Row index. 
@@ -102,7 +102,6 @@ class GenomicRanges(BiocFrame):
     def _validate(self):
         """Internal function to validate `GenomicRanges`.
         """
-
         if "strand" not in self._data:
             self._data["strand"] = ["*"] * len(self._data["starts"])
 
