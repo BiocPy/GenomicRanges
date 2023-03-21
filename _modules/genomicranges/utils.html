@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 6.0.0 and Furo 2022.12.07 -->
-        <title>genomicranges.utils - GenomicRanges 0.2.7 documentation</title>
+    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+        <title>genomicranges.utils - GenomicRanges 0.2.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.2.7 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.2.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2.7 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.2.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -222,15 +222,15 @@
 <div class="viewcode-block" id="calc_row_gapwidth"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.calc_row_gapwidth">[docs]</a><span class="k">def</span> <span class="nf">calc_row_gapwidth</span><span class="p">(</span>
     <span class="n">a</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Given two genomic positions from GenomicRanges, calculates gapwidth</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given two genomic positions from GenomicRanges, calculates gapwidth</span>
 <span class="sd">        returns </span>
 <span class="sd">        - `nan` if the sequences are not comparable</span>
 <span class="sd">        - 0 if they overlap</span>
 <span class="sd">        - a number if there is a gap</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        a (MutableMapping[str, Any]): a row from GenomicRanges</span>
-<span class="sd">        b (MutableMapping[str, Any]): a row from GenomicRanges</span>
+<span class="sd">        a (MutableMapping[str, Any]): a row from `GenomicRanges`.</span>
+<span class="sd">        b (MutableMapping[str, Any]): a row from `GenomicRanges`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Optional[int]: gapwidth if exists else None</span>
@@ -249,14 +249,15 @@
 <div class="viewcode-block" id="np_split_groups_ne"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.np_split_groups_ne">[docs]</a><span class="k">def</span> <span class="nf">np_split_groups_ne</span><span class="p">(</span>
     <span class="n">ary</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Split a numpy array by consecutive values</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a numpy array by consecutive values.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ary (np.ndarray): a numpy array</span>
-<span class="sd">        step (int, Optional): value to split consecutive intervals by</span>
+<span class="sd">        ary (np.ndarray): a numpy array.</span>
+<span class="sd">        step (int, optional): value to split consecutive intervals by.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple(List[np.ndarray], List[np.ndarray]): tuple with indices and their coverage</span>
+<span class="sd">        Tuple(List[np.ndarray], List[np.ndarray]): tuple with indices </span>
+<span class="sd">            and their coverage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -274,17 +275,18 @@
     <span class="n">dontSum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Represent intervals/calculate coverage</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent intervals/calculate coverage.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector</span>
+<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector.</span>
 <span class="sd">        withRevMap (bool, optional): return map of indices. Defaults to False.</span>
-<span class="sd">        forceSize (Optional[int], optional): force size of the array.</span>
+<span class="sd">        forceSize (int, optional): force size of the array.</span>
 <span class="sd">        dontSum (bool, optional): do not sum. Defaults to False.</span>
 <span class="sd">        value (int, optional): default value to increment. Defaults to 1.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[np.ndarray, Optional[List]]: a numpy array representing coverage from the intervals</span>
+<span class="sd">        Tuple[np.ndarray, Optional[List]]: a numpy array representing </span>
+<span class="sd">            coverage from the intervals.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intervals</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">intervals</span>
@@ -315,15 +317,15 @@
 <div class="viewcode-block" id="find_unary_union"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.find_unary_union">[docs]</a><span class="k">def</span> <span class="nf">find_unary_union</span><span class="p">(</span>
     <span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">withRevMap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
-    <span class="sd">&quot;&quot;&quot;Union of all overlapping intervals</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Union of all overlapping intervals.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector</span>
+<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector.</span>
 <span class="sd">        withRevMap (bool, optional): return map of indices. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List containing tuples with </span>
-<span class="sd">            (start, end, indices) for each contiguous region</span>
+<span class="sd">        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List </span>
+<span class="sd">            containing tuples with (start, end, indices) for each contiguous region.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">np_intvals</span><span class="p">,</span> <span class="n">revmap</span> <span class="o">=</span> <span class="n">create_np_interval_vector</span><span class="p">(</span>
         <span class="n">intervals</span><span class="o">=</span><span class="n">intervals</span><span class="p">,</span> <span class="n">withRevMap</span><span class="o">=</span><span class="n">withRevMap</span>
@@ -369,16 +371,16 @@
 <div class="viewcode-block" id="find_gaps"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.find_gaps">[docs]</a><span class="k">def</span> <span class="nf">find_gaps</span><span class="p">(</span>
     <span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">start_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Find Gaps across all intervals</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find gaps across all intervals.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector</span>
+<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector.</span>
 <span class="sd">        start_limit (int, optional): start for identifying gaps. Defaults to 1.</span>
 <span class="sd">        end_limit (int, optional): end interval. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        List[Tuple[int, int]]: List of tuples with </span>
-<span class="sd">            (start, end) for each gap</span>
+<span class="sd">            (start, end) for each gap.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">min_start</span> <span class="o">=</span> <span class="n">start_limit</span>
@@ -424,15 +426,15 @@
 <div class="viewcode-block" id="find_disjoin"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.find_disjoin">[docs]</a><span class="k">def</span> <span class="nf">find_disjoin</span><span class="p">(</span>
     <span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">withRevMap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
-    <span class="sd">&quot;&quot;&quot;Find disjoin sets across all intervals</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find disjoint sets across all intervals.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector</span>
+<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector.</span>
 <span class="sd">        withRevMap (bool, optional): return map of indices. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List of tuples with </span>
-<span class="sd">            (start, end)</span>
+<span class="sd">        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List </span>
+<span class="sd">            of tuples with (start, end).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">np_intvals</span><span class="p">,</span> <span class="n">revmap</span> <span class="o">=</span> <span class="n">create_np_interval_vector</span><span class="p">(</span>
         <span class="n">intervals</span><span class="o">=</span><span class="n">intervals</span><span class="p">,</span> <span class="n">withRevMap</span><span class="o">=</span><span class="n">withRevMap</span>
@@ -487,16 +489,16 @@
 <div class="viewcode-block" id="find_unary_intersect"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.find_unary_intersect">[docs]</a><span class="k">def</span> <span class="nf">find_unary_intersect</span><span class="p">(</span>
     <span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">withRevMap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
-    <span class="sd">&quot;&quot;&quot;Intersection of all intervals</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Intersection of all intervals.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector</span>
+<span class="sd">        intervals (List[Tuple[int, int]]): input interval vector.</span>
 <span class="sd">        withRevMap (bool, optional): return map of indices?. Defaults to False.</span>
 <span class="sd">        threshold (int, optional): threshold for cutoff. Defaults to 1.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List containing tuples with </span>
-<span class="sd">            (start, end, indices) for each contiguous region</span>
+<span class="sd">        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List </span>
+<span class="sd">            containing tuples with (start, end, indices) for each contiguous region.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">np_intvals</span><span class="p">,</span> <span class="n">revmap</span> <span class="o">=</span> <span class="n">create_np_interval_vector</span><span class="p">(</span>
         <span class="n">intervals</span><span class="o">=</span><span class="n">intervals</span><span class="p">,</span> <span class="n">withRevMap</span><span class="o">=</span><span class="n">withRevMap</span>
@@ -545,13 +547,13 @@
 
 
 <div class="viewcode-block" id="find_union"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.find_union">[docs]</a><span class="k">def</span> <span class="nf">find_union</span><span class="p">(</span><span class="o">*</span><span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Union all intervals, input can be any number of interval lists</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Union all intervals, input can be any number of interval lists.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        *intervals (List[Tuple[int, int]]): lists containing intervals</span>
+<span class="sd">        *intervals (List[Tuple[int, int]]): lists containing intervals.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[int, int]]: Union of all intervals</span>
+<span class="sd">        List[Tuple[int, int]]: Union of all intervals.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">all_intervals</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">intval</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
@@ -561,13 +563,13 @@
 
 
 <div class="viewcode-block" id="find_intersect"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.find_intersect">[docs]</a><span class="k">def</span> <span class="nf">find_intersect</span><span class="p">(</span><span class="o">*</span><span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Intersection of all intervals, input can be any number of interval lists</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Intersection of all intervals, input can be any number of interval lists.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        *intervals (List[Tuple[int, int]]): lists containing intervals</span>
+<span class="sd">        *intervals (List[Tuple[int, int]]): list containing intervals.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[int, int]]: Intersection of all intervals</span>
+<span class="sd">        List[Tuple[int, int]]: Intersection of all intervals.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">all_intervals</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">intval</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
@@ -581,13 +583,13 @@
 <div class="viewcode-block" id="find_diff"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.find_diff">[docs]</a><span class="k">def</span> <span class="nf">find_diff</span><span class="p">(</span>
     <span class="n">a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Set difference between intervals in a and b</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set difference between intervals in a and b.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        a, b (List[Tuple[int, int]]): lists containing intervals</span>
+<span class="sd">        a, b (List[Tuple[int, int]]): lists containing intervals.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[int, int]]: Intersection of all intervals</span>
+<span class="sd">        List[Tuple[int, int]]: Intersection of all intervals.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">a_max_end</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">])</span>
@@ -630,14 +632,15 @@
 <span class="k">def</span> <span class="nf">compute_mean</span><span class="p">(</span>
     <span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Compute coverage and sum ndarrays</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute coverage and sum ndarrays.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        intervals (List[Tuple[int, int]]): input interval list</span>
-<span class="sd">        values (Union[List[int], List[float]]): an int or float vector with the same size as intervals</span>
+<span class="sd">        intervals (List[Tuple[int, int]]): input interval list.</span>
+<span class="sd">        values (Union[List[int], List[float]]): an int or float vector with the </span>
+<span class="sd">            same size as intervals.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays</span>
+<span class="sd">        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">max_end</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">max_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -657,14 +660,15 @@
 <div class="viewcode-block" id="compute_mean"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.compute_mean">[docs]</a><span class="k">def</span> <span class="nf">compute_mean</span><span class="p">(</span>
     <span class="n">intervals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Compute coverage and sum ndarrays</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute coverage and sum ndarrays.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        intervals (List[Tuple[int, int]]): input interval list</span>
-<span class="sd">        values (Union[List[int], List[float]]): an int or float vector with the same size as intervals</span>
+<span class="sd">        intervals (List[Tuple[int, int]]): input interval list.</span>
+<span class="sd">        values (Union[List[int], List[float]]): an int or float vector with </span>
+<span class="sd">            the same size as intervals.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays</span>
+<span class="sd">        Tuple[np.ndarray, np.ndarray]: a tuple with coverage and sum noarrays.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">max_end</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">max_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -691,13 +695,14 @@
     <span class="n">minOverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">queryType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
-    <span class="sd">&quot;&quot;&quot;Find overlaps between subject and query</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find overlaps between subject and query.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        subject (List[Tuple[int, int]]): intervals</span>
-<span class="sd">        query (List[Tuple[int, int]]): query intervals</span>
+<span class="sd">        subject (List[Tuple[int, int]]): intervals.</span>
+<span class="sd">        query (List[Tuple[int, int]]): query intervals.</span>
 <span class="sd">        maxGap (int, optional): maximum gap allowed. Defaults to -1 for no gaps.</span>
-<span class="sd">        minOverlap (int, optional): minimum overlap needed for intervals to be considered as overlapping. Defaults to 1.</span>
+<span class="sd">        minOverlap (int, optional): minimum overlap needed for intervals to be </span>
+<span class="sd">            considered as overlapping. Defaults to 1.</span>
 <span class="sd">        queryType (str, optional): query type, one of any</span>
 <span class="sd">                &quot;any&quot;: any overlap is good</span>
 <span class="sd">                &quot;start&quot;: overlap at the beginning of the intervals</span>
@@ -706,10 +711,11 @@
 <span class="sd">            Defaults to &quot;any&quot;.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: query type is incorrect</span>
+<span class="sd">        ValueError: query type is incorrect.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals with their overlaps</span>
+<span class="sd">        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals </span>
+<span class="sd">            with their overlaps.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">queryType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OVERLAP_QUERY_TYPES</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">queryType</span><span class="si">}</span><span class="s2"> must be one of </span><span class="si">{</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -753,17 +759,18 @@
     <span class="n">stepstart</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
     <span class="n">stepend</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
-    <span class="sd">&quot;&quot;&quot;Find nearest intervals in subject for even interval in query</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find nearest intervals in subject for even interval in query.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        subject (List[Tuple[int, int]]): intervals</span>
-<span class="sd">        query (List[Tuple[int, int]]): query intervals</span>
+<span class="sd">        subject (List[Tuple[int, int]]): intervals.</span>
+<span class="sd">        query (List[Tuple[int, int]]): query intervals.</span>
 <span class="sd">        maxGap (int, optional): maximum gap allowed. Defaults to -1 for no gaps.</span>
 <span class="sd">        stepstart (int, optional): step start. Defaults to 3.</span>
 <span class="sd">        stepend (int, optional): step end. Defaults to 3.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals with their overlaps</span>
+<span class="sd">        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals </span>
+<span class="sd">            with their overlaps.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">subject_revmap</span> <span class="o">=</span> <span class="n">create_np_interval_vector</span><span class="p">(</span><span class="n">intervals</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span> <span class="n">withRevMap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -807,16 +814,21 @@
     <span class="k">return</span> <span class="n">hits</span></div>
 
 
-<div class="viewcode-block" id="split_intervals"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.split_intervals">[docs]</a><span class="k">def</span> <span class="nf">split_intervals</span><span class="p">(</span><span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;split an interval range into equal bins. pretty much a fancy range function.</span>
+<div class="viewcode-block" id="split_intervals"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.split_intervals">[docs]</a><span class="k">def</span> <span class="nf">split_intervals</span><span class="p">(</span>
+    <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;split an interval range into equal bins. pretty much a fancy range function.</span>
 <span class="sd">        realizes the range.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        chrom (str): chrom</span>
-<span class="sd">        strand (str): strand</span>
-<span class="sd">        start (int): start interval</span>
-<span class="sd">        end (int): end interval</span>
-<span class="sd">        step (int): width or step of each interval</span>
+<span class="sd">        chrom (str): chrom.</span>
+<span class="sd">        strand (str): strand.</span>
+<span class="sd">        start (int): start interval.</span>
+<span class="sd">        end (int): end interval.</span>
+<span class="sd">        step (int): width or step of each interval.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Tuple]: list of internals split into bins.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bins</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
@@ -828,15 +840,18 @@
 <div class="viewcode-block" id="slide_intervals"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.slide_intervals">[docs]</a><span class="k">def</span> <span class="nf">slide_intervals</span><span class="p">(</span>
     <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strand</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sliding intervals. pretty much a fancy range function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sliding intervals. pretty much a fancy range function.</span>
 <span class="sd">        realizes the range.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        chrom (str): chrom</span>
-<span class="sd">        strand (str): strand</span>
-<span class="sd">        start (int): start interval</span>
-<span class="sd">        end (int): end interval</span>
-<span class="sd">        step (int): width or step of each interval</span>
+<span class="sd">        chrom (str): chrom.</span>
+<span class="sd">        strand (str): strand.</span>
+<span class="sd">        start (int): start interval.</span>
+<span class="sd">        end (int): end interval.</span>
+<span class="sd">        step (int): width or step of each interval.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Tuple]: list of internals split into bins.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bins</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -847,6 +862,28 @@
             <span class="n">bins</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">chrom</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">)))</span>
 
     <span class="k">return</span> <span class="n">bins</span></div>
+
+
+<div class="viewcode-block" id="adjust_interval"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.adjust_interval">[docs]</a><span class="k">def</span> <span class="nf">adjust_interval</span><span class="p">(</span>
+    <span class="n">row</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">shiftStart</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">shiftEnd</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shift genomic intervals for a `row` by their `shiftStart` or `shiftEnd`.</span>
+
+<span class="sd">    Note: These values can be negative as well. </span>
+<span class="sd">    </span>
+<span class="sd">    `start` and `end` cannot be negative after shift! If so, they are set to 0.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        row (MutableMapping[str, Any]): a row from `GenomicRanges`.</span>
+<span class="sd">        shiftStart (int, optional): number of positions to shift start by. </span>
+<span class="sd">            Defaults to 0.</span>
+<span class="sd">        shiftEnd (int, optional): number of positions to shift end by. </span>
+<span class="sd">            Defaults to 0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[int, int]: adjusted start and end interval.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">shiftStart</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">shiftEnd</span><span class="p">))</span></div>
 </pre></div>
         </article>
       </div>

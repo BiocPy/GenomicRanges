@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="genomicranges package" href="genomicranges.html" />
 
-    <!-- Generated with Sphinx 6.0.0 and Furo 2022.12.07 -->
-        <title>genomicranges.io package - GenomicRanges 0.2.7 documentation</title>
+    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+        <title>genomicranges.io package - GenomicRanges 0.2.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.2.7 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.2.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2.7 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.2.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -224,13 +224,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.io.gtf.parse_all_attribute">
 <span class="sig-prename descclassname"><span class="pre">genomicranges.io.gtf.</span></span><span class="sig-name descname"><span class="pre">parse_all_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/gtf.html#parse_all_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.gtf.parse_all_attribute" title="Permalink to this definition">#</a></dt>
-<dd><p>Extract all keys from the gtf/gff attribute string</p>
+<dd><p>Extract all keys from the gtf/gff attribute string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – a row from GTF</p>
+<dd class="field-odd"><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – a row from GTF.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict containing extracted keys and their values</p>
+<dd class="field-even"><p>dict containing extracted keys and their values.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MutableMapping</p>
@@ -240,17 +240,17 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.io.gtf.parse_gtf">
-<span class="sig-prename descclassname"><span class="pre">genomicranges.io.gtf.</span></span><span class="sig-name descname"><span class="pre">parse_gtf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.2)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/gtf.html#parse_gtf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.gtf.parse_gtf" title="Permalink to this definition">#</a></dt>
-<dd><p>Read a GTF file as pandas DataFrame</p>
+<span class="sig-prename descclassname"><span class="pre">genomicranges.io.gtf.</span></span><span class="sig-name descname"><span class="pre">parse_gtf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.3)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/gtf.html#parse_gtf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.gtf.parse_gtf" title="Permalink to this definition">#</a></dt>
+<dd><p>Read a GTF file as pandas DataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to the file</p></li>
-<li><p><strong>compressed</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – is compression gzip ?</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to the file.</p></li>
+<li><p><strong>compressed</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – is compression gzip?</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame representation of the gtf file</p>
+<dd class="field-even"><p>DataFrame representation of the gtf file.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
@@ -264,7 +264,7 @@
 <dd><p>Read  GTF file as <cite>GenomicRanges</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to gtf file</p>
+<dd class="field-odd"><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to gtf file.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a new <cite>GenomicRanges</cite> with the genomic regions.</p>
@@ -280,11 +280,11 @@
 <span id="genomicranges-io-pdf-module"></span><h2>genomicranges.io.pdf module<a class="headerlink" href="#module-genomicranges.io.pdf" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.io.pdf.fromPandas">
-<span class="sig-prename descclassname"><span class="pre">genomicranges.io.pdf.</span></span><span class="sig-name descname"><span class="pre">fromPandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.2)"><span class="pre">DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><span class="pre">GenomicRanges</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/pdf.html#fromPandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.pdf.fromPandas" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">genomicranges.io.pdf.</span></span><span class="sig-name descname"><span class="pre">fromPandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.3)"><span class="pre">DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><span class="pre">GenomicRanges</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/pdf.html#fromPandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.pdf.fromPandas" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert a pandas <cite>Dataframe</cite> to <cite>GenomicRanges</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>pd.DataFrame</em>) – a Pandas DataFrame object containing genomic positions.
+<dd class="field-odd"><p><strong>data</strong> (<em>pd.DataFrame</em>) – a Pandas <cite>DataFrame</cite> object containing genomic positions.
 Must contain <cite>seqnames</cite>, <cite>starts</cite> &amp; <cite>ends</cite> columns.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -301,14 +301,14 @@ Must contain <cite>seqnames</cite>, <cite>starts</cite> &amp; <cite>ends</cite> 
 <span id="genomicranges-io-tiling-module"></span><h2>genomicranges.io.tiling module<a class="headerlink" href="#module-genomicranges.io.tiling" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.io.tiling.tileGenome">
-<span class="sig-prename descclassname"><span class="pre">genomicranges.io.tiling.</span></span><span class="sig-name descname"><span class="pre">tileGenome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqlengths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="genomicranges.html#genomicranges.SeqInfo.SeqInfo" title="genomicranges.SeqInfo.SeqInfo"><span class="pre">SeqInfo</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><span class="pre">GenomicRanges</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/tiling.html#tileGenome"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.tiling.tileGenome" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">genomicranges.io.tiling.</span></span><span class="sig-name descname"><span class="pre">tileGenome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqlengths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="genomicranges.html#genomicranges.SeqInfo.SeqInfo" title="genomicranges.SeqInfo.SeqInfo"><span class="pre">SeqInfo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><span class="pre">GenomicRanges</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/tiling.html#tileGenome"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.tiling.tileGenome" title="Permalink to this definition">#</a></dt>
 <dd><p>Create new genomic regions by partitioning a specified genome.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>seqlengths</strong> (<em>Union</em><em>[</em><em>MutableMapping</em><em>, </em><a class="reference internal" href="genomicranges.html#genomicranges.SeqInfo.SeqInfo" title="genomicranges.SeqInfo.SeqInfo"><em>SeqInfo</em></a><em>]</em>) – sequence lengths of each chromosome.</p></li>
-<li><p><strong>n</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – number of intervals to split into. Defaults to None.</p></li>
-<li><p><strong>width</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – width of each interval. Defaults to None.</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of intervals to split into. Defaults to None.</p></li>
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – width of each interval. Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -329,19 +329,22 @@ Must contain <cite>seqnames</cite>, <cite>starts</cite> &amp; <cite>ends</cite> 
 <dl class="py function">
 <dt class="sig sig-object py" id="genomicranges.io.ucsc.access_gtf_ucsc">
 <span class="sig-prename descclassname"><span class="pre">genomicranges.io.ucsc.</span></span><span class="sig-name descname"><span class="pre">access_gtf_ucsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genome</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'refGene'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/io/ucsc.html#access_gtf_ucsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.io.ucsc.access_gtf_ucsc" title="Permalink to this definition">#</a></dt>
-<dd><p>Generate a path to a genome gtf file from UCSC e.g. (<a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/">http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/</a>)</p>
+<dd><dl class="simple">
+<dt>Generate a path to a genome gtf file from UCSC</dt><dd><p>e.g. (<a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/">http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/</a>).</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>genome</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – genome shortcode; e.g. hg19, hg38, mm10 etc</p></li>
-<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – One of refGene, ensGene, knownGene or ncbiRefSeq</p></li>
+<li><p><strong>genome</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – genome shortcode; e.g. hg19, hg38, mm10 etc.</p></li>
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – One of refGene, ensGene, knownGene or ncbiRefSeq.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><strong>Exception</strong></a> – ValueError, when <cite>type</cite> does not match with a valid input</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><strong>Exception</strong></a> – ValueError, when <cite>type</cite> does not match with a valid input.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>returns the path to the file</p>
+<dd class="field-odd"><p>returns the path to the file.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
@@ -356,12 +359,12 @@ Must contain <cite>seqnames</cite>, <cite>starts</cite> &amp; <cite>ends</cite> 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>genome</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – genome shortcode; e.g. hg19, hg38, mm10 etc</p></li>
-<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – One of refGene, ensGene, knownGene or ncbiRefSeq</p></li>
+<li><p><strong>genome</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – genome shortcode; e.g. hg19, hg38, mm10 etc.</p></li>
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – One of refGene, ensGene, knownGene or ncbiRefSeq.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a new <cite>GenomicRanges</cite> representing the gene model</p>
+<dd class="field-even"><p>a new <cite>GenomicRanges</cite> representing the gene model.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges">GenomicRanges</a></p>

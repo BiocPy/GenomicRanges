@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 6.0.0 and Furo 2022.12.07 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.2.7 documentation</title>
+    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.2.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.2.7 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.2.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2.7 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.2.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -247,6 +247,7 @@
     <span class="n">find_nearest</span><span class="p">,</span>
     <span class="n">split_intervals</span><span class="p">,</span>
     <span class="n">slide_intervals</span><span class="p">,</span>
+    <span class="n">adjust_interval</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">genomicranges</span>
@@ -257,75 +258,65 @@
 
 
 <div class="viewcode-block" id="GenomicRanges"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges">[docs]</a><span class="k">class</span> <span class="nc">GenomicRanges</span><span class="p">(</span><span class="n">BiocFrame</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class GenomicRanges to represent genomic regions and annotations&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class `GenomicRanges` represents genomic regions and annotations.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods are available to load genome annotations from UCSC or </span>
+<span class="sd">        from a pandas DataFrame.</span>
+
+<span class="sd">    Note: Pandas DataFrame must contain columns seqnames, starts, ends and strand.</span>
+<span class="sd">        If strand column is not provided, * is used as the default value for each </span>
+<span class="sd">        genomic interval.</span>
+
+<span class="sd">    ***Intervals are inclusive on both ends.***</span>
+
+<span class="sd">    Additionally, `GenomicRanges` can also contain `Sequence Information` as </span>
+<span class="sd">    part of its metadata. In most cases, it usually contains for each sequence name </span>
+<span class="sd">    (or chromosome) in the object, its length. Sequence Information can also </span>
+<span class="sd">    contain additional metadata about the `genome`, and if its circular </span>
+<span class="sd">    (`isCircular`) or not.</span>
+
+<span class="sd">    All columns other than `seqnames`, `starts, `ends` and `strand` are considered </span>
+<span class="sd">    metadata columns and can be accessed by the function `mcols`.</span>
+
+<span class="sd">    Checkout the `SeqInfo` class for more information.</span>
+
+<span class="sd">    Note: The documentation for some of the methods are copied over from the R </span>
+<span class="sd">        `GenomicRanges` package.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">required_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;ends&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">]]]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">]],</span>
         <span class="n">numberOfRows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">rowNames</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">columnNames</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a `GenomicRanges` object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a `GenomicRanges` object.</span>
+
+<span class="sd">        Note: `data` must contain `seqnames`, `starts` and `ends` columns.</span>
+<span class="sd">        If `strand` column is not provided, `*` is used as the default value</span>
+<span class="sd">        for each genomic interval.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data (Optional[Mapping[str, Union[List[Any], Mapping]]], optional): columns as dictionary, Must contain </span>
-<span class="sd">                `seqnames`, `starts` and `ends` columns. Defaults to {}.</span>
-<span class="sd">            numberOfRows (Optional[int], optional): Number of genomic intervals (or rows). Defaults to None.</span>
-<span class="sd">            rowNames (Optional[Sequence[str]], optional): Row index. Defaults to None.</span>
-<span class="sd">            columnNames (Optional[Sequence[str]], optional): column names, automatically inferred from `data`. Defaults to None.</span>
-<span class="sd">            metadata (Optional[Mapping], optional): metadata. Defaults to None.</span>
+<span class="sd">            data (Mapping[str, Union[List[Any], Mapping]]): </span>
+<span class="sd">                columns as dictionary, Must contain `seqnames`, `starts` and </span>
+<span class="sd">                    `ends` columns.</span>
+<span class="sd">            numberOfRows (int, optional): Number of genomic </span>
+<span class="sd">                intervals (or rows). Defaults to None.</span>
+<span class="sd">            rowNames (Sequence[str], optional): Row index. </span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            columnNames (Sequence[str], optional): column names, </span>
+<span class="sd">                automatically inferred from `data`. Defaults to None.</span>
+<span class="sd">            metadata (Mapping, optional): metadata. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">numberOfRows</span><span class="p">,</span> <span class="n">rowNames</span><span class="p">,</span> <span class="n">columnNames</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
 
-        <span class="c1"># self._setIndex()</span>
-
-    <span class="c1"># @staticmethod</span>
-    <span class="c1"># def buildIndex(</span>
-    <span class="c1">#     seqnames: Union[Sequence[str], pd.Series],</span>
-    <span class="c1">#     starts: Union[Sequence[int], pd.Series],</span>
-    <span class="c1">#     ends: Union[Sequence[int], pd.Series],</span>
-    <span class="c1"># ) -&gt; Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]]:</span>
-    <span class="c1">#     &quot;&quot;&quot;Given genomic positions, builds an NCLS index</span>
-
-    <span class="c1">#     Args:</span>
-    <span class="c1">#         seqnames (Union[Sequence[str], pd.Series]): sequence or chromosome names</span>
-    <span class="c1">#         starts (Union[Sequence[int], pd.Series]): genomic start interval</span>
-    <span class="c1">#         ends (Union[Sequence[int], pd.Series]): genomic end interval</span>
-
-    <span class="c1">#     Returns:</span>
-    <span class="c1">#         Tuple[Mapping[str, Union[ncls.NCLS32, ncls.NCLS64]], pd.DataFrame]: a tuple containing</span>
-    <span class="c1">#             an NCLS for each chromsome and a pandas Dataframe of all ranges.</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     ranges = pd.DataFrame({&quot;seqnames&quot;: seqnames, &quot;starts&quot;: starts, &quot;ends&quot;: ends})</span>
-    <span class="c1">#     ranges[&quot;_index&quot;] = range(0, ranges.shape[0])</span>
-    <span class="c1">#     groups = ranges.groupby(&quot;seqnames&quot;)</span>
-
-    <span class="c1">#     # generate NCLS indexes for each seqname</span>
-    <span class="c1">#     indexes = {}</span>
-    <span class="c1">#     for group, rows in groups:</span>
-    <span class="c1">#         indexes[group] = ncls.NCLS(</span>
-    <span class="c1">#             rows.starts.astype(int).values,</span>
-    <span class="c1">#             rows.ends.astype(int).values,</span>
-    <span class="c1">#             rows._index.astype(int).values,</span>
-    <span class="c1">#         )</span>
-
-    <span class="c1">#     return indexes</span>
-
-    <span class="c1"># def _setIndex(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;Internal function to set or update NCLS index</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     self._index = GenomicRanges.buildIndex(</span>
-    <span class="c1">#         self.column(&quot;seqnames&quot;), self.column(&quot;starts&quot;), self.column(&quot;ends&quot;)</span>
-    <span class="c1">#     )</span>
-
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;internal function to validate GenomicRanges</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal function to validate `GenomicRanges`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="s2">&quot;strand&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">])</span>
 
@@ -336,60 +327,62 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_ranges</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_validate_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Internal function to validate genomic ranges</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal function to validate all columns of `GenomicRanges`.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if missing required columns</span>
+<span class="sd">            ValueError: If missing required columns.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">required_columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columnNames</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;data must contain </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">required_columns</span><span class="si">}</span><span class="s2">. missing </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;data must contain </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">required_columns</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;missing </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2"> column</span><span class="si">{</span><span class="s1">&#39;s&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get sequence or chromosome names</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence or chromosome names.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[str]: list of all chromosome names</span>
+<span class="sd">            Sequence[str]: list of all chromosome names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get sequence or chromosome start positions</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence or chromosome start positions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[int]: list of all chromosome start positions</span>
+<span class="sd">            Sequence[int]: list of all chromosome start positions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;starts&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get sequence or chromosome end positions</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence or chromosome end positions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[int]: list of all chromosome end positions</span>
+<span class="sd">            Sequence[int]: list of all chromosome end positions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;ends&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GenomicRanges.ranges"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.ranges">[docs]</a>    <span class="k">def</span> <span class="nf">ranges</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">returnType</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get genomic positions.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genomic positions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ignoreStrand (bool): ignore strands? Defaults to False.</span>
 <span class="sd">            returnType (Callable, optional): format to return genomic positions. </span>
-<span class="sd">                Defaults to dictionary structure. currently supports `pd.DataFrame`.</span>
+<span class="sd">                Defaults to a dictionary representation, supports `pd.DataFrame`</span>
+<span class="sd">                or any callable representation that takes a dictionary as an input.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: `returnType` is not supported</span>
+<span class="sd">            ValueError: `returnType` is not supported.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Union[pd.DataFrame, MutableMapping, &quot;GenomicRanges&quot;]: genomic regions</span>
+<span class="sd">            Union[pd.DataFrame, MutableMapping, &quot;GenomicRanges&quot;, Any]: genomic regions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
@@ -411,20 +404,21 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">returnType</span><span class="si">}</span><span class="s2"> not supported, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">strand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get strand information (if available)</span>
+    <span class="k">def</span> <span class="nf">strand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get strand information. If strand is originally not provided, </span>
+<span class="sd">            we use &#39;*&#39; as a default value for each interval.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[Sequence[str]]: strand across all positions or None</span>
+<span class="sd">            Sequence[str]: strand across all positions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;strand&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get widths of each interval</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get widths of each interval.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[int]: width of each interval</span>
+<span class="sd">            Sequence[int]: width of each interval.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">widths</span> <span class="o">=</span> <span class="p">[]</span>
@@ -436,10 +430,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">seqInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;SeqInfo&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get the sequence information object (if available)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sequence information object (if available).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            SeqInfo: Sequence information</span>
+<span class="sd">            Optional[&quot;SeqInfo&quot;]: Sequence information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">and</span> <span class="s2">&quot;seqInfo&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span>
@@ -449,13 +443,13 @@
 
     <span class="nd">@seqInfo</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">seqInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqInfo</span><span class="p">:</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set sequence information</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set sequence information.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if seqInfo is not a `SeqInfo` class object</span>
+<span class="sd">            ValueError: if property `seqInfo` is not a `SeqInfo` class object.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            seqinfo (&quot;SeqInfo&quot;): sequence information</span>
+<span class="sd">            seqinfo (&quot;SeqInfo&quot;): sequence information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seqInfo</span><span class="p">,</span> <span class="n">SeqInfo</span><span class="p">):</span>
@@ -468,10 +462,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get length of each chromosome (if available)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get length of each chromosome (if available).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[MutableMapping[str, int]]: Sequence lengths</span>
+<span class="sd">            Optional[MutableMapping[str, int]]: Sequence lengths.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">and</span> <span class="s2">&quot;seqInfo&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span>
@@ -481,10 +475,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get score (if available).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get score (if available) for each genomic interval.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">             Optional[Sequence[Union[int, float]]]: score column</span>
+<span class="sd">             Optional[Sequence[Union[int, float]]]: score column.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="s2">&quot;score&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columnNames</span><span class="p">:</span>
@@ -494,22 +488,36 @@
 
     <span class="nd">@score</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]):</span>
-        <span class="sd">&quot;&quot;&quot;Set score.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set score.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            score (Sequence[Union[int, float]]): score values to set.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if length of provided `score` does not </span>
+<span class="sd">                match the number of intervals.</span>
+<span class="sd">            TypeError: if `score` is not a list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`score` must be a list!&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numberOfRows</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;provided incorrect number of `score` values&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;must be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_numberOfRows</span><span class="si">}</span><span class="s2">, but provided </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">score</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">isCircular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;are the sequences/chromosomes circular?</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Are the sequences/chromosomes circular? (only if available).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[MutableMapping[str, bool]]: a dict with keys as chromosome </span>
-<span class="sd">                and boolean value if its circular or not.</span>
+<span class="sd">            Optional[MutableMapping[str, bool]]: a dictionary with </span>
+<span class="sd">                keys as chromosome and boolean value if its circular or not.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">and</span> <span class="s2">&quot;seqInfo&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span>
@@ -519,10 +527,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get genome information (if available).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genome information (if available).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[str]: genome</span>
+<span class="sd">            Optional[str]: genome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">and</span> <span class="s2">&quot;seqInfo&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span>
@@ -531,10 +539,11 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="GenomicRanges.granges"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.granges">[docs]</a>    <span class="k">def</span> <span class="nf">granges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get n.ew GenomicRanges object with only ranges (`seqnames`, `starts and `ends`)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new `GenomicRanges` object with only ranges </span>
+<span class="sd">            (`seqnames`, `starts, `ends` and `strand`).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: `GenomicRanges` with only ranges</span>
+<span class="sd">            GenomicRanges: `GenomicRanges` with only ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span>
             <span class="p">{</span>
@@ -548,17 +557,23 @@
 <div class="viewcode-block" id="GenomicRanges.mcols"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.mcols">[docs]</a>    <span class="k">def</span> <span class="nf">mcols</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">returnType</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get metadata on genomic intervals.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata across all genomic intervals. </span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        All columns other than `seqnames`, `starts, `ends` and `strand` </span>
+<span class="sd">        are considered metadata for each interval.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            returnType (Callable, optional): format to return metadata. </span>
-<span class="sd">                Defaults to dictionary structure. currently supports `pd.DataFrame`.</span>
+<span class="sd">                Defaults to dictionary representation, supports `pd.DataFrame`</span>
+<span class="sd">                or any callable representation that takes a dictionary as an input.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if `returnType` is not supported</span>
+<span class="sd">            ValueError: if `returnType` is not supported.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Union[pd.DataFrame, MutableMapping]: metadata columns without positions</span>
+<span class="sd">            Union[pd.DataFrame, MutableMapping, Any]: metadata columns without </span>
+<span class="sd">                genomic positions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">new_data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
@@ -575,21 +590,25 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">returnType</span><span class="si">}</span><span class="s2"> not supported, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        Class GenomicRanges with </span><span class="si">{}</span><span class="s2"> intervals and </span><span class="si">{}</span><span class="s2"> metadata columns</span>
-<span class="s2">          columnNames: </span><span class="si">{}</span><span class="s2"></span>
-<span class="s2">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columnNames</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Class GenomicRanges with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> intervals and &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="si">}</span><span class="s2"> metadata columns </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  columnNames: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">columnNames</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">pattern</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Slice a `GenomicRanges` object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Slice a `GenomicRanges` object.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            args (Union[Sequence[str], Tuple[Sequence, Optional[Sequence]]]): indices to slice.</span>
-<span class="sd">                Sequence[str]: Slice by column names</span>
-<span class="sd">                Tuple[Sequence, Optional[Sequence]]]: slice by indices along the row and column axes.</span>
+<span class="sd">            args (Union[Sequence[str], Tuple[Sequence, Optional[Sequence]]]): </span>
+<span class="sd">                indices to slice.</span>
+<span class="sd">                if args is</span>
+<span class="sd">                - Sequence[str]: a list of names, we slice by column names.</span>
+<span class="sd">                - Tuple[Sequence, Optional[Sequence]]]: a tuple with indices, </span>
+<span class="sd">                    we slice by indices along the row and column axes.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            GenomicRanges: A new `GenomicRanges` object with the subset.</span>
@@ -603,21 +622,6 @@
             <span class="n">new_frame</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_adjustInterval</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">shiftStart</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">shiftEnd</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;internal function to shift genomic intervals for each row.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            row (MutableMapping[str, Any]): a row from `GenomicRanges`.</span>
-<span class="sd">            shiftStart (int, optional): number of positions to shift start by. Defaults to 0.</span>
-<span class="sd">            shiftEnd (int, optional): number of positions to shift end by. Defaults to 0.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tuple[int, int]: adjusted intervals</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">shiftStart</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">shiftEnd</span><span class="p">)</span>
-
     <span class="c1"># intra-range methods</span>
 <div class="viewcode-block" id="GenomicRanges.flank"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.flank">[docs]</a>    <span class="k">def</span> <span class="nf">flank</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -626,16 +630,51 @@
         <span class="n">both</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Recover regions flanking the set of ranges represented by the `GenomicRanges` object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates flanking ranges for each range in the `GenomicRanges` </span>
+<span class="sd">            object. The logic for this - </span>
+
+<span class="sd">        (from the R/GenomicRanges &amp; IRanges packages)</span>
+
+<span class="sd">        - If `start` is `True` for a given range, the flanking occurs at the start, </span>
+<span class="sd">            otherwise the end. </span>
+<span class="sd">        - The `widths` of the flanks are given by the `width` parameter. </span>
+<span class="sd">            The widths can be negative, in which case the flanking region is </span>
+<span class="sd">            reversed so that it represents a prefix or suffix of the range. </span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            gr.flank(3, True), </span>
+<span class="sd">                where x indicates a range in gr and - indicates the resulting </span>
+<span class="sd">                flanking region:</span>
+
+<span class="sd">                ---xxxxxxx</span>
+
+<span class="sd">            If start were FALSE, the range in gr becomes</span>
+
+<span class="sd">                xxxxxxx---</span>
+<span class="sd">            </span>
+<span class="sd">            For negative width, i.e. gr.flank(x, -3, FALSE), </span>
+<span class="sd">                where * indicates the overlap between x and the result:</span>
+
+<span class="sd">                xxxx***</span>
+
+<span class="sd">            If both is True, then, for all ranges in x, </span>
+<span class="sd">                the flanking regions are extended into </span>
+<span class="sd">                (or out of, if width is negative) the range, </span>
+<span class="sd">                so that the result straddles the given endpoint </span>
+<span class="sd">                and has twice the width given by width. </span>
+<span class="sd">        </span>
+<span class="sd">            This is illustrated below for gr.flank(3, both=TRUE):</span>
+
+<span class="sd">                ---***xxxx</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            width (int): width to flank by</span>
+<span class="sd">            width (int): width to flank by.</span>
 <span class="sd">            start (bool, optional): only flank starts?. Defaults to True.</span>
 <span class="sd">            both (bool, optional): both starts and ends?. Defaults to False.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the flanked intervals.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the flanked ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_starts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">new_ends</span> <span class="o">=</span> <span class="p">[]</span>
@@ -657,7 +696,7 @@
         <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">start_flags</span><span class="p">)):</span>
             <span class="n">sf</span> <span class="o">=</span> <span class="n">start_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
             <span class="n">tstart</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">both</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">both</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">tstart</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">sf</span>
@@ -687,44 +726,74 @@
 <div class="viewcode-block" id="GenomicRanges.resize"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Resize intervals based on strand in the `GenomicRanges` object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize ranges to the specified `width` where either the `start`, </span>
+<span class="sd">            `end`, or `center` is used as an anchor.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            width (int): width to resize</span>
-<span class="sd">            fix (str, optional): fix positions by `start` or `end`. Defaults to &quot;start&quot;.</span>
+<span class="sd">            width (int): width to resize, cannot be negative!.</span>
+<span class="sd">            fix (str, optional): fix positions by `start`, `end` or `center`. </span>
+<span class="sd">                Defaults to &quot;start&quot;.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if parameter fix is neither `start` nor `end`</span>
+<span class="sd">            ValueError: if parameter fix is neither `start`, `end` or `center`.</span>
+<span class="sd">            ValueError: if width is negative</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the resized intervals.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the resized ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">fix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`fix` must be either &#39;start&#39; or &#39;end&#39;, provided </span><span class="si">{</span><span class="n">fix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;width cannot be negative!&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`fix` must be either &#39;start&#39;, &#39;end&#39; or &#39;resize&#39;, provided </span><span class="si">{</span><span class="n">fix</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">new_starts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">new_ends</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">all_starts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;starts&quot;</span><span class="p">)</span>
-        <span class="n">all_ends</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;ends&quot;</span><span class="p">)</span>
-        <span class="n">all_strands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;strand&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">te</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># figure out which position to pin, start or end?</span>
-        <span class="n">start_flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">fix</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_strands</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ignoreStrand</span><span class="p">:</span>
-            <span class="n">start_flags</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">start_flags</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="p">(</span><span class="n">all_strands</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_strands</span><span class="p">))</span>
-            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">ignoreStrand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fix</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span>
+                    <span class="n">te</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">fix</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
+                    <span class="n">tmid</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">twidthby2</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span>
+                        <span class="k">else</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">tmid</span> <span class="o">-</span> <span class="n">twidthby2</span>
+                    <span class="n">te</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">te</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fix</span> <span class="o">==</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span>
+                    <span class="n">te</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">fix</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
+                    <span class="n">tmid</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">twidthby2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">tmid</span> <span class="o">-</span> <span class="n">twidthby2</span>
+                    <span class="n">te</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">te</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;strand must be either +, - or *, contains &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> at index: </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">start_flags</span><span class="p">)):</span>
-            <span class="n">sf</span> <span class="o">=</span> <span class="n">start_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-            <span class="n">tstart</span> <span class="o">=</span> <span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">if</span> <span class="n">sf</span> <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">1</span>
-
-            <span class="n">new_starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tstart</span><span class="p">)</span>
-            <span class="n">new_ends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tstart</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">new_starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+            <span class="n">new_ends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">te</span><span class="p">)</span>
 
         <span class="n">new_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">new_data</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_starts</span>
@@ -739,13 +808,13 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.shift"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.shift">[docs]</a>    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Shift all intervals.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift all intervals by parameter `shift`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            shift (int, optional): shift interval. Defaults to 0.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the shifted intervals</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the shifted ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">shift</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
@@ -766,14 +835,24 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.promoters"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.promoters">[docs]</a>    <span class="k">def</span> <span class="nf">promoters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extend intervals to promoter regions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend intervals to promoter regions.</span>
+
+<span class="sd">        Generates promoter ranges relative to the transcription start site (TSS), </span>
+<span class="sd">        where TSS is start(x). The promoter range is expanded around the TSS </span>
+<span class="sd">        according to the upstream and downstream arguments. upstream represents </span>
+<span class="sd">        the number of nucleotides in the 5&#39; direction and downstream the number </span>
+<span class="sd">        in the 3&#39; direction. The full range is defined as, (start(x) - upstream) </span>
+<span class="sd">        to (start(x) + downstream - 1).</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            upstream (int, optional): number of positions to extend in the 5&#39; direction . Defaults to 2000.</span>
-<span class="sd">            downstream (int, optional): number of positions to extend in the 3&#39; direction. Defaults to 200.</span>
+<span class="sd">            upstream (int, optional): number of positions to extend in the 5&#39; </span>
+<span class="sd">                direction. Defaults to 2000.</span>
+<span class="sd">            downstream (int, optional): number of positions to extend in the 3&#39; </span>
+<span class="sd">                direction. Defaults to 200.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the extended intervals for promoter regions.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with ranges replaced </span>
+<span class="sd">                by promoter regions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">all_starts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;starts&quot;</span><span class="p">)</span>
         <span class="n">all_ends</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;ends&quot;</span><span class="p">)</span>
@@ -816,15 +895,16 @@
         <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keepAllRanges</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Restrict intervals to a given start and end positions across all chromosomes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict ranges to a given start and end positions.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            start (Optional[int], optional): start position. Defaults to None.</span>
-<span class="sd">            end (Optional[int], optional): end position. Defaults to None.</span>
-<span class="sd">            keepAllRanges (bool, optional): Keep intervals that do not overlap with start and end?. Defaults to False.</span>
+<span class="sd">            start (int, optional): start position. Defaults to None.</span>
+<span class="sd">            end (int, optional): end position. Defaults to None.</span>
+<span class="sd">            keepAllRanges (bool, optional): Keep intervals that do </span>
+<span class="sd">                not overlap with start and end?. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with restricted intervals</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with restricted ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">all_starts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;starts&quot;</span><span class="p">)</span>
         <span class="n">all_ends</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;ends&quot;</span><span class="p">)</span>
@@ -872,10 +952,10 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.trim"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.trim">[docs]</a>    <span class="k">def</span> <span class="nf">trim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Trim sequences outside of bounds for non-circular chromosomes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trim sequences outside of bounds for non-circular chromosomes.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with trimmed positions.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with trimmed ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># let just show a warning, shouldn&#39;t be an error</span>
@@ -946,24 +1026,27 @@
         <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Narrow genomic positions by provided start, width and end parameters. </span>
-<span class="sd">            Important: these parameters are relative shift in positions for each interval.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Narrow genomic positions by provided start, width and end parameters. </span>
+<span class="sd">        </span>
+<span class="sd">        Important: these parameters are relative shift in positions for each range.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            start (Optional[int], optional): relative start position. Defaults to None.</span>
-<span class="sd">            width (Optional[int], optional): relative end position. Defaults to None.</span>
-<span class="sd">            end (Optional[int], optional): relative width of the interval. Defaults to None.</span>
+<span class="sd">            start (int, optional): relative start position. Defaults to None.</span>
+<span class="sd">            width (int, optional): relative end position. Defaults to None.</span>
+<span class="sd">            end (int, optional): relative width of the interval. Defaults to None.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if `width` is provided, either `start` or `end` must be provided.</span>
-<span class="sd">            ValueError: provide two of the three parameters - `start`, `end` and `width` but not all.</span>
+<span class="sd">            ValueError: provide two of the three parameters - `start`, `end` and `width` </span>
+<span class="sd">                but not all.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges:  a new `GenomicRanges` object with narrow positions.</span>
+<span class="sd">            GenomicRanges:  a new `GenomicRanges` object with narrow ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;only provide two of the three parameters - start, end and width but not all&quot;</span>
+                <span class="s2">&quot;only provide two of the three parameters - start, &quot;</span>
+                <span class="s2">&quot;end and width but not all&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1011,13 +1094,13 @@
         <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_calcGapwidths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;internal method to calculate gap widths.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to calculate gap widths.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[int]: gap widths for each position.</span>
+<span class="sd">            Sequence[int]: gap widths for each range.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">),</span>
@@ -1055,11 +1138,13 @@
         <span class="n">minGapwidth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Reduce orders the ranges, then merges overlapping or adjacent intervals.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce orders the ranges, then merges overlapping or adjacent ranges.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            withRevMap (bool, optional): return map of indices back to original object?. Defaults to False.</span>
-<span class="sd">            minGapwidth (int, optional): Ranges separated by a gap of at least minGapwidth positions are not merged. Defaults to 1.</span>
+<span class="sd">            withRevMap (bool, optional): return map of indices back to </span>
+<span class="sd">                original object?. Defaults to False.</span>
+<span class="sd">            minGapwidth (int, optional): Ranges separated by a gap of </span>
+<span class="sd">                at least `minGapwidth` positions are not merged. Defaults to 1.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
@@ -1102,27 +1187,32 @@
 <div class="viewcode-block" id="GenomicRanges.range"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.range">[docs]</a>    <span class="k">def</span> <span class="nf">range</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">withRevMap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Calculate ranges for each chromosome </span>
-<span class="sd">            (minimum of all starts, maximum of all ends) in the object.</span>
-<span class="sd">            Technically its same as `reduce` with a ridiculously high minGapwidth.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate ranges for each chromosome.</span>
+<span class="sd">        (minimum of all starts, maximum of all ends) in the object.</span>
+<span class="sd">        </span>
+<span class="sd">        Technically its same as `reduce` with a ridiculously high `minGapwidth`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            withRevMap (bool, optional): return map of indices back to original object?. Defaults to False.</span>
+<span class="sd">            withRevMap (bool, optional): return map of indices back to </span>
+<span class="sd">                original object?. Defaults to False.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the new intervals.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with the new ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
             <span class="n">withRevMap</span><span class="o">=</span><span class="n">withRevMap</span><span class="p">,</span> <span class="n">minGapwidth</span><span class="o">=</span><span class="mi">100000000000</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.computeSeqlengths"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.computeSeqlengths">[docs]</a>    <span class="k">def</span> <span class="nf">computeSeqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get seqlengths either from the `SeqInfo` object </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get seqlengths either from the `SeqInfo` object </span>
 <span class="sd">            or computes one from the object.</span>
 
+<span class="sd">        Note: if computed, they ae specific to this `GenomicRanges` </span>
+<span class="sd">        and may not represent the seqlenths of the genome.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            MutableMapping[str, int]: a dict of chromosome names and lengths</span>
+<span class="sd">            MutableMapping[str, int]: a dict of chromosome names and lengths.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">seqlengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seqlengths</span>
 
@@ -1137,16 +1227,19 @@
 <div class="viewcode-block" id="GenomicRanges.gaps"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.gaps">[docs]</a>    <span class="k">def</span> <span class="nf">gaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Identify gaps in genomic positions for each distinct chromosome and strand combination.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify gaps in genomic positions for each distinct </span>
+<span class="sd">        `seqname` (chromosome) and `strand` combination.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start (int, optional): restrict chromosome start position. Defaults to 1.</span>
-<span class="sd">            end (Optional[MutableMapping[str, int]], optional): restrict end position for each chromosome. Defaults to None.</span>
+<span class="sd">            end (Optional[MutableMapping[str, int]], optional): restrict end </span>
+<span class="sd">                position for each chromosome. Defaults to None.</span>
+<span class="sd">                </span>
 <span class="sd">                If None, it uses the `SeqInfo` object if available.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` containing gap regions across chromosome and strand. </span>
-<span class="sd">                If there are no gaps, returns None.</span>
+<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` containing </span>
+<span class="sd">                gaps across chromosome and strand. If there are no gaps, returns None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># seqlengths = self._computeSeqLengths()</span>
@@ -1206,14 +1299,17 @@
 <div class="viewcode-block" id="GenomicRanges.disjoin"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.disjoin">[docs]</a>    <span class="k">def</span> <span class="nf">disjoin</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">withRevMap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Calculate disjoint genomic positions for each distinct chromosome and strand combination.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate disjoint genomic positions for each distinct </span>
+<span class="sd">        `seqname` (chromosome) and `strand` combination.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            withRevMap (bool, optional):return map of indices back to original object? . Defaults to False.</span>
+<span class="sd">            withRevMap (bool, optional):return map of indices back to </span>
+<span class="sd">                original object? . Defaults to False.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` containing disjoint ranges across chromosome and strand</span>
+<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` containing </span>
+<span class="sd">                disjoint ranges across chromosome and strand.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">df_gr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1248,7 +1344,7 @@
         <span class="k">return</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.isDisjoint"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.isDisjoint">[docs]</a>    <span class="k">def</span> <span class="nf">isDisjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Are all ranges (for each chromosome, strand) disjoint?</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Are all ranges (for each chromosome, strand) disjoint?</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
@@ -1260,21 +1356,21 @@
 
         <span class="k">return</span> <span class="n">new_gr</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span></div>
 
-    <span class="c1"># def disjointBins(self, ignoreStrand: bool = False):</span>
-    <span class="c1">#     raise NotImplementedError</span>
+<div class="viewcode-block" id="GenomicRanges.disjointBins"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.disjointBins">[docs]</a>    <span class="k">def</span> <span class="nf">disjointBins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="c1"># set operations</span>
 <div class="viewcode-block" id="GenomicRanges.union"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Find union of genomic intervals with `other`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find union of genomic intervals with `other`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            other (GenomicRanges): the other `GenomicRanges` object</span>
+<span class="sd">            other (GenomicRanges): the other `GenomicRanges` object.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if other is not of type `GenomicRanges`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` object with all intervals.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` object with all ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1308,17 +1404,18 @@
         <span class="k">return</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.intersect"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.intersect">[docs]</a>    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Find intersection of genomic intervals with `other`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find intersection of genomic intervals with `other`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            other (GenomicRanges): the other `GenomicRanges` object</span>
+<span class="sd">            other (GenomicRanges): the other `GenomicRanges` object.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if other is not of type `GenomicRanges`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new `GenomicRanges` object with intersection intervals.</span>
-<span class="sd">                If there are no overlapping intervals, returns None.</span>
+<span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new `GenomicRanges` object </span>
+<span class="sd">                with intersection ranges. If there are no </span>
+<span class="sd">                overlapping intervals, returns None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1355,18 +1452,18 @@
         <span class="k">return</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.setdiff"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.setdiff">[docs]</a>    <span class="k">def</span> <span class="nf">setdiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Find set difference of genomic intervals with `other`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find set difference of genomic intervals with `other`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            other (GenomicRanges): the other `GenomicRanges` object</span>
+<span class="sd">            other (GenomicRanges): the other `GenomicRanges` object.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if other is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new `GenomicRanges` object with the diff intervals.</span>
-<span class="sd">                If there are intervals, returns None.</span>
+<span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new `GenomicRanges` object </span>
+<span class="sd">                with the diff ranges. If there are intervals, returns None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1423,21 +1520,22 @@
 <div class="viewcode-block" id="GenomicRanges.binnedAverage"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.binnedAverage">[docs]</a>    <span class="k">def</span> <span class="nf">binnedAverage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">scorename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">outname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Calculate average for a score column across all bins, then</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate average for a column across all bins, then</span>
 <span class="sd">            set a column called `outname` with those values.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            scorename (str): the column to compute averages on</span>
-<span class="sd">            bins (GenomicRanges): bins you want to use</span>
-<span class="sd">            outname (str): new column name to add to bins</span>
+<span class="sd">            scorename (str): the column to compute averages on.</span>
+<span class="sd">            bins (GenomicRanges): bins you want to use.</span>
+<span class="sd">            outname (str): new column name to add to the object.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if scorename column does not exist</span>
-<span class="sd">            Exception: scorename is not all ints or floats</span>
-<span class="sd">            TypeError: if other is not of type `GenomicRanges`</span>
+<span class="sd">            ValueError: if scorename column does not exist.</span>
+<span class="sd">            Exception: scorename is not all ints or floats.</span>
+<span class="sd">            TypeError: if bins is not of type `GenomicRanges`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` with a column containing the averages.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` similar to bins, </span>
+<span class="sd">                with a new column containing the averages.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1498,20 +1596,22 @@
         <span class="n">final_df</span> <span class="o">=</span> <span class="n">final_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;ends&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span></div>
 
-    <span class="c1"># def subtract(</span>
-    <span class="c1">#     self, x: &quot;GenomicRanges&quot;, minoverlap: int = 1, ignoreStrand: bool = False</span>
-    <span class="c1"># ):</span>
-    <span class="c1">#     pass</span>
+<div class="viewcode-block" id="GenomicRanges.subtract"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.subtract">[docs]</a>    <span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">minoverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="c1"># integer range methods</span>
 <div class="viewcode-block" id="GenomicRanges.coverage"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.coverage">[docs]</a>    <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome, For each position, </span>
+<span class="sd">            counts the number of ranges that cover it.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            shift (int, optional): shift all genomic positions. Defaults to 0.</span>
-<span class="sd">            width (Optional[int], optional): restrict the width of all chromosomes. Defaults to None.</span>
+<span class="sd">            width (int, optional): restrict the width of all </span>
+<span class="sd">                chromosomes. Defaults to None.</span>
 <span class="sd">            weight (int, optional): weight to use. Defaults to 1.</span>
 
 <span class="sd">        Returns:</span>
@@ -1555,26 +1655,27 @@
         <span class="n">minOverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Find overlaps between subject (self) and a query genomic ranges.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find overlaps between subject (self) and a query `GenomicRanges`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges`.</span>
 <span class="sd">            queryType (str, optional): overlap query type, must be one of </span>
-<span class="sd">                    &quot;any&quot;: any overlap is good</span>
-<span class="sd">                    &quot;start&quot;: overlap at the beginning of the intervals</span>
-<span class="sd">                    &quot;end&quot;: must overlap at the end of the intervals</span>
-<span class="sd">                    &quot;within&quot;: Fully contain the query interval. </span>
+<span class="sd">                &quot;any&quot;: any overlap is good</span>
+<span class="sd">                &quot;start&quot;: overlap at the beginning of the intervals</span>
+<span class="sd">                &quot;end&quot;: must overlap at the end of the intervals</span>
+<span class="sd">                &quot;within&quot;: Fully contain the query interval. </span>
 <span class="sd">                Defaults to any.</span>
-<span class="sd">            maxGap (int, optional): maximum gap allowed in the overlap. Defaults to -1 (no gap allowed).</span>
+<span class="sd">            maxGap (int, optional): maximum gap allowed in the overlap. </span>
+<span class="sd">                Defaults to -1 (no gap allowed).</span>
 <span class="sd">            minOverlap (int, optional): minimum overlap with query. Defaults to 1. </span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` object with the same length as query, </span>
-<span class="sd">                containing hits to overlapping indices.</span>
+<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` object </span>
+<span class="sd">                with the same length as query, containing hits to overlapping indices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1643,7 +1744,7 @@
         <span class="n">minOverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Count overlaps between `subject` (self) and a `query` genomic ranges.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Count overlaps between `subject` (self) and a `query` genomic ranges.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges`.</span>
@@ -1653,15 +1754,16 @@
 <span class="sd">                    &quot;end&quot;: must overlap at the end of the intervals</span>
 <span class="sd">                    &quot;within&quot;: Fully contain the query interval. </span>
 <span class="sd">                Defaults to any.</span>
-<span class="sd">            maxGap (int, optional): maximum gap allowed in the overlap. Defaults to -1 (no gap allowed).</span>
+<span class="sd">            maxGap (int, optional): maximum gap allowed in the overlap. </span>
+<span class="sd">                Defaults to -1 (no gap allowed).</span>
 <span class="sd">            minOverlap (int, optional): minimum overlap with query. Defaults to 1. </span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            List[int]: number of overlaps for each position in query.</span>
+<span class="sd">            List[int]: number of overlaps for each range in query.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1689,7 +1791,7 @@
         <span class="n">minOverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Subset `subject` (self) with overlaps in `query` genomic ranges.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset `subject` (self) with overlaps in `query` genomic ranges.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges`.</span>
@@ -1699,16 +1801,17 @@
 <span class="sd">                    &quot;end&quot;: must overlap at the end of the intervals</span>
 <span class="sd">                    &quot;within&quot;: Fully contain the query interval. </span>
 <span class="sd">                Defaults to any.</span>
-<span class="sd">            maxGap (int, optional): maximum gap allowed in the overlap. Defaults to -1 (no gap allowed).</span>
+<span class="sd">            maxGap (int, optional): maximum gap allowed in the overlap. </span>
+<span class="sd">                Defaults to -1 (no gap allowed).</span>
 <span class="sd">            minOverlap (int, optional): minimum overlap with query. Defaults to 1. </span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` object containing only subsets </span>
-<span class="sd">                for overlaps in query.</span>
+<span class="sd">            Optional[&quot;GenomicRanges&quot;]: A new `GenomicRanges` object </span>
+<span class="sd">                containing only subsets for overlaps in query.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1738,14 +1841,15 @@
         <span class="n">stepstart</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
         <span class="n">stepend</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Internal function to search self and a query genomic ranges object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal function to search self and a query `GenomicRanges` object.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new `GenomicRanges` object that has the same length as query</span>
-<span class="sd">                but contains `hits` to `indices` and `distance`.</span>
+<span class="sd">            Optional[&quot;GenomicRanges&quot;]: a new `GenomicRanges` object that has </span>
+<span class="sd">                the same length as query but contains `hits` to </span>
+<span class="sd">                `indices` and `distance`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1801,101 +1905,110 @@
 <div class="viewcode-block" id="GenomicRanges.nearest"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.nearest">[docs]</a>    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Search nearest positions both upstream and downstream that overlap with </span>
-<span class="sd">            each genomics position in `query`. Adds a new column to query called `hits`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions both upstream and downstream that overlap with </span>
+<span class="sd">            each range in `query`. </span>
+<span class="sd">            </span>
+<span class="sd">        Adds a new column to query called `hits`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges` to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of possible `hits` indices </span>
-<span class="sd">                for each interval in `query`.</span>
+<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of </span>
+<span class="sd">                possible `hits` indices for each range in `query`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.precede"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.precede">[docs]</a>    <span class="k">def</span> <span class="nf">precede</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with the </span>
-<span class="sd">            each genomics interval in `query`. Adds a new column to query called `hits`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with </span>
+<span class="sd">            each range in `query`.</span>
+<span class="sd">            </span>
+<span class="sd">        Adds a new column to query called `hits`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges` to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of possible `hits` indices </span>
-<span class="sd">                for each interval in `query`</span>
+<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of possible </span>
+<span class="sd">                `hits` indices for each range in `query`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span><span class="p">,</span> <span class="n">stepend</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.follow"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.follow">[docs]</a>    <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Search nearest positions only upstream that overlap with the </span>
-<span class="sd">            each genomics interval in `query`. Adds a new column to query called `hits`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only upstream that overlap with </span>
+<span class="sd">            each range in `query`. </span>
+<span class="sd">            </span>
+<span class="sd">        Adds a new column to query called `hits`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges` to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of possible `hits` indices </span>
-<span class="sd">                for each interval in `query`.</span>
+<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of possible </span>
+<span class="sd">                `hits` indices for each range in `query`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span><span class="p">,</span> <span class="n">stepstart</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.distanceToNearest"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.distanceToNearest">[docs]</a>    <span class="k">def</span> <span class="nf">distanceToNearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with the </span>
-<span class="sd">            each genomics interval in `query`. Adds a new column to query called `hits`.</span>
-<span class="sd">            Technically same as nearest since we also return `distances`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with </span>
+<span class="sd">            each range in `query`. </span>
+<span class="sd">            </span>
+<span class="sd">        Adds a new column to query called `hits`.</span>
+<span class="sd">        </span>
+<span class="sd">        Note: Technically same as nearest since we also return `distances`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges` to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of possible `hits` indices </span>
-<span class="sd">                for each interval in `query`</span>
+<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` containing list of possible </span>
+<span class="sd">                `hits` indices for each range in `query`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="n">ignoreStrand</span><span class="p">)</span></div>
 
     <span class="c1"># compare and order methods</span>
 <div class="viewcode-block" id="GenomicRanges.duplicated"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.duplicated">[docs]</a>    <span class="k">def</span> <span class="nf">duplicated</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Element wise comparison to find duplicate intervals</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Element wise comparison to find duplicate ranges.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[bool]: True if duplicated else False</span>
+<span class="sd">            Sequence[bool]: True if duplicated else False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.match"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.match">[docs]</a>    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Element wise comparison to exact match intervals.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Element wise comparison to find exact match ranges.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (GenomicRanges): input GenomicRanges to search matches.</span>
+<span class="sd">            query (GenomicRanges): Input `GenomicRanges` to search matches.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: if query is not of type `GenomicRanges`</span>
+<span class="sd">            TypeError: if query is not of type `GenomicRanges`.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[Optional[int]]: index if able to match else None</span>
+<span class="sd">            Sequence[Optional[int]]: index if able to match else None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -1919,10 +2032,10 @@
         <span class="k">return</span> <span class="n">hits</span></div>
 
     <span class="k">def</span> <span class="nf">_generic_pandas_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Internal function to create a pandas `DataFrame` from ranges.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal function to create a pandas `DataFrame` from ranges.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ignoreStrand (bool, optional): Ignore strand?. Defaults to False.</span>
+<span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
 <span class="sd">            sort (bool, optional): sort by region?. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
@@ -1947,7 +2060,7 @@
         <span class="k">return</span> <span class="n">df</span>
 
     <span class="k">def</span> <span class="nf">_generic_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Internal function to compute order.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal function to compute order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GenomicRanges): query `GenomicRanges` to search matches.</span>
@@ -1961,7 +2074,7 @@
         <span class="k">return</span> <span class="n">new_order</span>
 
 <div class="viewcode-block" id="GenomicRanges.isUnsorted"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.isUnsorted">[docs]</a>    <span class="k">def</span> <span class="nf">isUnsorted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Are the genomic positions unsorted?</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Are the genomic positions unsorted?</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand?. Defaults to False.</span>
@@ -1978,7 +2091,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.order"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.order">[docs]</a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get the order of indices for sorting.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the order of indices for sorting.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            decreasing (bool, optional): descending order?. Defaults to False.</span>
@@ -1995,7 +2108,7 @@
 <div class="viewcode-block" id="GenomicRanges.sort"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sort the `GenomicRanges` object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sort the `GenomicRanges` object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            decreasing (bool, optional): decreasing order?. Defaults to False.</span>
@@ -2013,8 +2126,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">new_order</span><span class="p">,</span> <span class="p">:]</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.rank"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.rank">[docs]</a>    <span class="k">def</span> <span class="nf">rank</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get rank of the `GenomicRanges` object. </span>
-<span class="sd">            for each interval identifies its position is a sorted order</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get rank of the `GenomicRanges` object. </span>
+<span class="sd">            for each ranges identifies its position is a sorted order.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Sequence[int]: list of indices identifying rank.</span>
@@ -2027,13 +2140,15 @@
 <div class="viewcode-block" id="GenomicRanges.tileByRange"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.tileByRange">[docs]</a>    <span class="k">def</span> <span class="nf">tileByRange</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Split each range into chunks by </span>
-<span class="sd">                `n` (number of sub intervals) or `width` (intervals with equal width).</span>
-<span class="sd">            Either `n` or `width` must be provided, but not both.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each range into chunks by `n` (number of sub intervals) </span>
+<span class="sd">        or `width` (intervals with equal width).</span>
+<span class="sd">        </span>
+<span class="sd">        Note: Either `n` or `width` must be provided, but not both.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            n (Optional[int], optional): number of intervals to split into. Defaults to None.</span>
-<span class="sd">            width (Optional[int], optional): width of each interval. Defaults to None.</span>
+<span class="sd">            n (int, optional): number of intervals to split into. </span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            width (int, optional): width of each interval. Defaults to None.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if both `n` and `width` are provided.</span>
@@ -2068,13 +2183,14 @@
 <div class="viewcode-block" id="GenomicRanges.tile"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.tile">[docs]</a>    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Split each interval by </span>
-<span class="sd">                `n` (number of sub intervals) or `width` (intervals with equal width).</span>
-<span class="sd">            Either `n` or `width` must be provided but not both.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each interval by `n` (number of sub intervals) </span>
+<span class="sd">        or `width` (intervals with equal width).</span>
+<span class="sd">        </span>
+<span class="sd">        Note: Either `n` or `width` must be provided but not both.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            n (Optional[int], optional): number of intervals to split into. Defaults to None.</span>
-<span class="sd">            width (Optional[int], optional): width of each interval. Defaults to None.</span>
+<span class="sd">            n (int, optional): number of intervals to split into. Defaults to None.</span>
+<span class="sd">            width (int, optional): width of each interval. Defaults to None.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if both `n` and `width` are provided.</span>
@@ -2083,7 +2199,7 @@
 <span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` with the split ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;either n or width must be provided but not both&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;either `n` or `width` must be provided but not both&quot;</span><span class="p">)</span>
 
         <span class="n">all_intervals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -2105,14 +2221,14 @@
         <span class="k">return</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.slidingWindows"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.slidingWindows">[docs]</a>    <span class="k">def</span> <span class="nf">slidingWindows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;slide along each interval by `width` (intervals with equal width) and `step`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Slide along each range by `width` (intervals with equal `width`) and `step`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            width (Optional[int], optional): width of each interval. Defaults to None.</span>
 <span class="sd">            step (int, optional), step interval, Defaults to 1.</span>
 
 <span class="sd">        Returns: </span>
-<span class="sd">            &quot;GenomicRanges&quot;: a new Geno`micRanges with the sliding ranges.</span>
+<span class="sd">            &quot;GenomicRanges&quot;: a new `GenomicRanges` with the sliding ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">all_intervals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -2134,19 +2250,21 @@
 
     <span class="c1"># misc methods</span>
 <div class="viewcode-block" id="GenomicRanges.sample"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Randomly sample `k` intervals from the Object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Randomly sample `k` intervals from the object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            k (int, optional): number of intervals to sample. Defaults to 5.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: a new `GenomicRanges` with randomly sampled positions.</span>
+<span class="sd">            GenomicRanges: a new `GenomicRanges` with randomly sampled ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sample</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">sample</span><span class="p">,</span> <span class="p">:]</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.invertStrand"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.invertStrand">[docs]</a>    <span class="k">def</span> <span class="nf">invertStrand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Invert strand information for each interval.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invert strand information for each interval.</span>
+
+<span class="sd">        Conversion map: + becomes -, - becomes +, * stays the same.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            GenomicRanges: new `GenomicRanges` object.</span>
@@ -2166,10 +2284,10 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="GenomicRanges.concat"><a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.concat">[docs]</a>    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">granges</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Concatenate multiple `GenomicRanges` objects.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concatenate multiple `GenomicRanges` objects.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            granges (&quot;GenomicRanges&quot;): &quot;GenomicRanges&quot; to concatenate. </span>
+<span class="sd">            granges (&quot;GenomicRanges&quot;): `GenomicRanges` objects to concatenate. </span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: if any of the provided objects are not &quot;GenomicRanges&quot;.</span>
