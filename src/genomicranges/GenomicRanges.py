@@ -490,7 +490,7 @@ class GenomicRanges(BiocFrame):
                 if width >= 0:
                     tstart = all_starts[idx] - abs(width) if sf else all_ends[idx] + 1
                 else:
-                    tstart = all_starts[idx] if sf else all_ends[idx] + abs(width) + 1
+                    tstart = all_starts[idx] if sf else all_ends[idx] + width + 1
 
             new_starts.append(tstart)
             new_ends.append(tstart + (width * (2 if both else 1) - 1))
