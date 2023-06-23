@@ -1,5 +1,6 @@
-import pandas as pd
 from collections import OrderedDict
+
+import pandas as pd
 
 from ..GenomicRanges import GenomicRanges
 

@@ -1,17 +1,23 @@
-from typing import MutableMapping, Any, Optional, Tuple, List, Union
-from functools import cmp_to_key
-import numpy as np
 from random import random
+from typing import Any, List, MutableMapping, Optional, Tuple, Union
+
+import numpy as np
+
+__author__ = "jkanche"
+__copyright__ = "jkanche"
+__license__ = "MIT"
 
 
 def calc_row_gapwidth(
     a: MutableMapping[str, Any], b: MutableMapping[str, Any]
 ) -> Optional[int]:
     """Given two genomic positions from GenomicRanges, calculates gapwidth
-    returns 
+    returns
         - `nan` if the sequences are not comparable
         - 0 if they overlap
         - a number if there is a gap
+
+    a,b must contain keys `seqnames`, `strand`, `starts` and `ends`.
 
     Args:
         a (MutableMapping[str, Any]): a row from `GenomicRanges`.
@@ -41,7 +47,7 @@ def np_split_groups_ne(
         step (int, optional): value to split consecutive intervals by.
 
     Returns:
-        Tuple(List[np.ndarray], List[np.ndarray]): tuple with indices 
+        Tuple(List[np.ndarray], List[np.ndarray]): tuple with indices
         and their coverage.
     """
     return [
@@ -70,7 +76,7 @@ def create_np_interval_vector(
         value (int, optional): default value to increment. Defaults to 1.
 
     Returns:
-        Tuple[np.ndarray, Optional[List]]: a numpy array representing 
+        Tuple[np.ndarray, Optional[List]]: a numpy array representing
         coverage from the intervals.
     """
     if len(intervals) < 1:
@@ -109,7 +115,7 @@ def find_unary_union(
         withRevMap (bool, optional): return map of indices. Defaults to False.
 
     Returns:
-        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
+        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List
         containing tuples with (start, end, indices) for each contiguous region.
     """
     np_intvals, revmap = create_np_interval_vector(
@@ -164,7 +170,7 @@ def find_gaps(
         end_limit (int, optional): end interval. Defaults to None.
 
     Returns:
-        List[Tuple[int, int]]: List of tuples with 
+        List[Tuple[int, int]]: List of tuples with
         (start, end) for each gap.
     """
 
@@ -218,7 +224,7 @@ def find_disjoin(
         withRevMap (bool, optional): return map of indices. Defaults to False.
 
     Returns:
-        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
+        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List
         of tuples with (start, end).
     """
     np_intvals, revmap = create_np_interval_vector(
@@ -282,7 +288,7 @@ def find_unary_intersect(
         threshold (int, optional): threshold for cutoff. Defaults to 1.
 
     Returns:
-        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List 
+        Union[List[Tuple[int, int, Optional[List[int]]]], List[Tuple[int, int]]]: List
         containing tuples with (start, end, indices) for each contiguous region.
     """
     np_intvals, revmap = create_np_interval_vector(
@@ -421,7 +427,7 @@ def compute_mean(
 
     Args:
         intervals (List[Tuple[int, int]]): input interval list.
-        values (Union[List[int], List[float]]): an int or float vector with 
+        values (Union[List[int], List[float]]): an int or float vector with
             the same size as intervals.
 
     Returns:
@@ -458,20 +464,20 @@ def find_overlaps(
         subject (List[Tuple[int, int]]): intervals.
         query (List[Tuple[int, int]]): query intervals.
         maxGap (int, optional): maximum gap allowed. Defaults to -1 for no gaps.
-        minOverlap (int, optional): minimum overlap needed for intervals to be 
+        minOverlap (int, optional): minimum overlap needed for intervals to be
             considered as overlapping. Defaults to 1.
         queryType (str, optional): query type, one of any
                 "any": any overlap is good
                 "start": overlap at the beginning of the intervals
                 "end": must overlap at the end of the intervals
-                "within": Fully contain the query interval. 
+                "within": Fully contain the query interval.
             Defaults to "any".
 
     Raises:
         ValueError: query type is incorrect.
 
     Returns:
-        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals 
+        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals
         with their overlaps.
     """
     if queryType not in OVERLAP_QUERY_TYPES:
@@ -526,7 +532,7 @@ def find_nearest(
         stepend (int, optional): step end. Defaults to 3.
 
     Returns:
-        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals 
+        List[Tuple[Tuple[int, int], int, List[int]]]: list of query intervals
         with their overlaps.
     """
     _, subject_revmap = create_np_interval_vector(intervals=subject, withRevMap=True)
@@ -622,19 +628,21 @@ def slide_intervals(
 
 
 def adjust_interval(
-    row: MutableMapping[str, Any], shiftStart: int = 0, shiftEnd: int = 0,
+    row: MutableMapping[str, Any],
+    shiftStart: int = 0,
+    shiftEnd: int = 0,
 ) -> Tuple[int, int]:
     """Shift genomic intervals for a `row` by their `shiftStart` or `shiftEnd`.
 
-    Note: These values can be negative as well. 
-    
+    Note: These values can be negative as well.
+
     `start` and `end` cannot be negative after shift! If so, they are set to 0.
 
     Args:
         row (MutableMapping[str, Any]): a row from `GenomicRanges`.
-        shiftStart (int, optional): number of positions to shift start by. 
+        shiftStart (int, optional): number of positions to shift start by.
             Defaults to 0.
-        shiftEnd (int, optional): number of positions to shift end by. 
+        shiftEnd (int, optional): number of positions to shift end by.
             Defaults to 0.
 
     Returns:

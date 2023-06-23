@@ -1,10 +1,11 @@
-from typing import MutableMapping, Optional, Union
 import math
+from typing import MutableMapping, Optional, Union
+
 import pandas as pd
 
-from ..utils import split_intervals
 from ..GenomicRanges import GenomicRanges
 from ..SeqInfo import SeqInfo
+from ..utils import split_intervals
 from .pdf import fromPandas
 
 __author__ = "jkanche"

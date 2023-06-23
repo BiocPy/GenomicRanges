@@ -8,7 +8,7 @@ __license__ = "MIT"
 
 
 def access_gtf_ucsc(genome: str, type: str = "refGene") -> str:
-    """Generate a path to a genome gtf file from UCSC 
+    """Generate a path to a genome gtf file from UCSC
     e.g. (http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/).
 
     Args:

@@ -1,6 +1,7 @@
-from typing import MutableMapping
-import pandas as pd
 import logging
+from typing import MutableMapping
+
+import pandas as pd
 from joblib import Parallel, delayed
 
 from ..GenomicRanges import GenomicRanges

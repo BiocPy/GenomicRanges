@@ -1,12 +1,13 @@
+from itertools import zip_longest
 from typing import (
-    Union,
-    List,
     Any,
+    List,
+    MutableMapping,
     Optional,
     Sequence,
-    MutableMapping,
+    Union,
 )
-from itertools import zip_longest
+
 from biocframe import BiocFrame
 
 __author__ = "jkanche"
@@ -15,6 +16,17 @@ __license__ = "MIT"
 
 
 class SeqInfo(BiocFrame):
+    """Class that stores information about genomic sequences or chromosomes.
+
+    Args:
+        data (MutableMapping[str, Union[List[Any], MutableMapping]]): info about each
+            sequence or chromosome. must contain a column `seqnames`.
+        metadata (Optional[MutableMapping], optional): metadata. Defaults to None.
+
+    Raises:
+        ValueError: if data does not contain required attributes.
+    """
+
     required_columns = ["seqnames"]
     can_contain = ["seqnames", "seqlengths", "isCircular", "genome"]
 
@@ -26,11 +38,11 @@ class SeqInfo(BiocFrame):
         columnNames: Optional[Sequence[str]] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
+        """Initialize a SeqInfo object."""
         super().__init__(data, numberOfRows, rowNames, columnNames, metadata)
 
     def _validate(self):
-        """Internal function to validate SeqInfo.
-        """
+        """Internal function to validate SeqInfo."""
 
         if "genome" in self._data:
             if self._metadata is None:
@@ -69,7 +81,7 @@ class SeqInfo(BiocFrame):
         """Get sequence or chromosome names and their lengths.
 
         Returns:
-            MutableMapping[str, int]: dict containing chromosome names 
+            (MutableMapping[str, int], optional): dict containing chromosome names
                 with their lengths.
         """
 
@@ -83,7 +95,7 @@ class SeqInfo(BiocFrame):
         """are the sequences Circular?
 
         Returns:
-            MutableMapping[str, bool]: dict containing chromosome names 
+            (MutableMapping[str, bool], optional): dict containing chromosome names
                 and if they are circular.
         """
 
@@ -94,10 +106,10 @@ class SeqInfo(BiocFrame):
 
     @property
     def genome(self) -> Optional[str]:
-        """Get genome/species information.
+        """Get genome/species information, if available.
 
         Returns:
-            str: get species name or genome.
+            (str, optional): get species name or genome.
         """
 
         if self._metadata and "genome" in self._metadata:
@@ -106,11 +118,11 @@ class SeqInfo(BiocFrame):
         return None
 
     @genome.setter
-    def genome(self, genome: str):
-        """Set genome/species information
+    def genome(self, genome: Optional[str]):
+        """Set genome/species information.
 
         Args:
-            genome (str): species name or genome
+            genome (str): species name or genome.
         """
 
         if self._metadata is None:
