@@ -35,7 +35,7 @@ def tile_genome(
         thelength of each chromosome in the genome.
 
         Alternatively, ``seqlengths`` may be an instance of
-        :py:class:`genomicranges.SeqInfo.SeqInfo`.
+        :py:class:`~genomicranges.SeqInfo.SeqInfo`.
 
         n (int, optional): Number of intervals to split into.
             Defaults to None, then 'width' of each interval is computed from ``seqlengths``.
@@ -46,8 +46,7 @@ def tile_genome(
         ValueError: Either ``n`` or ``width`` must be provided but not both.
 
     Returns:
-        GenomicRanges: a new :py:class:`genomicranges.GenomicRanges.GenomicRanges` with
-        the tiled regions.
+        GenomicRanges: The genome with the tiled regions.
     """
     if n is not None and width is not None:
         raise ValueError("Both `n` or `width` are provided!")

@@ -1,25 +1,30 @@
+from typing import Literal
+
 from ..GenomicRanges import GenomicRanges
 from .gtf import parse_gtf
-from .pdf import fromPandas
+from .pdf import from_pandas
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def access_gtf_ucsc(genome: str, type: str = "refGene") -> str:
-    """Generate a path to a genome gtf file from UCSC
-    e.g. (http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/).
+def access_gtf_ucsc(
+    genome: str,
+    type: Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"] = "refGene",
+) -> str:
+    """Generate a path to a genome gtf file from UCSC,
+    e.g. for `hg19 genome <http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/>`_.
 
     Args:
-        genome (str): genome shortcode; e.g. hg19, hg38, mm10 etc.
-        type (str): One of refGene, ensGene, knownGene or ncbiRefSeq.
+        genome (str): Genome shortcode; e.g. hg19, hg38, mm10 etc.
+        type (Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"]): Defaults to "refGene".
 
     Raises:
         Exception: ValueError, when `type` does not match with a valid input.
 
     Returns:
-        str: returns the path to the file.
+        str: The URI to the file.
     """
     base_path = f"http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/"
 
@@ -33,18 +38,21 @@ def access_gtf_ucsc(genome: str, type: str = "refGene") -> str:
     return full_path
 
 
-def readUCSC(genome: str, type: str = "refGene") -> GenomicRanges:
-    """Load a genome annotation from UCSC as `GenomicRanges`.
+def read_ucsc(
+    genome: str,
+    type: Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"] = "refGene",
+) -> GenomicRanges:
+    """Load a genome annotation from UCSC as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
-        genome (str): genome shortcode; e.g. hg19, hg38, mm10 etc.
-        type (str): One of refGene, ensGene, knownGene or ncbiRefSeq.
+        genome (str): Genome shortcode; e.g. hg19, hg38, mm10 etc.
+        type (Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"]): Defaults to "refGene".
 
     Returns:
-        GenomicRanges:  a new `GenomicRanges` representing the gene model.
+        GenomicRanges: The gene model from UCSC.
     """
     path = access_gtf_ucsc(genome, type=type)
     compressed = True
     data = parse_gtf(path, compressed=compressed)
 
-    return fromPandas(data)
+    return from_pandas(data)

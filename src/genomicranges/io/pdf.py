@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-import pandas as pd
+from pandas import DataFrame
 
 from ..GenomicRanges import GenomicRanges
 
@@ -9,15 +9,16 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def fromPandas(data: pd.DataFrame) -> GenomicRanges:
-    """Convert a pandas `Dataframe` to `GenomicRanges`.
+def from_pandas(data: DataFrame) -> GenomicRanges:
+    """Read a :py:class:`~pandas.Dataframe` into
+    :py:class:`genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
-        data (pd.DataFrame): a Pandas `DataFrame` object containing genomic positions.
-            Must contain `seqnames`, `starts` & `ends` columns.
+        data (DataFrame): `DataFrame` object with genomic positions.
+            Must contain 'seqnames', 'starts' & 'ends' columns.
 
     Returns:
-        GenomicRanges: A `GenomicRanges` object representing genomic positions.
+        GenomicRanges: object.
     """
 
     obj = OrderedDict()
