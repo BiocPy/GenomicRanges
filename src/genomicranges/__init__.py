@@ -16,8 +16,8 @@ finally:
     del version, PackageNotFoundError
 
 from .GenomicRanges import GenomicRanges
-from .io.gtf import readGTF
-from .io.pdf import fromPandas
-from .io.tiling import tileGenome
-from .io.ucsc import readUCSC
+from .io.gtf import read_gTF
+from .io.pdf import from_pandas
+from .io.tiling import tile_genome
+from .io.ucsc import read_ucsc
 from .SeqInfo import SeqInfo
