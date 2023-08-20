@@ -1,6 +1,6 @@
 from typing import Literal
 
-from ..GenomicRanges import GenomicRanges
+# from ..GenomicRanges import GenomicRanges
 from .gtf import parse_gtf
 from .pdf import from_pandas
 
@@ -41,7 +41,7 @@ def access_gtf_ucsc(
 def read_ucsc(
     genome: str,
     type: Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"] = "refGene",
-) -> GenomicRanges:
+) -> "GenomicRanges":
     """Load a genome annotation from UCSC as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:

@@ -4,7 +4,7 @@ from typing import Dict
 from joblib import Parallel, delayed
 from pandas import DataFrame, read_csv
 
-from ..GenomicRanges import GenomicRanges
+# from ..GenomicRanges import GenomicRanges
 from .pdf import from_pandas
 
 # Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
@@ -88,7 +88,7 @@ def parse_gtf(path: str, compressed: bool) -> DataFrame:
     return gtf
 
 
-def read_gtf(file: str) -> GenomicRanges:
+def read_gtf(file: str) -> "GenomicRanges":
     """Read  GTF file as :py:class:`genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:

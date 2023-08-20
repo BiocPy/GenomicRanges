@@ -3,7 +3,7 @@ from typing import MutableMapping, Optional, Union
 
 import pandas as pd
 
-from ..GenomicRanges import GenomicRanges
+# from ..GenomicRanges import GenomicRanges
 from ..SeqInfo import SeqInfo
 from ..utils import split_intervals
 from .pdf import from_pandas
@@ -48,6 +48,7 @@ def tile_genome(
     Returns:
         GenomicRanges: The genome with the tiled regions.
     """
+
     if n is not None and width is not None:
         raise ValueError("Both `n` or `width` are provided!")
 
