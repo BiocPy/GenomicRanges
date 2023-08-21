@@ -1,14 +1,14 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
-        <title>genomicranges.io.gtf - GenomicRanges 0.2.11 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
+        <title>genomicranges.io.gtf - GenomicRanges 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">GenomicRanges 0.2.11 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">GenomicRanges 0.3.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2.11 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -169,16 +169,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#concatenate-genomicranges-objects-by-rows">Concatenate GenomicRanges objects by rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#misc-operations">Misc operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/genomicranges.io.html">genomicranges.io package</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributions &amp; Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
 </ul>
 
 </div>
@@ -213,29 +214,30 @@
         </div>
         <article role="main">
           <h1>Source code for genomicranges.io.gtf</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableMapping</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+
 <span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">read_csv</span>
 
-<span class="kn">from</span> <span class="nn">..GenomicRanges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
-<span class="kn">from</span> <span class="nn">.pdf</span> <span class="kn">import</span> <span class="n">fromPandas</span>
+<span class="c1"># from ..GenomicRanges import GenomicRanges</span>
+<span class="kn">from</span> <span class="nn">.pdf</span> <span class="kn">import</span> <span class="n">from_pandas</span>
 
-<span class="c1">## Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py</span>
+<span class="c1"># Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
-<div class="viewcode-block" id="parse_all_attribute"><a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.gtf.parse_all_attribute">[docs]</a><span class="k">def</span> <span class="nf">parse_all_attribute</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableMapping</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_parse_all_attribute</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract all keys from the gtf/gff attribute string.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        row (str): a row from GTF.</span>
+<span class="sd">        row (str): A row from GTF.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        MutableMapping: dict containing extracted keys and their values.</span>
+<span class="sd">        Dict: A dictionary containing extracted keys and their values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attr</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">]</span>
     <span class="n">infos</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
@@ -245,22 +247,24 @@
             <span class="k">continue</span>
         <span class="n">imap</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">vals</span><span class="p">[</span><span class="n">imap</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">imap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">row</span><span class="p">,</span> <span class="o">**</span><span class="n">vals</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">row</span><span class="p">,</span> <span class="o">**</span><span class="n">vals</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="parse_gtf"><a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.gtf.parse_gtf">[docs]</a><span class="k">def</span> <span class="nf">parse_gtf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">compressed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a GTF file as pandas DataFrame.</span>
+<div class="viewcode-block" id="parse_gtf">
+<a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.gtf.parse_gtf">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_gtf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">compressed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a GTF file as :py:class:`~pandas.DataFrame`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        path (str): path to the file.</span>
-<span class="sd">        compressed (bool): is compression gzip?</span>
+<span class="sd">        path (str): Path to the GTF file.</span>
+<span class="sd">        compressed (bool): Whether the file is gzip compressed.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        pd.DataFrame: DataFrame representation of the gtf file.</span>
+<span class="sd">        DataFrame: Genome annotations from GTF as pandas dataframe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading File - </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">compressed</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span>
             <span class="n">path</span><span class="p">,</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">[</span>
@@ -277,7 +281,7 @@
             <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span>
             <span class="n">path</span><span class="p">,</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">[</span>
@@ -294,27 +298,31 @@
         <span class="p">)</span>
 
     <span class="n">rows</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">2</span><span class="p">)(</span>
-        <span class="n">delayed</span><span class="p">(</span><span class="n">parse_all_attribute</span><span class="p">)(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+        <span class="n">delayed</span><span class="p">(</span><span class="n">_parse_all_attribute</span><span class="p">)(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
     <span class="p">)</span>
-    <span class="n">gtf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+    <span class="n">gtf</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
     <span class="n">gtf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;group&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">gtf</span></div>
 
 
-<div class="viewcode-block" id="readGTF"><a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.gtf.readGTF">[docs]</a><span class="k">def</span> <span class="nf">readGTF</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read  GTF file as `GenomicRanges`.</span>
+
+<div class="viewcode-block" id="read_gtf">
+<a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.gtf.read_gtf">[docs]</a>
+<span class="k">def</span> <span class="nf">read_gtf</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read  GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        file (str): path to gtf file.</span>
+<span class="sd">        file (str): Path to GTF file.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        GenomicRanges:  a new `GenomicRanges` with the genomic regions.</span>
+<span class="sd">        GenomicRanges:  Genome annotations from GTF.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">compressed</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;gz&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">parse_gtf</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="n">compressed</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">fromPandas</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">from_pandas</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -327,7 +335,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022, jkanche
+                Copyright &#169; 2023, jkanche
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -347,9 +355,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/scripts/furo.js"></script>
+</div><script src="../../../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>

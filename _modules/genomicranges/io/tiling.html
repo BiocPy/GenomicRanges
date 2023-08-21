@@ -1,14 +1,14 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
-        <title>genomicranges.io.tiling - GenomicRanges 0.2.11 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
+        <title>genomicranges.io.tiling - GenomicRanges 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">GenomicRanges 0.2.11 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">GenomicRanges 0.3.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.2.11 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -169,16 +169,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#concatenate-genomicranges-objects-by-rows">Concatenate GenomicRanges objects by rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#misc-operations">Misc operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/genomicranges.io.html">genomicranges.io package</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributions &amp; Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
 </ul>
 
 </div>
@@ -213,40 +214,61 @@
         </div>
         <article role="main">
           <h1>Source code for genomicranges.io.tiling</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">split_intervals</span>
-<span class="kn">from</span> <span class="nn">..GenomicRanges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="c1"># from ..GenomicRanges import GenomicRanges</span>
 <span class="kn">from</span> <span class="nn">..SeqInfo</span> <span class="kn">import</span> <span class="n">SeqInfo</span>
-<span class="kn">from</span> <span class="nn">.pdf</span> <span class="kn">import</span> <span class="n">fromPandas</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">split_intervals</span>
+<span class="kn">from</span> <span class="nn">.pdf</span> <span class="kn">import</span> <span class="n">from_pandas</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
-<div class="viewcode-block" id="tileGenome"><a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.tiling.tileGenome">[docs]</a><span class="k">def</span> <span class="nf">tileGenome</span><span class="p">(</span>
+<div class="viewcode-block" id="tile_genome">
+<a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.tiling.tile_genome">[docs]</a>
+<span class="k">def</span> <span class="nf">tile_genome</span><span class="p">(</span>
     <span class="n">seqlengths</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">,</span> <span class="n">SeqInfo</span><span class="p">],</span>
     <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create new genomic regions by partitioning a specified genome.</span>
 
+<span class="sd">    If ``n`` is provided, the region is split into ``n`` intervals. The last interval may</span>
+<span class="sd">    not contain the same &#39;width&#39; as the other regions.</span>
+
+<span class="sd">    Alternatively, ``width`` may be provided for each interval. Similarly, the last region</span>
+<span class="sd">    may be less than ``width``.</span>
+
+<span class="sd">    Either ``n`` or ``width`` must be provided but not both.</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        seqlengths (Union[MutableMapping, SeqInfo]): sequence lengths of each chromosome.</span>
-<span class="sd">        n (int, optional): number of intervals to split into. Defaults to None.</span>
-<span class="sd">        width (int, optional): width of each interval. Defaults to None.</span>
+<span class="sd">        seqlengths (Union[MutableMapping, SeqInfo]): Sequence lengths of each chromosome.</span>
+
+<span class="sd">            ``seqlengths`` may be a dictionary, where keys specify the chromosome and the value is</span>
+<span class="sd">            thelength of each chromosome in the genome.</span>
+
+<span class="sd">            Alternatively, ``seqlengths`` may be an instance of</span>
+<span class="sd">            :py:class:`~genomicranges.SeqInfo.SeqInfo`.</span>
+
+<span class="sd">        n (int, optional): Number of intervals to split into.</span>
+<span class="sd">            Defaults to None, then &#39;width&#39; of each interval is computed from ``seqlengths``.</span>
+
+<span class="sd">        width (int, optional): Width of each interval. Defaults to None.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: either `n` or `width` must be provided but not both.</span>
+<span class="sd">        ValueError: Either ``n`` or ``width`` must be provided but not both.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        GenomicRanges: a new `GenomicRanges` with the tile regions.</span>
+<span class="sd">        GenomicRanges: The genome with the tiled regions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;either n or width must be provided but not both&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both `n` or `width` are provided!&quot;</span><span class="p">)</span>
 
     <span class="n">seqlen_</span> <span class="o">=</span> <span class="n">seqlengths</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="n">SeqInfo</span><span class="p">):</span>
@@ -265,7 +287,8 @@
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;ends&quot;</span><span class="p">]</span>
     <span class="n">final_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
     <span class="n">final_df</span> <span class="o">=</span> <span class="n">final_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;ends&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">fromPandas</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">from_pandas</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -278,7 +301,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022, jkanche
+                Copyright &#169; 2023, jkanche
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -298,9 +321,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/scripts/furo.js"></script>
+</div><script src="../../../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>

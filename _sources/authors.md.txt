@@ -1,3 +1,3 @@
 # Contributors
 
-* jkanche <jayaram.kancherla@gmail.com>
+* Jayaram Kancherla <jayaram.kancherla@gmail.com>
