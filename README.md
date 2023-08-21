@@ -32,7 +32,7 @@ gr = genomicranges.from_ucsc(genome="hg19")
 
 A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into `GenomicRanges`. ***Intervals are inclusive on both ends.***
 
-***Note: The DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
+***Note: DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
 
 ```python
 import genomicranges

@@ -49,24 +49,61 @@ class GenomicRanges(BiocFrame):
     """``GenomicRanges`` provides functionality to represent and operate over genomic regions
     and annotations.
 
-    To construct a ``GenomicRanges`` object from a :py:class:`~pandas.DataFrame` must contain columns
-    "seqnames", "starts", "ends" and "strand". If "strand" column is not provided,
-    "*" is used as the default value for each genomic interval.
-
-    **Note: Intervals are inclusive on both ends.**
+    **Note: Intervals are inclusive on both ends and start at 1.**
 
     Additionally, ``GenomicRanges`` may also contain `Sequence Information` (checkout
     :py:class:`~genomicranges.SeqInfo.SeqInfo`) as part of its metadata. It contains for each
     sequence name (or chromosome) in the gene model, its length. Additionally, (checkout
-    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain information about the
-    genome, and if its circular (`is_circular`) or not.
+    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain metadata about the
+    genome, e.g. if its circular (`is_circular`) or not.
+
+    Note: The documentation for some of the methods come from the
+    `GenomicRanges R/Bioconductor package <https://github.com/Bioconductor/GenomicRanges>`_.
+
+    Typical usage example:
+
+    To construct a **GenomicRanges** object, simply pass in the column representation as a
+    dictionary. This dictionary must contain "seqnames", "starts", "ends" columns and optionally
+    specify "strand". If "strand" column is not provided, "*" is used as the default value for
+    each genomic interval.
+
+    .. code-block:: python
+
+        gr = GenomicRanges(
+            {
+                "seqnames": ["chr1", "chr2", "chr3"],
+                "starts": [100, 115, 119],
+                "ends": [103, 116, 120],
+            }
+        )
+
+    Alternatively, you may also convert a :py:class:`~pandas.DataFrame` to ``GenomicRanges``.
+
+    .. code-block:: python
+
+        df = pd.DataFrame(
+            {
+                "seqnames": ["chr1", "chr2", "chr3"],
+                "starts": [100, 115, 119],
+                "ends": [103, 116, 120],
+            }
+        )
+
+        gr = genomicranges.from_pandas(df)
 
     All columns other than "seqnames", "starts", "ends" and "strand" are considered
     metadata columns and can be accessed by
     :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.mcols`.
 
-    Note: The documentation for some of the methods are copied from the
-    `GenomicRanges R/Bioconductor package <https://github.com/Bioconductor/GenomicRanges>`_.
+    .. code-block:: python
+
+        gr.mcols()
+
+    or slice the object
+
+    .. code-block:: python
+
+        sliced_gr = gr[1:2, [True, False, False]]
 
     Attributes:
         data (Mapping[str, Union[List[Any], Mapping]]):

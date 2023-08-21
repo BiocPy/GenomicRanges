@@ -22,12 +22,15 @@ def calc_row_gapwidth(
         Usually a result of :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.row`.
 
     Returns:
-        int: gapwidth if it exists else None
+        int: gapwidth,
 
         - ``nan`` if the sequences are not comparable
         - 0 if they overlap
-        - a number if there is a gap
+        - a number if there is a gap.
+
+        returns None if gap does not exist.
     """
+
     if a["seqnames"] != b["seqnames"] or a["strand"] != b["strand"] != "-":
         return float("nan")
 
