@@ -19,9 +19,10 @@ from warnings import warn
 from biocframe import BiocFrame
 from numpy import concatenate, count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
+from rich.console import Console
+from rich.table import Table
 
 from .io import from_pandas
-
 from .SeqInfo import SeqInfo
 from .utils import (
     OVERLAP_QUERY_TYPES,
@@ -366,12 +367,41 @@ class GenomicRanges(BiocFrame):
                 raise ValueError(f"{return_type} not supported, {str(e)}")
 
     def __str__(self) -> str:
-        pattern = (
-            f"Class GenomicRanges with {self.dims[0]} intervals and "
-            f"{self.dims[1] - 4} metadata columns \n"
-            f"  column_names: {self.column_names}"
+        # pattern = (
+        #     f"Class GenomicRanges with {self.dims[0]} intervals and "
+        #     f"{self.dims[1] - 4} metadata columns \n"
+        #     f"  column_names: {self.column_names}"
+        # )
+        # return pattern
+
+        table = Table(
+            title=f"GenomicRanges with {self.dims[0]} features",
+            caption=f"contains row names?: {self.row_names is not None}",
+            show_header=True,
+            header_style="bold",
         )
-        return pattern
+        for col in self.column_names:
+            table.add_column(str(col))
+
+        # first three rows
+        for r in range(3):
+            _row = self.row(r)
+            vals = list(_row.values())
+            res = [str(v) for v in vals]
+            table.add_row(*res)
+
+        # add ...
+        table.add_row(*["..." for _ in range(len(self.column_names))])
+
+        # last three rows
+        for r in range(len(self) - 3, len(self)):
+            _row = self.row(r)
+            vals = list(_row.values())
+            res = [str(v) for v in vals]
+            table.add_row(*res)
+
+        Console().print(table)
+        return ""
 
     def __getitem__(
         self, args: Union[Sequence[str], Tuple[Sequence, Optional[Sequence]]]
