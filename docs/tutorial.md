@@ -2,7 +2,7 @@
 
 The package provide classes to represent genomic locations and methods to perform interval based operations. **_Intervals are inclusive on both ends._**
 
-For detailed description of these methods, checkout [GenomicRanges documentation](https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf)
+For detailed description of these methods, checkout [GenomicRanges documentation](https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf).
 
 # Construct a `GenomicRanges` object
 
