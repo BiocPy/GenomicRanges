@@ -24,9 +24,9 @@ Methods are available to easily access UCSC genomes or load a genome annotation 
 ```python
 import genomicranges
 
-gr = genomicranges.fromGTF(<PATH TO GTF>)
-# OR 
-gr = genomicranges.fromUCSC(genome="hg19")
+gr = genomicranges.from_gtf(<PATH TO GTF>)
+# OR
+gr = genomicranges.from_ucsc(genome="hg19")
 ```
 #### Pandas DataFrame
 
@@ -49,7 +49,7 @@ df = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df)
+gr = genomicranges.from_pandas(df)
 ```
 
 ### Interval Operations
@@ -57,9 +57,9 @@ gr = genomicranges.fromPandas(df)
 Currently supports most commonly used [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 ```python
-subject = genomicranges.fromUCSC(genome="hg38")
+subject = genomicranges.from_ucsc(genome="hg38")
 
-query = genomicranges.fromPandas(
+query = genomicranges.from_pandas(
     pd.DataFrame(
         {
             "seqnames": ["chr1", "chr2", "chr3"],
