@@ -12,14 +12,14 @@ def calc_row_gapwidth(
     a: MutableMapping[str, Any], b: MutableMapping[str, Any]
 ) -> Optional[int]:
     """Calculates gap width for two genomic positions from
-    :py:class:`genomicranges.GenomicRanges.GenomicRanges`.
+    :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     a,b must contain keys `seqnames`, `strand`, `starts` and `ends`.
 
     Args:
         a, b (MutableMapping[str, Any]): Genomic row with positions.
 
-        Usually a result of :py:meth:`genomicranges.GenomicRanges.GenomicRanges.row`.
+        Usually a result of :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.row`.
 
     Returns:
         int: gapwidth if it exists else None
@@ -42,7 +42,7 @@ def calc_row_gapwidth(
 def np_split_groups_ne(
     ary: ndarray, step: int = 0
 ) -> Tuple[List[ndarray], List[ndarray]]:
-    """Split a :py:class:`numpy.ndarray` by consecutive values.
+    """Split a :py:class:`~numpy.ndarray` by consecutive values.
 
     Args:
         ary (ndarray): A numpy array.

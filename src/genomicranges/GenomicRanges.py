@@ -48,21 +48,21 @@ class GenomicRanges(BiocFrame):
     """``GenomicRanges`` provides functionality to represent and operate over genomic regions
     and annotations.
 
-    To construct a ``GenomicRanges`` object from a :py:class:`pandas.DataFrame` must contain columns
+    To construct a ``GenomicRanges`` object from a :py:class:`~pandas.DataFrame` must contain columns
     "seqnames", "starts", "ends" and "strand". If "strand" column is not provided,
     "*" is used as the default value for each genomic interval.
 
-    ***Intervals are inclusive on both ends.***
+    **Note: Intervals are inclusive on both ends.**
 
-    Additionally, ``GenomicRanges`` can also contain `Sequence Information` (checkout
-    :py:class:`genomicranges.SeqInfo.SeqInfo`) as part of its metadata. In most cases,
-    it usually contains for each sequence name (or chromosome) in the gene model, its length.
-    Sequence Information can also contain additional metadata about the genome, and if its
-    circular (`is_circular`) or not.
+    Additionally, ``GenomicRanges`` may also contain `Sequence Information` (checkout
+    :py:class:`~genomicranges.SeqInfo.SeqInfo`) as part of its metadata. It contains for each
+    sequence name (or chromosome) in the gene model, its length. Additionally, (checkout
+    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain information about the
+    genome, and if its circular (`is_circular`) or not.
 
     All columns other than "seqnames", "starts", "ends" and "strand" are considered
     metadata columns and can be accessed by
-    :py:meth:`genomicranges.GenomicRanges.GenomicRanges.mcols`.
+    :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.mcols`.
 
     Note: The documentation for some of the methods are copied from the
     `GenomicRanges R/Bioconductor package <https://github.com/Bioconductor/GenomicRanges>`_.
@@ -182,7 +182,7 @@ class GenomicRanges(BiocFrame):
     def strand(self) -> List[str]:
         """Get strand information.
 
-        If ``strand`` is originally not provided, we use '*' as a default value for each interval.
+        If ``strand`` is not provided, we use '*' as the default value for each interval.
 
         Returns:
             List[str]: Strand across all positions.
@@ -222,7 +222,7 @@ class GenomicRanges(BiocFrame):
         """Set sequence information.
 
         Args:
-            seq_info: Sequence information.
+            (SeqInfo, optional): Sequence information.
 
         Raises:
             ValueError: If `seq_info` is not a `SeqInfo` class.
@@ -242,7 +242,7 @@ class GenomicRanges(BiocFrame):
         """Get length of each chromosome, if available.
 
         Returns:
-            (Dict[str, int], optional): A dictionary where keys are chromosomenames and values
+            (Dict[str, int], optional): A dictionary where keys are chromosome names and values
             specify lengths of each chromsome.
         """
 
@@ -290,7 +290,7 @@ class GenomicRanges(BiocFrame):
 
     @property
     def is_circular(self) -> Optional[Dict[str, bool]]:
-        """Whether the sequences/chromosomes are circular? (only if available).
+        """Whether the sequences/chromosomes are circular (only if available).
 
         Returns:
             (Dict[str, bool], optional): A dictionary with chromosome names as keys and a
@@ -414,7 +414,7 @@ class GenomicRanges(BiocFrame):
 
                 - List of integer positions along rows/columns to keep.
 
-                - A :py:class:`slice` object specifying the list of positions to keep.
+                - A :py:class:`~slice` object specifying the list of positions to keep.
 
                 - A list of index names to keep. For rows, the object must contain unique
                     :py:attr:`~biocframe.BiocFrame.BiocFrame.row_names` and for columns must
@@ -447,13 +447,12 @@ class GenomicRanges(BiocFrame):
         both: bool = False,
         ignore_strand: bool = False,
     ) -> "GenomicRanges":
-        """Compute flanking ranges for each range. The logic for this -
+        """Compute flanking ranges for each range. The logic for this comes from the
+        `R/GenomicRanges` & `IRanges` packages.
 
-        (from the R/GenomicRanges & IRanges packages)
-
-        - If ``start`` is ``True`` for a given range, the flanking occurs at the `start`,
+        If ``start`` is ``True`` for a given range, the flanking occurs at the `start`,
         otherwise the `end`.
-        - The `widths` of the flanks are given by the ``width`` parameter.
+        The `widths` of the flanks are given by the ``width`` parameter.
 
         ``width`` can be negative, in which case the flanking region is
         reversed so that it represents a prefix or suffix of the range.
@@ -462,24 +461,17 @@ class GenomicRanges(BiocFrame):
 
             `gr.flank(3, True)`, where "x" indicates a range in ``gr`` and "-" indicates the
             resulting flanking region:
-
                 ---xxxxxxx
-
             If ``start`` were ``False``, the range in ``gr`` becomes
-
                 xxxxxxx---
-
             For negative width, i.e. `gr.flank(x, -3, FALSE)`, where "*" indicates the overlap
             between "x" and the result:
-
                 xxxx***
-
             If ``both`` is ``True``, then, for all ranges in "x", the flanking regions are
             extended into (or out of, if ``width`` is negative) the range, so that the result
             straddles the given endpoint and has twice the width given by width.
 
             This is illustrated below for `gr.flank(3, both=TRUE)`:
-
                 ---***xxxx
 
         Args:
@@ -489,7 +481,7 @@ class GenomicRanges(BiocFrame):
             ignore_strand (bool, optional): Whether to ignore strands. Defaults to False.
 
         Returns:
-            GenomicRanges: A new :py:class:`.GenomicRanges` object with the flanked ranges.
+            GenomicRanges: A new :py:class:`~.GenomicRanges` object with the flanked ranges.
         """
         new_starts = []
         new_ends = []
@@ -1021,7 +1013,7 @@ class GenomicRanges(BiocFrame):
         """Get seqlengths either from the :py:class:`~genomicranges.SeqInfo.SeqInfo` object
         or computes one from the current ranges.
 
-        Note: If computed, they ae specific to this `GenomicRanges`
+        Note: If computed, they are specific to this `GenomicRanges` object
         and may not represent the seqlenths of the genome.
 
         Returns:
@@ -1045,7 +1037,7 @@ class GenomicRanges(BiocFrame):
 
         Args:
             start (int, optional): Restrict chromosome start position. Defaults to 1.
-            end (Optional[MutableMapping[str, int]], optional): Restrict end
+            end (MutableMapping[str, int], optional): Restrict end
                 position for each chromosome. Defaults to None. If None, it uses the
                 :py:class:`~genomicranges.SeqInfo.SeqInfo` object if available.
 
@@ -1473,10 +1465,12 @@ class GenomicRanges(BiocFrame):
             query (GenomicRanges): Query `GenomicRanges`.
             query_type (Literal["any", "start", "end", "within"], optional): Overlap query type,
                 must be one of
+
                 - "any": Any overlap is good
                 - "start": Overlap at the beginning of the intervals
                 - "end": Must overlap at the end of the intervals
                 - "within": Fully contain the query interval
+
                 Defaults to "any".
             max_gap (int, optional): Maximum gap allowed in the overlap.
                 Defaults to -1 (no gap allowed).
@@ -1554,7 +1548,7 @@ class GenomicRanges(BiocFrame):
     def count_overlaps(
         self,
         query: "GenomicRanges",
-        query_type: str = "any",
+        query_type: Literal["any", "start", "end", "within"] = "any",
         max_gap: int = -1,
         min_overlap: int = 1,
         ignore_strand: bool = False,
@@ -1563,12 +1557,15 @@ class GenomicRanges(BiocFrame):
 
         Args:
             query (GenomicRanges): Query `GenomicRanges`.
-            query_type (str, optional): Overlap query type, must be one of
+            query_type (Literal["any", "start", "end", "within"], optional): Overlap query type,
+                must be one of
+
                 - "any": Any overlap is good
                 - "start": Overlap at the beginning of the intervals
                 - "end": Must overlap at the end of the intervals
                 - "within": Fully contain the query interval
-                Defaults to any.
+
+                Defaults to "any".
             max_gap (int, optional): Maximum gap allowed in the overlap.
                 Defaults to -1 (no gap allowed).
             min_overlap (int, optional): Minimum overlap with query. Defaults to 1.
@@ -1601,7 +1598,7 @@ class GenomicRanges(BiocFrame):
     def subset_by_overlaps(
         self,
         query: "GenomicRanges",
-        query_type: str = "any",
+        query_type: Literal["any", "start", "end", "within"] = "any",
         max_gap: int = -1,
         min_overlap: int = 1,
         ignore_strand: bool = False,
@@ -1610,12 +1607,15 @@ class GenomicRanges(BiocFrame):
 
         Args:
             query (GenomicRanges): Query `GenomicRanges`.
-            query_type (str, optional): Overlap query type, must be one of
+            query_type (Literal["any", "start", "end", "within"], optional): Overlap query type,
+                must be one of
+
                 - "any": Any overlap is good
                 - "start": Overlap at the beginning of the intervals
                 - "end": Must overlap at the end of the intervals
                 - "within": Fully contain the query interval
-                Defaults to any.
+
+                Defaults to "any".
             max_gap (int, optional): Maximum gap allowed in the overlap.
                 Defaults to -1 (no gap allowed).
             min_overlap (int, optional): Minimum overlap with query. Defaults to 1.
@@ -1798,7 +1798,7 @@ class GenomicRanges(BiocFrame):
 
         Adds a new column ("hits") to ``query`` with the nearest matches.
 
-        Note: Technically same as :py:meth:`genomicranges.GenomicRanges.GenomicRanges.nearest`
+        Note: Technically same as :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.nearest`
         since we also return `distances`.
 
         Args:
@@ -1836,7 +1836,7 @@ class GenomicRanges(BiocFrame):
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            List[Optional[int]]: List contianing index positions if able to match else None.
+            (List[int], optional): List contianing index positions if able to match else None.
         """
 
         if not isinstance(query, GenomicRanges):
@@ -1860,7 +1860,7 @@ class GenomicRanges(BiocFrame):
         return hits
 
     def _generic_pandas_ranges(self, ignore_strand=False, sort=False) -> DataFrame:
-        """Internal function to create a :py:class:`pandas.DataFrame` from ranges.
+        """Internal function to create a :py:class:`~pandas.DataFrame` from ranges.
 
         Args:
             ignore_strand (bool, optional): Whether to ignore strands. Defaults to False.
@@ -1894,7 +1894,7 @@ class GenomicRanges(BiocFrame):
             query (GenomicRanges): Query `GenomicRanges` to search matches.
 
         Returns:
-            List[Optional[int]]: Sorted index order.
+            List[int, optional]: Sorted index order.
         """
         sorted = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
         new_order = sorted["index"]
@@ -1970,11 +1970,11 @@ class GenomicRanges(BiocFrame):
         self, n: Optional[int] = None, width: Optional[int] = None
     ) -> "GenomicRanges":
         """Split each range into chunks by ``n`` (number of intervals)
-        or ``width` (intervals with equal width).
+        or ``width`` (intervals with equal width).
 
         Note: Either ``n`` or ``width`` must be provided, but not both.
 
-        Also, checkout :py:func:`genomicranges.io.tiling.tile_genome` for splitting
+        Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
         a gneomic into chunks.
 
         Args:
@@ -2020,9 +2020,9 @@ class GenomicRanges(BiocFrame):
 
         Note: Either ``n`` or ``width`` must be provided but not both.
 
-        Also, checkout :py:func:`genomicranges.io.tiling.tile_genome` for splitting
+        Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
         a gneomic into chunks, or
-        :py:meth:`genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
+        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
 
         Args:
             n (int, optional): Number of intervals to split into. Defaults to None.
@@ -2059,12 +2059,12 @@ class GenomicRanges(BiocFrame):
     def sliding_windows(self, width: int, step: int = 1) -> "GenomicRanges":
         """Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.
 
-        Also, checkout :py:func:`genomicranges.io.tiling.tile_genome` for splitting
+        Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
         a gneomic into chunks, or
-        :py:meth:`genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
+        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
 
         Args:
-            width (Optional[int], optional): Width of each interval. Defaults to None.
+            width (int, optional): Width of each interval. Defaults to None.
             step (int, optional): Step interval, Defaults to 1.
 
         Returns:
@@ -2130,7 +2130,7 @@ class GenomicRanges(BiocFrame):
         """Row-wise concatenate multiple `GenomicRanges` objects.
 
         Args:
-            granges ("GenomicRanges"): Objects to concatenate.
+            granges (GenomicRanges): Objects to concatenate.
 
         Raises:
             TypeError: If any ``granges`` are not "GenomicRanges".

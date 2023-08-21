@@ -1,6 +1,6 @@
 # GenomicRanges
 
-Python equivalent to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html) to represent genomic locations and support genomic analysis. It uses efficient structures already available in the Python/Pandas/numpy eco-system adds an familiar interfaces.
+Python equivalent to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html) to represent genomic locations and support genomic analysis. It uses efficient structures already available in the Pandas/NumPy eco-system.
 
 ## Install
 

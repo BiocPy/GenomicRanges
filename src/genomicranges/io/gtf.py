@@ -35,7 +35,7 @@ def _parse_all_attribute(row: str) -> Dict:
 
 
 def parse_gtf(path: str, compressed: bool) -> DataFrame:
-    """Read a GTF file as :py:class:`pandas.DataFrame`.
+    """Read a GTF file as :py:class:`~pandas.DataFrame`.
 
     Args:
         path (str): Path to the GTF file.
@@ -89,7 +89,7 @@ def parse_gtf(path: str, compressed: bool) -> DataFrame:
 
 
 def read_gtf(file: str) -> "GenomicRanges":
-    """Read  GTF file as :py:class:`genomicranges.GenomicRanges.GenomicRanges`.
+    """Read  GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
         file (str): Path to GTF file.

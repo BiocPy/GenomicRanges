@@ -31,11 +31,11 @@ def tile_genome(
     Args:
         seqlengths (Union[MutableMapping, SeqInfo]): Sequence lengths of each chromosome.
 
-        ``seqlengths`` may be a dictionary, where keys specify the chromosome and the value is
-        thelength of each chromosome in the genome.
+            ``seqlengths`` may be a dictionary, where keys specify the chromosome and the value is
+            thelength of each chromosome in the genome.
 
-        Alternatively, ``seqlengths`` may be an instance of
-        :py:class:`~genomicranges.SeqInfo.SeqInfo`.
+            Alternatively, ``seqlengths`` may be an instance of
+            :py:class:`~genomicranges.SeqInfo.SeqInfo`.
 
         n (int, optional): Number of intervals to split into.
             Defaults to None, then 'width' of each interval is computed from ``seqlengths``.

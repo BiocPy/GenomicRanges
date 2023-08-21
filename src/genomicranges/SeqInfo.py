@@ -11,10 +11,12 @@ __license__ = "MIT"
 class SeqInfo(BiocFrame):
     """Class that stores information about gene model.
 
+    Must contain column "seqnames".
+
     Args:
         data (MutableMapping[str, Union[List[Any], MutableMapping]]): info about each
             sequence or chromosome. must contain a column `seqnames`.
-        metadata (Optional[MutableMapping], optional): Additional metadata. Defaults to None.
+        metadata (MutableMapping, optional): Additional metadata. Defaults to None.
 
     Raises:
         ValueError: If ``data`` does not contain required attributes.
