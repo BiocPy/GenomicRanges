@@ -17,7 +17,7 @@ df_src = pd.DataFrame(
     }
 )
 
-g_src = genomicranges.fromPandas(df_src)
+g_src = genomicranges.from_pandas(df_src)
 
 df_tgt = pd.DataFrame(
     {
@@ -41,7 +41,7 @@ df_tgt = pd.DataFrame(
     }
 )
 
-g_tgt = genomicranges.fromPandas(df_tgt)
+g_tgt = genomicranges.from_pandas(df_tgt)
 
 
 def test_union():

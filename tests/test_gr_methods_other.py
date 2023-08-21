@@ -10,7 +10,13 @@ __license__ = "MIT"
 
 df_gr = pd.DataFrame(
     {
-        "seqnames": ["chr1", "chr2", "chr3", "chr2", "chr3",],
+        "seqnames": [
+            "chr1",
+            "chr2",
+            "chr3",
+            "chr2",
+            "chr3",
+        ],
         "starts": range(101, 106),
         "ends": [112, 123, 128, 134, 111],
         "strand": ["*", "-", "*", "+", "-"],
@@ -19,7 +25,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 
 def test_shift():
@@ -51,7 +57,7 @@ def test_restrict():
     assert restrict_gr.column("starts") == [114] * 3
     assert restrict_gr.column("ends") == [123, 128, 134]
 
-    restrict_gr = gr.restrict(start=114, end=140, keepAllRanges=True)
+    restrict_gr = gr.restrict(start=114, end=140, keep_all_ranges=True)
 
     assert restrict_gr is not None
     assert restrict_gr.column("starts") == [114] * 5

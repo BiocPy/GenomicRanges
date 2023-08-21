@@ -6,9 +6,15 @@ __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-df_src = pd.DataFrame({"seqnames": ["chr1"], "starts": [101], "ends": [109],})
+df_src = pd.DataFrame(
+    {
+        "seqnames": ["chr1"],
+        "starts": [101],
+        "ends": [109],
+    }
+)
 
-g_src = genomicranges.fromPandas(df_src)
+g_src = genomicranges.from_pandas(df_src)
 
 df_tgt = pd.DataFrame(
     {
@@ -32,14 +38,14 @@ df_tgt = pd.DataFrame(
     }
 )
 
-g_tgt = genomicranges.fromPandas(df_tgt)
+g_tgt = genomicranges.from_pandas(df_tgt)
 
 
 def test_binned_average():
     assert g_tgt is not None
     assert g_src is not None
 
-    res = g_tgt.binnedAverage(bins=g_src, scorename="score", outname="binned_score")
+    res = g_tgt.binned_average(bins=g_src, scorename="score", outname="binned_score")
 
     assert res is not None
     assert res.column("binned_score") == [2.6]

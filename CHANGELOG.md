@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.3.0 (development)
+- pythonify the entire code base.
+
 ## Version 0.2
 - Now uses BiocFrame as the underlying class
 - Implement interval based operations

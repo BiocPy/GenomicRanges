@@ -31,7 +31,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 
 def test_granges():
@@ -50,7 +50,7 @@ def test_slices():
 
 
 def test_export():
-    df = gr.toPandas()
+    df = gr.to_pandas()
 
     assert df is not None
     assert df.shape[0] == len(gr)

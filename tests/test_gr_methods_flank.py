@@ -10,7 +10,13 @@ __license__ = "MIT"
 
 df_gr = pd.DataFrame(
     {
-        "seqnames": ["chr1", "chr2", "chr3", "chr2", "chr3",],
+        "seqnames": [
+            "chr1",
+            "chr2",
+            "chr3",
+            "chr2",
+            "chr3",
+        ],
         "starts": range(101, 106),
         "ends": [112, 123, 128, 134, 111],
         "strand": ["*", "-", "*", "+", "-"],
@@ -19,7 +25,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 
 def test_flank_default():

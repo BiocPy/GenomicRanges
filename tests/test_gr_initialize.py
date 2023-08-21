@@ -33,7 +33,7 @@ def test_create_gr():
         }
     )
 
-    gr = genomicranges.fromPandas(df_gr)
+    gr = genomicranges.from_pandas(df_gr)
 
     assert gr is not None
     assert gr.dims[0] == df_gr.shape[0]
@@ -78,4 +78,4 @@ def test_should_fail():
             }
         )
 
-        genomicranges.fromPandas(df_gr)
+        genomicranges.from_pandas(df_gr)

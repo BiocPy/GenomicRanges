@@ -1,27 +1,27 @@
 import logging
-from typing import MutableMapping
+from typing import Dict
 
-import pandas as pd
 from joblib import Parallel, delayed
+from pandas import DataFrame, read_csv
 
-from ..GenomicRanges import GenomicRanges
-from .pdf import fromPandas
+# from ..GenomicRanges import GenomicRanges
+from .pdf import from_pandas
 
-## Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
+# Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def parse_all_attribute(row: str) -> MutableMapping:
+def _parse_all_attribute(row: str) -> Dict:
     """Extract all keys from the gtf/gff attribute string.
 
     Args:
-        row (str): a row from GTF.
+        row (str): A row from GTF.
 
     Returns:
-        MutableMapping: dict containing extracted keys and their values.
+        Dict: A dictionary containing extracted keys and their values.
     """
     attr = row["group"]
     infos = attr.split(";")
@@ -34,19 +34,19 @@ def parse_all_attribute(row: str) -> MutableMapping:
     return {**row, **vals}
 
 
-def parse_gtf(path: str, compressed: bool) -> pd.DataFrame:
-    """Read a GTF file as pandas DataFrame.
+def parse_gtf(path: str, compressed: bool) -> DataFrame:
+    """Read a GTF file as :py:class:`~pandas.DataFrame`.
 
     Args:
-        path (str): path to the file.
-        compressed (bool): is compression gzip?
+        path (str): Path to the GTF file.
+        compressed (bool): Whether the file is gzip compressed.
 
     Returns:
-        pd.DataFrame: DataFrame representation of the gtf file.
+        DataFrame: Genome annotations from GTF as pandas dataframe.
     """
     logging.info(f"Reading File - {path}")
     if compressed:
-        df = pd.read_csv(
+        df = read_csv(
             path,
             sep="\t",
             names=[
@@ -63,7 +63,7 @@ def parse_gtf(path: str, compressed: bool) -> pd.DataFrame:
             compression="gzip",
         )
     else:
-        df = pd.read_csv(
+        df = read_csv(
             path,
             sep="\t",
             names=[
@@ -80,24 +80,24 @@ def parse_gtf(path: str, compressed: bool) -> pd.DataFrame:
         )
 
     rows = Parallel(n_jobs=-2)(
-        delayed(parse_all_attribute)(row) for _, row in df.iterrows()
+        delayed(_parse_all_attribute)(row) for _, row in df.iterrows()
     )
-    gtf = pd.DataFrame.from_records(rows)
+    gtf = DataFrame.from_records(rows)
     gtf.drop(["group"], axis=1)
 
     return gtf
 
 
-def readGTF(file: str) -> GenomicRanges:
-    """Read  GTF file as `GenomicRanges`.
+def read_gtf(file: str) -> "GenomicRanges":
+    """Read  GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
-        file (str): path to gtf file.
+        file (str): Path to GTF file.
 
     Returns:
-        GenomicRanges:  a new `GenomicRanges` with the genomic regions.
+        GenomicRanges:  Genome annotations from GTF.
     """
     compressed = True if file.endswith("gz") else False
     data = parse_gtf(file, compressed=compressed)
 
-    return fromPandas(data)
+    return from_pandas(data)

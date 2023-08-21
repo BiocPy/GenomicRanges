@@ -31,26 +31,30 @@ df_gr = pd.DataFrame(
 )
 
 seq_obj = {
-    "seqnames": ["chr1", "chr2", "chr3",],
+    "seqnames": [
+        "chr1",
+        "chr2",
+        "chr3",
+    ],
     "seqlengths": [110, 112, 118],
-    "isCircular": [True, True, False],
+    "is_circular": [True, True, False],
     "genome": "hg19",
 }
 
 
 def test_gr_seqInfo():
-    gr = genomicranges.fromPandas(df_gr)
+    gr = genomicranges.from_pandas(df_gr)
     assert gr is not None
-    assert gr.seqInfo is None
+    assert gr.seq_info is None
 
-    gr.seqInfo = SeqInfo(seq_obj)
+    gr.seq_info = SeqInfo(seq_obj)
 
-    assert gr.seqInfo is not None
+    assert gr.seq_info is not None
 
 
 def test_gr_method_trim():
-    gr = genomicranges.fromPandas(df_gr)
-    gr.seqInfo = SeqInfo(seq_obj)
+    gr = genomicranges.from_pandas(df_gr)
+    gr.seq_info = SeqInfo(seq_obj)
 
     trimmed_gr = gr.trim()
 

@@ -10,7 +10,13 @@ __license__ = "MIT"
 
 df_gr = pd.DataFrame(
     {
-        "seqnames": ["chr1", "chr2", "chr3", "chr2", "chr3",],
+        "seqnames": [
+            "chr1",
+            "chr2",
+            "chr3",
+            "chr2",
+            "chr3",
+        ],
         "starts": [101, 102, 103, 104, 106],
         "ends": [112, 123, 128, 134, 111],
         "strand": ["*", "-", "*", "+", "-"],
@@ -19,7 +25,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 
 def test_resize_default():
@@ -45,7 +51,7 @@ def test_resize_fix_end():
 def test_resize_ignore_strand():
     assert gr is not None
 
-    resized_gr = gr.resize(width=10, ignoreStrand=True)
+    resized_gr = gr.resize(width=10, ignore_strand=True)
 
     assert resized_gr is not None
     assert resized_gr.column("starts") == [101, 102, 103, 104, 106]
@@ -55,7 +61,7 @@ def test_resize_ignore_strand():
 def test_resize_fix_end_ignore_strand():
     assert gr is not None
 
-    resized_gr = gr.resize(width=10, fix="end", ignoreStrand=True)
+    resized_gr = gr.resize(width=10, fix="end", ignore_strand=True)
 
     assert resized_gr is not None
     assert resized_gr.column("starts") == [103, 114, 119, 125, 102]
@@ -65,7 +71,7 @@ def test_resize_fix_end_ignore_strand():
 def test_resize_fix_center_ignore_strand():
     assert gr is not None
 
-    resized_gr = gr.resize(width=10, fix="center", ignoreStrand=True)
+    resized_gr = gr.resize(width=10, fix="center", ignore_strand=True)
 
     assert resized_gr is not None
     assert resized_gr.column("starts") == [102, 108, 111, 114, 104]

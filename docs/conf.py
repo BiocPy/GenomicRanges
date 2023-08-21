@@ -71,32 +71,29 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.ifconfig",
     "sphinx.ext.mathjax",
-    "sphinx.ext.napoleon"
+    "sphinx.ext.napoleon",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 
-# Configure AutoStructify
-# https://recommonmark.readthedocs.io/en/latest/auto_structify.html
-def setup(app):
-    from recommonmark.transform import AutoStructify
-
-    params = {
-        "enable_auto_toc_tree": True,
-        "auto_toc_tree_section": "Contents",
-        "auto_toc_maxdepth": 2,
-        "enable_eval_rst": True,
-        "enable_math": True,
-        "enable_inline_math": True,
-    }
-    app.add_config_value("recommonmark_config", params, True)
-    app.add_transform(AutoStructify)
-
-
 # Enable markdown
-extensions.append("recommonmark")
+extensions.append("myst_parser")
+
+# Configure MyST-Parser
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "html_image",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "substitution",
+    "tasklist",
+]
 
 # The suffix of source filenames.
 source_suffix = [".rst", ".md"]
@@ -109,7 +106,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "GenomicRanges"
-copyright = "2022, jkanche"
+copyright = "2023, jkanche"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -168,6 +165,15 @@ pygments_style = "sphinx"
 
 # If this is True, todo emits a warning for each TODO entries. The default is False.
 todo_emit_warnings = True
+
+autodoc_default_options = {
+      'special-members': True,
+      'undoc-members': False,
+      'exclude-members': '__weakref__, __dict__, __str__, __module__, __init__'
+  }
+
+autosummary_generate = True
+autosummary_imported_members = True
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -300,8 +306,9 @@ intersphinx_mapping = {
     "sklearn": ("https://scikit-learn.org/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
-    "setuptools": ("https://setuptools.readthedocs.io/en/stable/", None),
+    "setuptools": ("https://setuptools.pypa.io/en/stable/", None),
     "pyscaffold": ("https://pyscaffold.org/en/stable", None),
+    "biocframe": ("https://biocpy.github.io/BiocFrame", None),
 }
 
 print(f"loading configurations for {project} {version} ...", file=sys.stderr)
