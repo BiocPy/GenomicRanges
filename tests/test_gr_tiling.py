@@ -17,7 +17,7 @@ df_src = pd.DataFrame(
     }
 )
 
-g_src = genomicranges.fromPandas(df_src)
+g_src = genomicranges.from_pandas(df_src)
 
 
 def test_tile():
@@ -32,16 +32,16 @@ def test_tile():
 def test_slide():
     assert g_src is not None
 
-    tiles = g_src.slidingWindows(width=10)
+    tiles = g_src.sliding_windows(width=10)
 
     assert tiles is not None
     assert tiles.shape == (44, 4)
 
 
-def test_tileGenome():
+def test_tile_genome():
     seqlengths = {"chr1": 100, "chr2": 75, "chr3": 200}
 
-    tiles = genomicranges.tileGenome(seqlengths=seqlengths, n=10)
+    tiles = genomicranges.tile_genome(seqlengths=seqlengths, n=10)
 
     assert tiles is not None
     assert tiles.shape == (30, 4)

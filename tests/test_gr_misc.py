@@ -19,13 +19,13 @@ df_src = pd.DataFrame(
     }
 )
 
-g_src = genomicranges.fromPandas(df_src)
+g_src = genomicranges.from_pandas(df_src)
 
 
 def test_invert():
     assert g_src is not None
 
-    result = g_src.invertStrand()
+    result = g_src.invert_strand()
 
     assert result is not None
     assert result.shape == g_src.shape
@@ -63,7 +63,7 @@ def test_concat():
         }
     )
 
-    g_tgt = genomicranges.fromPandas(df_tgt)
+    g_tgt = genomicranges.from_pandas(df_tgt)
     assert g_tgt is not None
 
     result = g_src.concat(g_tgt)

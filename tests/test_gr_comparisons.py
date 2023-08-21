@@ -28,7 +28,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 
 def test_duplicated():
@@ -60,10 +60,10 @@ def test_matches():
     assert query_hits == [[2], [3], [4]]
 
 
-def test_isUnsorted():
+def test_is_unsorted():
     assert gr is not None
 
-    result = gr.isUnsorted()
+    result = gr.is_unsorted()
 
     assert result is True
 

@@ -19,7 +19,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 
 def test_reduce():
@@ -38,7 +38,7 @@ def test_reduce():
 def test_reduce_with_gapwidth():
     assert gr is not None
 
-    reduced_gr = gr.reduce(minGapwidth=10)
+    reduced_gr = gr.reduce(min_gap_width=10)
 
     assert reduced_gr is not None
     assert reduced_gr.shape == (3, 4)
@@ -48,10 +48,10 @@ def test_reduce_with_gapwidth():
     assert reduced_gr.column("strand") == ["*", "-", "+"]
 
 
-def test_reduce_with_gapwidth_withrevmap():
+def test_reduce_with_gapwidth_with_reverse_map():
     assert gr is not None
 
-    reduced_gr = gr.reduce(minGapwidth=10, withRevMap=True)
+    reduced_gr = gr.reduce(min_gap_width=10, with_reverse_map=True)
 
     assert reduced_gr is not None
     assert reduced_gr.shape == (3, 5)

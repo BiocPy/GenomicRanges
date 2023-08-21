@@ -30,13 +30,13 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 
 def test_nearest():
     assert gr is not None
 
-    test_gr = genomicranges.fromPandas(
+    test_gr = genomicranges.from_pandas(
         pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -55,7 +55,7 @@ def test_nearest():
 def test_precede():
     assert gr is not None
 
-    test_gr = genomicranges.fromPandas(
+    test_gr = genomicranges.from_pandas(
         pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -76,7 +76,7 @@ def test_precede():
 def test_follow():
     assert gr is not None
 
-    test_gr = genomicranges.fromPandas(
+    test_gr = genomicranges.from_pandas(
         pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],

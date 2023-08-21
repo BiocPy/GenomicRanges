@@ -205,27 +205,27 @@ class GenomicRanges(BiocFrame):
         return widths
 
     @property
-    def seqInfo(self) -> Optional[SeqInfo]:
+    def seq_info(self) -> Optional[SeqInfo]:
         """Get sequence information, if available.
 
         Returns:
             (SeqInfo, optional): Sequence information.
         """
 
-        if self.metadata and "seqInfo" in self.metadata:
-            return self.metadata["seqInfo"]
+        if self.metadata and "seq_info" in self.metadata:
+            return self.metadata["seq_info"]
 
         return None
 
-    @seqInfo.setter
-    def seqInfo(self, seq_info: Optional[SeqInfo]):
+    @seq_info.setter
+    def seq_info(self, seq_info: Optional[SeqInfo]):
         """Set sequence information.
 
         Args:
             seq_info: Sequence information.
 
         Raises:
-            ValueError: If `seq_info` is not a `SeqInfo` class object.
+            ValueError: If `seq_info` is not a `SeqInfo` class.
         """
 
         if seq_info is not None:
@@ -765,7 +765,7 @@ class GenomicRanges(BiocFrame):
 
         return GenomicRanges(
             new_data,
-            row_names=self.row_names,
+            row_names=new_row_names,
             column_names=self.column_names,
             metadata=self.metadata,
         )
@@ -777,16 +777,16 @@ class GenomicRanges(BiocFrame):
             GenomicRanges: A new `GenomicRanges` object with trimmed ranges.
         """
 
-        if not self.seqInfo:
+        if self.seq_info is None:
             raise ValueError("Cannot trim ranges. `seqinfo` is not available.")
 
-        if self._metadata is None:
+        if self.metadata is None:
             raise ValueError("Cannot trim ranges. `seqinfo` is not available.")
 
-        if self._metadata["seqInfo"] is None:
+        if "seq_info" in self.metadata and self.metadata["seq_info"] is None:
             raise ValueError("Cannot trim ranges. `seqinfo` is not available.")
 
-        seqinfos = self.seqInfo
+        seqinfos = self.seq_info
         seqlengths = seqinfos.seqlengths
         is_circular = seqinfos.is_circular
 
@@ -824,7 +824,7 @@ class GenomicRanges(BiocFrame):
 
         return GenomicRanges(
             new_data,
-            row_names=self.row_names,
+            row_names=new_row_names,
             column_names=self.column_names,
             metadata=self.metadata,
         )
@@ -958,7 +958,7 @@ class GenomicRanges(BiocFrame):
             ignore_strand (bool, optional): Whether to ignore strands. Defaults to False.
 
         Returns:
-            GenomicRanges: a new `GenomicRanges` object with reduced intervals.
+            GenomicRanges: A new `GenomicRanges` object with reduced intervals.
         """
 
         df_gr = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
@@ -969,7 +969,7 @@ class GenomicRanges(BiocFrame):
             for x in df_gr["gapwidths"]
         ]
 
-        gaps_to_merge = df_gr[df_gr["gapwidth_flag"] is True]
+        gaps_to_merge = df_gr[df_gr["gapwidth_flag"] == True]
 
         gaps_merged = gaps_to_merge.groupby(
             ["seqnames", "strand", "gapwidth_flag"], sort=False
@@ -977,7 +977,7 @@ class GenomicRanges(BiocFrame):
 
         gaps_merged = gaps_merged.reset_index()
 
-        gaps_not_merged = df_gr[df_gr["gapwidth_flag"] is False]
+        gaps_not_merged = df_gr[df_gr["gapwidth_flag"] == False]
         gaps_not_merged["revmap"] = gaps_not_merged["index"].apply(lambda x: [x])
         gaps_not_merged = gaps_not_merged[gaps_merged.columns]
 
@@ -2056,7 +2056,7 @@ class GenomicRanges(BiocFrame):
         final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
-    def slicing_windows(self, width: int, step: int = 1) -> "GenomicRanges":
+    def sliding_windows(self, width: int, step: int = 1) -> "GenomicRanges":
         """Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.
 
         Also, checkout :py:func:`genomicranges.io.tiling.tile_genome` for splitting
@@ -2120,7 +2120,7 @@ class GenomicRanges(BiocFrame):
 
         return GenomicRanges(
             new_data,
-            number_of_rows=self.number_of_rows,
+            number_of_rows=self.shape[0],
             row_names=self.row_names,
             column_names=self.column_names,
             metadata=self.metadata,

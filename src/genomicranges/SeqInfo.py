@@ -92,7 +92,7 @@ class SeqInfo(BiocFrame):
                 and if they are circular.
         """
 
-        if "isCircular" not in self.column_names:
+        if "is_circular" not in self.column_names:
             return None
 
         return dict(zip_longest(self.column("seqnames"), self.column("is_circular")))
@@ -105,8 +105,8 @@ class SeqInfo(BiocFrame):
             (str, optional): The species name or genome.
         """
 
-        if self._metadata and "genome" in self._metadata:
-            return self._metadata["genome"]
+        if self.metadata and "genome" in self.metadata:
+            return self.metadata["genome"]
 
         return None
 
@@ -118,7 +118,7 @@ class SeqInfo(BiocFrame):
             genome (str): Species name or genome.
         """
 
-        if self._metadata is None:
-            self._metadata = {}
+        if self.metadata is None:
+            self.metadata = {}
 
-        self._metadata["genome"] = genome
+        self.metadata["genome"] = genome

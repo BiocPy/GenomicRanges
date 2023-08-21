@@ -28,20 +28,27 @@ df_subject = pd.DataFrame(
     }
 )
 
-subject = genomicranges.fromPandas(df_subject)
+subject = genomicranges.from_pandas(df_subject)
 
 df_query = pd.DataFrame(
-    {"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]}
+    {
+        "seqnames": [
+            "chr2",
+        ],
+        "starts": [4],
+        "ends": [6],
+        "strand": ["+"],
+    }
 )
 
-query = genomicranges.fromPandas(df_query)
+query = genomicranges.from_pandas(df_query)
 
 
-def test_findOverlaps():
+def test_find_overlaps():
     assert subject is not None
     assert query is not None
 
-    res = subject.findOverlaps(query)
+    res = subject.find_overlaps(query)
 
     print(res._data)
 
@@ -50,11 +57,11 @@ def test_findOverlaps():
     assert res.column("hits") == [[1, 2]]
 
 
-def test_findOverlaps_queryType():
+def test_find_overlaps_query_type():
     assert subject is not None
     assert query is not None
 
-    res = subject.findOverlaps(query, queryType="within")
+    res = subject.find_overlaps(query, query_type="within")
 
     print(res._data)
 
@@ -63,19 +70,18 @@ def test_findOverlaps_queryType():
     assert res.column("hits") == [[1, 2]]
 
 
-def test_countOverlaps():
+def test_count_overlaps():
     assert subject is not None
     assert query is not None
 
-    res = subject.countOverlaps(query)
+    res = subject.count_overlaps(query)
 
     assert res is not None
     assert len(res) == 1
     assert res[0] == 2
 
 
-def test_subsetByOverlaps():
-
+def test_subset_by_overlaps():
     df_query2 = pd.DataFrame(
         {
             "seqnames": ["chr2", "chr4"],
@@ -85,12 +91,12 @@ def test_subsetByOverlaps():
         }
     )
 
-    query2 = genomicranges.fromPandas(df_query2)
+    query2 = genomicranges.from_pandas(df_query2)
 
     assert subject is not None
     assert query2 is not None
 
-    res = subject.subsetByOverlaps(query2)
+    res = subject.subset_by_overlaps(query2)
 
     assert res is not None
     print(res.data)
