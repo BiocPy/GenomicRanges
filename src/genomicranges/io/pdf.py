@@ -10,8 +10,7 @@ __license__ = "MIT"
 
 
 def from_pandas(data: DataFrame) -> "GenomicRanges":
-    """Read a :py:class:`~pandas.DataFrame` into
-    :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
+    """Read a :py:class:`~pandas.DataFrame` into :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
         data (DataFrame): `DataFrame` object with genomic positions.
