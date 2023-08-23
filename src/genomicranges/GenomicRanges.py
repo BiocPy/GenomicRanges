@@ -46,8 +46,8 @@ __license__ = "MIT"
 
 
 class GenomicRanges(BiocFrame):
-    """``GenomicRanges`` provides functionality to represent and operate over genomic regions
-    and annotations.
+    """``GenomicRanges`` provides functionality to represent and operate over genomic
+    regions and annotations.
 
     **Note: Intervals are inclusive on both ends and start at 1.**
 
@@ -354,8 +354,8 @@ class GenomicRanges(BiocFrame):
         return None
 
     def granges(self) -> "GenomicRanges":
-        """Creates a new ``GenomicRanges`` object with only ranges
-        (`seqnames`, `starts, `ends` and `strand`).
+        """Creates a new ``GenomicRanges`` object with only ranges (`seqnames`, `starts,
+        `ends` and `strand`).
 
         Returns:
             GenomicRanges: A new `GenomicRanges` with only ranges.
@@ -603,8 +603,8 @@ class GenomicRanges(BiocFrame):
         fix: Literal["start", "end", "center"] = "start",
         ignore_strand: bool = False,
     ) -> "GenomicRanges":
-        """Resize ranges to the specified ``width`` where either the ``start``,
-        ``end``, or ``center`` is used as an anchor.
+        """Resize ranges to the specified ``width`` where either the ``start``, ``end``,
+        or ``center`` is used as an anchor.
 
         Args:
             width (int): Width to resize, cannot be negative!
@@ -895,7 +895,8 @@ class GenomicRanges(BiocFrame):
         width: Optional[int] = None,
         end: Optional[int] = None,
     ) -> "GenomicRanges":
-        """Narrow genomic positions by provided ``start``, ``width`` and ``end`` parameters.
+        """Narrow genomic positions by provided ``start``, ``width`` and ``end``
+        parameters.
 
         Important: these parameters are relative shift in positions for each range.
 
@@ -1028,7 +1029,7 @@ class GenomicRanges(BiocFrame):
             for x in df_gr["gapwidths"]
         ]
 
-        gaps_to_merge = df_gr[df_gr["gapwidth_flag"] == True]
+        gaps_to_merge = df_gr[df_gr["gapwidth_flag"] == True]  # noqa: E712
 
         gaps_merged = gaps_to_merge.groupby(
             ["seqnames", "strand", "gapwidth_flag"], sort=False
@@ -1036,7 +1037,7 @@ class GenomicRanges(BiocFrame):
 
         gaps_merged = gaps_merged.reset_index()
 
-        gaps_not_merged = df_gr[df_gr["gapwidth_flag"] == False]
+        gaps_not_merged = df_gr[df_gr["gapwidth_flag"] == False]  # noqa: E712
         gaps_not_merged["revmap"] = gaps_not_merged["index"].apply(lambda x: [x])
         gaps_not_merged = gaps_not_merged[gaps_merged.columns]
 
@@ -1056,8 +1057,8 @@ class GenomicRanges(BiocFrame):
     def range(
         self, with_reverse_map: bool = False, ignore_strand: bool = False
     ) -> "GenomicRanges":
-        """Calculate ranges for each chromosome.
-        (minimum of all starts, maximum of all ends) in the object.
+        """Calculate ranges for each chromosome. (minimum of all starts, maximum of all
+        ends) in the object.
 
         Technically its same as :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.reduce`
         with a ridiculously high ``min_gap_width``.
@@ -1077,8 +1078,8 @@ class GenomicRanges(BiocFrame):
         )
 
     def compute_seqlengths(self) -> Dict[str, int]:
-        """Get seqlengths either from the :py:class:`~genomicranges.SeqInfo.SeqInfo` object
-        or computes one from the current ranges.
+        """Get seqlengths either from the :py:class:`~genomicranges.SeqInfo.SeqInfo`
+        object or computes one from the current ranges.
 
         Note: If computed, they are specific to this `GenomicRanges` object
         and may not represent the seqlenths of the genome.
@@ -1099,8 +1100,8 @@ class GenomicRanges(BiocFrame):
     def gaps(
         self, start: int = 1, end: Optional[MutableMapping[str, int]] = None
     ) -> Optional["GenomicRanges"]:
-        """Identify gaps in genomic positions for each distinct
-        `seqname` (chromosome) and `strand` combination.
+        """Identify gaps in genomic positions for each distinct `seqname` (chromosome)
+        and `strand` combination.
 
         Args:
             start (int, optional): Restrict chromosome start position. Defaults to 1.
@@ -1170,8 +1171,8 @@ class GenomicRanges(BiocFrame):
     def disjoin(
         self, with_reverse_map: bool = False, ignore_strand: bool = False
     ) -> Optional["GenomicRanges"]:
-        """Calculate disjoint genomic positions for each distinct
-        `seqname` (chromosome) and `strand` combination.
+        """Calculate disjoint genomic positions for each distinct `seqname` (chromosome)
+        and `strand` combination.
 
         Args:
             with_reverse_map (bool, optional): Whether to return map of indices back to
@@ -1473,8 +1474,8 @@ class GenomicRanges(BiocFrame):
     def coverage(
         self, shift: int = 0, width: Optional[int] = None, weight: int = 1
     ) -> Dict[str, ndarray]:
-        """Calculate coverage for each chromosome, For each position,
-        counts the number of ranges that cover it.
+        """Calculate coverage for each chromosome, For each position, counts the number
+        of ranges that cover it.
 
         Args:
             shift (int, optional): Shift all genomic positions. Defaults to 0.
@@ -1526,7 +1527,8 @@ class GenomicRanges(BiocFrame):
         min_overlap: int = 1,
         ignore_strand: bool = False,
     ) -> Optional["GenomicRanges"]:
-        """Find overlaps between ``subject`` (self) and a ``query`` `GenomicRanges` object.
+        """Find overlaps between ``subject`` (self) and a ``query`` `GenomicRanges`
+        object.
 
         Args:
             query (GenomicRanges): Query `GenomicRanges`.
@@ -1620,7 +1622,8 @@ class GenomicRanges(BiocFrame):
         min_overlap: int = 1,
         ignore_strand: bool = False,
     ) -> List[int]:
-        """Count overlaps between ``subject`` (self) and a ``query`` `GenomicRanges` object.
+        """Count overlaps between ``subject`` (self) and a ``query`` `GenomicRanges`
+        object.
 
         Args:
             query (GenomicRanges): Query `GenomicRanges`.
@@ -1789,8 +1792,8 @@ class GenomicRanges(BiocFrame):
         query: "GenomicRanges",
         ignore_strand: bool = False,
     ) -> Optional["GenomicRanges"]:
-        """Search nearest positions both upstream and downstream that overlap with
-        each range in ``query``.
+        """Search nearest positions both upstream and downstream that overlap with each
+        range in ``query``.
 
         Adds a new column ("hits") to ``query`` with the nearest matches.
 
@@ -1812,8 +1815,8 @@ class GenomicRanges(BiocFrame):
         query: "GenomicRanges",
         ignore_strand: bool = False,
     ) -> Optional["GenomicRanges"]:
-        """Search nearest positions only downstream that overlap with
-        each range in ``query``.
+        """Search nearest positions only downstream that overlap with each range in
+        ``query``.
 
         Adds a new column ("hits") to ``query`` with the nearest matches.
 
@@ -1835,8 +1838,8 @@ class GenomicRanges(BiocFrame):
         query: "GenomicRanges",
         ignore_strand: bool = False,
     ) -> Optional["GenomicRanges"]:
-        """Search nearest positions only upstream that overlap with
-        each range in ``query``.
+        """Search nearest positions only upstream that overlap with each range in
+        ``query``.
 
         Adds a new column ("hits") to ``query`` with the nearest matches.
 
@@ -1860,8 +1863,8 @@ class GenomicRanges(BiocFrame):
         query: "GenomicRanges",
         ignore_strand: bool = False,
     ) -> Optional["GenomicRanges"]:
-        """Search nearest positions only downstream that overlap with
-        each range in ``query``.
+        """Search nearest positions only downstream that overlap with each range in
+        ``query``.
 
         Adds a new column ("hits") to ``query`` with the nearest matches.
 
@@ -2036,8 +2039,8 @@ class GenomicRanges(BiocFrame):
     def tile_by_range(
         self, n: Optional[int] = None, width: Optional[int] = None
     ) -> "GenomicRanges":
-        """Split each range into chunks by ``n`` (number of intervals)
-        or ``width`` (intervals with equal width).
+        """Split each range into chunks by ``n`` (number of intervals) or ``width``
+        (intervals with equal width).
 
         Note: Either ``n`` or ``width`` must be provided, but not both.
 
@@ -2082,8 +2085,8 @@ class GenomicRanges(BiocFrame):
     def tile(
         self, n: Optional[int] = None, width: Optional[int] = None
     ) -> "GenomicRanges":
-        """Split each interval by ``n`` (number of sub intervals)
-        or ``width`` (intervals with equal width).
+        """Split each interval by ``n`` (number of sub intervals) or ``width``
+        (intervals with equal width).
 
         Note: Either ``n`` or ``width`` must be provided but not both.
 
@@ -2124,7 +2127,8 @@ class GenomicRanges(BiocFrame):
         return from_pandas(final_df)
 
     def sliding_windows(self, width: int, step: int = 1) -> "GenomicRanges":
-        """Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.
+        """Slide along each range by ``width`` (intervals with equal ``width``) and
+        ``step``.
 
         Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
         a gneomic into chunks, or

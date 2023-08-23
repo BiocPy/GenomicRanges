@@ -8,8 +8,10 @@ build-backend = "setuptools.build_meta"
 version_scheme = "no-guess-dev"
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 src = ["src"]
+exclude = ["tests"]
+extend-ignore = ["F821"]
 
 [tool.ruff.pydocstyle]
 convention = "google"

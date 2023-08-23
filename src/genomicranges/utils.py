@@ -611,8 +611,7 @@ def split_intervals(
 def slide_intervals(
     chrom: str, strand: str, start: int, end: int, width: int, step: int
 ):
-    """Sliding intervals. pretty much a fancy range function.
-    realizes the range.
+    """Sliding intervals. pretty much a fancy range function. realizes the range.
 
     Args:
         chrom (str): chromosome name.
