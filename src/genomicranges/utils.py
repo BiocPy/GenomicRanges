@@ -11,8 +11,7 @@ __license__ = "MIT"
 def calc_row_gapwidth(
     a: MutableMapping[str, Any], b: MutableMapping[str, Any]
 ) -> Optional[int]:
-    """Calculates gap width for two genomic positions from
-    :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
+    """Calculates gap width for two genomic positions from :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     a,b must contain keys `seqnames`, `strand`, `starts` and `ends`.
 
@@ -588,8 +587,7 @@ def find_nearest(
 def split_intervals(
     chrom: str, strand: str, start: int, end: int, step: int
 ) -> List[Tuple]:
-    """Split an interval range into equal bins. pretty much a fancy range function.
-    realizes the range.
+    """Split an interval range into equal bins. pretty much a fancy range function. realizes the range.
 
     Args:
         chrom (str): chromosome name.
