@@ -1029,7 +1029,7 @@ class GenomicRanges(BiocFrame):
             for x in df_gr["gapwidths"]
         ]
 
-        gaps_to_merge = df_gr[df_gr["gapwidth_flag"] is True]
+        gaps_to_merge = df_gr[df_gr["gapwidth_flag"] == True]  # noqa: E712
 
         gaps_merged = gaps_to_merge.groupby(
             ["seqnames", "strand", "gapwidth_flag"], sort=False
@@ -1037,7 +1037,7 @@ class GenomicRanges(BiocFrame):
 
         gaps_merged = gaps_merged.reset_index()
 
-        gaps_not_merged = df_gr[df_gr["gapwidth_flag"] is False]
+        gaps_not_merged = df_gr[df_gr["gapwidth_flag"] == False]  # noqa: E712
         gaps_not_merged["revmap"] = gaps_not_merged["index"].apply(lambda x: [x])
         gaps_not_merged = gaps_not_merged[gaps_merged.columns]
 
