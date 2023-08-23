@@ -22,7 +22,7 @@ repos:
   hooks:
     - id: docformatter
       additional_dependencies: [tomli]
-      args: [-r, --black, -in-place]
+      args: [--in-place, --wrap-descriptions=120, --wrap-summaries=120]
       # --config, ./pyproject.toml
 
 - repo: https://github.com/psf/black
