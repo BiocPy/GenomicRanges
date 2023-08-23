@@ -35,7 +35,6 @@ def test_gaps():
 
 
 def test_disjoin():
-
     intervals = a + b
     res1 = find_disjoin(intervals)
     # res2 = calc_disjoint_intervals(intervals)
