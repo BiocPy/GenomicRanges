@@ -1,10 +1,13 @@
 # Tutorial
 
-The package provide classes to represent genomic locations and methods to perform interval based operations. **_Intervals are inclusive on both ends._**
+The package provide classes to represent genomic locations and methods to perform interval based operations. **_Intervals are inclusive on both ends and starts at 1._**
 
-For detailed description of these methods, checkout [GenomicRanges documentation](https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf).
+For detailed description of these methods, checkout [R/GenomicRanges documentation](https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf).
+
 
 # Construct a `GenomicRanges` object
+
+To construct a **GenomicRanges** object, simply pass in the column representation as a dictionary. This dictionary must contain "seqnames", "starts", "ends" columns and optionally specify "strand". If "strand" column is not provided, "*" is used as the default value for each genomic interval.
 
 ## Pandas DataFrame
 
@@ -37,10 +40,23 @@ Methods are available to access UCSC genomes or load a genome annotation from GT
 ```python
 import genomicranges
 
-gr = genomicranges.readGTF(<PATH TO GTF>)
+gr = genomicranges.read_gtf(<PATH TO GTF>)
 # OR
-gr = genomicranges.readUCSC(genome="hg19")
+gr = genomicranges.read_ucsc(genome="hg19")
 ```
+
+## From a dictionary
+
+```python
+gr = GenomicRanges(
+    {
+        "seqnames": ["chr1", "chr2", "chr3"],
+        "starts": [100, 115, 119],
+        "ends": [103, 116, 120],
+    }
+)
+```
+
 
 ## Set sequence information
 
@@ -54,7 +70,7 @@ seq_obj = {
 
 seq = SeqInfo(seq_obj)
 
-gr.seqInfo = seq
+gr.seq_info = seq
 ```
 
 # Get and Set methods
@@ -140,13 +156,13 @@ for index, row in gr:
 
 For detailed description of these methods, checkout [GenomicRanges documentation](https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf)
 
-- flank: flank the intervals based on start or end or both.
-- shift: shifts all the ranges specified by the shift argument.
-- resize: resizes the ranges to the specified width where either the start, end, or center is used as an anchor
-- narrow: narrows the ranges
-- promoters: promoters generates promoter ranges for each range relative to the TSS.The promoter range is expanded around the TSS according to the upstream and downstream parameters.
-- restrict: restricts the ranges to the interval(s) specified by the start and end arguments
-- trim: trims out-of-bound ranges located on non-circular sequences whose length is not NA.
+- **flank**: flank the intervals based on start or end or both.
+- **shift**: shifts all the ranges specified by the shift argument.
+- **resize**: resizes the ranges to the specified width where either the start, end, or center is used as an anchor
+- **narrow**: narrows the ranges
+- **promoters**: promoters generates promoter ranges for each range relative to the TSS.The promoter range is expanded around the TSS according to the upstream and downstream parameters.
+- **restrict**: restricts the ranges to the interval(s) specified by the start and end arguments
+- **trim**: trims out-of-bound ranges located on non-circular sequences whose length is not NA.
 
 ```python
 # flank
@@ -173,11 +189,11 @@ trimmed_gr = gr.trim()
 
 # Inter-range methods
 
-- range: returns a new GenomicRanges object containing range bounds for each distinct (seqname, strand) pairing.
-- reduce: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.
-- gaps: Finds gaps in the GenomicRanges object for each distinct (seqname, strand) pairing
-- disjoin: Finds disjoint intervals across all locations for each distinct (seqname, strand) pairing.
-- is_disjoint: Is the object contain disjoint intervals for each distinct (seqname, strand) pairing?
+- **range**: returns a new GenomicRanges object containing range bounds for each distinct (seqname, strand) pairing.
+- **reduce**: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.
+- **gaps**: Finds gaps in the GenomicRanges object for each distinct (seqname, strand) pairing
+- **disjoin**: Finds disjoint intervals across all locations for each distinct (seqname, strand) pairing.
+- **is_disjoint**: Is the object contain disjoint intervals for each distinct (seqname, strand) pairing?
 
 ```python
 # range
@@ -193,15 +209,15 @@ gapped_gr = gr.gaps(end={"chr1": 120, "chr2": 120, "chr3": 120})
 # disjoin
 disjoin_gr = gr.disjoin()
 
-# isDisjoint
+# is Disjoint?
 isdisjoin = gr.is_disjoint()
 ```
 
 # Set operations on genomic ranges
 
-- union: compute union of intervals across object
-- intersect: compute intersection or finds overlapping intervals
-- setdiff: compute set difference
+- **union**: compute union of intervals across object
+- **intersect**: compute intersection or finds overlapping intervals
+- **setdiff**: compute set difference
 
 ```python
 df_src = pd.DataFrame(
@@ -252,7 +268,7 @@ pd.Series(gr.column("score")).describe()
 
 ## `binned_average`
 
-compute binned average for different positions
+Compute binned average for different positions
 
 ```python
 bins = pd.DataFrame({"seqnames": ["chr1"], "starts": [101], "ends": [109],})
@@ -277,12 +293,12 @@ subject_gr = genomicranges.from_pandas(subject)
 binned_avg_gr = g_tgt.binned_average(bins=bins_gr, scorename="score", outname="binned_score")
 ```
 
-now you might wonder how can I generate these bin?
+now you might wonder how can I generate these ***bins***?
 
 ## Generate tiles or bins from `GenomicRanges`
 
-- `tile`: splits each genomic region by n (number of regions) or by width (maximum width of each tile)
-- `sliding_windows`: Generates sliding windows within each range, by width and step.
+- **tile**: Splits each genomic region by n (number of regions) or by width (maximum width of each tile)
+- **sliding_windows**: Generates sliding windows within each range, by width and step.
 
 ```python
 # tiles
@@ -304,7 +320,7 @@ tiles = genomicranges.tile_genome(seqlengths=seqlengths, n=10)
 
 ## Coverage
 
-computes number of ranges that overlap for each position in the range.
+Computes number of ranges that overlap for each position in the range.
 
 ```python
 res_vector = gr.coverage(shift=10, width=5)
@@ -312,9 +328,9 @@ res_vector = gr.coverage(shift=10, width=5)
 
 # Overlap based methods
 
-- find_overlaps: find overlaps between two GenomicRanges object
-- count_overlaps: count overlaps between two GenomicRanges object
-- subset_by_overlaps: subset a GenomicRanges object if it overlaps with the ranges in the query
+- **find_overlaps**: find overlaps between two `GenomicRanges` object
+- **count_overlaps**: count overlaps between two `GenomicRanges` object
+- **subset_by_overlaps**: subset a `GenomicRanges` object if it overlaps with the ranges in the query
 
 ```python
 df_subject = pd.DataFrame(
@@ -361,10 +377,10 @@ res = subject.subset_by_overlaps(query)
 
 # Search operations
 
-- nearest: Performs nearest neighbor search along any direction (both upstream and downstream)
-- follow: Performs nearest neighbor search only along downstream
-- precede: Performs nearest neighbor search only along upstream
-- distance_to_nearest: calculate distance to nearest location
+- **nearest**: Performs nearest neighbor search along any direction (both upstream and downstream)
+- **follow**: Performs nearest neighbor search only along downstream
+- **precede**: Performs nearest neighbor search only along upstream
+- **distance_to_nearest**: calculate distance to nearest location
 
 ```python
 
@@ -389,12 +405,12 @@ query_hits = gr.distance_to_nearest(test_gr)
 
 # Comparison, rank and order operations
 
-- duplicated: if any of the ranges are duplicated
-- match: Element wise comparison to find exact match intervals.
-- is_unsorted: if the object is not sorted
-- order: Get the order of indices for sorting.
-- sort: Sort the GenomicRanges object.
-- rank: for each interval identifies its position is a sorted order
+- **duplicated**: if any of the ranges are duplicated
+- **match**: Element wise comparison to find exact match intervals.
+- **is_unsorted**: if the object is not sorted
+- **order**: Get the order of indices for sorting.
+- **sort**: Sort the GenomicRanges object.
+- **rank**: for each interval identifies its position is a sorted order
 
 ```python
 # duplicated
@@ -416,9 +432,9 @@ sorted_gr = gr.sort()
 rank = gr.rank()
 ```
 
-# Concatenate GenomicRanges objects by rows
+# Concatenate `GenomicRanges` objects by rows
 
-concatenate any number of GenomicRanges objects
+Concatenate any number of GenomicRanges objects,
 
 ```python
 concat_gr = gr.concat([gr1, gr2, gr3, ...])
@@ -426,8 +442,8 @@ concat_gr = gr.concat([gr1, gr2, gr3, ...])
 
 # Misc operations
 
-- invert_strand: flip the strand for each interval
-- sample: randomly choose k intervals
+- **invert_strand**: flip the strand for each interval
+- **sample**: randomly choose k intervals
 
 ```python
 # invert strand

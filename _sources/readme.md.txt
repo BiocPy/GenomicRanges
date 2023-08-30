@@ -1,3 +1,7 @@
+[![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
+[![PyPI-Server](https://img.shields.io/pypi/v/GenomicRanges.svg)](https://pypi.org/project/GenomicRanges/)
+![Unit tests](https://github.com/BiocPy/GenomicRanges/actions/workflows/pypi-test.yml/badge.svg)
+
 # GenomicRanges
 
 Container class to represent genomic locations and support genomic analysis in Python similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
@@ -32,7 +36,7 @@ gr = genomicranges.from_ucsc(genome="hg19")
 
 A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into `GenomicRanges`. ***Intervals are inclusive on both ends.***
 
-***Note: The DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
+***Note: DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
 
 ```python
 import genomicranges

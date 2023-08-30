@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.3.0 documentation</title>
+    <!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.3.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.0 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.0 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -167,7 +167,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#overlap-based-methods">Overlap based methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#search-operations">Search operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#concatenate-genomicranges-objects-by-rows">Concatenate GenomicRanges objects by rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#concatenate-genomicranges-objects-by-rows">Concatenate <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#misc-operations">Misc operations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -264,27 +264,63 @@
 <div class="viewcode-block" id="GenomicRanges">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges">[docs]</a>
 <span class="k">class</span> <span class="nc">GenomicRanges</span><span class="p">(</span><span class="n">BiocFrame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;``GenomicRanges`` provides functionality to represent and operate over genomic regions</span>
-<span class="sd">    and annotations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``GenomicRanges`` provides functionality to represent and operate over genomic regions and annotations.</span>
 
-<span class="sd">    To construct a ``GenomicRanges`` object from a :py:class:`~pandas.DataFrame` must contain columns</span>
-<span class="sd">    &quot;seqnames&quot;, &quot;starts&quot;, &quot;ends&quot; and &quot;strand&quot;. If &quot;strand&quot; column is not provided,</span>
-<span class="sd">    &quot;*&quot; is used as the default value for each genomic interval.</span>
-
-<span class="sd">    **Note: Intervals are inclusive on both ends.**</span>
+<span class="sd">    **Note: Intervals are inclusive on both ends and start at 1.**</span>
 
 <span class="sd">    Additionally, ``GenomicRanges`` may also contain `Sequence Information` (checkout</span>
 <span class="sd">    :py:class:`~genomicranges.SeqInfo.SeqInfo`) as part of its metadata. It contains for each</span>
 <span class="sd">    sequence name (or chromosome) in the gene model, its length. Additionally, (checkout</span>
-<span class="sd">    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain information about the</span>
-<span class="sd">    genome, and if its circular (`is_circular`) or not.</span>
+<span class="sd">    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain metadata about the</span>
+<span class="sd">    genome, e.g. if its circular (`is_circular`) or not.</span>
+
+<span class="sd">    Note: The documentation for some of the methods come from the</span>
+<span class="sd">    `GenomicRanges R/Bioconductor package &lt;https://github.com/Bioconductor/GenomicRanges&gt;`_.</span>
+
+<span class="sd">    Typical usage example:</span>
+
+<span class="sd">    To construct a **GenomicRanges** object, simply pass in the column representation as a</span>
+<span class="sd">    dictionary. This dictionary must contain &quot;seqnames&quot;, &quot;starts&quot;, &quot;ends&quot; columns and optionally</span>
+<span class="sd">    specify &quot;strand&quot;. If &quot;strand&quot; column is not provided, &quot;*&quot; is used as the default value for</span>
+<span class="sd">    each genomic interval.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        gr = GenomicRanges(</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;seqnames&quot;: [&quot;chr1&quot;, &quot;chr2&quot;, &quot;chr3&quot;],</span>
+<span class="sd">                &quot;starts&quot;: [100, 115, 119],</span>
+<span class="sd">                &quot;ends&quot;: [103, 116, 120],</span>
+<span class="sd">            }</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Alternatively, you may also convert a :py:class:`~pandas.DataFrame` to ``GenomicRanges``.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        df = pd.DataFrame(</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;seqnames&quot;: [&quot;chr1&quot;, &quot;chr2&quot;, &quot;chr3&quot;],</span>
+<span class="sd">                &quot;starts&quot;: [100, 115, 119],</span>
+<span class="sd">                &quot;ends&quot;: [103, 116, 120],</span>
+<span class="sd">            }</span>
+<span class="sd">        )</span>
+
+<span class="sd">        gr = genomicranges.from_pandas(df)</span>
 
 <span class="sd">    All columns other than &quot;seqnames&quot;, &quot;starts&quot;, &quot;ends&quot; and &quot;strand&quot; are considered</span>
 <span class="sd">    metadata columns and can be accessed by</span>
 <span class="sd">    :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.mcols`.</span>
 
-<span class="sd">    Note: The documentation for some of the methods are copied from the</span>
-<span class="sd">    `GenomicRanges R/Bioconductor package &lt;https://github.com/Bioconductor/GenomicRanges&gt;`_.</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        gr.mcols()</span>
+
+<span class="sd">    or slice the object</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        sliced_gr = gr[1:2, [True, False, False]]</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        data (Mapping[str, Union[List[Any], Mapping]]):</span>
@@ -540,8 +576,7 @@
 <div class="viewcode-block" id="GenomicRanges.granges">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.granges">[docs]</a>
     <span class="k">def</span> <span class="nf">granges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new ``GenomicRanges`` object with only ranges</span>
-<span class="sd">        (`seqnames`, `starts, `ends` and `strand`).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new ``GenomicRanges`` object with only ranges (`seqnames`, `starts, `ends` and `strand`).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            GenomicRanges: A new `GenomicRanges` with only ranges.</span>
@@ -709,8 +744,8 @@
         <span class="n">both</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute flanking ranges for each range. The logic for this comes from the</span>
-<span class="sd">        `R/GenomicRanges` &amp; `IRanges` packages.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute flanking ranges for each range. The logic for this comes from the `R/GenomicRanges` &amp; `IRanges`</span>
+<span class="sd">        packages.</span>
 
 <span class="sd">        If ``start`` is ``True`` for a given range, the flanking occurs at the `start`,</span>
 <span class="sd">        otherwise the `end`.</span>
@@ -801,8 +836,8 @@
         <span class="n">fix</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize ranges to the specified ``width`` where either the ``start``,</span>
-<span class="sd">        ``end``, or ``center`` is used as an anchor.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize ranges to the specified ``width`` where either the ``start``, ``end``, or ``center`` is used as an</span>
+<span class="sd">        anchor.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            width (int): Width to resize, cannot be negative!</span>
@@ -1244,7 +1279,7 @@
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df_gr</span><span class="p">[</span><span class="s2">&quot;gapwidths&quot;</span><span class="p">]</span>
         <span class="p">]</span>
 
-        <span class="n">gaps_to_merge</span> <span class="o">=</span> <span class="n">df_gr</span><span class="p">[</span><span class="n">df_gr</span><span class="p">[</span><span class="s2">&quot;gapwidth_flag&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+        <span class="n">gaps_to_merge</span> <span class="o">=</span> <span class="n">df_gr</span><span class="p">[</span><span class="n">df_gr</span><span class="p">[</span><span class="s2">&quot;gapwidth_flag&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>  <span class="c1"># noqa: E712</span>
 
         <span class="n">gaps_merged</span> <span class="o">=</span> <span class="n">gaps_to_merge</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="s2">&quot;gapwidth_flag&quot;</span><span class="p">],</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span>
@@ -1252,7 +1287,7 @@
 
         <span class="n">gaps_merged</span> <span class="o">=</span> <span class="n">gaps_merged</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 
-        <span class="n">gaps_not_merged</span> <span class="o">=</span> <span class="n">df_gr</span><span class="p">[</span><span class="n">df_gr</span><span class="p">[</span><span class="s2">&quot;gapwidth_flag&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
+        <span class="n">gaps_not_merged</span> <span class="o">=</span> <span class="n">df_gr</span><span class="p">[</span><span class="n">df_gr</span><span class="p">[</span><span class="s2">&quot;gapwidth_flag&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>  <span class="c1"># noqa: E712</span>
         <span class="n">gaps_not_merged</span><span class="p">[</span><span class="s2">&quot;revmap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaps_not_merged</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">x</span><span class="p">])</span>
         <span class="n">gaps_not_merged</span> <span class="o">=</span> <span class="n">gaps_not_merged</span><span class="p">[</span><span class="n">gaps_merged</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
 
@@ -1275,8 +1310,7 @@
     <span class="k">def</span> <span class="nf">range</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate ranges for each chromosome.</span>
-<span class="sd">        (minimum of all starts, maximum of all ends) in the object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate ranges for each chromosome. (minimum of all starts, maximum of all ends) in the object.</span>
 
 <span class="sd">        Technically its same as :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.reduce`</span>
 <span class="sd">        with a ridiculously high ``min_gap_width``.</span>
@@ -1299,8 +1333,8 @@
 <div class="viewcode-block" id="GenomicRanges.compute_seqlengths">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.compute_seqlengths">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get seqlengths either from the :py:class:`~genomicranges.SeqInfo.SeqInfo` object</span>
-<span class="sd">        or computes one from the current ranges.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get seqlengths either from the :py:class:`~genomicranges.SeqInfo.SeqInfo` object or computes one from the</span>
+<span class="sd">        current ranges.</span>
 
 <span class="sd">        Note: If computed, they are specific to this `GenomicRanges` object</span>
 <span class="sd">        and may not represent the seqlenths of the genome.</span>
@@ -1324,8 +1358,7 @@
     <span class="k">def</span> <span class="nf">gaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify gaps in genomic positions for each distinct</span>
-<span class="sd">        `seqname` (chromosome) and `strand` combination.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify gaps in genomic positions for each distinct `seqname` (chromosome) and `strand` combination.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start (int, optional): Restrict chromosome start position. Defaults to 1.</span>
@@ -1377,7 +1410,7 @@
                 <span class="n">gap_intervals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">td_res</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">groups</span> <span class="o">=</span> <span class="n">df_gr</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;seqnames&quot;</span><span class="p">])</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="n">df_gr</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
                 <span class="n">strands</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
                 <span class="n">missing_strands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">strands</span><span class="p">)))</span>
@@ -1398,8 +1431,7 @@
     <span class="k">def</span> <span class="nf">disjoin</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate disjoint genomic positions for each distinct</span>
-<span class="sd">        `seqname` (chromosome) and `strand` combination.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate disjoint genomic positions for each distinct `seqname` (chromosome) and `strand` combination.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            with_reverse_map (bool, optional): Whether to return map of indices back to</span>
@@ -1636,8 +1668,7 @@
     <span class="k">def</span> <span class="nf">binned_average</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">scorename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">outname</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate average for a column across all bins, then set a column called</span>
-<span class="sd">        ``outname`` with those values.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate average for a column across all bins, then set a column called ``outname`` with those values.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            scorename (str): Score column to compute averages on.</span>
@@ -1669,7 +1700,7 @@
         <span class="n">df_gr</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
 
         <span class="n">tgt_gr</span> <span class="o">=</span> <span class="n">bins</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">tgt_groups</span> <span class="o">=</span> <span class="n">tgt_gr</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;seqnames&quot;</span><span class="p">])</span>
+        <span class="n">tgt_groups</span> <span class="o">=</span> <span class="n">tgt_gr</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">cache_intvals</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1725,8 +1756,7 @@
     <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome, For each position,</span>
-<span class="sd">        counts the number of ranges that cover it.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome, For each position, counts the number of ranges that cover it.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            shift (int, optional): Shift all genomic positions. Defaults to 0.</span>
@@ -1739,7 +1769,7 @@
 <span class="sd">            coverage vector as value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">df_gr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_pandas_ranges</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="n">df_gr</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;seqnames&quot;</span><span class="p">])</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">df_gr</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
 
         <span class="n">shift_arr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">shift</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -2053,8 +2083,7 @@
         <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions both upstream and downstream that overlap with</span>
-<span class="sd">        each range in ``query``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions both upstream and downstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Adds a new column (&quot;hits&quot;) to ``query`` with the nearest matches.</span>
 
@@ -2079,8 +2108,7 @@
         <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with</span>
-<span class="sd">        each range in ``query``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Adds a new column (&quot;hits&quot;) to ``query`` with the nearest matches.</span>
 
@@ -2105,8 +2133,7 @@
         <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only upstream that overlap with</span>
-<span class="sd">        each range in ``query``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only upstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Adds a new column (&quot;hits&quot;) to ``query`` with the nearest matches.</span>
 
@@ -2133,8 +2160,7 @@
         <span class="n">query</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;GenomicRanges&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with</span>
-<span class="sd">        each range in ``query``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Adds a new column (&quot;hits&quot;) to ``query`` with the nearest matches.</span>
 
@@ -2330,8 +2356,7 @@
     <span class="k">def</span> <span class="nf">tile_by_range</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each range into chunks by ``n`` (number of intervals)</span>
-<span class="sd">        or ``width`` (intervals with equal width).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each range into chunks by ``n`` (number of intervals) or ``width`` (intervals with equal width).</span>
 
 <span class="sd">        Note: Either ``n`` or ``width`` must be provided, but not both.</span>
 
@@ -2379,8 +2404,7 @@
     <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each interval by ``n`` (number of sub intervals)</span>
-<span class="sd">        or ``width`` (intervals with equal width).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each interval by ``n`` (number of sub intervals) or ``width`` (intervals with equal width).</span>
 
 <span class="sd">        Note: Either ``n`` or ``width`` must be provided but not both.</span>
 
@@ -2576,7 +2600,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=e259d695"></script>
+</div><script src="../../_static/documentation_options.js?v=4621528c"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>

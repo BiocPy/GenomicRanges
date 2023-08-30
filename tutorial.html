@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="genomicranges" href="api/modules.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
-    <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
-        <title>Tutorial - GenomicRanges 0.3.0 documentation</title>
+    <!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+        <title>Tutorial - GenomicRanges 0.3.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.3.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.3.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.0 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -168,7 +168,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#overlap-based-methods">Overlap based methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#search-operations">Search operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#concatenate-genomicranges-objects-by-rows">Concatenate GenomicRanges objects by rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#concatenate-genomicranges-objects-by-rows">Concatenate <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#misc-operations">Misc operations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -217,11 +217,12 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="tutorial">
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">#</a></h1>
-<p>The package provide classes to represent genomic locations and methods to perform interval based operations. <strong><em>Intervals are inclusive on both ends.</em></strong></p>
-<p>For detailed description of these methods, checkout <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">GenomicRanges documentation</a>.</p>
+<p>The package provide classes to represent genomic locations and methods to perform interval based operations. <strong><em>Intervals are inclusive on both ends and starts at 1.</em></strong></p>
+<p>For detailed description of these methods, checkout <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">R/GenomicRanges documentation</a>.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="construct-a-genomicranges-object">
 <h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object<a class="headerlink" href="#construct-a-genomicranges-object" title="Link to this heading">#</a></h1>
+<p>To construct a <strong>GenomicRanges</strong> object, simply pass in the column representation as a dictionary. This dictionary must contain “seqnames”, “starts”, “ends” columns and optionally specify “strand”. If “strand” column is not provided, “*” is used as the default value for each genomic interval.</p>
 <section id="pandas-dataframe">
 <h2>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Link to this heading">#</a></h2>
 <p>A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this DataFrame into <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>.</p>
@@ -249,9 +250,21 @@
 <p>Methods are available to access UCSC genomes or load a genome annotation from GTF</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
 
-<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">readGTF</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_gtf</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
 <span class="c1"># OR</span>
-<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">readUCSC</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="from-a-dictionary">
+<h2>From a dictionary<a class="headerlink" href="#from-a-dictionary" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">119</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">103</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -266,7 +279,7 @@
 
 <span class="n">seq</span> <span class="o">=</span> <span class="n">SeqInfo</span><span class="p">(</span><span class="n">seq_obj</span><span class="p">)</span>
 
-<span class="n">gr</span><span class="o">.</span><span class="n">seqInfo</span> <span class="o">=</span> <span class="n">seq</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">seq_info</span> <span class="o">=</span> <span class="n">seq</span>
 </pre></div>
 </div>
 </section>
@@ -347,13 +360,13 @@
 <h1>Intra-range transformations<a class="headerlink" href="#intra-range-transformations" title="Link to this heading">#</a></h1>
 <p>For detailed description of these methods, checkout <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">GenomicRanges documentation</a></p>
 <ul class="simple">
-<li><p>flank: flank the intervals based on start or end or both.</p></li>
-<li><p>shift: shifts all the ranges specified by the shift argument.</p></li>
-<li><p>resize: resizes the ranges to the specified width where either the start, end, or center is used as an anchor</p></li>
-<li><p>narrow: narrows the ranges</p></li>
-<li><p>promoters: promoters generates promoter ranges for each range relative to the TSS.The promoter range is expanded around the TSS according to the upstream and downstream parameters.</p></li>
-<li><p>restrict: restricts the ranges to the interval(s) specified by the start and end arguments</p></li>
-<li><p>trim: trims out-of-bound ranges located on non-circular sequences whose length is not NA.</p></li>
+<li><p><strong>flank</strong>: flank the intervals based on start or end or both.</p></li>
+<li><p><strong>shift</strong>: shifts all the ranges specified by the shift argument.</p></li>
+<li><p><strong>resize</strong>: resizes the ranges to the specified width where either the start, end, or center is used as an anchor</p></li>
+<li><p><strong>narrow</strong>: narrows the ranges</p></li>
+<li><p><strong>promoters</strong>: promoters generates promoter ranges for each range relative to the TSS.The promoter range is expanded around the TSS according to the upstream and downstream parameters.</p></li>
+<li><p><strong>restrict</strong>: restricts the ranges to the interval(s) specified by the start and end arguments</p></li>
+<li><p><strong>trim</strong>: trims out-of-bound ranges located on non-circular sequences whose length is not NA.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># flank</span>
 <span class="n">flanked_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">flank</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">both</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -381,11 +394,11 @@
 <section class="tex2jax_ignore mathjax_ignore" id="inter-range-methods">
 <h1>Inter-range methods<a class="headerlink" href="#inter-range-methods" title="Link to this heading">#</a></h1>
 <ul class="simple">
-<li><p>range: returns a new GenomicRanges object containing range bounds for each distinct (seqname, strand) pairing.</p></li>
-<li><p>reduce: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.</p></li>
-<li><p>gaps: Finds gaps in the GenomicRanges object for each distinct (seqname, strand) pairing</p></li>
-<li><p>disjoin: Finds disjoint intervals across all locations for each distinct (seqname, strand) pairing.</p></li>
-<li><p>is_disjoint: Is the object contain disjoint intervals for each distinct (seqname, strand) pairing?</p></li>
+<li><p><strong>range</strong>: returns a new GenomicRanges object containing range bounds for each distinct (seqname, strand) pairing.</p></li>
+<li><p><strong>reduce</strong>: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.</p></li>
+<li><p><strong>gaps</strong>: Finds gaps in the GenomicRanges object for each distinct (seqname, strand) pairing</p></li>
+<li><p><strong>disjoin</strong>: Finds disjoint intervals across all locations for each distinct (seqname, strand) pairing.</p></li>
+<li><p><strong>is_disjoint</strong>: Is the object contain disjoint intervals for each distinct (seqname, strand) pairing?</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># range</span>
 <span class="n">range_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">range</span><span class="p">()</span>
@@ -400,7 +413,7 @@
 <span class="c1"># disjoin</span>
 <span class="n">disjoin_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">disjoin</span><span class="p">()</span>
 
-<span class="c1"># isDisjoint</span>
+<span class="c1"># is Disjoint?</span>
 <span class="n">isdisjoin</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">is_disjoint</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -408,9 +421,9 @@
 <section class="tex2jax_ignore mathjax_ignore" id="set-operations-on-genomic-ranges">
 <h1>Set operations on genomic ranges<a class="headerlink" href="#set-operations-on-genomic-ranges" title="Link to this heading">#</a></h1>
 <ul class="simple">
-<li><p>union: compute union of intervals across object</p></li>
-<li><p>intersect: compute intersection or finds overlapping intervals</p></li>
-<li><p>setdiff: compute set difference</p></li>
+<li><p><strong>union</strong>: compute union of intervals across object</p></li>
+<li><p><strong>intersect</strong>: compute intersection or finds overlapping intervals</p></li>
+<li><p><strong>setdiff</strong>: compute set difference</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df_src</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
@@ -459,7 +472,7 @@
 </section>
 <section id="binned-average">
 <h2><code class="docutils literal notranslate"><span class="pre">binned_average</span></code><a class="headerlink" href="#binned-average" title="Link to this heading">#</a></h2>
-<p>compute binned average for different positions</p>
+<p>Compute binned average for different positions</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">109</span><span class="p">],})</span>
 
 <span class="n">bins_gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
@@ -482,13 +495,13 @@
 <span class="n">binned_avg_gr</span> <span class="o">=</span> <span class="n">g_tgt</span><span class="o">.</span><span class="n">binned_average</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="n">bins_gr</span><span class="p">,</span> <span class="n">scorename</span><span class="o">=</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;binned_score&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>now you might wonder how can I generate these bin?</p>
+<p>now you might wonder how can I generate these <em><strong>bins</strong></em>?</p>
 </section>
 <section id="generate-tiles-or-bins-from-genomicranges">
 <h2>Generate tiles or bins from <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#generate-tiles-or-bins-from-genomicranges" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">tile</span></code>: splits each genomic region by n (number of regions) or by width (maximum width of each tile)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sliding_windows</span></code>: Generates sliding windows within each range, by width and step.</p></li>
+<li><p><strong>tile</strong>: Splits each genomic region by n (number of regions) or by width (maximum width of each tile)</p></li>
+<li><p><strong>sliding_windows</strong>: Generates sliding windows within each range, by width and step.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># tiles</span>
 <span class="n">tiles</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -509,7 +522,7 @@
 </section>
 <section id="coverage">
 <h2>Coverage<a class="headerlink" href="#coverage" title="Link to this heading">#</a></h2>
-<p>computes number of ranges that overlap for each position in the range.</p>
+<p>Computes number of ranges that overlap for each position in the range.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res_vector</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -518,9 +531,9 @@
 <section class="tex2jax_ignore mathjax_ignore" id="overlap-based-methods">
 <h1>Overlap based methods<a class="headerlink" href="#overlap-based-methods" title="Link to this heading">#</a></h1>
 <ul class="simple">
-<li><p>find_overlaps: find overlaps between two GenomicRanges object</p></li>
-<li><p>count_overlaps: count overlaps between two GenomicRanges object</p></li>
-<li><p>subset_by_overlaps: subset a GenomicRanges object if it overlaps with the ranges in the query</p></li>
+<li><p><strong>find_overlaps</strong>: find overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p></li>
+<li><p><strong>count_overlaps</strong>: count overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p></li>
+<li><p><strong>subset_by_overlaps</strong>: subset a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object if it overlaps with the ranges in the query</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df_subject</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
@@ -567,10 +580,10 @@
 <section class="tex2jax_ignore mathjax_ignore" id="search-operations">
 <h1>Search operations<a class="headerlink" href="#search-operations" title="Link to this heading">#</a></h1>
 <ul class="simple">
-<li><p>nearest: Performs nearest neighbor search along any direction (both upstream and downstream)</p></li>
-<li><p>follow: Performs nearest neighbor search only along downstream</p></li>
-<li><p>precede: Performs nearest neighbor search only along upstream</p></li>
-<li><p>distance_to_nearest: calculate distance to nearest location</p></li>
+<li><p><strong>nearest</strong>: Performs nearest neighbor search along any direction (both upstream and downstream)</p></li>
+<li><p><strong>follow</strong>: Performs nearest neighbor search only along downstream</p></li>
+<li><p><strong>precede</strong>: Performs nearest neighbor search only along upstream</p></li>
+<li><p><strong>distance_to_nearest</strong>: calculate distance to nearest location</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">find_regions</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span>
@@ -596,12 +609,12 @@
 <section class="tex2jax_ignore mathjax_ignore" id="comparison-rank-and-order-operations">
 <h1>Comparison, rank and order operations<a class="headerlink" href="#comparison-rank-and-order-operations" title="Link to this heading">#</a></h1>
 <ul class="simple">
-<li><p>duplicated: if any of the ranges are duplicated</p></li>
-<li><p>match: Element wise comparison to find exact match intervals.</p></li>
-<li><p>is_unsorted: if the object is not sorted</p></li>
-<li><p>order: Get the order of indices for sorting.</p></li>
-<li><p>sort: Sort the GenomicRanges object.</p></li>
-<li><p>rank: for each interval identifies its position is a sorted order</p></li>
+<li><p><strong>duplicated</strong>: if any of the ranges are duplicated</p></li>
+<li><p><strong>match</strong>: Element wise comparison to find exact match intervals.</p></li>
+<li><p><strong>is_unsorted</strong>: if the object is not sorted</p></li>
+<li><p><strong>order</strong>: Get the order of indices for sorting.</p></li>
+<li><p><strong>sort</strong>: Sort the GenomicRanges object.</p></li>
+<li><p><strong>rank</strong>: for each interval identifies its position is a sorted order</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># duplicated</span>
 <span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span>
@@ -624,8 +637,8 @@
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="concatenate-genomicranges-objects-by-rows">
-<h1>Concatenate GenomicRanges objects by rows<a class="headerlink" href="#concatenate-genomicranges-objects-by-rows" title="Link to this heading">#</a></h1>
-<p>concatenate any number of GenomicRanges objects</p>
+<h1>Concatenate <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows<a class="headerlink" href="#concatenate-genomicranges-objects-by-rows" title="Link to this heading">#</a></h1>
+<p>Concatenate any number of GenomicRanges objects,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">concat_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">,</span> <span class="n">gr3</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -633,8 +646,8 @@
 <section class="tex2jax_ignore mathjax_ignore" id="misc-operations">
 <h1>Misc operations<a class="headerlink" href="#misc-operations" title="Link to this heading">#</a></h1>
 <ul class="simple">
-<li><p>invert_strand: flip the strand for each interval</p></li>
-<li><p>sample: randomly choose k intervals</p></li>
+<li><p><strong>invert_strand</strong>: flip the strand for each interval</p></li>
+<li><p><strong>sample</strong>: randomly choose k intervals</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># invert strand</span>
 <span class="n">inv_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">invert_strand</span><span class="p">()</span>
@@ -694,7 +707,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=e259d695"></script>
+</div><script src="_static/documentation_options.js?v=4621528c"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
