@@ -1148,7 +1148,7 @@ class GenomicRanges(BiocFrame):
                 gap_intervals.append(td_res)
 
         if end is not None:
-            groups = df_gr.groupby(["seqnames"])
+            groups = df_gr.groupby("seqnames")
             for name, group in groups:
                 strands = group["strand"].unique()
                 missing_strands = list(set(["*", "+", "-"]).difference(set(strands)))
@@ -1417,7 +1417,7 @@ class GenomicRanges(BiocFrame):
         df_gr["values"] = values
 
         tgt_gr = bins._generic_pandas_ranges(ignore_strand=True, sort=True)
-        tgt_groups = tgt_gr.groupby(["seqnames"])
+        tgt_groups = tgt_gr.groupby("seqnames")
 
         result = []
         cache_intvals = {}
@@ -1480,7 +1480,7 @@ class GenomicRanges(BiocFrame):
             coverage vector as value.
         """
         df_gr = self._generic_pandas_ranges(sort=True)
-        groups = df_gr.groupby(["seqnames"])
+        groups = df_gr.groupby("seqnames")
 
         shift_arr = None
         if shift > 0:
