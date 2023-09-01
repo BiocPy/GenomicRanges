@@ -9,8 +9,8 @@ __license__ = "MIT"
 
 
 class GenomicRangesList(UserDict):
-    """Just as it sounds, a ``GenomicRangesList`` is a dictionary, where the keys represent features
-    and the value a :py:class:`genomicranges.GenomicRanges.GenomicRanges` object.
+    """Just as it sounds, a ``GenomicRangesList`` is a dictionary, where the keys represent features and the value a
+    :py:class:`genomicranges.GenomicRanges.GenomicRanges` object.
 
     If you are wondering why I need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`
     object lets us specify mutiple regions, usually where the genes start and end. Genes are themselves made
@@ -78,7 +78,7 @@ class GenomicRangesList(UserDict):
     def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, List]:
         _all_prop = {}
         for k, v in self.items():
-            print(k,v)
+            print(k, v)
             _val = getattr(v, prop)
 
             if func is True:
