@@ -18,7 +18,7 @@ class GenomicRangesList(UserDict):
     object lets us specify mutiple regions, usually where the genes start and end. Genes are themselves made
     of many sub regions, e.g. exons. ``GenomicRangesList`` allows us to represent this nested structure.
 
-    Currently this class is limited in the functionality it provides. Purely a read-only class with basic
+    Currently this class is limited in functionality. Purely a read-only class with basic
     accessors.
 
     Typical usage example:
