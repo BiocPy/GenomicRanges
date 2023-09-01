@@ -16,6 +16,7 @@ finally:
     del version, PackageNotFoundError
 
 from .GenomicRanges import GenomicRanges
+from .GenomicRangesList import GenomicRangesList
 from .io.gtf import read_gtf
 from .io.pdf import from_pandas
 from .io.tiling import tile_genome
