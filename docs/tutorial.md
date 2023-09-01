@@ -452,3 +452,37 @@ inv_gr = gr.invert_strand()
 # sample
 samp_gr = gr.sample(k=4)
 ```
+
+# Construct a `GenomicRangesList` object.
+
+***Note: This is a work in progress and the functionality is very limited.***
+
+```python
+a = GenomicRanges(
+    {
+        "seqnames": ["chr1", "chr2", "chr1", "chr3"],
+        "starts": [1, 3, 2, 4],
+        "ends": [10, 30, 50, 60],
+        "strand": ["-", "+", "*", "+"],
+        "score": [1, 2, 3, 4],
+    }
+)
+
+b = GenomicRanges(
+    {
+        "seqnames": ["chr2", "chr4", "chr5"],
+        "starts": [3, 6, 4],
+        "ends": [30, 50, 60],
+        "strand": ["-", "+", "*"],
+        "score": [2, 3, 4],
+    }
+)
+
+grl = GenomicRangesList(gene1=a, gene2=b)
+
+# access normal properties same as GenomicRanges
+
+grl.start
+grl.width
+
+```
