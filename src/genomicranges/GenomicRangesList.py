@@ -1,6 +1,8 @@
 from collections import UserDict
 from typing import Dict, List
 
+from pandas import DataFrame, concat
+
 from .GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
@@ -15,6 +17,9 @@ class GenomicRangesList(UserDict):
     If you are wondering why I need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`
     object lets us specify mutiple regions, usually where the genes start and end. Genes are themselves made
     of many sub regions, e.g. exons. ``GenomicRangesList`` allows us to represent this nested structure.
+
+    Currently this class is limited in the functionality it provides. Purely a read-only class with basic
+    accessors.
 
     Typical usage example:
 
@@ -198,10 +203,21 @@ class GenomicRangesList(UserDict):
         """
         return self._generic_accessor("score")
 
-    def as_data_frame(self):
-        """Get the object as data frame.
+    def to_pandas(self) -> DataFrame:
+        """Coerce object to a :py:class:`pandas.DataFrame`.
 
-        Raises:
-            NotImplementedError: Not yet implemented.
+        Returns:
+            DataFrame: A :py:class:`~pandas.DataFrame` object.
         """
-        raise NotImplementedError("coercion to dataframe is not available yet.")
+        all_index = []
+        all_dfs = []
+
+        for k, v in self.items():
+            _idx = [k] * len(v)
+            all_index.extend(_idx)
+            all_dfs.append(v.to_pandas())
+
+        all_concat = concat(all_dfs)
+        all_concat.index = all_index
+
+        return all_concat

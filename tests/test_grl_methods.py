@@ -62,3 +62,19 @@ def test_props():
         assert isinstance(v, dict)
 
     assert isinstance(grl.mcols(), dict)
+
+
+def test_to_pandas():
+    grl = GenomicRangesList(a=a, b=b)
+
+    df = grl.to_pandas()
+    assert len(df) == 7
+    assert df.index.tolist() == [
+        "a",
+        "a",
+        "a",
+        "a",
+        "b",
+        "b",
+        "b",
+    ]
