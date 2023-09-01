@@ -20,6 +20,14 @@ genomicranges.GenomicRanges module
    :undoc-members:
    :show-inheritance:
 
+genomicranges.GenomicRangesList module
+--------------------------------------
+
+.. automodule:: genomicranges.GenomicRangesList
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 genomicranges.SeqInfo module
 ----------------------------
 

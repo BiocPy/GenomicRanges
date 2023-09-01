@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="genomicranges.io package" href="genomicranges.io.html" /><link rel="prev" title="genomicranges" href="modules.html" />
 
-    <!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
-        <title>genomicranges package - GenomicRanges 0.3.1 documentation</title>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+        <title>genomicranges package - GenomicRanges 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.3.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.3.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.1 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -170,6 +170,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html#concatenate-genomicranges-objects-by-rows">Concatenate <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html#misc-operations">Misc operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html#construct-a-genomicrangeslist-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">Module Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">genomicranges package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="genomicranges.io.html">genomicranges.io package</a></li>
@@ -255,7 +256,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">genomicranges.GenomicRanges.</span></span><span class="sig-name descname"><span class="pre">GenomicRanges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Mapping" title="(in Python v3.9)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Mapping" title="(in Python v3.9)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_of_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Mapping" title="(in Python v3.9)"><span class="pre">Mapping</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></p>
 <p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> provides functionality to represent and operate over genomic regions and annotations.</p>
 <p><strong>Note: Intervals are inclusive on both ends and start at 1.</strong></p>
 <p>Additionally, <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> may also contain <cite>Sequence Information</cite> (checkout
@@ -363,8 +364,8 @@ Defaults to None.</p>
 <dd><p>Subset the object.</p>
 <p>This operation returns a new object with the same type as caller.
 If you need to access specific rows or columns, use the
-<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.row" title="(in BiocFrame v0.3.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row()</span></code></a> or
-<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.column" title="(in BiocFrame v0.3.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column()</span></code></a>
+<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.row" title="(in BiocFrame v0.3.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row()</span></code></a> or
+<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.column" title="(in BiocFrame v0.3.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column()</span></code></a>
 methods.</p>
 <p>Usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># made up chromosome locations and ensembl ids.</span>
@@ -398,22 +399,22 @@ columns. An element in <code class="docutils literal notranslate"><span class="p
 <li><p>List of integer positions along rows/columns to keep.</p></li>
 <li><p>A <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> object specifying the list of positions to keep.</p></li>
 <li><dl class="simple">
-<dt>A list of index names to keep. For rows, the object must contain unique</dt><dd><p><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#id3" title="(in BiocFrame v0.3.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">row_names</span></code></a> and for columns must
-contain unique <a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#id0" title="(in BiocFrame v0.3.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">column_names</span></code></a>.</p>
+<dt>A list of index names to keep. For rows, the object must contain unique</dt><dd><p><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#id3" title="(in BiocFrame v0.3.2)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">row_names</span></code></a> and for columns must
+contain unique <a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#id0" title="(in BiocFrame v0.3.2)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">column_names</span></code></a>.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>A scalar integer to subset either a single row or column position.</dt><dd><p>Alternatively, you might want to use
-<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.row" title="(in BiocFrame v0.3.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row()</span></code></a> or
-<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.column" title="(in BiocFrame v0.3.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column()</span></code></a> methods.</p>
+<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.row" title="(in BiocFrame v0.3.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row()</span></code></a> or
+<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.column" title="(in BiocFrame v0.3.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column()</span></code></a> methods.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>A singular string to subset either a single row or column label/index.</dt><dd><p>Alternatively, you might want to use
-<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.row" title="(in BiocFrame v0.3.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row()</span></code></a> or
-<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.column" title="(in BiocFrame v0.3.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column()</span></code></a> methods.</p>
+<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.row" title="(in BiocFrame v0.3.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row()</span></code></a> or
+<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame.column" title="(in BiocFrame v0.3.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column()</span></code></a> methods.</p>
 </dd>
 </dl>
 </li>
@@ -430,6 +431,12 @@ contain unique <a class="reference external" href="https://biocpy.github.io/Bioc
 <dd class="field-odd"><p>The same type as caller with the subsetted rows and columns.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.__repr__" title="Link to this definition">#</a></dt>
+<dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1540,12 +1547,271 @@ Defaults to None.</p></li>
 </dd></dl>
 
 </section>
+<section id="module-genomicranges.GenomicRangesList">
+<span id="genomicranges-genomicrangeslist-module"></span><h2>genomicranges.GenomicRangesList module<a class="headerlink" href="#module-genomicranges.GenomicRangesList" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">genomicranges.GenomicRangesList.</span></span><span class="sig-name descname"><span class="pre">GenomicRangesList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/collections.html#collections.UserDict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserDict</span></code></a></p>
+<p>Just as it sounds, a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> is a dictionary, where the keys represent features and the value a
+<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><code class="xref py py-class docutils literal notranslate"><span class="pre">genomicranges.GenomicRanges.GenomicRanges</span></code></a> object.</p>
+<p>If you are wondering why I need this class, a <a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><code class="xref py py-class docutils literal notranslate"><span class="pre">genomicranges.GenomicRanges.GenomicRanges</span></code></a>
+object lets us specify mutiple regions, usually where the genes start and end. Genes are themselves made
+of many sub regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> allows us to represent this nested structure.</p>
+<p>Currently this class is limited in functionality. Purely a read-only class with basic
+accessors.</p>
+<p>Typical usage example:</p>
+<p>To construct a <strong>GenomicRangesList</strong> object, simply pass in a dictionary</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr1</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">gr2</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="s2">&quot;chr5&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">grl</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">gene1</span><span class="o">=</span><span class="n">gr1</span><span class="p">,</span> <span class="n">gene2</span><span class="o">=</span><span class="n">gr2</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.__abstractmethods__">
+<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.__abstractmethods__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.__setitem__">
+<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.__setitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.__setitem__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.element_nrows">
+<span class="sig-name descname"><span class="pre">element_nrows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.element_nrows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.element_nrows" title="Link to this definition">#</a></dt>
+<dd><p>Get a vector of the length of each element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An integer vector where each value corresponds to the length of
+the contained GenomicRanges object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.end">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.end" title="Link to this definition">#</a></dt>
+<dd><p>Get all end positions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.genome">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">genome</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.genome" title="Link to this definition">#</a></dt>
+<dd><p>Get genome of the underlying sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.is_circular">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_circular</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.is_circular" title="Link to this definition">#</a></dt>
+<dd><p>Get the circularity flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.is_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.is_empty" title="Link to this definition">#</a></dt>
+<dd><p>Whether <code class="docutils literal notranslate"><span class="pre">GRangesList</span></code> has no elements or if all its elements are empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the object has no elements.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.mcols">
+<span class="sig-name descname"><span class="pre">mcols</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.mcols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.mcols" title="Link to this definition">#</a></dt>
+<dd><p>Get all metadata columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.ranges">
+<span class="sig-name descname"><span class="pre">ranges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.ranges" title="Link to this definition">#</a></dt>
+<dd><p>Get all ranges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list of ranges names.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.score">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.score" title="Link to this definition">#</a></dt>
+<dd><p>Get score about the underlying sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.seq_info">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">seq_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.seq_info" title="Link to this definition">#</a></dt>
+<dd><p>Get information about the underlying sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.seqnames">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">seqnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.seqnames" title="Link to this definition">#</a></dt>
+<dd><p>Get all sequence names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list of sequence names.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.start">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.start" title="Link to this definition">#</a></dt>
+<dd><p>Get all start positions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.strand">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">strand</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.strand" title="Link to this definition">#</a></dt>
+<dd><p>Get strand of all regions across all elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0)"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.to_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.to_pandas" title="Link to this definition">#</a></dt>
+<dd><p>Coerce object to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.width">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.width" title="Link to this definition">#</a></dt>
+<dd><p>Get width of all regions across all elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list with the same length as keys in the object,
+each element in the list contains another list values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, List[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-genomicranges.SeqInfo">
 <span id="genomicranges-seqinfo-module"></span><h2>genomicranges.SeqInfo module<a class="headerlink" href="#module-genomicranges.SeqInfo" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">genomicranges.SeqInfo.</span></span><span class="sig-name descname"><span class="pre">SeqInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Any" title="(in Python v3.9)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_of_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></p>
 <p>Class that stores information about gene model.</p>
 <p>Must contain column “seqnames”.</p>
 <dl class="field-list simple">
@@ -2082,6 +2348,7 @@ and their coverage.</p>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.column_names"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.column_names</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.metadata"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.metadata</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.__getitem__"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.__repr__"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.__repr__()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.binned_average"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.binned_average()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.compute_seqlengths"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.compute_seqlengths()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.concat"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.concat()</span></code></a></li>
@@ -2139,6 +2406,28 @@ and their coverage.</p>
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#module-genomicranges.GenomicRangesList">genomicranges.GenomicRangesList module</a><ul>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code></a><ul>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.__abstractmethods__"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.__abstractmethods__</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.__setitem__"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.__setitem__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.element_nrows"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.element_nrows()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.end"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.end</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.genome"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.genome</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.is_circular"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.is_circular</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.is_empty"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.is_empty()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.mcols"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.mcols()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.ranges"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.ranges()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.score"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.score</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.seq_info"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.seq_info</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.seqnames"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.seqnames</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.start"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.start</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.strand"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.strand</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.to_pandas"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.to_pandas()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.width"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.width</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-genomicranges.SeqInfo">genomicranges.SeqInfo module</a><ul>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo"><code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code></a><ul>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.can_contain"><code class="docutils literal notranslate"><span class="pre">SeqInfo.can_contain</span></code></a></li>
@@ -2183,7 +2472,7 @@ and their coverage.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=4621528c"></script>
+</div><script src="../_static/documentation_options.js?v=71d9d8e6"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>

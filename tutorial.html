@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="genomicranges" href="api/modules.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
-    <!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
-        <title>Tutorial - GenomicRanges 0.3.1 documentation</title>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+        <title>Tutorial - GenomicRanges 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.3.1 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.3.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.1 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -170,6 +170,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#concatenate-genomicranges-objects-by-rows">Concatenate <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#misc-operations">Misc operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#construct-a-genomicrangeslist-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/genomicranges.io.html">genomicranges.io package</a></li>
@@ -657,6 +658,39 @@
 </pre></div>
 </div>
 </section>
+<section class="tex2jax_ignore mathjax_ignore" id="construct-a-genomicrangeslist-object">
+<h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.<a class="headerlink" href="#construct-a-genomicrangeslist-object" title="Link to this heading">#</a></h1>
+<p><em><strong>Note: This is a work in progress and the functionality is very limited.</strong></em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="s2">&quot;chr5&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">grl</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">gene1</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">gene2</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+
+<span class="c1"># access normal properties same as GenomicRanges</span>
+
+<span class="n">grl</span><span class="o">.</span><span class="n">start</span>
+<span class="n">grl</span><span class="o">.</span><span class="n">width</span>
+
+</pre></div>
+</div>
+</section>
 
         </article>
       </div>
@@ -707,7 +741,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=4621528c"></script>
+</div><script src="_static/documentation_options.js?v=71d9d8e6"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
