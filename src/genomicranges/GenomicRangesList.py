@@ -83,7 +83,6 @@ class GenomicRangesList(UserDict):
     def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, List]:
         _all_prop = {}
         for k, v in self.items():
-            print(k, v)
             _val = getattr(v, prop)
 
             if func is True:
