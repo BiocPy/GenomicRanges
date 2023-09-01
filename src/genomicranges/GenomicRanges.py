@@ -19,8 +19,7 @@ from warnings import warn
 from biocframe import BiocFrame
 from numpy import concatenate, count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
-from rich.console import Console
-from rich.table import Table
+from prettytable import PrettyTable
 
 from .io import from_pandas
 from .SeqInfo import SeqInfo
@@ -401,42 +400,48 @@ class GenomicRanges(BiocFrame):
             except Exception as e:
                 raise ValueError(f"{return_type} not supported, {str(e)}")
 
-    def __str__(self) -> str:
-        # pattern = (
-        #     f"Class GenomicRanges with {self.dims[0]} intervals and "
-        #     f"{self.dims[1] - 4} metadata columns \n"
-        #     f"  column_names: {self.column_names}"
-        # )
-        # return pattern
+    def __repr__(self) -> str:
+        table = PrettyTable(padding_width=2)
+        table.field_names = [str(col) for col in self.column_names]
 
-        table = Table(
-            title=f"GenomicRanges with {self.dims[0]} features",
-            caption=f"contains row names?: {self.row_names is not None}",
-            show_header=True,
-            header_style="bold",
-        )
-        for col in self.column_names:
-            table.add_column(str(col))
+        _rows = []
+        rows_to_show = 2
+        _top = self.shape[0]
+        if _top > rows_to_show:
+            _top = rows_to_show
 
-        # first three rows
-        for r in range(3):
+        # top three rows
+        for r in range(_top):
             _row = self.row(r)
             vals = list(_row.values())
             res = [str(v) for v in vals]
-            table.add_row(*res)
+            _rows.append(res)
 
-        # add ...
-        table.add_row(*["..." for _ in range(len(self.column_names))])
+        if self.shape[0] > 2 * rows_to_show:
+            # add ...
+            _rows.append(["..." for _ in range(len(self.column_names))])
+
+        _last = self.shape[0] - rows_to_show
+        if _last <= rows_to_show:
+            _last = self.shape[0] - _top
 
         # last three rows
-        for r in range(len(self) - 3, len(self)):
+        for r in range(_last, len(self)):
             _row = self.row(r)
             vals = list(_row.values())
             res = [str(v) for v in vals]
-            table.add_row(*res)
+            _rows.append(res)
 
-        Console().print(table)
-        return ""
+        table.add_rows(_rows)
+
+        pattern = (
+            f"Class GenomicRanges with {self.dims[0]} intervals and "
+            f"{self.dims[1] - 4} metadata columns \n"
+            f"contains row names?: {self.row_names is not None} \n"
+            f"{table.get_string()}"
+        )
+
+        return pattern
 
     def __getitem__(
         self, args: Union[Sequence[str], Tuple[Sequence, Optional[Sequence]]]
