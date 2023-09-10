@@ -1051,9 +1051,7 @@ class GenomicRanges(BiocFrame):
         if with_reverse_map:
             columns_to_keep.append("revmap")
 
-        finale = finale[columns_to_keep].sort(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        finale = finale[columns_to_keep].sort(["seqnames", "strand", "starts", "ends"])
 
         return from_pandas(finale)
 
@@ -1420,7 +1418,7 @@ class GenomicRanges(BiocFrame):
             raise Exception(f"'{scorename}' values must be either ints or floats.")
 
         df_gr = self._generic_pandas_ranges(sort=True)
-        df_gr = df_gr.with_columns(values = values)
+        df_gr = df_gr.with_columns(values=values)
 
         tgt_gr = bins._generic_pandas_ranges(ignore_strand=True, sort=True)
         tgt_groups = tgt_gr.groupby("seqnames")
