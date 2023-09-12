@@ -1,5 +1,5 @@
-from collections import OrderedDict, UserDict
-from typing import Any, Callable, Dict, List, Mapping, MutableMapping, Optional, Union
+from collections import UserDict
+from typing import Dict, List, Mapping, MutableMapping, Optional, Union
 
 from biocframe import BiocFrame
 from pandas import DataFrame, concat
