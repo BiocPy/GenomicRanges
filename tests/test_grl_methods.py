@@ -61,7 +61,7 @@ def test_props():
 
         assert isinstance(v, dict)
 
-    assert isinstance(grl.mcols(), dict)
+    assert isinstance(grl.mcols, BiocFrame)
 
 
 def test_to_pandas():
