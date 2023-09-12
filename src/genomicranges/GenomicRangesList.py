@@ -1,16 +1,15 @@
 from collections import UserDict
-from typing import Dict, List, Mapping, MutableMapping, Optional, Union
+from typing import Dict, List, Mapping, MutableMapping, Optional
 
 from biocframe import BiocFrame
 from pandas import DataFrame, concat
 
+from ._types import BiocOrPandasFrame
 from .GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
-
-BiocOrPandasFrame = Union[DataFrame, BiocFrame]
 
 
 class GenomicRangesList(UserDict):
