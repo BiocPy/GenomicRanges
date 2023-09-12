@@ -11,7 +11,6 @@ from typing import (
     MutableMapping,
     Optional,
     Sequence,
-    Tuple,
     Union,
 )
 from warnings import warn
