@@ -443,6 +443,7 @@ class GenomicRanges(BiocFrame):
 
         return pattern
 
+    # for documentation, otherwise serves no real use.
     def __getitem__(self, args: SlicerArgTypes) -> Union["GenomicRanges", dict, list]:
         """Subset the object.
 
