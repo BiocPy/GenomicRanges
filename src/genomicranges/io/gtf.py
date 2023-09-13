@@ -1,7 +1,6 @@
 import logging
 from typing import Dict
 
-from joblib import Parallel, delayed
 from pandas import DataFrame, read_csv
 
 # from ..GenomicRanges import GenomicRanges
@@ -44,6 +43,9 @@ def parse_gtf(path: str, compressed: bool) -> DataFrame:
     Returns:
         DataFrame: Genome annotations from GTF as pandas dataframe.
     """
+
+    from joblib import Parallel, delayed
+
     logging.info(f"Reading File - {path}")
     if compressed:
         df = read_csv(

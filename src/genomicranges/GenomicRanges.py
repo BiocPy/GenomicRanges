@@ -16,11 +16,11 @@ from typing import (
 from warnings import warn
 
 from biocframe import BiocFrame
+from biocframe.types import SlicerArgTypes
 from numpy import concatenate, count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
 from prettytable import PrettyTable
 
-from ._types import SlicerArgTypes
 from .io import from_pandas
 from .SeqInfo import SeqInfo
 from .utils import (
