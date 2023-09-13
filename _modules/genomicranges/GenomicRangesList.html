@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
-        <title>genomicranges.GenomicRangesList - GenomicRanges 0.3.2 documentation</title>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
+        <title>genomicranges.GenomicRangesList - GenomicRanges 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.2 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -216,8 +216,9 @@
         <article role="main">
           <h1>Source code for genomicranges.GenomicRangesList</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserDict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">concat</span>
 
 <span class="kn">from</span> <span class="nn">.GenomicRanges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
@@ -226,6 +227,8 @@
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
+<span class="n">BiocOrPandasFrame</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]</span>
+
 
 <div class="viewcode-block" id="GenomicRangesList">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList">[docs]</a>
@@ -233,8 +236,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Just as it sounds, a ``GenomicRangesList`` is a dictionary, where the keys represent features and the value a</span>
 <span class="sd">    :py:class:`genomicranges.GenomicRanges.GenomicRanges` object.</span>
 
-<span class="sd">    If you are wondering why I need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`</span>
-<span class="sd">    object lets us specify mutiple regions, usually where the genes start and end. Genes are themselves made</span>
+<span class="sd">    If you are wondering why you need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`</span>
+<span class="sd">    object lets us specify mutiple genomic elements, usually where the genes start and end. Genes are themselves made</span>
 <span class="sd">    of many sub regions, e.g. exons. ``GenomicRangesList`` allows us to represent this nested structure.</span>
 
 <span class="sd">    Currently this class is limited in functionality. Purely a read-only class with basic</span>
@@ -267,7 +270,64 @@
 <span class="sd">        )</span>
 
 <span class="sd">        grl = GenomicRangesList(gene1=gr1, gene2=gr2)</span>
+
+<span class="sd">    Additionally you may also provide metadata about the genomic elements in the dictionary</span>
+<span class="sd">    using :py:attr:`~genomicranges.GenomicRangesList.GenomicRangesList.mcols`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mcols</span><span class="p">:</span> <span class="n">BiocOrPandasFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mcols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mcols</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">(</span><span class="n">number_of_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">row_names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_mcols</span><span class="p">(</span><span class="n">mcols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span> <span class="o">=</span> <span class="n">mcols</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
+
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal wrapper method to validate the object.&quot;&quot;&quot;</span>
+        <span class="c1"># validate assays to make sure they are have same dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_mcols</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mcols</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to validate genomic elements (mcols).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mcols</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of elements and mcols are not the same length!&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[MutableMapping]: Metadata object, usually a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span>
+
+    <span class="nd">@metadata</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set metadata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            metadata (Optional[MutableMapping]): New metadata object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BiocOrPandasFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata across all genomic elements.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BiocOrPandasFrame: Metadata frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span>
 
 <div class="viewcode-block" id="GenomicRangesList.__setitem__">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.__setitem__">[docs]</a>
@@ -374,18 +434,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GenomicRangesList.mcols">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.mcols">[docs]</a>
-    <span class="k">def</span> <span class="nf">mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all metadata columns.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
-<span class="sd">            each element in the list contains another list values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;mcols&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">strand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get strand of all regions across all elements.</span>
@@ -456,6 +504,12 @@
         <span class="n">all_concat</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">all_index</span>
 
         <span class="k">return</span> <span class="n">all_concat</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.add_element">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.add_element">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">element_metadata</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Adding new elements is not yet implemented!&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -490,7 +544,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=71d9d8e6"></script>
+</div><script src="../../_static/documentation_options.js?v=d5a15cff"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
