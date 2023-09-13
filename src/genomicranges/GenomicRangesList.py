@@ -16,8 +16,8 @@ class GenomicRangesList(UserDict):
     """Just as it sounds, a ``GenomicRangesList`` is a dictionary, where the keys represent features and the value a
     :py:class:`genomicranges.GenomicRanges.GenomicRanges` object.
 
-    If you are wondering why I need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`
-    object lets us specify mutiple regions, usually where the genes start and end. Genes are themselves made
+    If you are wondering why you need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`
+    object lets us specify mutiple genomic elements, usually where the genes start and end. Genes are themselves made
     of many sub regions, e.g. exons. ``GenomicRangesList`` allows us to represent this nested structure.
 
     Currently this class is limited in functionality. Purely a read-only class with basic
@@ -50,6 +50,9 @@ class GenomicRangesList(UserDict):
         )
 
         grl = GenomicRangesList(gene1=gr1, gene2=gr2)
+
+    Additionally you may also provide metadata about the genomic elements in the dictionary
+    using :py:attr:`~genomicranges.GenomicRangesList.GenomicRangesList.mcols`.
     """
 
     def __init__(
@@ -92,7 +95,7 @@ class GenomicRangesList(UserDict):
         """Set metadata.
 
         Args:
-            metadata (Optional[MutableMapping]): new metadata object.
+            metadata (Optional[MutableMapping]): New metadata object.
         """
         self._metadata = metadata
 
