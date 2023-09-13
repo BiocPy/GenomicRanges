@@ -99,5 +99,4 @@ def test_subset_by_overlaps():
     res = subject.subset_by_overlaps(query2)
 
     assert res is not None
-    print(res.data)
     assert res.shape == (1, 4)

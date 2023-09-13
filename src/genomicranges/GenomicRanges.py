@@ -11,12 +11,12 @@ from typing import (
     MutableMapping,
     Optional,
     Sequence,
-    Tuple,
     Union,
 )
 from warnings import warn
 
 from biocframe import BiocFrame
+from biocframe.types import SlicerArgTypes
 from numpy import concatenate, count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
 from prettytable import PrettyTable
@@ -443,9 +443,8 @@ class GenomicRanges(BiocFrame):
 
         return pattern
 
-    def __getitem__(
-        self, args: Union[Sequence[str], Tuple[Sequence, Optional[Sequence]]]
-    ) -> "GenomicRanges":
+    # for documentation, otherwise serves no real use.
+    def __getitem__(self, args: SlicerArgTypes) -> Union["GenomicRanges", dict, list]:
         """Subset the object.
 
         This operation returns a new object with the same type as caller.
@@ -484,18 +483,18 @@ class GenomicRanges(BiocFrame):
 
                 - List of integer positions along rows/columns to keep.
 
-                - A :py:class:`~slice` object specifying the list of positions to keep.
+                - A :py:class:`slice` object specifying the list of indices to keep.
 
                 - A list of index names to keep. For rows, the object must contain unique
                     :py:attr:`~biocframe.BiocFrame.BiocFrame.row_names` and for columns must
                     contain unique :py:attr:`~biocframe.BiocFrame.BiocFrame.column_names`.
 
-                - A scalar integer to subset either a single row or column position.
+                - An integer to subset either a single row or column index.
                     Alternatively, you might want to use
                     :py:meth:`~biocframe.BiocFrame.BiocFrame.row` or
                     :py:meth:`~biocframe.BiocFrame.BiocFrame.column` methods.
 
-                - A singular string to subset either a single row or column label/index.
+                - A string to subset either a single row or column by label.
                     Alternatively, you might want to use
                     :py:meth:`~biocframe.BiocFrame.BiocFrame.row` or
                     :py:meth:`~biocframe.BiocFrame.BiocFrame.column` methods.
@@ -505,7 +504,10 @@ class GenomicRanges(BiocFrame):
             TypeError: If provided ``args`` are not an expected type.
 
         Returns:
-            The same type as caller with the subsetted rows and columns.
+            Union["GenomicRanges", dict, list]:
+            - If a single row is sliced, returns a :py:class:`dict`.
+            - If a single column is sliced, returns a :py:class:`list`.
+            - For all other scenarios, returns the same type as caller with the subsetted rows and columns.
         """
         return super().__getitem__(args)
 

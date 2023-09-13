@@ -1,6 +1,7 @@
 from collections import UserDict
-from typing import Dict, List
+from typing import Dict, List, Mapping, MutableMapping, Optional, Union
 
+from biocframe import BiocFrame
 from pandas import DataFrame, concat
 
 from .GenomicRanges import GenomicRanges
@@ -9,13 +10,15 @@ __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
+BiocOrPandasFrame = Union[DataFrame, BiocFrame]
+
 
 class GenomicRangesList(UserDict):
     """Just as it sounds, a ``GenomicRangesList`` is a dictionary, where the keys represent features and the value a
     :py:class:`genomicranges.GenomicRanges.GenomicRanges` object.
 
-    If you are wondering why I need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`
-    object lets us specify mutiple regions, usually where the genes start and end. Genes are themselves made
+    If you are wondering why you need this class, a :py:class:`genomicranges.GenomicRanges.GenomicRanges`
+    object lets us specify mutiple genomic elements, usually where the genes start and end. Genes are themselves made
     of many sub regions, e.g. exons. ``GenomicRangesList`` allows us to represent this nested structure.
 
     Currently this class is limited in functionality. Purely a read-only class with basic
@@ -48,7 +51,64 @@ class GenomicRangesList(UserDict):
         )
 
         grl = GenomicRangesList(gene1=gr1, gene2=gr2)
+
+    Additionally you may also provide metadata about the genomic elements in the dictionary
+    using :py:attr:`~genomicranges.GenomicRangesList.GenomicRangesList.mcols`.
     """
+
+    def __init__(
+        self,
+        mcols: BiocOrPandasFrame = None,
+        metadata: Optional[Mapping] = None,
+        **kwargs,
+    ) -> None:
+        super().__init__(**kwargs)
+
+        if mcols is None:
+            mcols = BiocFrame(number_of_rows=len(self), row_names=list(self.keys()))
+
+        self._validate_mcols(mcols)
+        self._mcols = mcols
+
+        self._metadata = metadata
+
+    def _validate(self):
+        """Internal wrapper method to validate the object."""
+        # validate assays to make sure they are have same dimensions
+        self._validate_mcols(self._mcols)
+
+    def _validate_mcols(self, mcols):
+        """Internal method to validate genomic elements (mcols)."""
+        if len(self) != len(mcols):
+            raise ValueError("Number of elements and mcols are not the same length!")
+
+    @property
+    def metadata(self) -> Optional[MutableMapping]:
+        """Get metadata.
+
+        Returns:
+            Optional[MutableMapping]: Metadata object, usually a dictionary.
+        """
+        return self._metadata
+
+    @metadata.setter
+    def metadata(self, metadata: Optional[MutableMapping]):
+        """Set metadata.
+
+        Args:
+            metadata (Optional[MutableMapping]): New metadata object.
+        """
+        self._metadata = metadata
+
+    @property
+    def mcols(self) -> BiocOrPandasFrame:
+        """Get metadata across all genomic elements.
+
+        Returns:
+            BiocOrPandasFrame: Metadata frame.
+        """
+
+        return self._mcols
 
     def __setitem__(self, key, value):
         if not isinstance(value, GenomicRanges):
@@ -143,15 +203,6 @@ class GenomicRangesList(UserDict):
         """
         return self._generic_accessor("width")
 
-    def mcols(self) -> Dict[str, List[int]]:
-        """Get all metadata columns.
-
-        Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
-            each element in the list contains another list values.
-        """
-        return self._generic_accessor("mcols", func=True)
-
     @property
     def strand(self) -> Dict[str, List[int]]:
         """Get strand of all regions across all elements.
@@ -220,3 +271,6 @@ class GenomicRangesList(UserDict):
         all_concat.index = all_index
 
         return all_concat
+
+    def add_element(self, key, value, element_metadata):
+        raise NotImplementedError("Adding new elements is not yet implemented!")
