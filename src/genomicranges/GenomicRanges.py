@@ -117,7 +117,7 @@ class GenomicRanges(BiocFrame):
 
     def __init__(
         self,
-        data: Mapping[str, Union[Sequence, Mapping]],
+        data: Optional[MutableMapping[str, Union[Sequence, MutableMapping]]] = None,
         number_of_rows: Optional[int] = None,
         row_names: Optional[Sequence] = None,
         column_names: Optional[Sequence] = None,
@@ -126,9 +126,12 @@ class GenomicRanges(BiocFrame):
         """Initialize a `GenomicRanges` object."""
         super().__init__(data, number_of_rows, row_names, column_names, metadata)
 
+    def _is_data_empty(self):
+        return self._data == {} or self._data is None
+
     def _validate(self):
         """Internal function to validate ``GenomicRanges``."""
-        if "strand" not in self._data:
+        if not self._is_data_empty() and "strand" not in self._data:
             self._data["strand"] = ["*"] * len(self._data["starts"])
 
             if self.column_names is not None:
@@ -143,13 +146,14 @@ class GenomicRanges(BiocFrame):
         Raises:
             ValueError: If missing required columns.
         """
-        missing = list(set(self.required_columns).difference(set(self.column_names)))
+        if not self._is_data_empty():
+            missing = list(set(self.required_columns).difference(set(self.column_names)))
 
-        if len(missing) > 0:
-            raise ValueError(
-                f"`data` must contain {', '.join(self.required_columns)}."
-                f"missing {missing} column{'s' if len(missing) > 1 else ''}"
-            )
+            if len(missing) > 0:
+                raise ValueError(
+                    f"`data` must contain {', '.join(self.required_columns)}."
+                    f"missing {missing} column{'s' if len(missing) > 1 else ''}"
+                )
 
     @property
     def seqnames(self) -> List[str]:
