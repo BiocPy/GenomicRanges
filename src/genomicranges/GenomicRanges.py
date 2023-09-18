@@ -147,7 +147,9 @@ class GenomicRanges(BiocFrame):
             ValueError: If missing required columns.
         """
         if not self._is_data_empty():
-            missing = list(set(self.required_columns).difference(set(self.column_names)))
+            missing = list(
+                set(self.required_columns).difference(set(self.column_names))
+            )
 
             if len(missing) > 0:
                 raise ValueError(
