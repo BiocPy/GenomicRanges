@@ -33,7 +33,7 @@ gr = genomicranges.from_ucsc(genome="hg19")
 ```
 #### Pandas DataFrame
 
-A common representation in Python is a pandas DataFrame for all tabular datasets. You can convert a DataFrame into a `GenomicRanges` object. Please note that intervals are inclusive on both ends, and your DataFrame must contain columns seqnames, starts, and ends to represent genomic coordinates. 
+A common representation in Python is a pandas DataFrame for all tabular datasets. You can convert a DataFrame into a `GenomicRanges` object. Please note that intervals are inclusive on both ends, and your DataFrame must contain columns seqnames, starts, and ends to represent genomic coordinates.
 
 Here's an example:
 
