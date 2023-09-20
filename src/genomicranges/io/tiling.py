@@ -5,7 +5,7 @@ import pandas as pd
 
 # from ..GenomicRanges import GenomicRanges
 from ..SeqInfo import SeqInfo
-from ..utils import split_intervals
+from ..interval import split_intervals
 from .pdf import from_pandas
 
 __author__ = "jkanche"

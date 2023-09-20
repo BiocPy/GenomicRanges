@@ -21,9 +21,7 @@ from numpy import concatenate, count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
 from prettytable import PrettyTable
 
-from .io import from_pandas
-from .SeqInfo import SeqInfo
-from .utils import (
+from .interval import (
     OVERLAP_QUERY_TYPES,
     calc_row_gapwidth,
     compute_mean,
@@ -38,6 +36,8 @@ from .utils import (
     slide_intervals,
     split_intervals,
 )
+from .io import from_pandas
+from .SeqInfo import SeqInfo
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
