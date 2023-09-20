@@ -28,10 +28,26 @@ genomicranges.GenomicRangesList module
    :undoc-members:
    :show-inheritance:
 
+genomicranges.PythonicGenomicRangesList module
+----------------------------------------------
+
+.. automodule:: genomicranges.PythonicGenomicRangesList
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 genomicranges.SeqInfo module
 ----------------------------
 
 .. automodule:: genomicranges.SeqInfo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+genomicranges.interval module
+-----------------------------
+
+.. automodule:: genomicranges.interval
    :members:
    :undoc-members:
    :show-inheritance:
