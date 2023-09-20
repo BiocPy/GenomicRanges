@@ -57,8 +57,8 @@ class GenomicRangesList:
 
     def __init__(
         self,
-        ranges: List[GenomicRanges] = [],
-        number_of_ranges: Optional[int] = None,
+        ranges: Union[GenomicRanges, List[GenomicRanges]],
+        range_lengths: Optional[List[int]] = None,
         names: Optional[List[str]] = None,
         mcols: BiocOrPandasFrame = None,
         metadata: Optional[dict] = None,
@@ -66,10 +66,11 @@ class GenomicRangesList:
         """Initialize a `GenomicRangesList` object.
 
         Args:
-            ranges (List[GenomicRanges], optional): List of genomic elements.
+            ranges (GenomicRangesList, optional): List of genomic elements.
                 All elements in this list must be :py:class:`genomicranges.GenomicRanges.GenomicRanges`
-                class. Defaults to [].
-            number_of_ranges (Optional[int], optional): Number of genomic elements. Defaults to None.
+                class.
+            range_lengths (Optional[List[int]], optional): Number of ranges within each genomic element.
+                Defaults to None.
             names (Optional[List[str]], optional): Names of the genomic elements.
                 The length of this must match the number of genomic elements in ``ranges``.
                 Defaults to None.
@@ -77,28 +78,27 @@ class GenomicRangesList:
             metadata (Optional[Dict], optional): Additional metadata. Defaults to None.
         """
         self._validate(ranges)
-        _data = {"ranges": ranges}
+        self._data = {"ranges": ranges}
 
-        if number_of_ranges is None:
-            number_of_ranges = len(ranges)
+        if range_lengths is None:
+            range_lengths = [len(x) for x in ranges]
+
+        self._range_lengths = range_lengths
 
         if mcols is None:
-            mcols = BiocFrame(number_of_rows=number_of_ranges)
+            mcols = BiocFrame(number_of_rows=len(range_lengths))
 
-        _data["mcols"] = mcols
+        self._data["mcols"] = mcols
 
-        self._frame = BiocFrame(
-            _data,
-            number_of_rows=number_of_ranges,
-            row_names=names,
-        )
-
+        self._names = names
         self._metadata = {} if metadata is None else metadata
 
-    def _validate(self, ranges: List[GenomicRanges]):
-        if not is_list_of_type(ranges, GenomicRanges):
+    def _validate(self, ranges: Union[GenomicRanges, List[GenomicRanges]]):
+        if not (
+            isinstance(ranges, GenomicRanges) or is_list_of_type(ranges, GenomicRanges)
+        ):
             raise TypeError(
-                "All genomic elements in `ranges` must be of type `GenomicRanges`."
+                "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
             )
 
     @property
@@ -127,7 +127,7 @@ class GenomicRangesList:
             Dict[str, List[str]]: A list with the same length as keys in the object,
             each element in the list contains another list of ranges names.
         """
-        return self._frame.column("ranges")
+        return self._data["ranges"]
 
     @property
     def groups(self) -> Optional[list]:
@@ -138,7 +138,7 @@ class GenomicRangesList:
             :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.ranges`,
             with each element specifying the name of the element. None if names are not provided.
         """
-        return self._frame.row_names
+        return self._names
 
     @property
     def names(self) -> Optional[list]:
@@ -158,8 +158,8 @@ class GenomicRangesList:
         Returns:
             (BiocOrPandasFrame, optional): Metadata frame or None if there is no element level metadata.
         """
-        if "mcols" in self._frame.column_names:
-            return self._frame.column("mcols")
+        if "mcols" in self._data:
+            return self._data["mcols"]
 
         return None
 
@@ -361,4 +361,15 @@ class GenomicRangesList:
         Returns:
             int: number of genomic elements.
         """
-        return len(self._frame)
+        return len(self._range_lengths)
+
+    @classmethod
+    def empty(cls, n: int):
+        """Create an ``n``-length `GenomicRangesList` object.
+
+        Returns:
+            same type as caller, in this case a `GenomicRangesList`.
+        """
+        _range_lengths = [0] * n
+
+        return cls(ranges=GenomicRanges.empty(), range_lengths=_range_lengths)

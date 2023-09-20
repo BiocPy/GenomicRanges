@@ -2236,3 +2236,12 @@ class GenomicRanges(BiocFrame):
                 new_data[col].extend([None] * len(self))
 
         return GenomicRanges(new_data, column_names=all_unique_columns)
+
+    @classmethod
+    def empty(cls):
+        """Create an zero-length `GenomicRanges` object.
+
+        Returns:
+            same type as caller, in this case a `GenomicRanges`.
+        """
+        return cls(number_of_rows=0)
