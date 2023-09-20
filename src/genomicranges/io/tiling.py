@@ -1,11 +1,12 @@
 import math
-from typing import MutableMapping, Optional, Union
+from typing import Dict, Optional, Union
 
 import pandas as pd
 
+from ..interval import split_intervals
+
 # from ..GenomicRanges import GenomicRanges
 from ..SeqInfo import SeqInfo
-from ..interval import split_intervals
 from .pdf import from_pandas
 
 __author__ = "jkanche"
@@ -14,7 +15,7 @@ __license__ = "MIT"
 
 
 def tile_genome(
-    seqlengths: Union[MutableMapping, SeqInfo],
+    seqlengths: Union[Dict, SeqInfo],
     n: Optional[int] = None,
     width: Optional[int] = None,
 ) -> "GenomicRanges":
@@ -29,7 +30,7 @@ def tile_genome(
     Either ``n`` or ``width`` must be provided but not both.
 
     Args:
-        seqlengths (Union[MutableMapping, SeqInfo]): Sequence lengths of each chromosome.
+        seqlengths (Union[Dict, SeqInfo]): Sequence lengths of each chromosome.
 
             ``seqlengths`` may be a dictionary, where keys specify the chromosome and the value is
             thelength of each chromosome in the genome.

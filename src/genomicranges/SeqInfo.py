@@ -1,5 +1,5 @@
 from itertools import zip_longest
-from typing import Any, List, MutableMapping, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Union
 
 from biocframe import BiocFrame
 
@@ -14,9 +14,9 @@ class SeqInfo(BiocFrame):
     Must contain column "seqnames".
 
     Args:
-        data (MutableMapping[str, Union[List[Any], MutableMapping]]): info about each
+        data (Dict[str, Union[List[Any], Dict]]): Info about each
             sequence or chromosome. must contain a column `seqnames`.
-        metadata (MutableMapping, optional): Additional metadata. Defaults to None.
+        metadata (Dict, optional): Additional metadata. Defaults to None.
 
     Raises:
         ValueError: If ``data`` does not contain required attributes.
@@ -27,11 +27,11 @@ class SeqInfo(BiocFrame):
 
     def __init__(
         self,
-        data: MutableMapping[str, Union[List[Any], MutableMapping]],
+        data: Dict[str, Union[List[Any], Dict]],
         number_of_rows: Optional[int] = None,
-        row_names: Optional[Sequence[str]] = None,
-        column_names: Optional[Sequence[str]] = None,
-        metadata: Optional[MutableMapping] = None,
+        row_names: Optional[List[str]] = None,
+        column_names: Optional[List[str]] = None,
+        metadata: Optional[Dict] = None,
     ) -> None:
         """Initialize a SeqInfo object."""
         super().__init__(data, number_of_rows, row_names, column_names, metadata)
@@ -63,20 +63,20 @@ class SeqInfo(BiocFrame):
             )
 
     @property
-    def seqnames(self) -> Sequence[str]:
+    def seqnames(self) -> List[str]:
         """Get sequence or chromosome names.
 
         Returns:
-            Sequence[str]: List of all chromosome names.
+            List[str]: List of all chromosome names.
         """
         return self.column("seqnames")
 
     @property
-    def seqlengths(self) -> Optional[MutableMapping[str, int]]:
+    def seqlengths(self) -> Optional[Dict[str, int]]:
         """Get sequence or chromosome names and their lengths.
 
         Returns:
-            (MutableMapping[str, int], optional): A dictionary containing chromosome names
+            (Dict[str, int], optional): A dictionary containing chromosome names
                 with their lengths.
         """
 
@@ -86,11 +86,11 @@ class SeqInfo(BiocFrame):
         return dict(zip_longest(self.column("seqnames"), self.column("seqlengths")))
 
     @property
-    def is_circular(self) -> Optional[MutableMapping[str, bool]]:
+    def is_circular(self) -> Optional[Dict[str, bool]]:
         """Whether the sequences are circular.
 
         Returns:
-            (MutableMapping[str, bool], optional): A dictionary containing chromosome names
+            (Dict[str, bool], optional): A dictionary containing chromosome names
                 and if they are circular.
         """
 

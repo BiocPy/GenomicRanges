@@ -1,4 +1,4 @@
-from typing import Dict, List, Mapping, MutableMapping, Optional, Sequence, Union
+from typing import Dict, List, Optional, Union
 
 from biocframe import BiocFrame
 from pandas import DataFrame
@@ -14,14 +14,68 @@ BiocOrPandasFrame = Union[DataFrame, BiocFrame]
 
 
 class GenomicRangesList:
+    """Just as it sounds, a `GenomicRangesList` is a named-list like object.
+
+    If you are wondering why you need this class, a `GenomicRanges` object lets us specify multiple
+    genomic elements, usually where the genes start and end. Genes are themselves made of many sub
+    regions, e.g. exons. `GenomicRangesList` allows us to represent this nested structure.
+
+    Currently, this class is limited in functionality, purely a read-only class with basic accessors.
+
+    Typical usage example:
+
+    To construct a `GenomicRangesList` object, simply pass in a list of
+    :py:class:`genomicranges.GenomicRanges.GenomicRanges` objects and Optionally ``names``.
+
+    ```python
+        gr1 = GenomicRanges(
+            {
+                "seqnames": ["chr1", "chr2", "chr1", "chr3"],
+                "starts": [1, 3, 2, 4],
+                "ends": [10, 30, 50, 60],
+                "strand": ["-", "+", "*", "+"],
+                "score": [1, 2, 3, 4],
+            }
+        )
+
+        gr2 = GenomicRanges(
+            {
+                "seqnames": ["chr2", "chr4", "chr5"],
+                "starts": [3, 6, 4],
+                "ends": [30, 50, 60],
+                "strand": ["-", "+", "*"],
+                "score": [2, 3, 4],
+            }
+        )
+
+        grl = GenomicRangesList(ranges=[gr1, gr2], names=["gene1", "gene2"])
+    ```
+
+    Additionally, you may also provide metadata about the genomic elements in the dictionary
+    using mcols attribute.
+    """
+
     def __init__(
         self,
-        ranges: Sequence[GenomicRanges] = [],
+        ranges: List[GenomicRanges] = [],
         number_of_ranges: Optional[int] = None,
-        names: Optional[Sequence[str]] = None,
+        names: Optional[List[str]] = None,
         mcols: BiocOrPandasFrame = None,
-        metadata: Optional[Mapping] = None,
+        metadata: Optional[dict] = None,
     ):
+        """Initialize a `GenomicRangesList` object.
+
+        Args:
+            ranges (List[GenomicRanges], optional): List of genomic elements.
+                All elements in this list must be :py:class:`genomicranges.GenomicRanges.GenomicRanges`
+                class. Defaults to [].
+            number_of_ranges (Optional[int], optional): Number of genomic elements. Defaults to None.
+            names (Optional[List[str]], optional): Names of the genomic elements.
+                The length of this must match the number of genomic elements in ``ranges``.
+                Defaults to None.
+            mcols (BiocOrPandasFrame, optional): Metadata about each genomic element. Defaults to None.
+            metadata (Optional[Dict], optional): Additional metadata. Defaults to None.
+        """
         self._validate(ranges)
         _data = {"ranges": ranges}
 
@@ -41,27 +95,27 @@ class GenomicRangesList:
 
         self._metadata = {} if metadata is None else metadata
 
-    def _validate(self, ranges: Sequence[GenomicRanges]):
+    def _validate(self, ranges: List[GenomicRanges]):
         if not is_list_of_type(ranges, GenomicRanges):
             raise TypeError(
                 "All genomic elements in `ranges` must be of type `GenomicRanges`."
             )
 
     @property
-    def metadata(self) -> MutableMapping:
+    def metadata(self) -> dict:
         """Get metadata.
 
         Returns:
-            MutableMapping: Metadata object, usually a dictionary.
+            dict: Metadata object, usually a dictionary.
         """
         return self._metadata
 
     @metadata.setter
-    def metadata(self, metadata: Optional[MutableMapping]):
+    def metadata(self, metadata: Optional[dict]):
         """Set metadata.
 
         Args:
-            metadata (Optional[MutableMapping]): New metadata object.
+            metadata (dict, optional): New metadata object.
         """
         self._metadata = {} if metadata is None else metadata
 
@@ -76,22 +130,22 @@ class GenomicRangesList:
         return self._frame.column("ranges")
 
     @property
-    def groups(self) -> Optional[Sequence]:
+    def groups(self) -> Optional[list]:
         """Get names of all genomic elements.
 
         Returns:
-            Sequence, optional: A list with the same length as
+            (list, optional): A list with the same length as
             :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.ranges`,
             with each element specifying the name of the element. None if names are not provided.
         """
         return self._frame.row_names
 
     @property
-    def names(self) -> Optional[Sequence]:
-        """Alias to :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.groups`
+    def names(self) -> Optional[list]:
+        """Alias to :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.groups`.
 
         Returns:
-            Sequence, optional: A list with the same length as
+            (list, optional): A list with the same length as
             :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.ranges`,
             with each element specifying the name of the element. None if names are not provided.
         """
@@ -109,7 +163,7 @@ class GenomicRangesList:
 
         return None
 
-    def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, List]:
+    def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, list]:
         _all_prop = {}
         _ranges = self.ranges
         _groups = self.names
@@ -301,7 +355,7 @@ class GenomicRangesList:
 
         raise TypeError("args must be either a string or an integer.")
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Number of genomic elements.
 
         Returns:

@@ -1,5 +1,5 @@
 from random import random
-from typing import Any, List, MutableMapping, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from numpy import diff, ndarray, split, where, zeros
 
@@ -8,26 +8,21 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def calc_row_gapwidth(
-    a: MutableMapping[str, Any], b: MutableMapping[str, Any]
-) -> Optional[int]:
-    """Calculates gap width for two genomic positions from :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
-
-    a,b must contain keys `seqnames`, `strand`, `starts` and `ends`.
+def calc_row_gapwidth(a: Dict[str, Any], b: Dict[str, Any]) -> Optional[int]:
+    """Calculates gap width for two genomic positions.
 
     Args:
-        a, b (MutableMapping[str, Any]): Genomic row with positions.
-
-        Usually a result of :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.row`.
+        a, b (Dict[str, Any]): Genomic row with positions.
+            Must contain keys 'seqnames', 'strand', 'starts', and 'ends'.
 
     Returns:
-        int: gapwidth,
+        int: Gap width,
 
-        - ``nan`` if the sequences are not comparable
+        - nan if the sequences are not comparable
         - 0 if they overlap
         - a number if there is a gap.
 
-        returns None if gap does not exist.
+        Returns None if a gap does not exist.
     """
 
     if a["seqnames"] != b["seqnames"] or a["strand"] != b["strand"] != "-":
@@ -44,7 +39,7 @@ def calc_row_gapwidth(
 def np_split_groups_ne(
     ary: ndarray, step: int = 0
 ) -> Tuple[List[ndarray], List[ndarray]]:
-    """Split a :py:class:`~numpy.ndarray` by consecutive values.
+    """Split a numpy array by consecutive values.
 
     Args:
         ary (ndarray): A numpy array.
@@ -70,7 +65,7 @@ def create_np_interval_vector(
     dont_sum: bool = False,
     value: int = 1,
 ) -> Tuple[ndarray, Optional[List]]:
-    """Represent intervals/calculate coverage.
+    """Represent intervals and calculate coverage.
 
     Args:
         intervals (List[Tuple[int, int]]): Input interval vector.
@@ -431,7 +426,7 @@ def compute_mean(
 
     Args:
         intervals (List[Tuple[int, int]]): Input interval list.
-        values (Union[List[int], List[float]]): An ``int`` or ``float`` vector with
+        values (Union[List[int], List[float]]): An int or float vector with
             the same size as intervals.
 
     Returns:
@@ -477,9 +472,6 @@ def find_overlaps(
             - "within": Fully contain the query interval.
 
             Defaults to "any".
-
-    Raises:
-        ValueError: Query type is incorrect.
 
     Returns:
         List[Tuple[Tuple[int, int], int, List[int]]]: List of query intervals
@@ -527,12 +519,11 @@ def find_nearest(
     stepstart: int = 3,
     stepend: int = 3,
 ) -> List[Tuple[Tuple[int, int], int, List[int]]]:
-    """Find nearest intervals in subject for even interval in query.
+    """Find nearest intervals in subject for every interval in query.
 
     Args:
         subject (List[Tuple[int, int]]): Intervals.
         query (List[Tuple[int, int]]): Query intervals.
-        max_gap (int, optional): Maximum gap allowed. Defaults to -1 for no gaps.
         stepstart (int, optional): Step start. Defaults to 3.
         stepend (int, optional): Step end. Defaults to 3.
 
@@ -587,17 +578,17 @@ def find_nearest(
 def split_intervals(
     chrom: str, strand: str, start: int, end: int, step: int
 ) -> List[Tuple]:
-    """Split an interval range into equal bins. pretty much a fancy range function. realizes the range.
+    """Split an interval range into equal bins.
 
     Args:
-        chrom (str): chromosome name.
+        chrom (str): Chromosome name.
         strand (str): Strand information.
         start (int): Start interval.
         end (int): End interval.
         step (int): Width or step of each interval.
 
     Returns:
-        List[Tuple]: List of internals split into bins.
+        List[Tuple]: List of intervals split into bins.
     """
     bins = []
     for i in range(start, end + 1, step):
@@ -609,17 +600,18 @@ def split_intervals(
 def slide_intervals(
     chrom: str, strand: str, start: int, end: int, width: int, step: int
 ):
-    """Sliding intervals. pretty much a fancy range function. realizes the range.
+    """Sliding intervals.
 
     Args:
-        chrom (str): chromosome name.
+        chrom (str): Chromosome name.
         strand (str): Strand information.
         start (int): Start interval.
         end (int): End interval.
-        step (int): Width or step of each interval.
+        width (int): Width of each interval.
+        step (int): Step of each interval.
 
     Returns:
-        List[Tuple]: List of internals split into bins.
+        List[Tuple]: List of intervals split into bins.
     """
     bins = []
 
@@ -633,18 +625,18 @@ def slide_intervals(
 
 
 def adjust_interval(
-    row: MutableMapping[str, Any],
+    row: Dict[str, Any],
     shift_start: int = 0,
     shift_end: int = 0,
 ) -> Tuple[int, int]:
-    """Shift genomic intervals for a ``row`` by their ``shift_start`` or ``shift_end``.
+    """Shift genomic intervals for a row by their shift_start or shift_end.
 
     Note: These values can be negative as well.
 
-    ``start`` and ``end`` cannot be negative after shift! If so, they are set to 0.
+    Start and end cannot be negative after shift! If so, they are set to 0.
 
     Args:
-        row (MutableMapping[str, Any]): A row from `GenomicRanges`.
+        row (Dict[str, Any]): A row from GenomicRanges.
         shift_start (int, optional): Number of positions to shift start by.
             Defaults to 0.
         shift_end (int, optional): Number of positions to shift end by.
