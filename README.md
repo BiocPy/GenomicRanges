@@ -4,8 +4,7 @@
 
 # GenomicRanges
 
-Container class to represent genomic locations and support genomic analysis in Python similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
-
+GenomicRanges is a Python container class designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 ## Install
 
@@ -17,13 +16,13 @@ pip install genomicranges
 
 ## Usage
 
-The package provide several ways to represent genomic annotations and intervals.
+The package provides several ways to represent genomic annotations and intervals.
 
 ### Initialize a `GenomicRanges` object
 
 #### From UCSC or GTF file
 
-Methods are available to easily access UCSC genomes or load a genome annotation from GTF
+You can easily access UCSC genomes or load a genome annotation from a GTF file using the following methods:
 
 ```python
 import genomicranges
@@ -34,9 +33,10 @@ gr = genomicranges.from_ucsc(genome="hg19")
 ```
 #### Pandas DataFrame
 
-A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this into `GenomicRanges`. ***Intervals are inclusive on both ends.***
+A common representation in Python is a pandas DataFrame for all tabular datasets. You can convert a DataFrame into a `GenomicRanges` object. Please note that intervals are inclusive on both ends, and your DataFrame must contain columns seqnames, starts, and ends to represent genomic coordinates. 
 
-***Note: DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates.***
+Here's an example:
+
 
 ```python
 import genomicranges
@@ -58,7 +58,7 @@ gr = genomicranges.from_pandas(df)
 
 ### Interval Operations
 
-Currently supports most commonly used [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
+GenomicRanges currently supports most commonly used [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 ```python
 subject = genomicranges.from_ucsc(genome="hg38")
@@ -77,7 +77,7 @@ hits = subject.nearest(query)
 print(hits)
 ```
 
-Checkout the [documentation](https://biocpy.github.io/GenomicRanges/) for more usecases.
+For more usage examples, check out the [documentation](https://biocpy.github.io/GenomicRanges/).
 
 
 <!-- pyscaffold-notes -->
