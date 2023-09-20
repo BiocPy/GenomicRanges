@@ -31,7 +31,7 @@ b = GenomicRanges(
 
 
 def test_create_grl():
-    grl = GenomicRangesList(a=a, b=b)
+    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
     assert isinstance(grl, GenomicRangesList)
     assert isinstance(grl["a"], GenomicRanges)
@@ -41,4 +41,4 @@ def test_create_grl():
 
 def test_create_grl_should_fail():
     with pytest.raises(Exception):
-        GenomicRangesList(a=a, b=2)
+        GenomicRangesList(ranges=[a, 2])

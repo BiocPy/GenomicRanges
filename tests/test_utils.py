@@ -1,4 +1,4 @@
-from genomicranges.utils import (
+from genomicranges.interval import (
     find_union,
     find_gaps,
     find_disjoin,

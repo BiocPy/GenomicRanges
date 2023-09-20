@@ -79,3 +79,9 @@ def test_should_fail():
         )
 
         genomicranges.from_pandas(df_gr)
+
+
+def test_gr_empty():
+    gr = GenomicRanges(number_of_rows=100)
+
+    assert gr is not None

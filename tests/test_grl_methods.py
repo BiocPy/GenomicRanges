@@ -31,7 +31,7 @@ b = GenomicRanges(
 
 
 def test_is_empty_False():
-    grl = GenomicRangesList(a=a, b=b)
+    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
     assert grl.is_empty() == False
 
@@ -43,7 +43,7 @@ def test_is_empty_True():
 
 
 def test_nrows():
-    grl = GenomicRangesList(a=a, b=b)
+    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
     nrows = grl.element_nrows()
     assert isinstance(nrows, dict)
@@ -52,7 +52,7 @@ def test_nrows():
 
 
 def test_props():
-    grl = GenomicRangesList(a=a, b=b)
+    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
     props = ["start", "end", "strand", "genome", "score"]
 
@@ -65,7 +65,7 @@ def test_props():
 
 
 def test_to_pandas():
-    grl = GenomicRangesList(a=a, b=b)
+    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
     df = grl.to_pandas()
     assert len(df) == 7

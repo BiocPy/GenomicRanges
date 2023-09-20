@@ -7,10 +7,7 @@ from typing import (
     Dict,
     List,
     Literal,
-    Mapping,
-    MutableMapping,
     Optional,
-    Sequence,
     Union,
 )
 from warnings import warn
@@ -21,9 +18,7 @@ from numpy import concatenate, count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
 from prettytable import PrettyTable
 
-from .io import from_pandas
-from .SeqInfo import SeqInfo
-from .utils import (
+from .interval import (
     OVERLAP_QUERY_TYPES,
     calc_row_gapwidth,
     compute_mean,
@@ -38,6 +33,8 @@ from .utils import (
     slide_intervals,
     split_intervals,
 )
+from .io import from_pandas
+from .SeqInfo import SeqInfo
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -45,28 +42,27 @@ __license__ = "MIT"
 
 
 class GenomicRanges(BiocFrame):
-    """``GenomicRanges`` provides functionality to represent and operate over genomic regions and annotations.
+    """`GenomicRanges` provides functionality to represent and operate over genomic regions and annotations.
 
     **Note: Intervals are inclusive on both ends and start at 1.**
 
-    Additionally, ``GenomicRanges`` may also contain `Sequence Information` (checkout
+    Additionally, `GenomicRanges` may also contain `Sequence Information` (checkout
     :py:class:`~genomicranges.SeqInfo.SeqInfo`) as part of its metadata. It contains for each
     sequence name (or chromosome) in the gene model, its length. Additionally, (checkout
     :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain metadata about the
-    genome, e.g. if its circular (`is_circular`) or not.
+    genome, e.g. if it's circular (`is_circular`) or not.
 
-    Note: The documentation for some of the methods come from the
+    Note: The documentation for some of the methods comes from the
     `GenomicRanges R/Bioconductor package <https://github.com/Bioconductor/GenomicRanges>`_.
 
     Typical usage example:
 
     To construct a **GenomicRanges** object, simply pass in the column representation as a
-    dictionary. This dictionary must contain "seqnames", "starts", "ends" columns and optionally
-    specify "strand". If "strand" column is not provided, "*" is used as the default value for
+    dictionary. This dictionary must contain "seqnames", "starts", "ends" columns, and optionally,
+    specify "strand". If the "strand" column is not provided, "*" is used as the default value for
     each genomic interval.
 
-    .. code-block:: python
-
+    ```python
         gr = GenomicRanges(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -74,11 +70,11 @@ class GenomicRanges(BiocFrame):
                 "ends": [103, 116, 120],
             }
         )
+    ```
 
     Alternatively, you may also convert a :py:class:`~pandas.DataFrame` to ``GenomicRanges``.
 
-    .. code-block:: python
-
+    ```python
         df = pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -88,8 +84,9 @@ class GenomicRanges(BiocFrame):
         )
 
         gr = genomicranges.from_pandas(df)
+    ```
 
-    All columns other than "seqnames", "starts", "ends" and "strand" are considered
+    All columns other than "seqnames", "starts", "ends", and "strand" are considered
     metadata columns and can be accessed by
     :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.mcols`.
 
@@ -104,31 +101,44 @@ class GenomicRanges(BiocFrame):
         sliced_gr = gr[1:2, [True, False, False]]
 
     Attributes:
-        data (Mapping[str, Union[List[Any], Mapping]]):
-            Columns as dictionary, Must contain "seqnames", "starts", "ends" and "strand" columns.
-        number_of_rows (int, optional): Number of genomic intervals (or rows). Defaults to None.
-        row_names (Sequence[str], optional): Row index. Defaults to None.
-        column_names (Sequence[str], optional): Column names, automatically inferred from `data`.
-            Defaults to None.
-        metadata (Mapping, optional): Additional metadata. Defaults to None.
+        data (Dict[str, Any], optional): Dictionary of column names as `keys` and their values.
+            All columns must have the same length. Defaults to {}.
+        number_of_rows (int, optional): Number of rows.
+        row_names (List, optional): Row index names.
+        column_names (List[str], optional): Column names, if not provided, they are automatically inferred
+            from the data.
+        metadata (dict): Additional metadata. Defaults to {}.
     """
 
     required_columns = ["seqnames", "starts", "ends", "strand"]
 
     def __init__(
         self,
-        data: Mapping[str, Union[Sequence, Mapping]],
+        data: Optional[Dict[str, Union[List, Dict]]] = None,
         number_of_rows: Optional[int] = None,
-        row_names: Optional[Sequence] = None,
-        column_names: Optional[Sequence] = None,
-        metadata: Optional[Mapping] = None,
+        row_names: Optional[List] = None,
+        column_names: Optional[List] = None,
+        metadata: Optional[Dict] = None,
     ) -> None:
-        """Initialize a `GenomicRanges` object."""
+        """Initialize a `GenomicRanges` object.
+
+        Args:
+            data (Dict[str, Any], optional): Dictionary of column names as `keys` and
+                their values. All columns must have the same length. Defaults to None.
+            number_of_rows (int, optional): Number of rows. Defaults to None.
+            row_names (List, optional): Row index names. Defaults to None.
+            column_names (List[str], optional): Column names, if not provided,
+                they are automatically inferred from the data. Defaults to None.
+            metadata (dict, optional): Additional metadata. Defaults to None.
+        """
         super().__init__(data, number_of_rows, row_names, column_names, metadata)
 
+    def _is_data_empty(self):
+        return self._data == {} or self._data is None
+
     def _validate(self):
-        """Internal function to validate ``GenomicRanges``."""
-        if "strand" not in self._data:
+        """Internal method to validate ``GenomicRanges``."""
+        if not self._is_data_empty() and "strand" not in self._data:
             self._data["strand"] = ["*"] * len(self._data["starts"])
 
             if self.column_names is not None:
@@ -138,18 +148,21 @@ class GenomicRanges(BiocFrame):
         self._validate_ranges()
 
     def _validate_ranges(self):
-        """Internal function to validate all columns of ``GenomicRanges``.
+        """Internal method to validate all columns of ``GenomicRanges``.
 
         Raises:
             ValueError: If missing required columns.
         """
-        missing = list(set(self.required_columns).difference(set(self.column_names)))
-
-        if len(missing) > 0:
-            raise ValueError(
-                f"`data` must contain {', '.join(self.required_columns)}."
-                f"missing {missing} column{'s' if len(missing) > 1 else ''}"
+        if not self._is_data_empty():
+            missing = list(
+                set(self.required_columns).difference(set(self.column_names))
             )
+
+            if len(missing) > 0:
+                raise ValueError(
+                    f"`data` must contain {', '.join(self.required_columns)}."
+                    f"missing {missing} column{'s' if len(missing) > 1 else ''}"
+                )
 
     @property
     def seqnames(self) -> List[str]:
@@ -187,13 +200,13 @@ class GenomicRanges(BiocFrame):
             ignore_strand (bool): Whether to ignore strands. Defaults to False.
             return_type (Callable, optional): Format to return genomic positions.
                 Defaults to a dictionary representation, supports `DataFrame`
-                or any callable representation that takes a dictionary as an input.
+                or any callable representation that takes a :py:class:`dict` as an input.
 
         Raises:
             ValueError: If ``return_type`` is not supported.
 
         Returns:
-            Union[DataFrame, MutableMapping, "GenomicRanges", Any]: Genomic regions.
+            Union[DataFrame, Dict, "GenomicRanges", Any]: Genomic regions.
         """
 
         obj = {
@@ -242,10 +255,10 @@ class GenomicRanges(BiocFrame):
 
     @property
     def seq_info(self) -> Optional[SeqInfo]:
-        """Get sequence information, if available.
+        """Get List information, if available.
 
         Returns:
-            (SeqInfo, optional): Sequence information.
+            (SeqInfo, optional): List information, otherwise None.
         """
 
         if self.metadata and "seq_info" in self.metadata:
@@ -255,10 +268,10 @@ class GenomicRanges(BiocFrame):
 
     @seq_info.setter
     def seq_info(self, seq_info: Optional[SeqInfo]):
-        """Set sequence information.
+        """Set List information.
 
         Args:
-            (SeqInfo, optional): Sequence information.
+            (SeqInfo, optional): List information, otherwise None.
 
         Raises:
             ValueError: If `seq_info` is not a `SeqInfo` class.
@@ -278,8 +291,8 @@ class GenomicRanges(BiocFrame):
         """Get length of each chromosome, if available.
 
         Returns:
-            (Dict[str, int], optional): A dictionary where keys are chromosome names and values
-            specify lengths of each chromsome.
+            (Dict[str, int], optional): A dictionary where keys are chromosome names, and values
+            specify the lengths of each chromosome, or None if not available.
         """
 
         if self.metadata is not None and "seq_info" in self.metadata:
@@ -288,11 +301,11 @@ class GenomicRanges(BiocFrame):
         return None
 
     @property
-    def score(self) -> Optional[Sequence[Union[int, float]]]:
+    def score(self) -> Optional[list]:
         """Get "score" column (if available) for each genomic interval.
 
         Returns:
-            (Sequence[Union[int, float]], optional): Score column.
+            (list, optional): Score column.
         """
 
         if "score" in self.column_names:
@@ -301,15 +314,14 @@ class GenomicRanges(BiocFrame):
         return None
 
     @score.setter
-    def score(self, score: Sequence[Union[int, float]]):
-        """Set score for each position.
+    def score(self, score: list):
+        """Set a score for each position.
 
         Args:
-            score (Sequence[Union[int, float]]): Score values to set.
+            score (list): Score values to set.
 
         Raises:
-            ValueError: If length of ``score`` does not
-                match the number of intervals in the object.
+            ValueError: If the length of ``score`` does not match the number of intervals in the object.
             TypeError: If `score` is not a list.
         """
 
@@ -326,11 +338,11 @@ class GenomicRanges(BiocFrame):
 
     @property
     def is_circular(self) -> Optional[Dict[str, bool]]:
-        """Whether the sequences/chromosomes are circular (only if available).
+        """Determine whether the sequences/chromosomes are circular (only if available).
 
         Returns:
-            (Dict[str, bool], optional): A dictionary with chromosome names as keys and a
-            boolean value indicating if its circular or not.
+            Dict[str, bool] or None: A dictionary with chromosome names as keys, and a
+                boolean value indicating whether they are circular or not, or None if not available.
         """
 
         if self.metadata is not None and "seqInfo" in self.metadata:
@@ -343,7 +355,7 @@ class GenomicRanges(BiocFrame):
         """Get genome information, if available.
 
         Returns:
-            (str, optional): Genome information if available else None.
+            (str, optional): Genome information if available, otherwise None.
         """
 
         if self._metadata and "seqInfo" in self._metadata:
@@ -352,10 +364,10 @@ class GenomicRanges(BiocFrame):
         return None
 
     def granges(self) -> "GenomicRanges":
-        """Creates a new ``GenomicRanges`` object with only ranges (`seqnames`, `starts, `ends` and `strand`).
+        """Create a new ``GenomicRanges`` object with only ranges (``seqnames``, ``starts``, ``ends``, and ``strand``).
 
         Returns:
-            GenomicRanges: A new `GenomicRanges` with only ranges.
+            GenomicRanges: A new ``GenomicRanges`` with only ranges.
         """
         return GenomicRanges(
             {
@@ -366,12 +378,10 @@ class GenomicRanges(BiocFrame):
             }
         )
 
-    def mcols(
-        self, return_type: Optional[Callable] = None
-    ) -> Union[DataFrame, MutableMapping, Any]:
+    def mcols(self, return_type: Optional[Callable] = None) -> Any:
         """Get metadata across all genomic intervals.
 
-        All columns other than "seqnames", "starts", "ends" and `"strand"
+        All columns other than "seqnames", "starts", "ends", and "strand"
         are considered metadata for each interval.
 
         Args:
@@ -383,8 +393,7 @@ class GenomicRanges(BiocFrame):
             ValueError: If ``return_type`` is not supported.
 
         Returns:
-            Union[DataFrame, MutableMapping, Any]: Metadata columns without
-            genomic positions.
+            Union[DataFrame, Dict, Any]: Metadata columns without genomic positions.
         """
 
         new_data = OrderedDict()
@@ -447,29 +456,30 @@ class GenomicRanges(BiocFrame):
     def __getitem__(self, args: SlicerArgTypes) -> Union["GenomicRanges", dict, list]:
         """Subset the object.
 
-        This operation returns a new object with the same type as caller.
+        This operation returns a new object with the same type as the caller.
+
         If you need to access specific rows or columns, use the
-        :py:meth:`~biocframe.BiocFrame.BiocFrame.row` or
-        :py:meth:`~biocframe.BiocFrame.BiocFrame.column`
+        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.row` or
+        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.column`
         methods.
 
         Usage:
 
         .. code-block:: python
 
-            # made up chromosome locations and ensembl ids.
+            # Made-up chromosome locations and ensembl ids.
             obj = {
                 "ensembl": ["ENS00001", "ENS00002", "ENS00002"],
                 "symbol": ["MAP1A", "BIN1", "ESR1"],
-                "ranges": BiocFrame({
-                    "chr": ["chr1", "chr2", "chr3"]
+                "ranges": GenomicRanges({
+                    "chr": ["chr1", "chr2", "chr3"],
                     "start": [1000, 1100, 5000],
                     "end": [1100, 4000, 5500]
-                ),
+                }),
             }
             gr = GenomicRanges(obj)
 
-            # different ways to slice.
+            # Different ways to slice.
             gr[0:2, 0:2]
             gr[[0,2], [True, False, False]]
             gr[<List of column names>]
@@ -479,35 +489,35 @@ class GenomicRanges(BiocFrame):
                 columns. An element in ``args`` may be,
 
                 - List of booleans, True to keep the row/column, False to remove.
-                    The length of the boolean vector must be the same as number of rows/columns.
+                    The length of the boolean vector must be the same as the number of rows/columns.
 
                 - List of integer positions along rows/columns to keep.
 
                 - A :py:class:`slice` object specifying the list of indices to keep.
 
                 - A list of index names to keep. For rows, the object must contain unique
-                    :py:attr:`~biocframe.BiocFrame.BiocFrame.row_names` and for columns must
-                    contain unique :py:attr:`~biocframe.BiocFrame.BiocFrame.column_names`.
+                    :py:attr:`~genomicranges.GenomicRanges.GenomicRanges.row_names` and for columns must
+                    contain unique :py:attr:`~genomicranges.GenomicRanges.GenomicRanges.column_names`.
 
                 - An integer to subset either a single row or column index.
                     Alternatively, you might want to use
-                    :py:meth:`~biocframe.BiocFrame.BiocFrame.row` or
-                    :py:meth:`~biocframe.BiocFrame.BiocFrame.column` methods.
+                    :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.row` or
+                    :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.column` methods.
 
                 - A string to subset either a single row or column by label.
                     Alternatively, you might want to use
-                    :py:meth:`~biocframe.BiocFrame.BiocFrame.row` or
-                    :py:meth:`~biocframe.BiocFrame.BiocFrame.column` methods.
+                    :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.row` or
+                    :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.column` methods.
 
         Raises:
             ValueError: Too many slices provided.
-            TypeError: If provided ``args`` are not an expected type.
+            TypeError: If the provided ``args`` are not an expected type.
 
         Returns:
             Union["GenomicRanges", dict, list]:
             - If a single row is sliced, returns a :py:class:`dict`.
             - If a single column is sliced, returns a :py:class:`list`.
-            - For all other scenarios, returns the same type as caller with the subsetted rows and columns.
+            - For all other scenarios, returns the same type as the caller with the subsetted rows and columns.
         """
         return super().__getitem__(args)
 
@@ -613,12 +623,12 @@ class GenomicRanges(BiocFrame):
 
         Args:
             width (int): Width to resize, cannot be negative!
-            fix (Literal["start", "end", "center"], optional): Fix positions by
-                "start", "end", "center". Defaults to "start".
+            fix (Literal["start", "end", "center"], optional): Fix positions by "start", "end", or "center".
+                Defaults to "start".
             ignore_strand (bool, optional): Whether to ignore strands. Defaults to False.
 
         Raises:
-            ValueError: If parameter ``fix`` is neither `start`, `end` or `center`.
+            ValueError: If parameter ``fix`` is neither `start`, `end`, nor `center`.
             ValueError: If ``width`` is negative.
 
         Returns:
@@ -783,8 +793,8 @@ class GenomicRanges(BiocFrame):
         Args:
             start (int, optional): Start position. Defaults to None.
             end (int, optional): End position. Defaults to None.
-            keep_all_ranges (bool, optional): Whether to keep intervals that do
-                not overlap with start and end. Defaults to False.
+            keep_all_ranges (bool, optional): Whether to keep intervals that do not overlap with start and end.
+                Defaults to False.
 
         Returns:
             GenomicRanges: A new `GenomicRanges` object with restricted ranges.
@@ -835,7 +845,7 @@ class GenomicRanges(BiocFrame):
         )
 
     def trim(self) -> "GenomicRanges":
-        """Trim sequences outside of bounds for non-circular chromosomes.
+        """Trim Lists outside of bounds for non-circular chromosomes.
 
         Returns:
             GenomicRanges: A new `GenomicRanges` object with trimmed ranges.
@@ -858,7 +868,7 @@ class GenomicRanges(BiocFrame):
             raise ValueError("Cannot trim ranges. `seqlengths` is not available.")
 
         if is_circular is None:
-            warn("considering all sequences as non-circular...")
+            warn("considering all Lists as non-circular...")
 
         all_chrs = self.column("seqnames")
         all_ends = self.column("ends")
@@ -1101,13 +1111,13 @@ class GenomicRanges(BiocFrame):
         return seqlengths
 
     def gaps(
-        self, start: int = 1, end: Optional[MutableMapping[str, int]] = None
+        self, start: int = 1, end: Optional[Dict[str, int]] = None
     ) -> Optional["GenomicRanges"]:
         """Identify gaps in genomic positions for each distinct `seqname` (chromosome) and `strand` combination.
 
         Args:
             start (int, optional): Restrict chromosome start position. Defaults to 1.
-            end (MutableMapping[str, int], optional): Restrict end
+            end (Dict[str, int], optional): Restrict end
                 position for each chromosome. Defaults to None. If None, it uses the
                 :py:class:`~genomicranges.SeqInfo.SeqInfo` object if available.
 
@@ -1176,13 +1186,12 @@ class GenomicRanges(BiocFrame):
         """Calculate disjoint genomic positions for each distinct `seqname` (chromosome) and `strand` combination.
 
         Args:
-            with_reverse_map (bool, optional): Whether to return map of indices back to
-                original object. Defaults to False.
+            with_reverse_map (bool, optional): Whether to return a map of indices back to the original object.
+                Defaults to False.
             ignore_strand (bool, optional): Whether to ignore strands. Defaults to False.
 
         Returns:
-            ("GenomicRanges", optional): A new `GenomicRanges` containing
-            disjoint ranges across chromosome and strand.
+            ("GenomicRanges", optional): A new `GenomicRanges` containing disjoint ranges across chromosome and strand.
         """
 
         df_gr = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
