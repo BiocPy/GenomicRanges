@@ -255,7 +255,7 @@ class GenomicRanges(BiocFrame):
 
     @property
     def seq_info(self) -> Optional[SeqInfo]:
-        """Get List information, if available.
+        """Get sequence information, if available.
 
         Returns:
             (SeqInfo, optional): List information, otherwise None.
@@ -268,7 +268,7 @@ class GenomicRanges(BiocFrame):
 
     @seq_info.setter
     def seq_info(self, seq_info: Optional[SeqInfo]):
-        """Set List information.
+        """Set sequence information.
 
         Args:
             (SeqInfo, optional): List information, otherwise None.
@@ -342,7 +342,7 @@ class GenomicRanges(BiocFrame):
 
         Returns:
             Dict[str, bool] or None: A dictionary with chromosome names as keys, and a
-                boolean value indicating whether they are circular or not, or None if not available.
+            boolean value indicating whether they are circular or not, or None if not available.
         """
 
         if self.metadata is not None and "seqInfo" in self.metadata:
@@ -845,7 +845,7 @@ class GenomicRanges(BiocFrame):
         )
 
     def trim(self) -> "GenomicRanges":
-        """Trim Lists outside of bounds for non-circular chromosomes.
+        """Trim sequences outside of bounds for non-circular chromosomes.
 
         Returns:
             GenomicRanges: A new `GenomicRanges` object with trimmed ranges.
@@ -868,7 +868,7 @@ class GenomicRanges(BiocFrame):
             raise ValueError("Cannot trim ranges. `seqlengths` is not available.")
 
         if is_circular is None:
-            warn("considering all Lists as non-circular...")
+            warn("considering all sequences as non-circular...")
 
         all_chrs = self.column("seqnames")
         all_ends = self.column("ends")
