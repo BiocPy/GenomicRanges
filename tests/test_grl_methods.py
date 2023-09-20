@@ -37,7 +37,7 @@ def test_is_empty_False():
 
 
 def test_is_empty_True():
-    grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0]*10)
+    grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0] * 10)
 
     assert grl.is_empty() == True
     assert len(grl) == 10

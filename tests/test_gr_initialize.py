@@ -94,4 +94,4 @@ def test_gr_empty():
     assert gre is not None
     assert isinstance(gre, GenomicRanges)
     assert len(gre) == 0
-    assert gre.shape == (0,0)
+    assert gre.shape == (0, 0)
