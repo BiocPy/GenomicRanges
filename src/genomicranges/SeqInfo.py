@@ -1,7 +1,8 @@
 from itertools import zip_longest
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from biocframe import BiocFrame
+from biocframe.types import DataType
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -27,26 +28,28 @@ class SeqInfo(BiocFrame):
 
     def __init__(
         self,
-        data: Dict[str, Union[List[Any], Dict]],
+        data: DataType,
         number_of_rows: Optional[int] = None,
         row_names: Optional[List[str]] = None,
         column_names: Optional[List[str]] = None,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Initialize a SeqInfo object."""
-        super().__init__(data, number_of_rows, row_names, column_names, metadata)
+        if "genome" in data:
+            if metadata is None:
+                metadata = {}
 
-    def _validate(self):
-        """Internal function to validate SeqInfo."""
+            metadata["genome"] = data["genome"]
 
-        if "genome" in self._data:
-            if self._metadata is None:
-                self._metadata = {}
+            try:
+                del data["genome"]
+            except Exception:
+                data = {k: v for k, v in data.items() if k != "genome"}
 
-            self._metadata["genome"] = self._data["genome"]
-            del self._data["genome"]
+        super().__init__(
+            data, number_of_rows, row_names, column_names, metadata
+        )
 
-        super()._validate()
         self._validate_seqs()
 
     def _validate_seqs(self):
@@ -55,7 +58,9 @@ class SeqInfo(BiocFrame):
         Raises:
             ValueError: If missing required columns.
         """
-        missing = list(set(self.required_columns).difference(set(self.column_names)))
+        missing = list(
+            set(self.required_columns).difference(set(self.column_names))
+        )
 
         if len(missing) > 0:
             raise ValueError(
@@ -83,7 +88,9 @@ class SeqInfo(BiocFrame):
         if "seqlengths" not in self.column_names:
             return None
 
-        return dict(zip_longest(self.column("seqnames"), self.column("seqlengths")))
+        return dict(
+            zip_longest(self.column("seqnames"), self.column("seqlengths"))
+        )
 
     @property
     def is_circular(self) -> Optional[Dict[str, bool]]:
@@ -97,7 +104,9 @@ class SeqInfo(BiocFrame):
         if "is_circular" not in self.column_names:
             return None
 
-        return dict(zip_longest(self.column("seqnames"), self.column("is_circular")))
+        return dict(
+            zip_longest(self.column("seqnames"), self.column("is_circular"))
+        )
 
     @property
     def genome(self) -> Optional[str]:

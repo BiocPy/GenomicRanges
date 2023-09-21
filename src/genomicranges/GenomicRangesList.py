@@ -95,7 +95,8 @@ class GenomicRangesList:
 
     def _validate(self, ranges: Union[GenomicRanges, List[GenomicRanges]]):
         if not (
-            isinstance(ranges, GenomicRanges) or is_list_of_type(ranges, GenomicRanges)
+            isinstance(ranges, GenomicRanges)
+            or is_list_of_type(ranges, GenomicRanges)
         ):
             raise TypeError(
                 "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
@@ -163,7 +164,9 @@ class GenomicRangesList:
 
         return None
 
-    def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, list]:
+    def _generic_accessor(
+        self, prop: str, func: bool = False
+    ) -> Dict[str, list]:
         _all_prop = {}
         _ranges = self.ranges
         _groups = self.names
@@ -219,24 +222,24 @@ class GenomicRangesList:
         return self._generic_accessor("seqnames")
 
     @property
-    def start(self) -> Dict[str, List[int]]:
+    def starts(self) -> Dict[str, List[int]]:
         """Get all start positions.
 
         Returns:
             Dict[str, List[int]]: A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("start")
+        return self._generic_accessor("starts")
 
     @property
-    def end(self) -> Dict[str, List[int]]:
+    def ends(self) -> Dict[str, List[int]]:
         """Get all end positions.
 
         Returns:
             Dict[str, List[int]]: A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("end")
+        return self._generic_accessor("ends")
 
     @property
     def width(self) -> Dict[str, List[int]]:
@@ -329,7 +332,9 @@ class GenomicRangesList:
         return all_concat
 
     def add_element(self, key, value, element_metadata):
-        raise NotImplementedError("Adding new elements is not yet implemented!")
+        raise NotImplementedError(
+            "Adding new elements is not yet implemented!"
+        )
 
     def __getitem__(self, args: Union[str, int]) -> "GenomicRanges":
         """Access individual genomic elements.

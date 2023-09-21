@@ -25,10 +25,10 @@ def test_create_gr():
                 "chr3",
                 "chr3",
             ],
-            "starts": range(100, 110),
-            "ends": range(110, 120),
+            "starts": list(range(100, 110)),
+            "ends": list(range(110, 120)),
             "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
-            "score": range(0, 10),
+            "score": list(range(0, 10)),
             "GC": [random() for _ in range(10)],
         }
     )
@@ -53,10 +53,10 @@ def test_nested_bframe():
             "chr3",
             "chr3",
         ],
-        "starts": range(100, 110),
-        "ends": range(110, 120),
+        "starts": list(range(100, 110)),
+        "ends": list(range(110, 120)),
         "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
-        "score": BiocFrame({"scores": range(0, 10)}),
+        "score": BiocFrame({"scores": list(range(0, 10))}),
         "GC": [random() for _ in range(10)],
     }
 
@@ -70,10 +70,10 @@ def test_should_fail():
     with pytest.raises(Exception):
         df_gr = pd.DataFrame(
             {
-                "starts": range(100, 110),
-                "ends": range(110, 120),
+                "starts": list(range(100, 110)),
+                "ends": list(range(110, 120)),
                 "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
-                "score": range(0, 10),
+                "score": list(range(0, 10)),
                 "GC": [random() for _ in range(10)],
             }
         )

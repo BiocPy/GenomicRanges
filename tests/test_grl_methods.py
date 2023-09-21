@@ -55,7 +55,7 @@ def test_nrows():
 def test_props():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
-    props = ["start", "end", "strand", "genome", "score"]
+    props = ["starts", "ends", "strand", "genome", "score"]
 
     for prop in props:
         v = getattr(grl, prop)
