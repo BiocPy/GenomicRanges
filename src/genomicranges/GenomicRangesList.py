@@ -331,7 +331,9 @@ class GenomicRangesList:
     def add_element(self, key, value, element_metadata):
         raise NotImplementedError("Adding new elements is not yet implemented!")
 
-    def __getitem__(self, args: Union[str, int, tuple, list, slice]) -> Union[GenomicRanges, "GenomicRangesList"]:
+    def __getitem__(
+        self, args: Union[str, int, tuple, list, slice]
+    ) -> Union[GenomicRanges, "GenomicRangesList"]:
         """Access individual genomic elements.
 
         Args:
@@ -340,10 +342,10 @@ class GenomicRangesList:
                 Alternatively, if names of genomic elements are not available, you may
                 provide an index position of the genomic element to access.
 
-                Alternatively, ``args`` may also specify a list of positions to slice specified either as a 
-                :py:class:`~list` or :py:class:`~slice`. 
+                Alternatively, ``args`` may also specify a list of positions to slice specified either as a
+                :py:class:`~list` or :py:class:`~slice`.
 
-                A tuple may also be specified along each dimension. Currently if the tuple contains more than 
+                A tuple may also be specified along each dimension. Currently if the tuple contains more than
                 one dimension, its ignored.
 
         Raises:
