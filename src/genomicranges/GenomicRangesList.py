@@ -336,20 +336,28 @@ class GenomicRangesList:
             "Adding new elements is not yet implemented!"
         )
 
-    def __getitem__(self, args: Union[str, int]) -> "GenomicRanges":
+    def __getitem__(
+        self, args: Union[str, int, tuple, list, slice]
+    ) -> Union[GenomicRanges, "GenomicRangesList"]:
         """Access individual genomic elements.
 
         Args:
-            args (Union[str, int]): Name of the genomic element to access.
+            args (Union[str, int, tuple, list, slice]): Name of the genomic element to access.
 
                 Alternatively, if names of genomic elements are not available, you may
                 provide an index position of the genomic element to access.
 
+                Alternatively, ``args`` may also specify a list of positions to slice specified either as a
+                :py:class:`~list` or :py:class:`~slice`.
+
+                A tuple may also be specified along each dimension. Currently if the tuple contains more than
+                one dimension, its ignored.
+
         Raises:
-            TypeError: If ``args`` is not a string nor integer.
+            TypeError: If ``args`` is not a supported slice argument.
 
         Returns:
-            GenomicRanges: The genomic element.
+            Union[GenomicRanges, GenomicRangesList]: The genomic element or a new GenomicRangesList of the slice.
         """
         if isinstance(args, int):
             return self.ranges[args]
@@ -357,8 +365,50 @@ class GenomicRangesList:
             if self.names is not None:
                 _idx = self.names.index(args)
                 return self.ranges[_idx]
+        else:
+            new_ranges = None
+            new_range_lengths = None
+            new_names = None
+            new_mcols = None
+            new_metadata = self.metadata
 
-        raise TypeError("args must be either a string or an integer.")
+            if isinstance(args, tuple):
+                # TODO: probably should figure out what to do with the second dimension later.
+                if len(args) >= 1:
+                    args = args[0]
+
+            if isinstance(args, list):
+                if is_list_of_type(args, bool):
+                    if len(args) != len(self):
+                        raise ValueError(
+                            "`indices` is a boolean vector, length should match the size of the data."
+                        )
+
+                    args = [i for i in range(len(args)) if args[i] is True]
+
+                new_ranges = [self.ranges[i] for i in args]
+                new_range_lengths = [self._range_lengths[i] for i in args]
+                if self.names is not None:
+                    new_names = [self.names[i] for i in args]
+
+                if self.mcols is not None:
+                    new_mcols = self.mcols[args, :]
+            elif isinstance(args, slice):
+                new_ranges = self.ranges[args]
+                new_range_lengths = self._range_lengths[args]
+                if self.names is not None:
+                    new_names = self.names[args]
+
+                if self.mcols is not None:
+                    new_mcols = self.mcols[args, :]
+            else:
+                raise TypeError("`args` is not supported.")
+
+            return GenomicRangesList(
+                new_ranges, new_range_lengths, new_names, new_mcols, new_metadata
+            )
+
+        raise TypeError("`args` must be either a string or an integer.")
 
     def __len__(self) -> int:
         """Number of genomic elements.
