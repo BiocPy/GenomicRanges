@@ -134,9 +134,7 @@ def find_unary_union(
     for idx, cov in groups:
         if cov[0] != 0:
             start = min(idx) + 1
-            end = (
-                max(idx) + 1 if (max(idx) == len(np_intvals) - 1) else max(idx)
-            )
+            end = max(idx) + 1 if (max(idx) == len(np_intvals) - 1) else max(idx)
             result = (
                 start,
                 end,
@@ -268,9 +266,7 @@ def find_disjoin(
                             set(
                                 [
                                     item
-                                    for sublist in revmap[
-                                        min(idx) : max(idx) + 1
-                                    ]
+                                    for sublist in revmap[min(idx) : max(idx) + 1]
                                     for item in sublist
                                 ]
                             )
@@ -318,9 +314,7 @@ def find_unary_intersect(
     for idx, cov in groups:
         if cov[0] > threshold:
             start = min(idx) + 1
-            end = (
-                max(idx) + 1 if (max(idx) == len(np_intvals) - 1) else max(idx)
-            )
+            end = max(idx) + 1 if (max(idx) == len(np_intvals) - 1) else max(idx)
 
             if start >= min_start and end <= max_end:
                 result = (
@@ -334,9 +328,7 @@ def find_unary_intersect(
                             set(
                                 [
                                     item
-                                    for sublist in revmap[
-                                        min(idx) : max(idx) + 1
-                                    ]
+                                    for sublist in revmap[min(idx) : max(idx) + 1]
                                     for item in sublist
                                 ]
                             )
@@ -422,11 +414,7 @@ def find_diff(
     for idx, cov in groups:
         if len(cov) > 0 and cov[0] > 0:
             start = min(idx) + 1
-            end = (
-                max(idx) + 1
-                if (max(idx) == len(diff_intvals) - 1)
-                else max(idx)
-            )
+            end = max(idx) + 1 if (max(idx) == len(diff_intvals) - 1) else max(idx)
 
             if start >= min_start and end <= a_max_end:
                 result = (start, end)
@@ -516,9 +504,7 @@ def find_overlaps(
         elif query_type == "end":
             indices = indices[-1]
         else:
-            indices = list(
-                set([item for sublist in indices for item in sublist])
-            )
+            indices = list(set([item for sublist in indices for item in sublist]))
             if query_type == "within":
                 tmp_idx = []
                 for qidx in indices:
@@ -565,9 +551,7 @@ def find_nearest(
                 q[0] - 1 - (counter * stepstart) : q[1] + (counter * stepend)
             ]
 
-            indices = list(
-                set([item for sublist in slices for item in sublist])
-            )
+            indices = list(set([item for sublist in slices for item in sublist]))
 
             matches = len(indices)
             counter += 1

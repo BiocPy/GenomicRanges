@@ -46,9 +46,7 @@ class SeqInfo(BiocFrame):
             except Exception:
                 data = {k: v for k, v in data.items() if k != "genome"}
 
-        super().__init__(
-            data, number_of_rows, row_names, column_names, metadata
-        )
+        super().__init__(data, number_of_rows, row_names, column_names, metadata)
 
         self._validate_seqs()
 
@@ -58,9 +56,7 @@ class SeqInfo(BiocFrame):
         Raises:
             ValueError: If missing required columns.
         """
-        missing = list(
-            set(self.required_columns).difference(set(self.column_names))
-        )
+        missing = list(set(self.required_columns).difference(set(self.column_names)))
 
         if len(missing) > 0:
             raise ValueError(
@@ -88,9 +84,7 @@ class SeqInfo(BiocFrame):
         if "seqlengths" not in self.column_names:
             return None
 
-        return dict(
-            zip_longest(self.column("seqnames"), self.column("seqlengths"))
-        )
+        return dict(zip_longest(self.column("seqnames"), self.column("seqlengths")))
 
     @property
     def is_circular(self) -> Optional[Dict[str, bool]]:
@@ -104,9 +98,7 @@ class SeqInfo(BiocFrame):
         if "is_circular" not in self.column_names:
             return None
 
-        return dict(
-            zip_longest(self.column("seqnames"), self.column("is_circular"))
-        )
+        return dict(zip_longest(self.column("seqnames"), self.column("is_circular")))
 
     @property
     def genome(self) -> Optional[str]:

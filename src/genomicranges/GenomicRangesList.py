@@ -95,8 +95,7 @@ class GenomicRangesList:
 
     def _validate(self, ranges: Union[GenomicRanges, List[GenomicRanges]]):
         if not (
-            isinstance(ranges, GenomicRanges)
-            or is_list_of_type(ranges, GenomicRanges)
+            isinstance(ranges, GenomicRanges) or is_list_of_type(ranges, GenomicRanges)
         ):
             raise TypeError(
                 "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
@@ -164,9 +163,7 @@ class GenomicRangesList:
 
         return None
 
-    def _generic_accessor(
-        self, prop: str, func: bool = False
-    ) -> Dict[str, list]:
+    def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, list]:
         _all_prop = {}
         _ranges = self.ranges
         _groups = self.names
@@ -332,9 +329,7 @@ class GenomicRangesList:
         return all_concat
 
     def add_element(self, key, value, element_metadata):
-        raise NotImplementedError(
-            "Adding new elements is not yet implemented!"
-        )
+        raise NotImplementedError("Adding new elements is not yet implemented!")
 
     def __getitem__(
         self, args: Union[str, int, tuple, list, slice]

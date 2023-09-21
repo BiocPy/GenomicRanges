@@ -156,9 +156,7 @@ class GenomicRanges(BiocFrame):
                 they are automatically inferred from the data. Defaults to None.
             metadata (dict, optional): Additional metadata. Defaults to None.
         """
-        super().__init__(
-            data, number_of_rows, row_names, column_names, metadata
-        )
+        super().__init__(data, number_of_rows, row_names, column_names, metadata)
 
         if self._data != {} and "strand" not in self._data:
             try:
@@ -216,9 +214,7 @@ class GenomicRanges(BiocFrame):
 
     def column(  # type: ignore
         self,
-        name: Union[
-            AtomicSlice, Literal["seqnames", "starts", "ends", "strand"]
-        ],
+        name: Union[AtomicSlice, Literal["seqnames", "starts", "ends", "strand"]],
     ) -> ItemType:
         """Get a column by name.
 
@@ -272,9 +268,7 @@ class GenomicRanges(BiocFrame):
     def ranges(
         self,
         ignore_strand: bool,
-        return_type: Callable[
-            [Dict[str, Union[List[int], List[str]]]], ReturnType
-        ],
+        return_type: Callable[[Dict[str, Union[List[int], List[str]]]], ReturnType],
     ) -> ReturnType:
         ...
 
@@ -468,9 +462,7 @@ class GenomicRanges(BiocFrame):
 
     def mcols(
         self,
-        return_type: Optional[
-            Callable[[Dict[str, ItemType]], ReturnType]
-        ] = None,
+        return_type: Optional[Callable[[Dict[str, ItemType]], ReturnType]] = None,
     ) -> Union[ReturnType, Dict[str, ItemType]]:
         """Get metadata across all genomic intervals.
 
@@ -515,9 +507,7 @@ class GenomicRanges(BiocFrame):
         ...
 
     @overload
-    def __getitem__(
-        self, __key: Union[AtomicSlice, RowSlice]
-    ) -> Dict[str, Any]:
+    def __getitem__(self, __key: Union[AtomicSlice, RowSlice]) -> Dict[str, Any]:
         ...
 
     @overload
@@ -648,8 +638,7 @@ class GenomicRanges(BiocFrame):
         start_flags = [start] * len(all_strands)
         if not ignore_strand:
             start_flags = [
-                start != (all_strands[i] == "-")
-                for i in range(len(all_strands))
+                start != (all_strands[i] == "-") for i in range(len(all_strands))
             ]
 
         # if both is true, then depending on start_flag, we extend it out
@@ -666,15 +655,9 @@ class GenomicRanges(BiocFrame):
                 )
             else:
                 if width >= 0:
-                    tstart = (
-                        all_starts[idx] - abs(width)
-                        if sf
-                        else all_ends[idx] + 1
-                    )
+                    tstart = all_starts[idx] - abs(width) if sf else all_ends[idx] + 1
                 else:
-                    tstart = (
-                        all_starts[idx] if sf else all_ends[idx] + width + 1
-                    )
+                    tstart = all_starts[idx] if sf else all_ends[idx] + width + 1
 
             new_starts.append(tstart)
             new_ends.append(tstart + (width * (2 if both else 1) - 1))
@@ -794,9 +777,7 @@ class GenomicRanges(BiocFrame):
             metadata=self.metadata,
         )
 
-    def promoters(
-        self, upstream: int = 2000, downstream: int = 200
-    ) -> "GenomicRanges":
+    def promoters(self, upstream: int = 2000, downstream: int = 200) -> "GenomicRanges":
         """Extend intervals to promoter regions.
 
         Generates promoter ranges relative to the transcription start site (TSS),
@@ -877,9 +858,7 @@ class GenomicRanges(BiocFrame):
 
         new_data = {**self._data, "starts": new_starts, "ends": new_ends}
 
-        new_row_names = (
-            None if self.row_names is None else self.row_names.copy()
-        )
+        new_row_names = None if self.row_names is None else self.row_names.copy()
 
         if not keep_all_ranges:
             keepers: List[int] = []
@@ -924,9 +903,7 @@ class GenomicRanges(BiocFrame):
         is_circular = seqinfos.is_circular
 
         if seqlengths is None:
-            raise ValueError(
-                "Cannot trim ranges. `seqlengths` is not available."
-            )
+            raise ValueError("Cannot trim ranges. `seqlengths` is not available.")
 
         if is_circular is None:
             warn("considering all sequences as non-circular...")
@@ -935,9 +912,7 @@ class GenomicRanges(BiocFrame):
         all_ends = self.column("ends")
 
         new_data = copy(self._data)
-        new_row_names = (
-            None if self.row_names is None else self.row_names.copy()
-        )
+        new_row_names = None if self.row_names is None else self.row_names.copy()
 
         keepers: List[int] = []
         for idx in range(len(all_chrs)):
@@ -1095,9 +1070,7 @@ class GenomicRanges(BiocFrame):
             GenomicRanges: A new `GenomicRanges` object with reduced intervals.
         """
 
-        df_gr = self._generic_pandas_ranges(
-            ignore_strand=ignore_strand, sort=True
-        )
+        df_gr = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
 
         df_gr["gapwidths"] = self._calc_gap_widths(ignore_strand=ignore_strand)
         df_gr["gapwidth_flag"] = [
@@ -1109,16 +1082,12 @@ class GenomicRanges(BiocFrame):
 
         gaps_merged = gaps_to_merge.groupby(
             ["seqnames", "strand", "gapwidth_flag"], sort=False
-        ).agg(
-            starts=("starts", min), ends=("ends", max), revmap=("index", list)
-        )
+        ).agg(starts=("starts", min), ends=("ends", max), revmap=("index", list))
 
         gaps_merged = gaps_merged.reset_index()
 
         gaps_not_merged = df_gr[df_gr["gapwidth_flag"] == False]  # noqa: E712
-        gaps_not_merged["revmap"] = gaps_not_merged["index"].apply(
-            lambda x: [x]
-        )
+        gaps_not_merged["revmap"] = gaps_not_merged["index"].apply(lambda x: [x])
         gaps_not_merged = gaps_not_merged[gaps_merged.columns]
 
         finale = concat([gaps_merged, gaps_not_merged])
@@ -1207,9 +1176,7 @@ class GenomicRanges(BiocFrame):
 
             all_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    group["starts"].to_list(), group["ends"].to_list()
-                )
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
             ]
 
             end_limit = None
@@ -1217,9 +1184,7 @@ class GenomicRanges(BiocFrame):
                 if name[0] in end and end[name[0]] is not None:
                     end_limit = end[name[0]]
 
-            tgaps = find_gaps(
-                all_intvals, start_limit=start, end_limit=end_limit
-            )
+            tgaps = find_gaps(all_intvals, start_limit=start, end_limit=end_limit)
 
             for td in tgaps:
                 tmp_start = td[0]
@@ -1238,9 +1203,7 @@ class GenomicRanges(BiocFrame):
             groups = df_gr.groupby("seqnames")
             for name, group in groups:
                 strands = group["strand"].unique()
-                missing_strands = list(
-                    set(["*", "+", "-"]).difference(set(strands))
-                )
+                missing_strands = list(set(["*", "+", "-"]).difference(set(strands)))
                 for ms in missing_strands:
                     gap_intervals.append((name, ms, start, end[name]))
 
@@ -1249,9 +1212,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = DataFrame.from_records(gap_intervals, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def disjoin(
@@ -1268,9 +1229,7 @@ class GenomicRanges(BiocFrame):
             ("GenomicRanges", optional): A new `GenomicRanges` containing disjoint ranges across chromosome and strand.
         """
 
-        df_gr = self._generic_pandas_ranges(
-            ignore_strand=ignore_strand, sort=True
-        )
+        df_gr = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
         groups = df_gr.groupby(["seqnames", "strand"])
 
         disjoin_intervals = []
@@ -1279,14 +1238,10 @@ class GenomicRanges(BiocFrame):
 
             all_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    group["starts"].to_list(), group["ends"].to_list()
-                )
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
             ]
 
-            tdisjoin = find_disjoin(
-                all_intvals, with_reverse_map=with_reverse_map
-            )
+            tdisjoin = find_disjoin(all_intvals, with_reverse_map=with_reverse_map)
 
             for td in tdisjoin:
                 td_res = (name[0], name[1], td[0], td[1])
@@ -1302,9 +1257,7 @@ class GenomicRanges(BiocFrame):
             columns.append("revmap")
 
         final_df = DataFrame.from_records(disjoin_intervals, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def is_disjoint(self, ignore_strand: bool = False) -> Optional[bool]:
@@ -1352,9 +1305,7 @@ class GenomicRanges(BiocFrame):
 
             all_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    group["starts"].to_list(), group["ends"].to_list()
-                )
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
             ]
 
             tunion = find_union(all_intvals)
@@ -1365,9 +1316,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = DataFrame.from_records(union_intervals, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def intersect(self, other: "GenomicRanges") -> Optional["GenomicRanges"]:
@@ -1400,9 +1349,7 @@ class GenomicRanges(BiocFrame):
 
             all_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    group["starts"].to_list(), group["ends"].to_list()
-                )
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
             ]
 
             tintersect = find_intersect(all_intvals)
@@ -1416,9 +1363,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = DataFrame.from_records(intersect_intervals, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def setdiff(self, other: "GenomicRanges") -> Optional["GenomicRanges"]:
@@ -1441,9 +1386,7 @@ class GenomicRanges(BiocFrame):
         only_seqnames = concat(
             [a_df_gr[["seqnames", "strand"]], b_df_gr[["seqnames", "strand"]]]
         )
-        only_seqnames["seqstrand"] = (
-            only_seqnames["seqnames"] + only_seqnames["strand"]
-        )
+        only_seqnames["seqstrand"] = only_seqnames["seqnames"] + only_seqnames["strand"]
 
         unique_seqs = list(only_seqnames["seqstrand"].unique())
 
@@ -1461,9 +1404,7 @@ class GenomicRanges(BiocFrame):
 
             a_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    a_set["starts"].to_list(), a_set["ends"].to_list()
-                )
+                for x in zip(a_set["starts"].to_list(), a_set["ends"].to_list())
             ]
 
             b_set = b_df_gr[
@@ -1471,9 +1412,7 @@ class GenomicRanges(BiocFrame):
             ]
             b_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    b_set["starts"].to_list(), b_set["ends"].to_list()
-                )
+                for x in zip(b_set["starts"].to_list(), b_set["ends"].to_list())
             ]
 
             tdiff = find_diff(a_intvals, b_intvals)
@@ -1486,9 +1425,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = DataFrame.from_records(diff_ints, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def binned_average(
@@ -1515,12 +1452,8 @@ class GenomicRanges(BiocFrame):
 
         values = self.column(scorename)
 
-        if not all(
-            (isinstance(x, int) or isinstance(x, float)) for x in values
-        ):
-            raise Exception(
-                f"'{scorename}' values must be either ints or floats."
-            )
+        if not all((isinstance(x, int) or isinstance(x, float)) for x in values):
+            raise Exception(f"'{scorename}' values must be either ints or floats.")
 
         df_gr = self._generic_pandas_ranges(sort=True)
         df_gr["values"] = values
@@ -1561,15 +1494,11 @@ class GenomicRanges(BiocFrame):
                 vec = np_sum[tint["starts"] - 1 : tint["ends"]]
                 vec_mean = sum(vec) / count_nonzero(vec)
 
-                result.append(
-                    (name, tint["starts"], tint["ends"], "*", vec_mean)
-                )
+                result.append((name, tint["starts"], tint["ends"], "*", vec_mean))
 
         columns = ["seqnames", "starts", "ends", "strand", outname]
         final_df = DataFrame.from_records(result, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def subtract(
@@ -1607,9 +1536,7 @@ class GenomicRanges(BiocFrame):
         for name, group in groups:
             all_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    group["starts"].to_list(), group["ends"].to_list()
-                )
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
             ]
 
             cov, _ = create_np_interval_vector(
@@ -1668,12 +1595,8 @@ class GenomicRanges(BiocFrame):
                 f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}."
             )
 
-        df_gr = self._generic_pandas_ranges(
-            ignore_strand=ignore_strand, sort=True
-        )
-        tgt_gr = query._generic_pandas_ranges(
-            ignore_strand=ignore_strand, sort=True
-        )
+        df_gr = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
+        tgt_gr = query._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
 
         tgt_groups = tgt_gr.groupby(["seqnames", "strand"])
 
@@ -1702,9 +1625,7 @@ class GenomicRanges(BiocFrame):
 
             query_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    group["starts"].to_list(), group["ends"].to_list()
-                )
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
             ]
 
             thits = find_overlaps(
@@ -1724,9 +1645,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends", "hits"]
         final_df = DataFrame.from_records(result, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def count_overlaps(
@@ -1821,9 +1740,7 @@ class GenomicRanges(BiocFrame):
 
         hits = result.column("hits")
         hit_counts = [len(ht) for ht in hits]
-        indices = [
-            idx for idx in range(len(hit_counts)) if hit_counts[idx] > 0
-        ]
+        indices = [idx for idx in range(len(hit_counts)) if hit_counts[idx] > 0]
 
         return query[indices, :]
 
@@ -1844,12 +1761,8 @@ class GenomicRanges(BiocFrame):
             the same length as query but contains `hits` to
             `indices` and `distance`.
         """
-        subject_gr = self._generic_pandas_ranges(
-            ignore_strand=ignore_strand, sort=True
-        )
-        query_gr = query._generic_pandas_ranges(
-            ignore_strand=ignore_strand, sort=True
-        )
+        subject_gr = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
+        query_gr = query._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
 
         query_groups = query_gr.groupby(["seqnames", "strand"])
 
@@ -1858,17 +1771,14 @@ class GenomicRanges(BiocFrame):
             chrom = name[0]
             ustrand = name[1]
             src_intervals = subject_gr[
-                (subject_gr["seqnames"] == chrom)
-                & (subject_gr["strand"] == ustrand)
+                (subject_gr["seqnames"] == chrom) & (subject_gr["strand"] == ustrand)
             ]
 
             src_intvals_map = src_intervals["index"].to_list()
 
             if len(src_intervals) == 0:
                 for _, g in group.iterrows():
-                    result.append(
-                        (chrom, ustrand, g["starts"], g["ends"], [], None)
-                    )
+                    result.append((chrom, ustrand, g["starts"], g["ends"], [], None))
                 continue
 
             subject_intvals = [
@@ -1881,9 +1791,7 @@ class GenomicRanges(BiocFrame):
 
             query_intvals = [
                 (x[0], x[1])
-                for x in zip(
-                    group["starts"].to_list(), group["ends"].to_list()
-                )
+                for x in zip(group["starts"].to_list(), group["ends"].to_list())
             ]
 
             thits = find_nearest(
@@ -1894,18 +1802,14 @@ class GenomicRanges(BiocFrame):
             )
             for th in thits:
                 tindices = [src_intvals_map[i - 1] for i in th[2]]
-                result.append(
-                    (chrom, ustrand, th[0][0], th[0][1], tindices, th[3])
-                )
+                result.append((chrom, ustrand, th[0][0], th[0][1], tindices, th[3]))
 
         if len(result) == 0:
             return None
 
         columns = ["seqnames", "strand", "starts", "ends", "hits", "distance"]
         final_df = DataFrame.from_records(result, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def nearest(
@@ -1948,9 +1852,7 @@ class GenomicRanges(BiocFrame):
             ("GenomicRanges", optional): A new `GenomicRanges` containing list of
             possible "hits" indices for each range in ``query``.
         """
-        return self._generic_search(
-            query=query, ignore_strand=ignore_strand, stepend=0
-        )
+        return self._generic_search(query=query, ignore_strand=ignore_strand, stepend=0)
 
     def follow(
         self, query: "GenomicRanges", ignore_strand: bool = False
@@ -2080,9 +1982,7 @@ class GenomicRanges(BiocFrame):
         Returns:
             List[int, optional]: Sorted index order.
         """
-        sorted = self._generic_pandas_ranges(
-            ignore_strand=ignore_strand, sort=True
-        )
+        sorted = self._generic_pandas_ranges(ignore_strand=ignore_strand, sort=True)
         new_order: Series = sorted["index"]
 
         return new_order
@@ -2175,9 +2075,7 @@ class GenomicRanges(BiocFrame):
             "GenomicRanges": A new `GenomicRanges` with the split ranges.
         """
         if n is not None and width is not None:
-            raise ValueError(
-                "Either `n` or `width` must be provided but not both."
-            )
+            raise ValueError("Either `n` or `width` must be provided but not both.")
 
         ranges = self.range()
 
@@ -2201,9 +2099,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = DataFrame.from_records(all_intervals, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def tile(
@@ -2228,9 +2124,7 @@ class GenomicRanges(BiocFrame):
             "GenomicRanges": A new `GenomicRanges` with the split ranges.
         """
         if n is not None and width is not None:
-            raise ValueError(
-                "either `n` or `width` must be provided but not both"
-            )
+            raise ValueError("either `n` or `width` must be provided but not both")
 
         all_intervals = []
         for _, val in self:
@@ -2252,9 +2146,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = DataFrame.from_records(all_intervals, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     def sliding_windows(self, width: int, step: int = 1) -> "GenomicRanges":
@@ -2286,9 +2178,7 @@ class GenomicRanges(BiocFrame):
 
         columns = ["seqnames", "strand", "starts", "ends"]
         final_df = DataFrame.from_records(all_intervals, columns=columns)
-        final_df = final_df.sort_values(
-            ["seqnames", "strand", "starts", "ends"]
-        )
+        final_df = final_df.sort_values(["seqnames", "strand", "starts", "ends"])
         return from_pandas(final_df)
 
     # misc methods
@@ -2391,6 +2281,4 @@ def from_pandas(data: DataFrame) -> GenomicRanges:
     if data.index is not None:
         rindex = data.index.to_list()
 
-    return GenomicRanges(
-        obj, row_names=rindex, column_names=data.columns.to_list()
-    )
+    return GenomicRanges(obj, row_names=rindex, column_names=data.columns.to_list())
