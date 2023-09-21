@@ -35,21 +35,24 @@ def test_is_empty_False():
 
     assert grl.is_empty() == False
 
+
 def test_is_empty_slice():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
     assert grl.is_empty() == False
-    
+
     sgrl = grl[0:1, :]
     assert sgrl is not None
     assert isinstance(sgrl, GenomicRangesList)
     assert len(sgrl) == 1
+
 
 def test_is_empty_True():
     grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0] * 10)
 
     assert grl.is_empty() == True
     assert len(grl) == 10
+
 
 def test_is_empty_True_slice():
     grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0] * 10)
@@ -58,6 +61,7 @@ def test_is_empty_True_slice():
     assert sgrl is not None
     assert isinstance(sgrl, GenomicRangesList)
     assert len(sgrl) == 4
+
 
 def test_nrows():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
