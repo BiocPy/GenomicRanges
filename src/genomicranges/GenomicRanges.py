@@ -14,9 +14,11 @@ from warnings import warn
 
 from biocframe import BiocFrame
 from biocframe.types import SlicerArgTypes
+from biocgenerics.colnames import colnames, set_colnames
 from biocgenerics.combine import combine
 from biocgenerics.combine_cols import combine_cols
 from biocgenerics.combine_rows import combine_rows
+from biocgenerics.rownames import rownames, set_rownames
 from biocutils import is_list_of_type
 from numpy import count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
@@ -2275,3 +2277,23 @@ def _combine_cols_gr(*x: GenomicRanges):
     raise NotImplementedError(
         "`combine_cols` is not implemented for `GenomicRanges` objects."
     )
+
+
+@rownames.register(GenomicRanges)
+def _rownames_bframe(x: GenomicRanges):
+    return x.row_names
+
+
+@set_rownames.register(GenomicRanges)
+def _set_rownames_bframe(x: GenomicRanges, names: List[str]):
+    x.row_names = names
+
+
+@colnames.register(GenomicRanges)
+def _colnames_bframe(x: GenomicRanges):
+    return x.column_names
+
+
+@set_colnames.register(GenomicRanges)
+def _set_colnames_bframe(x: GenomicRanges, names: List[str]):
+    x.column_names = names
