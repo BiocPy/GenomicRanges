@@ -103,12 +103,11 @@ class GenomicRangesList:
             raise TypeError(
                 "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
             )
-        
+
     def __repr__(self):
         from io import StringIO
         from rich.console import Console
         from rich.table import Table
-        from rich.text import Text
 
         table = Table(
             title=f"GenomicRangesList with {len(self)} genomic elements",
@@ -483,7 +482,7 @@ class GenomicRangesList:
         _range_lengths = [0] * n
 
         return cls(ranges=GenomicRanges.empty(), range_lengths=_range_lengths)
-    
+
     def combine(self, *other: "GenomicRangesList") -> "GenomicRangesList":
         """Combine multiple `GenomicRangesList` objects by row.
 
