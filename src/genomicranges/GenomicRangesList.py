@@ -499,6 +499,14 @@ class GenomicRangesList:
         if not is_list_of_type(other, GenomicRangesList):
             raise TypeError("All objects to combine must be GenomicRangesList objects.")
 
+        # ranges: Union[GenomicRanges, List[GenomicRanges]],
+        # range_lengths: Optional[List[int]] = None,
+        # names: Optional[List[str]] = None,
+        # mcols: Optional[BiocFrame] = None,
+        # metadata: Optional[dict] = None,
+
+        # new_ranges = combine()
+
         return super().combine(*other)
 
 
