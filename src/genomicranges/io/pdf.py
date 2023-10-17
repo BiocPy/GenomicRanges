@@ -17,7 +17,7 @@ def from_pandas(data: DataFrame) -> "GenomicRanges":
             Must contain 'seqnames', 'starts' & 'ends' columns.
 
     Returns:
-        GenomicRanges: object.
+        GenomicRanges: Object representing intervals.
     """
 
     from ..GenomicRanges import GenomicRanges

@@ -27,9 +27,9 @@ You can easily access UCSC genomes or load a genome annotation from a GTF file u
 ```python
 import genomicranges
 
-gr = genomicranges.from_gtf(<PATH TO GTF>)
+gr = genomicranges.parse_gtf(<PATH TO GTF>)
 # OR
-gr = genomicranges.from_ucsc(genome="hg19")
+gr = genomicranges.read_ucsc(genome="hg19")
 ```
 #### Pandas DataFrame
 

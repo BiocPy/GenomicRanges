@@ -66,7 +66,7 @@ def test_concat():
     g_tgt = genomicranges.from_pandas(df_tgt)
     assert g_tgt is not None
 
-    result = g_src.concat(g_tgt)
+    result = g_src.combine(g_tgt)
 
     assert result is not None
     assert result.shape[0] == 15
