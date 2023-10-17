@@ -10,7 +10,7 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def test_rownames():
+def test_names():
     gr = GenomicRanges(
         {
             "seqnames": [
