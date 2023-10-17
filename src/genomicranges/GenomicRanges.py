@@ -14,9 +14,12 @@ from warnings import warn
 
 from biocframe import BiocFrame
 from biocframe.types import SlicerArgTypes
-from numpy import concatenate, count_nonzero, ndarray, sum, zeros
+from biocgenerics.combine import combine
+from biocgenerics.combine_cols import combine_cols
+from biocgenerics.combine_rows import combine_rows
+from biocutils import is_list_of_type
+from numpy import count_nonzero, ndarray, sum, zeros
 from pandas import DataFrame, concat, isna
-from prettytable import PrettyTable
 
 from .interval import (
     OVERLAP_QUERY_TYPES,
@@ -42,7 +45,7 @@ __license__ = "MIT"
 
 
 class GenomicRanges(BiocFrame):
-    """`GenomicRanges` provides functionality to represent and operate over genomic regions and annotations.
+    """`GenomicRanges` provides a container class to represent and operate over genomic regions and annotations.
 
     **Note: Intervals are inclusive on both ends and start at 1.**
 
@@ -52,17 +55,18 @@ class GenomicRanges(BiocFrame):
     :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain metadata about the
     genome, e.g. if it's circular (`is_circular`) or not.
 
-    Note: The documentation for some of the methods comes from the
+    Note: The documentation for some of the methods are derived from the
     `GenomicRanges R/Bioconductor package <https://github.com/Bioconductor/GenomicRanges>`_.
 
-    Typical usage example:
+    Typical usage:
 
     To construct a **GenomicRanges** object, simply pass in the column representation as a
     dictionary. This dictionary must contain "seqnames", "starts", "ends" columns, and optionally,
     specify "strand". If the "strand" column is not provided, "*" is used as the default value for
     each genomic interval.
 
-    ```python
+    .. code-block:: python
+
         gr = GenomicRanges(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -70,11 +74,11 @@ class GenomicRanges(BiocFrame):
                 "ends": [103, 116, 120],
             }
         )
-    ```
 
     Alternatively, you may also convert a :py:class:`~pandas.DataFrame` to ``GenomicRanges``.
 
-    ```python
+    .. code-block:: python
+
         df = pd.DataFrame(
             {
                 "seqnames": ["chr1", "chr2", "chr3"],
@@ -84,7 +88,6 @@ class GenomicRanges(BiocFrame):
         )
 
         gr = genomicranges.from_pandas(df)
-    ```
 
     All columns other than "seqnames", "starts", "ends", and "strand" are considered
     metadata columns and can be accessed by
@@ -94,19 +97,13 @@ class GenomicRanges(BiocFrame):
 
         gr.mcols()
 
-    or slice the object
-
-    .. code-block:: python
-
-        sliced_gr = gr[1:2, [True, False, False]]
-
     Attributes:
-        data (Dict[str, Any], optional): Dictionary of column names as `keys` and their values.
-            All columns must have the same length. Defaults to {}.
-        number_of_rows (int, optional): Number of rows.
-        row_names (List, optional): Row index names.
-        column_names (List[str], optional): Column names, if not provided, they are automatically inferred
-            from the data.
+        data (Dict[str, Any], optional): Dictionary of column names as `keys` and
+            their values. All columns must have the same length. Defaults to {}.
+        number_of_rows (int, optional): Number of rows. If not specified, inferred from ``data``.
+        row_names (list, optional): Row names.
+        column_names (list, optional): Column names. If not provided,
+            inferred from ``data``.
         metadata (dict): Additional metadata. Defaults to {}.
     """
 
@@ -124,12 +121,12 @@ class GenomicRanges(BiocFrame):
 
         Args:
             data (Dict[str, Any], optional): Dictionary of column names as `keys` and
-                their values. All columns must have the same length. Defaults to None.
-            number_of_rows (int, optional): Number of rows. Defaults to None.
-            row_names (List, optional): Row index names. Defaults to None.
-            column_names (List[str], optional): Column names, if not provided,
-                they are automatically inferred from the data. Defaults to None.
-            metadata (dict, optional): Additional metadata. Defaults to None.
+                their values. All columns must have the same length. Defaults to {}.
+            number_of_rows (int, optional): Number of rows. If not specified, inferred from ``data``.
+            row_names (list, optional): Row names.
+            column_names (list, optional): Column names. If not provided,
+                inferred from ``data``.
+            metadata (dict): Additional metadata. Defaults to {}.
         """
         super().__init__(data, number_of_rows, row_names, column_names, metadata)
 
@@ -206,7 +203,8 @@ class GenomicRanges(BiocFrame):
             ValueError: If ``return_type`` is not supported.
 
         Returns:
-            Union[DataFrame, Dict, "GenomicRanges", Any]: Genomic regions.
+            Union[DataFrame, Dict, "GenomicRanges", Any]: Genomic regions in type specified by
+            ``return_type``.
         """
 
         obj = {
@@ -225,7 +223,9 @@ class GenomicRanges(BiocFrame):
             try:
                 return return_type(obj)
             except Exception as e:
-                raise ValueError(f"{return_type} is not supported, {str(e)}")
+                raise RuntimeError(
+                    f"Cannot convert ranges to '{return_type}', {str(e)}"
+                )
 
     @property
     def strand(self) -> List[str]:
@@ -258,7 +258,7 @@ class GenomicRanges(BiocFrame):
         """Get sequence information, if available.
 
         Returns:
-            (SeqInfo, optional): List information, otherwise None.
+            (SeqInfo, optional): Sequence information, otherwise None.
         """
 
         if self.metadata and "seq_info" in self.metadata:
@@ -271,7 +271,8 @@ class GenomicRanges(BiocFrame):
         """Set sequence information.
 
         Args:
-            (SeqInfo, optional): List information, otherwise None.
+            (SeqInfo): Sequence information. Can be None to remove sequence
+                information from the object.
 
         Raises:
             ValueError: If `seq_info` is not a `SeqInfo` class.
@@ -407,11 +408,25 @@ class GenomicRanges(BiocFrame):
             try:
                 return return_type(new_data)
             except Exception as e:
-                raise ValueError(f"{return_type} not supported, {str(e)}")
+                raise RuntimeError(
+                    f"Cannot convert metadata to '{return_type}', {str(e)}"
+                )
 
     def __repr__(self) -> str:
-        table = PrettyTable(padding_width=2)
-        table.field_names = [str(col) for col in self.column_names]
+        from io import StringIO
+
+        from rich.console import Console
+        from rich.table import Table
+
+        table = Table(
+            title=f"GenomicRanges with {self.dims[0]} intervals & {self.dims[1] - 4} metadata columns",
+            show_header=True,
+        )
+        if self.row_names is not None:
+            table.add_column("row_names")
+
+        for col in self.column_names:
+            table.add_column(f"{str(col)} [italic]<{type(self.column(col)).__name__}>")
 
         _rows = []
         rows_to_show = 2
@@ -419,38 +434,45 @@ class GenomicRanges(BiocFrame):
         if _top > rows_to_show:
             _top = rows_to_show
 
-        # top three rows
+        # top two rows
         for r in range(_top):
             _row = self.row(r)
             vals = list(_row.values())
             res = [str(v) for v in vals]
+            if self.row_names:
+                res = [str(self.row_names[r])] + res
             _rows.append(res)
 
         if self.shape[0] > 2 * rows_to_show:
             # add ...
-            _rows.append(["..." for _ in range(len(self.column_names))])
+            _dots = []
+            if self.row_names:
+                _dots = ["..."]
 
-        _last = self.shape[0] - rows_to_show
+            _dots.extend(["..." for _ in range(len(self.column_names))])
+            _rows.append(_dots)
+
+        _last = self.shape[0] - _top
         if _last <= rows_to_show:
             _last = self.shape[0] - _top
 
-        # last three rows
-        for r in range(_last, len(self)):
+        # last set of rows
+        for r in range(_last + 1, len(self)):
             _row = self.row(r)
             vals = list(_row.values())
             res = [str(v) for v in vals]
+            if self.row_names:
+                res = [str(self.row_names[r])] + res
             _rows.append(res)
 
-        table.add_rows(_rows)
+        for _row in _rows:
+            table.add_row(*_row)
 
-        pattern = (
-            f"Class GenomicRanges with {self.dims[0]} intervals and "
-            f"{self.dims[1] - 4} metadata columns \n"
-            f"contains row names?: {self.row_names is not None} \n"
-            f"{table.get_string()}"
-        )
+        console = Console(file=StringIO())
+        with console.capture() as capture:
+            console.print(table)
 
-        return pattern
+        return capture.get()
 
     # for documentation, otherwise serves no real use.
     def __getitem__(self, args: SlicerArgTypes) -> Union["GenomicRanges", dict, list]:
@@ -485,7 +507,7 @@ class GenomicRanges(BiocFrame):
             gr[<List of column names>]
 
         Args:
-            args (SlicerArgTypes): A Tuple of slicer arguments to subset rows and
+            args (SlicerArgTypes): A Tuple of arguments to subset rows and
                 columns. An element in ``args`` may be,
 
                 - List of booleans, True to keep the row/column, False to remove.
@@ -1015,7 +1037,7 @@ class GenomicRanges(BiocFrame):
     # inter range methods
 
     # TODO: implement dropEmptyRanges
-    # TODO: this is a very ineffecient implementation, can do a better job later.
+    # TODO: this is a very ineffecient implementation, can do a better.
     def reduce(
         self,
         with_reverse_map: bool = False,
@@ -1514,7 +1536,7 @@ class GenomicRanges(BiocFrame):
             )
 
             if shift > 0:
-                cov = concatenate((shift_arr, cov))
+                cov = combine(shift_arr, cov)
 
             if weight > 0:
                 cov = cov * weight
@@ -2196,46 +2218,24 @@ class GenomicRanges(BiocFrame):
             metadata=self.metadata,
         )
 
-    def concat(self, *granges: "GenomicRanges") -> "GenomicRanges":
-        """Row-wise concatenate multiple `GenomicRanges` objects.
+    def combine(self, *other: "GenomicRanges") -> "GenomicRanges":
+        """Combine multiple `GenomicRanges` objects by row.
+
+        Note: Fills missing columns with an array of `None`s.
 
         Args:
-            granges (GenomicRanges): Objects to concatenate.
+            *other (GenomicRanges): Objects to combine.
 
         Raises:
-            TypeError: If any ``granges`` are not "GenomicRanges".
+            TypeError: If all objects are not of type GenomicRanges.
 
         Returns:
-            GenomicRanges: A new concatenated `GenomicRanges` object.
+            GenomicRanges: A combined GenomicRanges object.
         """
-        all_granges = [isinstance(gr, GenomicRanges) for gr in granges]
+        if not is_list_of_type(other, GenomicRanges):
+            raise TypeError("All objects to combine must be GenomicRanges objects.")
 
-        if not all(all_granges):
-            raise TypeError("all provided objects are not GenomicRanges objects")
-
-        all_columns = [gr.column_names for gr in granges]
-        all_columns.append(self.column_names)
-        all_unique_columns = list(
-            set([item for sublist in all_columns for item in sublist])
-        )
-
-        new_data = OrderedDict()
-        for col in all_unique_columns:
-            if col not in new_data:
-                new_data[col] = []
-
-            for gr in granges:
-                if col in gr.column_names:
-                    new_data[col].extend(gr.column(col))
-                else:
-                    new_data[col].extend([None] * len(gr))
-
-            if col in self.column_names:
-                new_data[col].extend(self.column(col))
-            else:
-                new_data[col].extend([None] * len(self))
-
-        return GenomicRanges(new_data, column_names=all_unique_columns)
+        return super().combine(*other)
 
     @classmethod
     def empty(cls):
@@ -2245,3 +2245,33 @@ class GenomicRanges(BiocFrame):
             same type as caller, in this case a `GenomicRanges`.
         """
         return cls(number_of_rows=0)
+
+
+@combine.register(GenomicRanges)
+def _combine_gr(*x: GenomicRanges):
+    if not is_list_of_type(x, GenomicRanges):
+        raise ValueError("All elements to `combine` must be `GenomicRanges` objects.")
+
+    return x[0].combine(*x[1:])
+
+
+@combine_rows.register(GenomicRanges)
+def _combine_rows_gr(*x: GenomicRanges):
+    if not is_list_of_type(x, GenomicRanges):
+        raise ValueError(
+            "All elements to `combine_rows` must be `GenomicRanges` objects."
+        )
+
+    return x[0].combine(*x[1:])
+
+
+@combine_cols.register(GenomicRanges)
+def _combine_cols_gr(*x: GenomicRanges):
+    if not is_list_of_type(x, GenomicRanges):
+        raise ValueError(
+            "All elements to `combine_cols` must be `GenomicRanges` objects."
+        )
+
+    raise NotImplementedError(
+        "`combine_cols` is not implemented for `GenomicRanges` objects."
+    )
