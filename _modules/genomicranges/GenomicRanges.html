@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.3.7 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.3.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.7 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.7 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -219,9 +219,11 @@
 
 <span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
 <span class="kn">from</span> <span class="nn">biocframe.types</span> <span class="kn">import</span> <span class="n">SlicerArgTypes</span>
+<span class="kn">from</span> <span class="nn">biocgenerics.colnames</span> <span class="kn">import</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">set_colnames</span>
 <span class="kn">from</span> <span class="nn">biocgenerics.combine</span> <span class="kn">import</span> <span class="n">combine</span>
 <span class="kn">from</span> <span class="nn">biocgenerics.combine_cols</span> <span class="kn">import</span> <span class="n">combine_cols</span>
 <span class="kn">from</span> <span class="nn">biocgenerics.combine_rows</span> <span class="kn">import</span> <span class="n">combine_rows</span>
+<span class="kn">from</span> <span class="nn">biocgenerics.rownames</span> <span class="kn">import</span> <span class="n">rownames</span><span class="p">,</span> <span class="n">set_rownames</span>
 <span class="kn">from</span> <span class="nn">biocutils</span> <span class="kn">import</span> <span class="n">is_list_of_type</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">count_nonzero</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">zeros</span>
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">concat</span><span class="p">,</span> <span class="n">isna</span>
@@ -2618,6 +2620,26 @@
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
         <span class="s2">&quot;`combine_cols` is not implemented for `GenomicRanges` objects.&quot;</span>
     <span class="p">)</span>
+
+
+<span class="nd">@rownames</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_rownames_bframe</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">row_names</span>
+
+
+<span class="nd">@set_rownames</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_set_rownames_bframe</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">row_names</span> <span class="o">=</span> <span class="n">names</span>
+
+
+<span class="nd">@colnames</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_colnames_bframe</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">column_names</span>
+
+
+<span class="nd">@set_colnames</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_set_colnames_bframe</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">names</span>
 </pre></div>
         </article>
       </div>
@@ -2650,7 +2672,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=29d04658"></script>
+</div><script src="../../_static/documentation_options.js?v=c1cae59a"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
