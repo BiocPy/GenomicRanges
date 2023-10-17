@@ -4,9 +4,9 @@ from biocframe import BiocFrame
 from biocgenerics.combine import combine
 from biocgenerics.combine_cols import combine_cols
 from biocgenerics.combine_rows import combine_rows
+from biocutils import is_list_of_type
 
 from .GenomicRanges import GenomicRanges
-from biocutils import is_list_of_type
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -106,6 +106,7 @@ class GenomicRangesList:
 
     def __repr__(self):
         from io import StringIO
+
         from rich.console import Console
         from rich.table import Table
 
@@ -505,9 +506,20 @@ class GenomicRangesList:
         # mcols: Optional[BiocFrame] = None,
         # metadata: Optional[dict] = None,
 
-        # new_ranges = combine()
+        all_objects = [self] + list(other)
 
-        return super().combine(*other)
+        new_ranges = combine(*[obj.ranges for obj in all_objects])
+        new_names = combine(*[obj.names for obj in all_objects])
+        new_mcols = combine(*[obj.mcols for obj in all_objects])
+        new_metadata = {}
+        for i, obj in enumerate(all_objects):
+            if obj.metadata is not None:
+                new_metadata[i] = obj.metadata
+
+        current_class_const = type(self)
+        return current_class_const(
+            new_ranges, names=new_names, mcols=new_mcols, metadata=new_metadata
+        )
 
 
 @combine.register(GenomicRangesList)
@@ -517,9 +529,7 @@ def _combine_grl(*x: GenomicRangesList):
             "All elements to `combine` must be `GenomicRangesList` objects."
         )
 
-    raise NotImplementedError(
-        "`combine` is not implemented for `GenomicRangesList` objects."
-    )
+    return x[0].combine(*x[1:])
 
 
 @combine_rows.register(GenomicRangesList)
@@ -529,9 +539,7 @@ def _combine_rows_grl(*x: GenomicRangesList):
             "All elements to `combine_rows` must be `GenomicRangesList` objects."
         )
 
-    raise NotImplementedError(
-        "`combine_rows` is not implemented for `GenomicRangesList` objects."
-    )
+    return x[0].combine(*x[1:])
 
 
 @combine_cols.register(GenomicRangesList)

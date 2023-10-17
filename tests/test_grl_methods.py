@@ -1,6 +1,7 @@
 import pytest
 import pandas as pd
 from genomicranges import GenomicRanges, GenomicRangesList
+from biocgenerics.combine import combine
 from biocframe import BiocFrame
 from random import random
 import genomicranges
@@ -99,3 +100,13 @@ def test_to_pandas():
         "b",
         "b",
     ]
+
+def test_combine():
+    grla = GenomicRangesList(ranges=[a], names=["a"])
+    grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
+
+    grlc = grla.combine(grlb)
+
+    cgrl = combine(grla, grlb)
+
+    assert len(grlc) == len(cgrl) == 3

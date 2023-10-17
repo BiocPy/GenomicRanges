@@ -2251,6 +2251,7 @@ class GenomicRanges(BiocFrame):
 def _combine_gr(*x: GenomicRanges):
     if not is_list_of_type(x, GenomicRanges):
         raise ValueError("All elements to `combine` must be `GenomicRanges` objects.")
+
     return x[0].combine(*x[1:])
 
 
