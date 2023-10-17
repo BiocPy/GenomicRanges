@@ -129,7 +129,7 @@ class GenomicRangesList:
             if self.names is not None:
                 _elem = self.names[r]
 
-            _rows.append(f"Genomic element: [bold]{_elem}")
+            _rows.append(f"Name: [bold]{_elem}")
             _rows.append(str(self.ranges[r]))
 
         if len(self) > rows_to_show:
@@ -147,7 +147,7 @@ class GenomicRangesList:
                 if self.names is not None:
                     _elem = self.names[r]
 
-                _rows.append(f"Genomic element: [bold]{_elem}")
+                _rows.append(f"Name: [bold]{_elem}")
                 _rows.append(str(self.ranges[r]))
 
         for _row in _rows:
