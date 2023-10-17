@@ -32,7 +32,7 @@ gr = genomicranges.read_ucsc(genome="hg19")
 print(gr)
 ## output
 ## GenomicRanges with 1760959 intervals & 10 metadata columns.
-## ... truncating the console print ... 
+## ... truncating the console print ...
 ```
 
 ### Pandas DataFrame
@@ -59,7 +59,7 @@ print(gr)
 ```
 
     ## output
-    GenomicRanges with 5 intervals & 2 metadata columns                                
+    GenomicRanges with 5 intervals & 2 metadata columns
     ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
     ┃ row_names ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃ GC <list>           ┃
     ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
@@ -124,27 +124,27 @@ print(grl)
 ```
 
     ## output
-    GenomicRangesList with 2 genomic elements                                                                          
-                                                                                                                    
-    Name: gene1                                                                                            
-                GenomicRanges with 4 intervals & 1 metadata columns                                           
-    ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓                                  
-    ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃      
-    ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩                                  
-    │ chr1            │ 1             │ 10          │ -             │ 1            │                                  
-    │ chr2            │ 3             │ 30          │ +             │ 2            │                                  
-    │ chr3            │ 4             │ 60          │ +             │ 4            │                                  
-    └─────────────────┴───────────────┴─────────────┴───────────────┴──────────────┘                                  
-                                                                                                                    
-    Name: gene2                                                                                            
-                GenomicRanges with 3 intervals & 1 metadata columns                                           
-    ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓                                  
-    ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃      
-    ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩                                  
-    │ chr2            │ 3             │ 30          │ -             │ 2            │                                  
-    │ chr4            │ 6             │ 50          │ +             │ 3            │                                  
-    │ chr5            │ 4             │ 60          │ *             │ 4            │                                  
-    └─────────────────┴───────────────┴─────────────┴───────────────┴──────────────┘             
+    GenomicRangesList with 2 genomic elements
+
+    Name: gene1
+                GenomicRanges with 4 intervals & 1 metadata columns
+    ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+    ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃
+    ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+    │ chr1            │ 1             │ 10          │ -             │ 1            │
+    │ chr2            │ 3             │ 30          │ +             │ 2            │
+    │ chr3            │ 4             │ 60          │ +             │ 4            │
+    └─────────────────┴───────────────┴─────────────┴───────────────┴──────────────┘
+
+    Name: gene2
+                GenomicRanges with 3 intervals & 1 metadata columns
+    ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+    ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃
+    ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+    │ chr2            │ 3             │ 30          │ -             │ 2            │
+    │ chr4            │ 6             │ 50          │ +             │ 3            │
+    │ chr5            │ 4             │ 60          │ *             │ 4            │
+    └─────────────────┴───────────────┴─────────────┴───────────────┴──────────────┘
 
 ## Further information
 

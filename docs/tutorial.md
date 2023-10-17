@@ -1,6 +1,6 @@
 # Tutorial
 
-The package provide classes to represent genomic intervals and methods to perform interval based arithmetic operations. 
+The package provide classes to represent genomic intervals and methods to perform interval based arithmetic operations.
 
 **_Intervals are inclusive on both ends and starts at 1._**
 
@@ -514,7 +514,7 @@ grl.width
 
 ## Combine `GenomicRangeslist` object
 
-Similar to the combine function from GenomicRanges, 
+Similar to the combine function from GenomicRanges,
 
 ```python
 
