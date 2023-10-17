@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.3.6 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.3.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.6 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.7 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.6 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.7 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -157,18 +157,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#construct-a-genomicranges-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#get-and-set-methods">Get and Set methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#slice-operations">Slice operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#iterate-over-rows">Iterate over rows</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#intra-range-transformations">Intra-range transformations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#inter-range-methods">Inter-range methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#set-operations-on-genomic-ranges">Set operations on genomic ranges</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#compute-over-bins">Compute over bins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#overlap-based-methods">Overlap based methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#search-operations">Search operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#concatenate-genomicranges-objects-by-rows">Concatenate <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#misc-operations">Misc operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#construct-a-genomicrangeslist-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -231,9 +219,12 @@
 
 <span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
 <span class="kn">from</span> <span class="nn">biocframe.types</span> <span class="kn">import</span> <span class="n">SlicerArgTypes</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">concatenate</span><span class="p">,</span> <span class="n">count_nonzero</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">zeros</span>
+<span class="kn">from</span> <span class="nn">biocgenerics.combine</span> <span class="kn">import</span> <span class="n">combine</span>
+<span class="kn">from</span> <span class="nn">biocgenerics.combine_cols</span> <span class="kn">import</span> <span class="n">combine_cols</span>
+<span class="kn">from</span> <span class="nn">biocgenerics.combine_rows</span> <span class="kn">import</span> <span class="n">combine_rows</span>
+<span class="kn">from</span> <span class="nn">biocutils</span> <span class="kn">import</span> <span class="n">is_list_of_type</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">count_nonzero</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">zeros</span>
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">concat</span><span class="p">,</span> <span class="n">isna</span>
-<span class="kn">from</span> <span class="nn">prettytable</span> <span class="kn">import</span> <span class="n">PrettyTable</span>
 
 <span class="kn">from</span> <span class="nn">.interval</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">OVERLAP_QUERY_TYPES</span><span class="p">,</span>
@@ -261,7 +252,7 @@
 <div class="viewcode-block" id="GenomicRanges">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges">[docs]</a>
 <span class="k">class</span> <span class="nc">GenomicRanges</span><span class="p">(</span><span class="n">BiocFrame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;`GenomicRanges` provides functionality to represent and operate over genomic regions and annotations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`GenomicRanges` provides a container class to represent and operate over genomic regions and annotations.</span>
 
 <span class="sd">    **Note: Intervals are inclusive on both ends and start at 1.**</span>
 
@@ -271,17 +262,18 @@
 <span class="sd">    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain metadata about the</span>
 <span class="sd">    genome, e.g. if it&#39;s circular (`is_circular`) or not.</span>
 
-<span class="sd">    Note: The documentation for some of the methods comes from the</span>
+<span class="sd">    Note: The documentation for some of the methods are derived from the</span>
 <span class="sd">    `GenomicRanges R/Bioconductor package &lt;https://github.com/Bioconductor/GenomicRanges&gt;`_.</span>
 
-<span class="sd">    Typical usage example:</span>
+<span class="sd">    Typical usage:</span>
 
 <span class="sd">    To construct a **GenomicRanges** object, simply pass in the column representation as a</span>
 <span class="sd">    dictionary. This dictionary must contain &quot;seqnames&quot;, &quot;starts&quot;, &quot;ends&quot; columns, and optionally,</span>
 <span class="sd">    specify &quot;strand&quot;. If the &quot;strand&quot; column is not provided, &quot;*&quot; is used as the default value for</span>
 <span class="sd">    each genomic interval.</span>
 
-<span class="sd">    ```python</span>
+<span class="sd">    .. code-block:: python</span>
+
 <span class="sd">        gr = GenomicRanges(</span>
 <span class="sd">            {</span>
 <span class="sd">                &quot;seqnames&quot;: [&quot;chr1&quot;, &quot;chr2&quot;, &quot;chr3&quot;],</span>
@@ -289,11 +281,11 @@
 <span class="sd">                &quot;ends&quot;: [103, 116, 120],</span>
 <span class="sd">            }</span>
 <span class="sd">        )</span>
-<span class="sd">    ```</span>
 
 <span class="sd">    Alternatively, you may also convert a :py:class:`~pandas.DataFrame` to ``GenomicRanges``.</span>
 
-<span class="sd">    ```python</span>
+<span class="sd">    .. code-block:: python</span>
+
 <span class="sd">        df = pd.DataFrame(</span>
 <span class="sd">            {</span>
 <span class="sd">                &quot;seqnames&quot;: [&quot;chr1&quot;, &quot;chr2&quot;, &quot;chr3&quot;],</span>
@@ -303,7 +295,6 @@
 <span class="sd">        )</span>
 
 <span class="sd">        gr = genomicranges.from_pandas(df)</span>
-<span class="sd">    ```</span>
 
 <span class="sd">    All columns other than &quot;seqnames&quot;, &quot;starts&quot;, &quot;ends&quot;, and &quot;strand&quot; are considered</span>
 <span class="sd">    metadata columns and can be accessed by</span>
@@ -313,19 +304,13 @@
 
 <span class="sd">        gr.mcols()</span>
 
-<span class="sd">    or slice the object</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        sliced_gr = gr[1:2, [True, False, False]]</span>
-
 <span class="sd">    Attributes:</span>
-<span class="sd">        data (Dict[str, Any], optional): Dictionary of column names as `keys` and their values.</span>
-<span class="sd">            All columns must have the same length. Defaults to {}.</span>
-<span class="sd">        number_of_rows (int, optional): Number of rows.</span>
-<span class="sd">        row_names (List, optional): Row index names.</span>
-<span class="sd">        column_names (List[str], optional): Column names, if not provided, they are automatically inferred</span>
-<span class="sd">            from the data.</span>
+<span class="sd">        data (Dict[str, Any], optional): Dictionary of column names as `keys` and</span>
+<span class="sd">            their values. All columns must have the same length. Defaults to {}.</span>
+<span class="sd">        number_of_rows (int, optional): Number of rows. If not specified, inferred from ``data``.</span>
+<span class="sd">        row_names (list, optional): Row names.</span>
+<span class="sd">        column_names (list, optional): Column names. If not provided,</span>
+<span class="sd">            inferred from ``data``.</span>
 <span class="sd">        metadata (dict): Additional metadata. Defaults to {}.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -343,12 +328,12 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (Dict[str, Any], optional): Dictionary of column names as `keys` and</span>
-<span class="sd">                their values. All columns must have the same length. Defaults to None.</span>
-<span class="sd">            number_of_rows (int, optional): Number of rows. Defaults to None.</span>
-<span class="sd">            row_names (List, optional): Row index names. Defaults to None.</span>
-<span class="sd">            column_names (List[str], optional): Column names, if not provided,</span>
-<span class="sd">                they are automatically inferred from the data. Defaults to None.</span>
-<span class="sd">            metadata (dict, optional): Additional metadata. Defaults to None.</span>
+<span class="sd">                their values. All columns must have the same length. Defaults to {}.</span>
+<span class="sd">            number_of_rows (int, optional): Number of rows. If not specified, inferred from ``data``.</span>
+<span class="sd">            row_names (list, optional): Row names.</span>
+<span class="sd">            column_names (list, optional): Column names. If not provided,</span>
+<span class="sd">                inferred from ``data``.</span>
+<span class="sd">            metadata (dict): Additional metadata. Defaults to {}.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">number_of_rows</span><span class="p">,</span> <span class="n">row_names</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
 
@@ -427,7 +412,8 @@
 <span class="sd">            ValueError: If ``return_type`` is not supported.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Union[DataFrame, Dict, &quot;GenomicRanges&quot;, Any]: Genomic regions.</span>
+<span class="sd">            Union[DataFrame, Dict, &quot;GenomicRanges&quot;, Any]: Genomic regions in type specified by</span>
+<span class="sd">            ``return_type``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
@@ -446,7 +432,9 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">return_type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">return_type</span><span class="si">}</span><span class="s2"> is not supported, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot convert ranges to &#39;</span><span class="si">{</span><span class="n">return_type</span><span class="si">}</span><span class="s2">&#39;, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -480,7 +468,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence information, if available.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (SeqInfo, optional): List information, otherwise None.</span>
+<span class="sd">            (SeqInfo, optional): Sequence information, otherwise None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">and</span> <span class="s2">&quot;seq_info&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
@@ -493,7 +481,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set sequence information.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            (SeqInfo, optional): List information, otherwise None.</span>
+<span class="sd">            (SeqInfo): Sequence information. Can be None to remove sequence</span>
+<span class="sd">                information from the object.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If `seq_info` is not a `SeqInfo` class.</span>
@@ -634,14 +623,28 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">return_type</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">return_type</span><span class="si">}</span><span class="s2"> not supported, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot convert metadata to &#39;</span><span class="si">{</span><span class="n">return_type</span><span class="si">}</span><span class="s2">&#39;, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.__repr__">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__repr__">[docs]</a>
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="n">PrettyTable</span><span class="p">(</span><span class="n">padding_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">field_names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">]</span>
+        <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+        <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;GenomicRanges with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> intervals &amp; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="si">}</span><span class="s2"> metadata columns&quot;</span><span class="p">,</span>
+            <span class="n">show_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;row_names&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="si">}</span><span class="s2"> [italic]&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">col</span><span class="p">))</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&gt;&quot;</span><span class="p">)</span>
 
         <span class="n">_rows</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">rows_to_show</span> <span class="o">=</span> <span class="mi">2</span>
@@ -649,38 +652,45 @@
         <span class="k">if</span> <span class="n">_top</span> <span class="o">&gt;</span> <span class="n">rows_to_show</span><span class="p">:</span>
             <span class="n">_top</span> <span class="o">=</span> <span class="n">rows_to_show</span>
 
-        <span class="c1"># top three rows</span>
+        <span class="c1"># top two rows</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_top</span><span class="p">):</span>
             <span class="n">_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_row</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
             <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_names</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">row_names</span><span class="p">[</span><span class="n">r</span><span class="p">])]</span> <span class="o">+</span> <span class="n">res</span>
             <span class="n">_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rows_to_show</span><span class="p">:</span>
             <span class="c1"># add ...</span>
-            <span class="n">_rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;...&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">))])</span>
+            <span class="n">_dots</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_names</span><span class="p">:</span>
+                <span class="n">_dots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;...&quot;</span><span class="p">]</span>
 
-        <span class="n">_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rows_to_show</span>
+            <span class="n">_dots</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;...&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">))])</span>
+            <span class="n">_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_dots</span><span class="p">)</span>
+
+        <span class="n">_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">_top</span>
         <span class="k">if</span> <span class="n">_last</span> <span class="o">&lt;=</span> <span class="n">rows_to_show</span><span class="p">:</span>
             <span class="n">_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">_top</span>
 
-        <span class="c1"># last three rows</span>
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_last</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+        <span class="c1"># last set of rows</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_last</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
             <span class="n">_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_row</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
             <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_names</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">row_names</span><span class="p">[</span><span class="n">r</span><span class="p">])]</span> <span class="o">+</span> <span class="n">res</span>
             <span class="n">_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
-        <span class="n">table</span><span class="o">.</span><span class="n">add_rows</span><span class="p">(</span><span class="n">_rows</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_row</span> <span class="ow">in</span> <span class="n">_rows</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="n">_row</span><span class="p">)</span>
 
-        <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Class GenomicRanges with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> intervals and &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="si">}</span><span class="s2"> metadata columns </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;contains row names?: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+        <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">StringIO</span><span class="p">())</span>
+        <span class="k">with</span> <span class="n">console</span><span class="o">.</span><span class="n">capture</span><span class="p">()</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
+            <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">pattern</span></div>
+        <span class="k">return</span> <span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
 
 
     <span class="c1"># for documentation, otherwise serves no real use.</span>
@@ -718,7 +728,7 @@
 <span class="sd">            gr[&lt;List of column names&gt;]</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            args (SlicerArgTypes): A Tuple of slicer arguments to subset rows and</span>
+<span class="sd">            args (SlicerArgTypes): A Tuple of arguments to subset rows and</span>
 <span class="sd">                columns. An element in ``args`` may be,</span>
 
 <span class="sd">                - List of booleans, True to keep the row/column, False to remove.</span>
@@ -1270,7 +1280,7 @@
     <span class="c1"># inter range methods</span>
 
     <span class="c1"># TODO: implement dropEmptyRanges</span>
-    <span class="c1"># TODO: this is a very ineffecient implementation, can do a better job later.</span>
+    <span class="c1"># TODO: this is a very ineffecient implementation, can do a better.</span>
 <div class="viewcode-block" id="GenomicRanges.reduce">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.reduce">[docs]</a>
     <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span>
@@ -1807,7 +1817,7 @@
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="n">shift</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">cov</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">((</span><span class="n">shift_arr</span><span class="p">,</span> <span class="n">cov</span><span class="p">))</span>
+                <span class="n">cov</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">shift_arr</span><span class="p">,</span> <span class="n">cov</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">weight</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">cov</span> <span class="o">=</span> <span class="n">cov</span> <span class="o">*</span> <span class="n">weight</span>
@@ -2544,48 +2554,26 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="GenomicRanges.concat">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.concat">[docs]</a>
-    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">granges</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Row-wise concatenate multiple `GenomicRanges` objects.</span>
+<div class="viewcode-block" id="GenomicRanges.combine">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.combine">[docs]</a>
+    <span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Combine multiple `GenomicRanges` objects by row.</span>
+
+<span class="sd">        Note: Fills missing columns with an array of `None`s.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            granges (GenomicRanges): Objects to concatenate.</span>
+<span class="sd">            *other (GenomicRanges): Objects to combine.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If any ``granges`` are not &quot;GenomicRanges&quot;.</span>
+<span class="sd">            TypeError: If all objects are not of type GenomicRanges.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            GenomicRanges: A new concatenated `GenomicRanges` object.</span>
+<span class="sd">            GenomicRanges: A combined GenomicRanges object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">all_granges</span> <span class="o">=</span> <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span> <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">granges</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All objects to combine must be GenomicRanges objects.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">all_granges</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;all provided objects are not GenomicRanges objects&quot;</span><span class="p">)</span>
-
-        <span class="n">all_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">gr</span><span class="o">.</span><span class="n">column_names</span> <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">granges</span><span class="p">]</span>
-        <span class="n">all_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span>
-        <span class="n">all_unique_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">all_columns</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">])</span>
-        <span class="p">)</span>
-
-        <span class="n">new_data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">all_unique_columns</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_data</span><span class="p">:</span>
-                <span class="n">new_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">granges</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">gr</span><span class="o">.</span><span class="n">column_names</span><span class="p">:</span>
-                    <span class="n">new_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">new_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">gr</span><span class="p">))</span>
-
-            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">:</span>
-                <span class="n">new_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">new_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="n">all_unique_columns</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="n">other</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.empty">
@@ -2600,6 +2588,36 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">number_of_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 </div>
 
+
+
+<span class="nd">@combine</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_combine_gr</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All elements to `combine` must be `GenomicRanges` objects.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+
+<span class="nd">@combine_rows</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_combine_rows_gr</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;All elements to `combine_rows` must be `GenomicRanges` objects.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+
+<span class="nd">@combine_cols</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_combine_cols_gr</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;All elements to `combine_cols` must be `GenomicRanges` objects.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+        <span class="s2">&quot;`combine_cols` is not implemented for `GenomicRanges` objects.&quot;</span>
+    <span class="p">)</span>
 </pre></div>
         </article>
       </div>
@@ -2632,7 +2650,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=8da8c241"></script>
+</div><script src="../../_static/documentation_options.js?v=29d04658"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
