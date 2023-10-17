@@ -1,4 +1,3 @@
-
 import pandas as pd
 from genomicranges import GenomicRanges
 from biocgenerics.rownames import rownames
@@ -9,6 +8,7 @@ import genomicranges
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
+
 
 def test_rownames():
     gr = GenomicRanges(
