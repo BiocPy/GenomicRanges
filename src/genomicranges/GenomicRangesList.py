@@ -113,6 +113,7 @@ class GenomicRangesList:
             title=f"GenomicRangesList with {len(self)} genomic elements",
             show_header=True,
             box=None,
+            title_justify="left",
         )
 
         _rows = []
@@ -129,7 +130,6 @@ class GenomicRangesList:
 
             _rows.append(f"Genomic element: [bold]{_elem}")
             _rows.append(str(self.ranges[r]))
-            # _rows.append(_text)
 
         if len(self) > rows_to_show:
             if len(self) > 2 * rows_to_show:
@@ -148,7 +148,6 @@ class GenomicRangesList:
 
                 _rows.append(f"Genomic element: [bold]{_elem}")
                 _rows.append(str(self.ranges[r]))
-                # _rows.append(_text)
 
         for _row in _rows:
             table.add_row(_row)
