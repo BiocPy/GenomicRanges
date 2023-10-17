@@ -365,8 +365,7 @@ class GenomicRanges(BiocFrame):
         return None
 
     def granges(self) -> "GenomicRanges":
-        """Create a new ``GenomicRanges`` object with only ranges
-        (``seqnames``, ``starts``, ``ends``, and ``strand``).
+        """Create a new ``GenomicRanges`` object with only ranges (``seqnames``, ``starts``, ``ends``, and ``strand``).
 
         Returns:
             GenomicRanges: A new ``GenomicRanges`` with only ranges.
