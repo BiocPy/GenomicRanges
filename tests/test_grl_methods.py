@@ -101,6 +101,7 @@ def test_to_pandas():
         "b",
     ]
 
+
 def test_combine():
     grla = GenomicRangesList(ranges=[a], names=["a"])
     grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
