@@ -87,6 +87,9 @@ class GenomicRangesList:
 
         if mcols is None:
             mcols = BiocFrame(number_of_rows=len(range_lengths))
+        else:
+            if not isinstance(mcols, BiocFrame):
+                raise TypeError("`mcols` must be a BiocFrame object.")
 
         self._data["mcols"] = mcols
 
@@ -100,6 +103,62 @@ class GenomicRangesList:
             raise TypeError(
                 "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
             )
+        
+    def __repr__(self):
+        from io import StringIO
+        from rich.console import Console
+        from rich.table import Table
+        from rich.text import Text
+
+        table = Table(
+            title=f"GenomicRangesList with {len(self)} genomic elements",
+            show_header=True,
+            box=None,
+        )
+
+        _rows = []
+        rows_to_show = 2
+        _top = len(self)
+        if _top > rows_to_show:
+            _top = rows_to_show
+
+        # top two rows
+        for r in range(_top):
+            _elem = r
+            if self.names is not None:
+                _elem = self.names[r]
+
+            _rows.append(f"Genomic element: [bold]{_elem}")
+            _rows.append(str(self.ranges[r]))
+            # _rows.append(_text)
+
+        if len(self) > rows_to_show:
+            if len(self) > 2 * rows_to_show:
+                # add ...
+                _rows.append("...")
+
+            _last = len(self) - _top
+            if _last <= rows_to_show:
+                _last = len(self) - _top
+
+            # last set of rows
+            for r in range(_last + 1, len(self)):
+                _elem = r
+                if self.names is not None:
+                    _elem = self.names[r]
+
+                _rows.append(f"Genomic element: [bold]{_elem}")
+                _rows.append(str(self.ranges[r]))
+                # _rows.append(_text)
+
+        for _row in _rows:
+            table.add_row(_row)
+
+        console = Console(file=StringIO())
+        with console.capture() as capture:
+            console.print(table)
+
+        return capture.get()
 
     @property
     def metadata(self) -> dict:
@@ -424,6 +483,25 @@ class GenomicRangesList:
         _range_lengths = [0] * n
 
         return cls(ranges=GenomicRanges.empty(), range_lengths=_range_lengths)
+    
+    def combine(self, *other: "GenomicRangesList") -> "GenomicRangesList":
+        """Combine multiple `GenomicRangesList` objects by row.
+
+        Note: Fills missing columns with an array of `None`s.
+
+        Args:
+            *other (GenomicRangesList): Objects to combine.
+
+        Raises:
+            TypeError: If all objects are not of type GenomicRangesList.
+
+        Returns:
+            GenomicRangesList: A combined `GenomicRangesList` object.
+        """
+        if not is_list_of_type(other, GenomicRangesList):
+            raise TypeError("All objects to combine must be GenomicRangesList objects.")
+
+        return super().combine(*other)
 
 
 @combine.register(GenomicRangesList)
