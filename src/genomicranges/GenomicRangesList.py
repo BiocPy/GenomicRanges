@@ -1,16 +1,16 @@
 from typing import Dict, List, Optional, Union
 
 from biocframe import BiocFrame
-from pandas import DataFrame
+from biocgenerics.combine import combine
+from biocgenerics.combine_cols import combine_cols
+from biocgenerics.combine_rows import combine_rows
 
 from .GenomicRanges import GenomicRanges
-from .utils import is_list_of_type
+from biocutils import is_list_of_type
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
-
-BiocOrPandasFrame = Union[DataFrame, BiocFrame]
 
 
 class GenomicRangesList:
@@ -22,12 +22,13 @@ class GenomicRangesList:
 
     Currently, this class is limited in functionality, purely a read-only class with basic accessors.
 
-    Typical usage example:
+    Typical usage:
 
-    To construct a `GenomicRangesList` object, simply pass in a list of
+    To construct a **GenomicRangesList** object, simply pass in a list of
     :py:class:`genomicranges.GenomicRanges.GenomicRanges` objects and Optionally ``names``.
 
-    ```python
+    .. code-block:: python
+
         gr1 = GenomicRanges(
             {
                 "seqnames": ["chr1", "chr2", "chr1", "chr3"],
@@ -49,7 +50,6 @@ class GenomicRangesList:
         )
 
         grl = GenomicRangesList(ranges=[gr1, gr2], names=["gene1", "gene2"])
-    ```
 
     Additionally, you may also provide metadata about the genomic elements in the dictionary
     using mcols attribute.
@@ -60,7 +60,7 @@ class GenomicRangesList:
         ranges: Union[GenomicRanges, List[GenomicRanges]],
         range_lengths: Optional[List[int]] = None,
         names: Optional[List[str]] = None,
-        mcols: BiocOrPandasFrame = None,
+        mcols: Optional[BiocFrame] = None,
         metadata: Optional[dict] = None,
     ):
         """Initialize a `GenomicRangesList` object.
@@ -74,7 +74,7 @@ class GenomicRangesList:
             names (Optional[List[str]], optional): Names of the genomic elements.
                 The length of this must match the number of genomic elements in ``ranges``.
                 Defaults to None.
-            mcols (BiocOrPandasFrame, optional): Metadata about each genomic element. Defaults to None.
+            mcols (BiocFrame, optional): Metadata about each genomic element. Defaults to None.
             metadata (Optional[Dict], optional): Additional metadata. Defaults to None.
         """
         self._validate(ranges)
@@ -152,11 +152,12 @@ class GenomicRangesList:
         return self.groups
 
     @property
-    def mcols(self) -> Optional[BiocOrPandasFrame]:
+    def mcols(self) -> Optional[BiocFrame]:
         """Get metadata across all genomic elements.
 
         Returns:
-            (BiocOrPandasFrame, optional): Metadata frame or None if there is no element level metadata.
+            (BiocFrame, optional): Metadata :py:class:`~biocframe.BiocFrame.Biocframe` or
+            None if there is no element level metadata.
         """
         if "mcols" in self._data:
             return self._data["mcols"]
@@ -298,7 +299,7 @@ class GenomicRangesList:
         """
         return self._generic_accessor("score")
 
-    def to_pandas(self) -> DataFrame:
+    def to_pandas(self) -> "DataFrame":
         """Coerce object to a :py:class:`pandas.DataFrame`.
 
         Returns:
@@ -368,7 +369,7 @@ class GenomicRangesList:
             new_metadata = self.metadata
 
             if isinstance(args, tuple):
-                # TODO: probably should figure out what to do with the second dimension later.
+                # TODO: should figure out what to do with the second dimension later.
                 if len(args) >= 1:
                     args = args[0]
 
@@ -397,13 +398,13 @@ class GenomicRangesList:
                 if self.mcols is not None:
                     new_mcols = self.mcols[args, :]
             else:
-                raise TypeError("`args` is not supported.")
+                raise TypeError("Arguments to slice is not a list of supported types.")
 
             return GenomicRangesList(
                 new_ranges, new_range_lengths, new_names, new_mcols, new_metadata
             )
 
-        raise TypeError("`args` must be either a string or an integer.")
+        raise TypeError("Arguments to slice is not supported.")
 
     def __len__(self) -> int:
         """Number of genomic elements.
@@ -415,7 +416,7 @@ class GenomicRangesList:
 
     @classmethod
     def empty(cls, n: int):
-        """Create an ``n``-length `GenomicRangesList` object.
+        """Create an empty ``n``-length `GenomicRangesList` object.
 
         Returns:
             same type as caller, in this case a `GenomicRangesList`.
@@ -423,3 +424,39 @@ class GenomicRangesList:
         _range_lengths = [0] * n
 
         return cls(ranges=GenomicRanges.empty(), range_lengths=_range_lengths)
+
+
+@combine.register(GenomicRangesList)
+def _combine_grl(*x: GenomicRangesList):
+    if not is_list_of_type(x, GenomicRangesList):
+        raise ValueError(
+            "All elements to `combine` must be `GenomicRangesList` objects."
+        )
+
+    raise NotImplementedError(
+        "`combine` is not implemented for `GenomicRangesList` objects."
+    )
+
+
+@combine_rows.register(GenomicRangesList)
+def _combine_rows_grl(*x: GenomicRangesList):
+    if not is_list_of_type(x, GenomicRangesList):
+        raise ValueError(
+            "All elements to `combine_rows` must be `GenomicRangesList` objects."
+        )
+
+    raise NotImplementedError(
+        "`combine_rows` is not implemented for `GenomicRangesList` objects."
+    )
+
+
+@combine_cols.register(GenomicRangesList)
+def _combine_cols_grl(*x: GenomicRangesList):
+    if not is_list_of_type(x, GenomicRangesList):
+        raise ValueError(
+            "All elements to `combine_cols` must be `GenomicRangesList` objects."
+        )
+
+    raise NotImplementedError(
+        "`combine_cols` is not implemented for `GenomicRangesList` objects."
+    )
