@@ -1,5 +1,5 @@
 import pandas as pd
-from genomicranges.SeqInfo import SeqInfo
+from genomicranges.Seqinfo import Seqinfo
 from random import random
 import genomicranges
 
@@ -30,16 +30,12 @@ df_gr = pd.DataFrame(
     }
 )
 
-seq_obj = {
-    "seqnames": [
-        "chr1",
-        "chr2",
-        "chr3",
-    ],
-    "seqlengths": [110, 112, 118],
-    "is_circular": [True, True, False],
-    "genome": "hg19",
-}
+seq_obj = Seqinfo(
+    seqnames=[ "chr1", "chr2", "chr3" ],
+    seqlengths=[110, 112, 118],
+    is_circular=[True, True, False],
+    genome="hg19",
+)
 
 
 def test_gr_seqInfo():
@@ -47,14 +43,14 @@ def test_gr_seqInfo():
     assert gr is not None
     assert gr.seq_info is None
 
-    gr.seq_info = SeqInfo(seq_obj)
+    gr.seq_info = seq_obj
 
     assert gr.seq_info is not None
 
 
 def test_gr_method_trim():
     gr = genomicranges.from_pandas(df_gr)
-    gr.seq_info = SeqInfo(seq_obj)
+    gr.seq_info = seq_obj
 
     trimmed_gr = gr.trim()
 
