@@ -39,7 +39,7 @@ from .interval import (
     split_intervals,
 )
 from .io import from_pandas
-from .SeqInfo import SeqInfo
+from .Seqinfo import Seqinfo
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -52,9 +52,9 @@ class GenomicRanges(BiocFrame):
     **Note: Intervals are inclusive on both ends and start at 1.**
 
     Additionally, `GenomicRanges` may also contain `Sequence Information` (checkout
-    :py:class:`~genomicranges.SeqInfo.SeqInfo`) as part of its metadata. It contains for each
+    :py:class:`~genomicranges.Seqinfo.Seqinfo`) as part of its metadata. It contains for each
     sequence name (or chromosome) in the gene model, its length. Additionally, (checkout
-    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain metadata about the
+    :py:class:`~genomicranges.Seqinfo.Seqinfo`) might also contain metadata about the
     genome, e.g. if it's circular (`is_circular`) or not.
 
     Note: The documentation for some of the methods are derived from the
@@ -256,11 +256,11 @@ class GenomicRanges(BiocFrame):
         return widths
 
     @property
-    def seq_info(self) -> Optional[SeqInfo]:
+    def seq_info(self) -> Optional[Seqinfo]:
         """Get sequence information, if available.
 
         Returns:
-            (SeqInfo, optional): Sequence information, otherwise None.
+            (Seqinfo, optional): Sequence information, otherwise None.
         """
 
         if self.metadata and "seq_info" in self.metadata:
@@ -269,20 +269,20 @@ class GenomicRanges(BiocFrame):
         return None
 
     @seq_info.setter
-    def seq_info(self, seq_info: Optional[SeqInfo]):
+    def seq_info(self, seq_info: Optional[Seqinfo]):
         """Set sequence information.
 
         Args:
-            (SeqInfo): Sequence information. Can be None to remove sequence
+            (Seqinfo): Sequence information. Can be None to remove sequence
                 information from the object.
 
         Raises:
-            ValueError: If `seq_info` is not a `SeqInfo` class.
+            ValueError: If `seq_info` is not a `Seqinfo` class.
         """
 
         if seq_info is not None:
-            if not isinstance(seq_info, SeqInfo):
-                raise ValueError("seq_info is not a `SeqInfo` class.")
+            if not isinstance(seq_info, Seqinfo):
+                raise ValueError("seq_info is not a `Seqinfo` class.")
 
             if self.metadata is None:
                 self.metadata = {}
@@ -1115,7 +1115,7 @@ class GenomicRanges(BiocFrame):
         )
 
     def compute_seqlengths(self) -> Dict[str, int]:
-        """Get seqlengths either from the :py:class:`~genomicranges.SeqInfo.SeqInfo` object or computes one from the
+        """Get seqlengths either from the :py:class:`~genomicranges.Seqinfo.Seqinfo` object or computes one from the
         current ranges.
 
         Note: If computed, they are specific to this `GenomicRanges` object
@@ -1143,7 +1143,7 @@ class GenomicRanges(BiocFrame):
             start (int, optional): Restrict chromosome start position. Defaults to 1.
             end (Dict[str, int], optional): Restrict end
                 position for each chromosome. Defaults to None. If None, it uses the
-                :py:class:`~genomicranges.SeqInfo.SeqInfo` object if available.
+                :py:class:`~genomicranges.Seqinfo.Seqinfo` object if available.
 
         Returns:
             ("GenomicRanges", optional): A new `GenomicRanges` containing
