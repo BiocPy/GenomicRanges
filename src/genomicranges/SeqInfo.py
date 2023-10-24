@@ -8,119 +8,260 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-class SeqInfo(BiocFrame):
-    """Class that stores information about gene model.
-
-    Must contain column "seqnames".
-
-    Args:
-        data (Dict[str, Union[List[Any], Dict]]): Info about each
-            sequence or chromosome. must contain a column `seqnames`.
-        metadata (Dict, optional): Additional metadata. Defaults to None.
-
-    Raises:
-        ValueError: If ``data`` does not contain required attributes.
+class Seqinfo:
     """
-
-    required_columns = ["seqnames"]
-    can_contain = ["seqnames", "seqlengths", "is_circular", "genome"]
+    Information about the reference sequences, specifically the name and length
+    of each sequence, whether it is a circular, and the identity of the genome
+    from which it was derived.
+    """
 
     def __init__(
         self,
-        data: Dict[str, Union[List[Any], Dict]],
-        number_of_rows: Optional[int] = None,
-        row_names: Optional[List[str]] = None,
-        column_names: Optional[List[str]] = None,
-        metadata: Optional[Dict] = None,
+        seqnames: Sequence[str],
+        seqlengths: Sequence[int], 
+        is_circular: Sequence[bool],
+        genome: Sequence[str],
+        validate: bool = True,
     ) -> None:
-        """Initialize a SeqInfo object."""
-        super().__init__(data, number_of_rows, row_names, column_names, metadata)
-
-    def _validate(self):
-        """Internal function to validate SeqInfo."""
-
-        if "genome" in self._data:
-            if self._metadata is None:
-                self._metadata = {}
-
-            self._metadata["genome"] = self._data["genome"]
-            del self._data["genome"]
-
-        super()._validate()
-        self._validate_seqs()
-
-    def _validate_seqs(self):
-        """Internal function to validate sequence information.
-
-        Raises:
-            ValueError: If missing required columns.
         """
-        missing = list(set(self.required_columns).difference(set(self.column_names)))
-
-        if len(missing) > 0:
-            raise ValueError(
-                f"data must contain {self.required_columns}. missing {missing}"
-            )
-
-    @property
-    def seqnames(self) -> List[str]:
-        """Get sequence or chromosome names.
-
-        Returns:
-            List[str]: List of all chromosome names.
-        """
-        return self.column("seqnames")
-
-    @property
-    def seqlengths(self) -> Optional[Dict[str, int]]:
-        """Get sequence or chromosome names and their lengths.
-
-        Returns:
-            (Dict[str, int], optional): A dictionary containing chromosome names
-                with their lengths.
-        """
-
-        if "seqlengths" not in self.column_names:
-            return None
-
-        return dict(zip_longest(self.column("seqnames"), self.column("seqlengths")))
-
-    @property
-    def is_circular(self) -> Optional[Dict[str, bool]]:
-        """Whether the sequences are circular.
-
-        Returns:
-            (Dict[str, bool], optional): A dictionary containing chromosome names
-                and if they are circular.
-        """
-
-        if "is_circular" not in self.column_names:
-            return None
-
-        return dict(zip_longest(self.column("seqnames"), self.column("is_circular")))
-
-    @property
-    def genome(self) -> Optional[str]:
-        """Get genome/species information, if available.
-
-        Returns:
-            (str, optional): The species name or genome.
-        """
-
-        if self.metadata and "genome" in self.metadata:
-            return self.metadata["genome"]
-
-        return None
-
-    @genome.setter
-    def genome(self, genome: Optional[str]):
-        """Set genome/species information.
-
         Args:
-            genome (str): Species name or genome.
+            seqnames: 
+                Names of all reference sequences, should be unique.
+
+            seqlengths: 
+                Lengths of all sequences in base pairs. This should contain
+                non-negative values and have the same number of elements as
+                ``seqnames``. Entries may also be None if no lengths are
+                available for that sequence.
+
+            is_circular:
+                Whether each sequence is circular. This should have the same
+                number of elements as ``seqnames``. Entries may also be None
+                if no information is available for that sequence.
+
+            genome:
+                The genome build containing each reference sequence. This
+                should have the same number of elements as ``seqnames``.
+                Entries may also be None if no information is available.
+
+            validate:
+                Whether to validate the arguments, internal use only.
         """
+        self._names = list(seqnames)
+        self._lengths = list(seqlengths)
+        self._circular = list(is_circular)
+        self._genome = list(genome)
 
-        if self.metadata is None:
-            self.metadata = {}
+        if validate:
+            self._validate_seqnames()
+            self._validate_seqlengths()
+            self._validate_circular()
+            self._validate_genome()
 
-        self.metadata["genome"] = genome
+    def _validate_seqnames(self):
+        if not bu.is_list_of_type(self._names, str):
+            raise ValueError("'seqnames' should be a list of strings")
+        n = len(self._names)
+        if n != len(set(self._names)):
+            raise ValueError("'seqnames' should contain unique strings")
+
+    def _validate_seqlengths(self):
+        n = len(self._names)
+        if not bu.is_list_of_type(self._lengths, int, ignore_none = True):
+            raise ValueError("'seqlengths' should be a list of integers")
+        if n == len(self._lengths):
+            raise ValueError("'seqnames' and 'seqlengths' should have the same length")
+        for l in self._lengths:
+            if l < 0:
+                raise ValueError("all entries of 'seqlengths' should be non-negative")
+
+    def _validate_circular(self):
+        n = len(self._names)
+        if not bu.is_list_of_type(self._circular, bool, ignore_none = True):
+            raise ValueError("'is_circular' should be a list of booleans")
+        if n == len(self._circular):
+            raise ValueError("'seqnames' and 'is_circular' should have the same length")
+
+    def _validate_genome(self):
+        if not bu.is_list_of_type(self._genome, str, ignore_none = True):
+            raise ValueError("'genome' should be a list of strings")
+        if n == len(self._circular):
+            raise ValueError("'seqnames' and 'genome' should have the same length")
+
+    def seqnames(self) -> List[str]:
+        """
+        Returns:
+            List of all chromosome names.
+        """
+        return self._seqnames
+
+    def seqlengths(self, as_dict: bool = False) -> Union[List[int], Dict[str, int]]:
+        """
+        Args:
+            as_dict: 
+                Whether to return a dictionary where keys are the sequence
+                names and the values are the sequence lengths.
+
+        Returns:
+            If ``as_dict = False``, a list of integers is returned containing
+            the lengths of all sequences in :py:meth:`~seqnames`.
+
+            If ``as_dict = True``, a dictionary is returned instead where
+            the lengths are the values (or possibly None).
+        """
+        if as_dict:
+            return dict(zip(self._names, self._lengths))
+        else:
+            return self._lengths
+
+    def is_circular(self, as_dict: bool = False) -> Union[List[bool], Dict[str, bool]]:
+        """
+        Args:
+            as_dict: 
+                Whether to return a dictionary where keys are the sequence
+                names and the values are the circular flags.
+
+        Returns:
+            If ``as_dict = False``, a list of booleans is returned containing
+            the circular flags for all sequences in :py:meth:`~seqnames`.
+
+            If ``as_dict = True``, a dictionary is returned instead where
+            the circular flags are the values (or possibly None).
+        """
+        if as_dict:
+            return dict(zip(self._names, self._circular))
+        else:
+            return self._circular
+
+    def genome(self, as_dict: bool = False) -> Union[List[str], Dict[str, str]]:
+        """
+        Args:
+            as_dict: 
+                Whether to return a dictionary where keys are the sequence
+                names and the values are the genomes.
+
+        Returns:
+            If ``as_dict = False``, a list of strings is returned containing
+            the genome identity for all sequences in :py:meth:`~seqnames`.
+
+            If ``as_dict = True``, a dictionary is returned instead where
+            the genomes are the values (or possibly None).
+        """
+        if as_dict:
+            return dict(zip(self._names, self._genome))
+        else:
+            return self._genome
+
+    def _setter_copy(self, in_place: bool = False) -> "Seqinfo":
+        if in_place:
+            return self
+        else:
+            return type(self)(self._seqnames, self._seqlengths, self._circular, self._genome, validate = False)
+
+    def _flatten_incoming(self, values: Union[List, Dict]) -> List:
+        if isinstance(values, list):
+            return values
+        output = []
+        for n in self._seqnames:
+            if n in values:
+                output.append(values[n])
+            else:
+                output.append(None)
+        return output
+
+    def set_seqnames(self, seqnames: List[str], in_place: bool = False) -> "Seqinfo":
+        """
+        Args:
+            seqnames: 
+                List of sequence names, of length equal to the number of names
+                in this ``Seqinfo`` object. All names should be unique strings.
+
+            in_place:
+                Whether to modify the ``Seqinfo`` object in place.
+
+        Returns:
+            A modified ``Seqinfo`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        output = self._setter_copy(in_place)
+        output._seqnames = seqnames
+        output._validate_seqnames()
+        return output
+
+    def set_seqlengths(self, seqlengths: Union[List[int], Dict[str, int]], in_place: bool = False) -> "Seqinfo":
+        """
+        Args:
+            seqlengths: 
+                List of sequence lengths, of length equal to the number of
+                names in this ``Seqinfo`` object. Values may be None or
+                non-negative integers. 
+
+                Alternatively, a dictionary where keys are the sequence
+                names and values are the lengths. Not all names need to be
+                present in which case the length is assumed to be None.
+
+            in_place:
+                Whether to modify the ``Seqinfo`` object in place.
+
+        Returns:
+            A modified ``Seqinfo`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        output = self._setter_copy(in_place)
+        output._seqlengths = self._flatten_incoming(seqlengths)
+        output._validate_seqlengths()
+        return output
+
+    def set_is_circular(self, is_circular: Union[List[bool], Dict[str, bool]], in_place: bool = False) -> "Seqinfo":
+        """
+        Args:
+            is_circular: 
+                List of circular flags, of length equal to the number of
+                names in this ``Seqinfo`` object. Values may be None or
+                booleans.
+
+                Alternatively, a dictionary where keys are the sequence
+                names and values are the flags. Not all names need to be
+                present in which case the flag is assumed to be None.
+
+            in_place:
+                Whether to modify the ``Seqinfo`` object in place.
+
+        Returns:
+            A modified ``Seqinfo`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        output = self._setter_copy(in_place)
+        output._is_circular = self._flatten_incoming(is_circular)
+        output._validate_is_circular()
+        return output
+
+    def set_genome(self, genome: Union[List[str], Dict[str, str]], in_place: bool = False) -> "Seqinfo":
+        """
+        Args:
+            genome: 
+                List of genomes, of length equal to the number of names in this
+                ``Seqinfo`` object. Values may be None or strings.
+
+                Alternatively, a dictionary where keys are the sequence names
+                and values are the genomes. Not all names need to be present in
+                which case the genome is assumed to be None.
+
+            in_place:
+                Whether to modify the ``Seqinfo`` object in place.
+
+        Returns:
+            A modified ``Seqinfo`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        output = self._setter_copy(in_place)
+        output._genome = self._flatten_incoming(genome)
+        output._validate_genome()
+        return output
+
+    def __len__(self) ->int:
+        """
+        Returns:
+            Number of sequences in this object.
+        """
+        return len(self._seqnames)
