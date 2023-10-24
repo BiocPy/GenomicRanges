@@ -1,8 +1,6 @@
-from itertools import zip_longest
-from typing import Any, Dict, List, Optional, Union, Sequence
+from typing import Dict, List, Optional, Union, Sequence
 import biocutils as bu
 
-from biocframe import BiocFrame
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -10,11 +8,8 @@ __license__ = "MIT"
 
 
 class Seqinfo:
-    """
-    Information about the reference sequences, specifically the name and length
-    of each sequence, whether it is a circular, and the identity of the genome
-    from which it was derived.
-    """
+    """Information about the reference sequences, specifically the name and length of each sequence, whether it is a
+    circular, and the identity of the genome from which it was derived."""
 
     def __init__(
         self,
@@ -26,14 +21,14 @@ class Seqinfo:
     ) -> None:
         """
         Args:
-            seqnames: 
+            seqnames:
                 Names of all reference sequences, should be unique.
 
-            seqlengths: 
+            seqlengths:
                 Lengths of all sequences in base pairs. This should contain
                 non-negative values and have the same number of elements as
                 ``seqnames``. Entries may also be None if no lengths are
-                available for that sequence. 
+                available for that sequence.
 
                 Alternatively, a dictionary where keys are the sequence names
                 and values are the lengths. If a name is missing from this
@@ -112,7 +107,7 @@ class Seqinfo:
 
     def _validate_seqlengths(self):
         n = len(self._seqnames)
-        if not bu.is_list_of_type(self._seqlengths, int, ignore_none = True):
+        if not bu.is_list_of_type(self._seqlengths, int, ignore_none=True):
             raise ValueError("'seqlengths' should be a list of integers")
         if n != len(self._seqlengths):
             raise ValueError("'seqnames' and 'seqlengths' should have the same length")
@@ -122,14 +117,14 @@ class Seqinfo:
 
     def _validate_is_circular(self):
         n = len(self._seqnames)
-        if not bu.is_list_of_type(self._is_circular, bool, ignore_none = True):
+        if not bu.is_list_of_type(self._is_circular, bool, ignore_none=True):
             raise ValueError("'is_circular' should be a list of booleans")
         if n != len(self._is_circular):
             raise ValueError("'seqnames' and 'is_circular' should have the same length")
 
     def _validate_genome(self):
         n = len(self._seqnames)
-        if not bu.is_list_of_type(self._genome, str, ignore_none = True):
+        if not bu.is_list_of_type(self._genome, str, ignore_none=True):
             raise ValueError("'genome' should be a list of strings")
         if n != len(self._genome):
             raise ValueError("'seqnames' and 'genome' should have the same length")
@@ -144,7 +139,7 @@ class Seqinfo:
     def seqlengths(self, as_dict: bool = False) -> Union[List[int], Dict[str, int]]:
         """
         Args:
-            as_dict: 
+            as_dict:
                 Whether to return a dictionary where keys are the sequence
                 names and the values are the sequence lengths.
 
@@ -163,7 +158,7 @@ class Seqinfo:
     def is_circular(self, as_dict: bool = False) -> Union[List[bool], Dict[str, bool]]:
         """
         Args:
-            as_dict: 
+            as_dict:
                 Whether to return a dictionary where keys are the sequence
                 names and the values are the circular flags.
 
@@ -182,7 +177,7 @@ class Seqinfo:
     def genome(self, as_dict: bool = False) -> Union[List[str], Dict[str, str]]:
         """
         Args:
-            as_dict: 
+            as_dict:
                 Whether to return a dictionary where keys are the sequence
                 names and the values are the genomes.
 
@@ -202,12 +197,20 @@ class Seqinfo:
         if in_place:
             return self
         else:
-            return type(self)(self._seqnames, self._seqlengths, self._is_circular, self._genome, validate = False)
+            return type(self)(
+                self._seqnames,
+                self._seqlengths,
+                self._is_circular,
+                self._genome,
+                validate=False,
+            )
 
-    def set_seqnames(self, seqnames: Sequence[str], in_place: bool = False) -> "Seqinfo":
+    def set_seqnames(
+        self, seqnames: Sequence[str], in_place: bool = False
+    ) -> "Seqinfo":
         """
         Args:
-            seqnames: 
+            seqnames:
                 List of sequence names, of length equal to the number of names
                 in this ``Seqinfo`` object. All names should be unique strings.
 
@@ -223,13 +226,17 @@ class Seqinfo:
         output._validate_seqnames()
         return output
 
-    def set_seqlengths(self, seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]], in_place: bool = False) -> "Seqinfo":
+    def set_seqlengths(
+        self,
+        seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]],
+        in_place: bool = False,
+    ) -> "Seqinfo":
         """
         Args:
-            seqlengths: 
+            seqlengths:
                 List of sequence lengths, of length equal to the number of
                 names in this ``Seqinfo`` object. Values may be None or
-                non-negative integers. 
+                non-negative integers.
 
                 Alternatively, a dictionary where keys are the sequence
                 names and values are the lengths. Not all names need to be
@@ -247,10 +254,14 @@ class Seqinfo:
         output._validate_seqlengths()
         return output
 
-    def set_is_circular(self, is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]], in_place: bool = False) -> "Seqinfo":
+    def set_is_circular(
+        self,
+        is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]],
+        in_place: bool = False,
+    ) -> "Seqinfo":
         """
         Args:
-            is_circular: 
+            is_circular:
                 List of circular flags, of length equal to the number of
                 names in this ``Seqinfo`` object. Values may be None or
                 booleans.
@@ -271,10 +282,14 @@ class Seqinfo:
         output._validate_is_circular()
         return output
 
-    def set_genome(self, genome: Optional[Union[str, Sequence[str], Dict[str, str]]], in_place: bool = False) -> "Seqinfo":
+    def set_genome(
+        self,
+        genome: Optional[Union[str, Sequence[str], Dict[str, str]]],
+        in_place: bool = False,
+    ) -> "Seqinfo":
         """
         Args:
-            genome: 
+            genome:
                 List of genomes, of length equal to the number of names in this
                 ``Seqinfo`` object. Values may be None or strings.
 
@@ -291,7 +306,7 @@ class Seqinfo:
         output._validate_genome()
         return output
 
-    def __len__(self) ->int:
+    def __len__(self) -> int:
         """
         Returns:
             Number of sequences in this object.

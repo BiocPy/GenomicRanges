@@ -31,7 +31,7 @@ df_gr = pd.DataFrame(
 )
 
 seq_obj = Seqinfo(
-    seqnames=[ "chr1", "chr2", "chr3" ],
+    seqnames=["chr1", "chr2", "chr3"],
     seqlengths=[110, 112, 118],
     is_circular=[True, True, False],
     genome="hg19",
