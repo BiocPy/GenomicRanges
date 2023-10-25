@@ -312,3 +312,49 @@ class Seqinfo:
             Number of sequences in this object.
         """
         return len(self._seqnames)
+
+
+def merge_Seqinfo(objects: List[Seqinfo]) -> Seqinfo:
+    """
+    Merge multiple :py:class:`~Seqinfo` objects, taking the union of all
+    reference sequences. If the same reference sequence is present with the
+    same details across ``objects``, only a single instance is present in the
+    final object; if details are contradictory, they are replaced with None.
+
+    Args:
+        objects: List of ``Seqinfo`` objects.
+
+    Returns:
+        A single merged ``Seqinfo`` object.
+    """
+    all_sequences = {}
+
+    for obj in objects:
+        for i, y in enumerate(obj._seqnames):
+            curlen = obj._seqlengths[i]
+            curcir = obj._is_circular[i]
+            curgen = obj._genome[i]
+
+            if y not in all_sequences:
+                all_sequences[y] = [curlen, curcir, curgen]
+            else:
+                present = all_sequences[y]
+                prelen, precir, pregen = present
+                if prelen != curlen:
+                    present[0] = None
+                if precir != curcir:
+                    present[1] = None
+                if pregen != curgen:
+                    present[2] = None
+
+    out_names = []
+    out_lengths = []
+    out_circular = []
+    out_genome = []
+    for k, v in all_sequences.items():
+        out_names.append(k)
+        out_lengths.append(v[0])
+        out_circular.append(v[1])
+        out_genome.append(v[2])
+
+    return Seqinfo(out_names, out_lengths, out_circular, out_genome, validate=False)

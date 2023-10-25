@@ -1,4 +1,4 @@
-from genomicranges.Seqinfo import Seqinfo
+from genomicranges.Seqinfo import Seqinfo, merge_Seqinfo
 from random import random
 
 __author__ = "jkanche"
@@ -37,5 +37,33 @@ def test_create_Seqinfo():
     }
 
     seq2 = seq.set_genome(None)
-    assert seq2.genome() == [None] * 3
-    assert seq2.genome(as_dict=True) == {"chr1": None, "chr2": None, "chr3": None}
+    assert seq2.genome() == [ None ] * 3
+    assert seq2.genome(as_dict=True) == { "chr1": None, "chr2": None, "chr3": None}
+
+
+def test_merge_Seqinfo():
+    seq = Seqinfo(
+        seqnames = [ "chr1", "chr2", "chr3" ],
+        seqlengths = range(100, 103),
+        is_circular = [False, True, False],
+        genome = "hg19"
+    )
+
+    combined = merge_Seqinfo([seq, seq])
+    assert combined.seqnames() == seq.seqnames()
+    assert combined.seqlengths() == seq.seqlengths()
+    assert combined.is_circular() == seq.is_circular()
+    assert combined.genome() == seq.genome()
+
+    seq2 = Seqinfo(
+        seqnames = [ "chr3", "chr4", "chr5" ],
+        seqlengths = range(100, 103),
+        is_circular = [False, True, False],
+        genome = "hg38"
+    )
+
+    combined = merge_Seqinfo([seq, seq2])
+    assert combined.seqnames() == [ "chr1", "chr2", "chr3", "chr4", "chr5" ]
+    assert combined.seqlengths() == [ 100, 101, None, 101, 102 ]
+    assert combined.is_circular() == [ False, True, False, True, False ]
+    assert combined.genome() == [ "hg19", "hg19", None, "hg38", "hg38" ]
