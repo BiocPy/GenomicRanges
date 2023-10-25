@@ -315,11 +315,9 @@ class Seqinfo:
 
 
 def merge_Seqinfo(objects: List[Seqinfo]) -> Seqinfo:
-    """
-    Merge multiple :py:class:`~Seqinfo` objects, taking the union of all
-    reference sequences. If the same reference sequence is present with the
-    same details across ``objects``, only a single instance is present in the
-    final object; if details are contradictory, they are replaced with None.
+    """Merge multiple :py:class:`~Seqinfo` objects, taking the union of all reference sequences. If the same reference
+    sequence is present with the same details across ``objects``, only a single instance is present in the final object;
+    if details are contradictory, they are replaced with None.
 
     Args:
         objects: List of ``Seqinfo`` objects.
