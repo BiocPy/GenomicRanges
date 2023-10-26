@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional, Union, Sequence
 import biocutils as bu
+from warnings import warn
 
 
 __author__ = "jkanche"
@@ -131,6 +132,10 @@ class SeqInfo:
 
     @property
     def seqnames(self) -> List[str]:
+        warn("'seqnames' is deprecated, use 'get_seqnames' instead", DeprecationWarning)
+        return self.get_seqnames()
+
+    def get_seqnames(self) -> List[str]:
         """
         Returns:
             List of all chromosome names.
@@ -139,28 +144,41 @@ class SeqInfo:
 
     @property
     def seqlengths(self) -> List[int]:
+        warn("'seqlengths' is deprecated, use 'get_seqlengths' instead", DeprecationWarning)
+        return self.get_seqlengths()
+
+    def get_seqlengths(self) -> List[int]:
         """
         Returns:
             A list of integers is returned containing the lengths of all
-            sequences, in the same order as :py:meth:`~seqnames`.
+            sequences, in the same order as the sequence names from
+            :py:meth:`~get_seqnames`.
         """
         return self._seqlengths
 
     @property
     def is_circular(self) -> List[bool]:
+        warn("'is_circular' is deprecated, use 'get_is_circular' instead", DeprecationWarning)
+        return self.get_is_circular()
+
+    def get_is_circular(self) -> List[bool]:
         """
         Returns:
             A list of booleans is returned specifying whether each sequence
-            in :py:meth:`~seqnames` is circular.
+            (from :py:meth:`~get_seqnames`) is circular.
         """
         return self._is_circular
 
     @property
     def genome(self) -> List[str]:
+        warn("'genome' is deprecated, use 'get_genome' instead", DeprecationWarning)
+        return self.get_genome()
+
+    def get_genome(self) -> List[str]:
         """
         Returns:
             A list of strings is returned containing the genome identity for
-            all sequences in :py:meth:`~seqnames`.
+            all sequences in :py:meth:`~get_seqnames`.
         """
         return self._genome
 
