@@ -144,7 +144,10 @@ class SeqInfo:
 
     @property
     def seqlengths(self) -> List[int]:
-        warn("'seqlengths' is deprecated, use 'get_seqlengths' instead", DeprecationWarning)
+        warn(
+            "'seqlengths' is deprecated, use 'get_seqlengths' instead",
+            DeprecationWarning,
+        )
         return self.get_seqlengths()
 
     def get_seqlengths(self) -> List[int]:
@@ -158,7 +161,10 @@ class SeqInfo:
 
     @property
     def is_circular(self) -> List[bool]:
-        warn("'is_circular' is deprecated, use 'get_is_circular' instead", DeprecationWarning)
+        warn(
+            "'is_circular' is deprecated, use 'get_is_circular' instead",
+            DeprecationWarning,
+        )
         return self.get_is_circular()
 
     def get_is_circular(self) -> List[bool]:
