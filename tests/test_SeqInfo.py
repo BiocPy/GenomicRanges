@@ -44,8 +44,8 @@ def test_create_SeqInfo_none():
     si = SeqInfo(
         ["chrA", "chrB", "chrC"],
         [10, None, 2200],
-        [None,True,False],
-        ["hg19","hg38",None]
+        [None, True, False],
+        ["hg19", "hg38", None],
     )
 
     with pytest.raises(ValueError) as ex:
