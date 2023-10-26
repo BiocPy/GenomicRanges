@@ -1,5 +1,6 @@
 from genomicranges.SeqInfo import SeqInfo, merge_SeqInfo
 from random import random
+import pytest
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -32,6 +33,24 @@ def test_create_SeqInfo():
 
     seq2 = seq.set_genome(None)
     assert seq2.get_genome() == [None] * 3
+
+    with pytest.raises(ValueError) as ex:
+        seq.set_seqlengths([-1, -2, -3])
+    assert str(ex.value).find("non-negative") >= 0
+
+
+def test_create_SeqInfo_none():
+    # With Nones interspersed in there.
+    si = SeqInfo(
+        ["chrA", "chrB", "chrC"],
+        [10, None, 2200],
+        [None,True,False],
+        ["hg19","hg38",None]
+    )
+
+    with pytest.raises(ValueError) as ex:
+        si.set_seqnames([None, "chrB", "chrC"])
+    assert str(ex.value).find("list of strings") >= 0
 
 
 def test_merge_SeqInfo():

@@ -113,7 +113,7 @@ class SeqInfo:
         if n != len(self._seqlengths):
             raise ValueError("'seqnames' and 'seqlengths' should have the same length")
         for l in self._seqlengths:
-            if l < 0:
+            if l is not None and l < 0:
                 raise ValueError("all entries of 'seqlengths' should be non-negative")
 
     def _validate_is_circular(self):
