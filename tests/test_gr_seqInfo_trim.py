@@ -1,5 +1,5 @@
 import pandas as pd
-from genomicranges.Seqinfo import Seqinfo
+from genomicranges.SeqInfo import SeqInfo
 from random import random
 import genomicranges
 
@@ -30,7 +30,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-seq_obj = Seqinfo(
+seq_obj = SeqInfo(
     seqnames=["chr1", "chr2", "chr3"],
     seqlengths=[110, 112, 118],
     is_circular=[True, True, False],

@@ -6,7 +6,7 @@ import pandas as pd
 from ..interval import split_intervals
 
 # from ..GenomicRanges import GenomicRanges
-from ..Seqinfo import Seqinfo
+from ..SeqInfo import SeqInfo
 from .pdf import from_pandas
 
 __author__ = "jkanche"
@@ -15,7 +15,7 @@ __license__ = "MIT"
 
 
 def tile_genome(
-    seqlengths: Union[Dict, Seqinfo],
+    seqlengths: Union[Dict, SeqInfo],
     n: Optional[int] = None,
     width: Optional[int] = None,
 ) -> "GenomicRanges":
@@ -30,13 +30,13 @@ def tile_genome(
     Either ``n`` or ``width`` must be provided but not both.
 
     Args:
-        seqlengths (Union[Dict, Seqinfo]): Sequence lengths of each chromosome.
+        seqlengths (Union[Dict, SeqInfo]): Sequence lengths of each chromosome.
 
             ``seqlengths`` may be a dictionary, where keys specify the chromosome and the value is
             thelength of each chromosome in the genome.
 
             Alternatively, ``seqlengths`` may be an instance of
-            :py:class:`~genomicranges.Seqinfo.Seqinfo`.
+            :py:class:`~genomicranges.SeqInfo.SeqInfo`.
 
         n (int, optional): Number of intervals to split into.
             Defaults to None, then 'width' of each interval is computed from ``seqlengths``.
@@ -54,7 +54,7 @@ def tile_genome(
         raise ValueError("Both `n` or `width` are provided!")
 
     seqlen_ = seqlengths
-    if isinstance(seqlengths, Seqinfo):
+    if isinstance(seqlengths, SeqInfo):
         seqlen_ = seqlengths.seqlengths()
 
     all_intervals = []

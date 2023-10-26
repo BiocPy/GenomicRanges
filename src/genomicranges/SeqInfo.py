@@ -7,7 +7,7 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-class Seqinfo:
+class SeqInfo:
     """Information about the reference sequences, specifically the name and length of each sequence, whether it is a
     circular, and the identity of the genome from which it was derived."""
 
@@ -129,6 +129,7 @@ class Seqinfo:
         if n != len(self._genome):
             raise ValueError("'seqnames' and 'genome' should have the same length")
 
+    @property
     def seqnames(self) -> List[str]:
         """
         Returns:
@@ -136,64 +137,34 @@ class Seqinfo:
         """
         return self._seqnames
 
-    def seqlengths(self, as_dict: bool = False) -> Union[List[int], Dict[str, int]]:
+    @property
+    def seqlengths(self) -> List[int]:
         """
-        Args:
-            as_dict:
-                Whether to return a dictionary where keys are the sequence
-                names and the values are the sequence lengths.
-
         Returns:
-            If ``as_dict = False``, a list of integers is returned containing
-            the lengths of all sequences in :py:meth:`~seqnames`.
-
-            If ``as_dict = True``, a dictionary is returned instead where
-            the lengths are the values (or possibly None).
+            A list of integers is returned containing the lengths of all
+            sequences, in the same order as :py:meth:`~seqnames`.
         """
-        if as_dict:
-            return dict(zip(self._seqnames, self._seqlengths))
-        else:
-            return self._seqlengths
+        return self._seqlengths
 
-    def is_circular(self, as_dict: bool = False) -> Union[List[bool], Dict[str, bool]]:
+    @property
+    def is_circular(self) -> List[bool]:
         """
-        Args:
-            as_dict:
-                Whether to return a dictionary where keys are the sequence
-                names and the values are the circular flags.
-
         Returns:
-            If ``as_dict = False``, a list of booleans is returned containing
-            the circular flags for all sequences in :py:meth:`~seqnames`.
-
-            If ``as_dict = True``, a dictionary is returned instead where
-            the circular flags are the values (or possibly None).
+            A list of booleans is returned specifying whether each sequence
+            in :py:meth:`~seqnames` is circular.
         """
-        if as_dict:
-            return dict(zip(self._seqnames, self._is_circular))
-        else:
-            return self._is_circular
+        return self._is_circular
 
-    def genome(self, as_dict: bool = False) -> Union[List[str], Dict[str, str]]:
+    @property
+    def genome(self) -> List[str]:
         """
-        Args:
-            as_dict:
-                Whether to return a dictionary where keys are the sequence
-                names and the values are the genomes.
-
         Returns:
-            If ``as_dict = False``, a list of strings is returned containing
-            the genome identity for all sequences in :py:meth:`~seqnames`.
-
-            If ``as_dict = True``, a dictionary is returned instead where
-            the genomes are the values (or possibly None).
+            A list of strings is returned containing the genome identity for
+            all sequences in :py:meth:`~seqnames`.
         """
-        if as_dict:
-            return dict(zip(self._seqnames, self._genome))
-        else:
-            return self._genome
+        return self._genome
 
-    def _setter_copy(self, in_place: bool = False) -> "Seqinfo":
+    def _setter_copy(self, in_place: bool = False) -> "SeqInfo":
         if in_place:
             return self
         else:
@@ -207,18 +178,18 @@ class Seqinfo:
 
     def set_seqnames(
         self, seqnames: Sequence[str], in_place: bool = False
-    ) -> "Seqinfo":
+    ) -> "SeqInfo":
         """
         Args:
             seqnames:
                 List of sequence names, of length equal to the number of names
-                in this ``Seqinfo`` object. All names should be unique strings.
+                in this ``SeqInfo`` object. All names should be unique strings.
 
             in_place:
-                Whether to modify the ``Seqinfo`` object in place.
+                Whether to modify the ``SeqInfo`` object in place.
 
         Returns:
-            A modified ``Seqinfo`` object, either as a copy of the original
+            A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
         output = self._setter_copy(in_place)
@@ -230,12 +201,12 @@ class Seqinfo:
         self,
         seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]],
         in_place: bool = False,
-    ) -> "Seqinfo":
+    ) -> "SeqInfo":
         """
         Args:
             seqlengths:
                 List of sequence lengths, of length equal to the number of
-                names in this ``Seqinfo`` object. Values may be None or
+                names in this ``SeqInfo`` object. Values may be None or
                 non-negative integers.
 
                 Alternatively, a dictionary where keys are the sequence
@@ -243,10 +214,10 @@ class Seqinfo:
                 present in which case the length is assumed to be None.
 
             in_place:
-                Whether to modify the ``Seqinfo`` object in place.
+                Whether to modify the ``SeqInfo`` object in place.
 
         Returns:
-            A modified ``Seqinfo`` object, either as a copy of the original
+            A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
         output = self._setter_copy(in_place)
@@ -258,12 +229,12 @@ class Seqinfo:
         self,
         is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]],
         in_place: bool = False,
-    ) -> "Seqinfo":
+    ) -> "SeqInfo":
         """
         Args:
             is_circular:
                 List of circular flags, of length equal to the number of
-                names in this ``Seqinfo`` object. Values may be None or
+                names in this ``SeqInfo`` object. Values may be None or
                 booleans.
 
                 Alternatively, a dictionary where keys are the sequence
@@ -271,10 +242,10 @@ class Seqinfo:
                 present in which case the flag is assumed to be None.
 
             in_place:
-                Whether to modify the ``Seqinfo`` object in place.
+                Whether to modify the ``SeqInfo`` object in place.
 
         Returns:
-            A modified ``Seqinfo`` object, either as a copy of the original
+            A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
         output = self._setter_copy(in_place)
@@ -286,19 +257,19 @@ class Seqinfo:
         self,
         genome: Optional[Union[str, Sequence[str], Dict[str, str]]],
         in_place: bool = False,
-    ) -> "Seqinfo":
+    ) -> "SeqInfo":
         """
         Args:
             genome:
                 List of genomes, of length equal to the number of names in this
-                ``Seqinfo`` object. Values may be None or strings.
+                ``SeqInfo`` object. Values may be None or strings.
 
 
             in_place:
-                Whether to modify the ``Seqinfo`` object in place.
+                Whether to modify the ``SeqInfo`` object in place.
 
         Returns:
-            A modified ``Seqinfo`` object, either as a copy of the original
+            A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
         output = self._setter_copy(in_place)
@@ -314,16 +285,16 @@ class Seqinfo:
         return len(self._seqnames)
 
 
-def merge_Seqinfo(objects: List[Seqinfo]) -> Seqinfo:
-    """Merge multiple :py:class:`~Seqinfo` objects, taking the union of all reference sequences. If the same reference
+def merge_SeqInfo(objects: List[SeqInfo]) -> SeqInfo:
+    """Merge multiple :py:class:`~SeqInfo` objects, taking the union of all reference sequences. If the same reference
     sequence is present with the same details across ``objects``, only a single instance is present in the final object;
     if details are contradictory, they are replaced with None.
 
     Args:
-        objects: List of ``Seqinfo`` objects.
+        objects: List of ``SeqInfo`` objects.
 
     Returns:
-        A single merged ``Seqinfo`` object.
+        A single merged ``SeqInfo`` object.
     """
     all_sequences = {}
 
@@ -355,4 +326,4 @@ def merge_Seqinfo(objects: List[Seqinfo]) -> Seqinfo:
         out_circular.append(v[1])
         out_genome.append(v[2])
 
-    return Seqinfo(out_names, out_lengths, out_circular, out_genome, validate=False)
+    return SeqInfo(out_names, out_lengths, out_circular, out_genome, validate=False)
