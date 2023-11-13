@@ -1,7 +1,7 @@
-from typing import Dict, List, Optional, Union, Sequence
-import biocutils as bu
+from typing import Dict, List, Optional, Sequence, Union
 from warnings import warn
 
+import biocutils as bu
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -112,8 +112,8 @@ class SeqInfo:
             raise ValueError("'seqlengths' should be a list of integers")
         if n != len(self._seqlengths):
             raise ValueError("'seqnames' and 'seqlengths' should have the same length")
-        for l in self._seqlengths:
-            if l is not None and l < 0:
+        for sl in self._seqlengths:
+            if sl is not None and sl < 0:
                 raise ValueError("all entries of 'seqlengths' should be non-negative")
 
     def _validate_is_circular(self):
