@@ -1,19 +1,10 @@
 import math
 import random
 from collections import OrderedDict
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    List,
-    Literal,
-    Optional,
-    Union,
-)
+from typing import Any, Callable, Dict, List, Literal, Optional, Sequence, Union
 from warnings import warn
 
 from biocframe import BiocFrame
-from biocframe.types import SlicerArgTypes
 from biocgenerics.colnames import colnames, set_colnames
 from biocgenerics.combine import combine
 from biocgenerics.combine_cols import combine_cols
@@ -477,7 +468,9 @@ class GenomicRanges(BiocFrame):
         return capture.get()
 
     # for documentation, otherwise serves no real use.
-    def __getitem__(self, args: SlicerArgTypes) -> Union["GenomicRanges", dict, list]:
+    def __getitem__(
+        self, args: Union[int, str, Sequence, tuple]
+    ) -> Union["GenomicRanges", dict, list]:
         """Subset the object.
 
         This operation returns a new object with the same type as the caller.
@@ -904,10 +897,11 @@ class GenomicRanges(BiocFrame):
         for idx in range(len(all_chrs)):
             keep = True
             t_chr = all_chrs[idx]
+            s_idx = seqinfos.seqnames.index(t_chr)
             if (
                 is_circular is not None
-                and is_circular[t_chr] is False
-                and all_ends[idx] > seqlengths[t_chr]
+                and is_circular[s_idx] is False
+                and all_ends[idx] > seqlengths[s_idx]
             ):
                 keep = False
 
