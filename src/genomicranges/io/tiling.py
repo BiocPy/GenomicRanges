@@ -55,7 +55,7 @@ def tile_genome(
 
     seqlen_ = seqlengths
     if isinstance(seqlengths, SeqInfo):
-        seqlen_ = seqlengths.seqlengths
+        seqlen_ = seqlengths.seqlengths()
 
     all_intervals = []
     for chrm, chrlen in seqlen_.items():
