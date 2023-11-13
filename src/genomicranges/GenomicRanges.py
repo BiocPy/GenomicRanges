@@ -36,7 +36,7 @@ class GenomicRanges:
         ranges: IRanges,
         strand: Optional[List[str, np.ndarray]] = None,
         names: Optional[List] = None,
-        column_data: Optional[BiocFrame] = None,
+        mcols: Optional[BiocFrame] = None,
         seq_info: Optional[SeqInfo] = None,
         metadata: Optional[dict] = None,
         validate: bool = True,
