@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges.SeqInfo - GenomicRanges 0.3.8 documentation</title>
+        <title>genomicranges.SeqInfo - GenomicRanges 0.3.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.8 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.8 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.3.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,10 +203,10 @@
         </div>
         <article role="main">
           <h1>Source code for genomicranges.SeqInfo</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
+<span class="kn">import</span> <span class="nn">biocutils</span> <span class="k">as</span> <span class="nn">bu</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
@@ -215,122 +215,379 @@
 
 <div class="viewcode-block" id="SeqInfo">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo">[docs]</a>
-<span class="k">class</span> <span class="nc">SeqInfo</span><span class="p">(</span><span class="n">BiocFrame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that stores information about gene model.</span>
-
-<span class="sd">    Must contain column &quot;seqnames&quot;.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        data (Dict[str, Union[List[Any], Dict]]): Info about each</span>
-<span class="sd">            sequence or chromosome. must contain a column `seqnames`.</span>
-<span class="sd">        metadata (Dict, optional): Additional metadata. Defaults to None.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If ``data`` does not contain required attributes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">required_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;seqnames&quot;</span><span class="p">]</span>
-    <span class="n">can_contain</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;seqlengths&quot;</span><span class="p">,</span> <span class="s2">&quot;is_circular&quot;</span><span class="p">,</span> <span class="s2">&quot;genome&quot;</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">SeqInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Information about the reference sequences, specifically the name and length of each sequence, whether it is a</span>
+<span class="sd">    circular, and the identity of the genome from which it was derived.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]],</span>
-        <span class="n">number_of_rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">row_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">column_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seqnames</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">seqlengths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">is_circular</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]],</span>
+        <span class="n">genome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
+        <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a SeqInfo object.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">number_of_rows</span><span class="p">,</span> <span class="n">row_names</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            seqnames:</span>
+<span class="sd">                Names of all reference sequences, should be unique.</span>
 
-    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal function to validate SeqInfo.&quot;&quot;&quot;</span>
+<span class="sd">            seqlengths:</span>
+<span class="sd">                Lengths of all sequences in base pairs. This should contain</span>
+<span class="sd">                non-negative values and have the same number of elements as</span>
+<span class="sd">                ``seqnames``. Entries may also be None if no lengths are</span>
+<span class="sd">                available for that sequence.</span>
 
-        <span class="k">if</span> <span class="s2">&quot;genome&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="sd">                Alternatively, a dictionary where keys are the sequence names</span>
+<span class="sd">                and values are the lengths. If a name is missing from this</span>
+<span class="sd">                dictionary, the length of the sequence is set to None.</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s2">&quot;genome&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;genome&quot;</span><span class="p">]</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;genome&quot;</span><span class="p">]</span>
+<span class="sd">                Alternatively a single integer, if all sequences are of the</span>
+<span class="sd">                same length.</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_seqs</span><span class="p">()</span>
+<span class="sd">                Alternatively None, if no length information is available</span>
+<span class="sd">                for any sequence.</span>
 
-    <span class="k">def</span> <span class="nf">_validate_seqs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal function to validate sequence information.</span>
+<span class="sd">            is_circular:</span>
+<span class="sd">                Whether each sequence is circular. This should have the same</span>
+<span class="sd">                number of elements as ``seqnames``. Entries may also be None</span>
+<span class="sd">                if no information is available for that sequence.</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: If missing required columns.</span>
+<span class="sd">                Alternatively, a dictionary where keys are the sequence names</span>
+<span class="sd">                and values are the circular flags. If a name is missing from</span>
+<span class="sd">                this dictionary, the flag for the sequence is set to None.</span>
+
+<span class="sd">                Alternatively a single boolean, if all sequences have the same</span>
+<span class="sd">                circular flag.</span>
+
+<span class="sd">                Alternatively None, if no flags are available for any sequence.</span>
+
+<span class="sd">            genome:</span>
+<span class="sd">                The genome build containing each reference sequence. This</span>
+<span class="sd">                should have the same number of elements as ``seqnames``.</span>
+<span class="sd">                Entries may also be None if no information is available.</span>
+
+<span class="sd">                Alternatively, a dictionary where keys are the sequence names</span>
+<span class="sd">                and values are the genomes. If a name is missing from this</span>
+<span class="sd">                dictionary, the genome is set to None.</span>
+
+<span class="sd">                Alternatively a single string, if all sequences are derived</span>
+<span class="sd">                from the same genome.</span>
+
+<span class="sd">                Alternatively None, if no genome information is available</span>
+<span class="sd">                for any sequence.</span>
+
+<span class="sd">            validate:</span>
+<span class="sd">                Whether to validate the arguments, internal use only.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">required_columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqnames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_circular</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_genome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">genome</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;data must contain </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">required_columns</span><span class="si">}</span><span class="s2">. missing </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_seqnames</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_seqlengths</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_is_circular</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_genome</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_flatten_incoming</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">output</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">values</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bu</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqnames&#39; should be a list of strings&quot;</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqnames&#39; should contain unique strings&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bu</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqlengths&#39; should be a list of integers&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqnames&#39; and &#39;seqlengths&#39; should have the same length&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sl</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;all entries of &#39;seqlengths&#39; should be non-negative&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_is_circular</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bu</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_circular</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;is_circular&#39; should be a list of booleans&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_circular</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqnames&#39; and &#39;is_circular&#39; should have the same length&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bu</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_genome</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;genome&#39; should be a list of strings&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_genome</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqnames&#39; and &#39;genome&#39; should have the same length&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence or chromosome names.</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()</span>
 
+<div class="viewcode-block" id="SeqInfo.get_seqnames">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_seqnames">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            List[str]: List of all chromosome names.</span>
+<span class="sd">            List of all chromosome names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span></div>
+
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence or chromosome names and their lengths.</span>
+    <span class="k">def</span> <span class="nf">seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;seqlengths&#39; is deprecated, use &#39;get_seqlengths&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seqlengths</span><span class="p">()</span>
 
+<div class="viewcode-block" id="SeqInfo.get_seqlengths">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_seqlengths">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            (Dict[str, int], optional): A dictionary containing chromosome names</span>
-<span class="sd">                with their lengths.</span>
+<span class="sd">            A list of integers is returned containing the lengths of all</span>
+<span class="sd">            sequences, in the same order as the sequence names from</span>
+<span class="sd">            :py:meth:`~get_seqnames`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span></div>
 
-        <span class="k">if</span> <span class="s2">&quot;seqlengths&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">zip_longest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;seqlengths&quot;</span><span class="p">)))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_circular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the sequences are circular.</span>
+    <span class="k">def</span> <span class="nf">is_circular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;is_circular&#39; is deprecated, use &#39;get_is_circular&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_is_circular</span><span class="p">()</span>
 
+<div class="viewcode-block" id="SeqInfo.get_is_circular">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_is_circular">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_is_circular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            (Dict[str, bool], optional): A dictionary containing chromosome names</span>
-<span class="sd">                and if they are circular.</span>
+<span class="sd">            A list of booleans is returned specifying whether each sequence</span>
+<span class="sd">            (from :py:meth:`~get_seqnames`) is circular.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_circular</span></div>
 
-        <span class="k">if</span> <span class="s2">&quot;is_circular&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">zip_longest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;is_circular&quot;</span><span class="p">)))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genome/species information, if available.</span>
+    <span class="k">def</span> <span class="nf">genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;genome&#39; is deprecated, use &#39;get_genome&#39; instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_genome</span><span class="p">()</span>
 
+<div class="viewcode-block" id="SeqInfo.get_genome">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_genome">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            (str, optional): The species name or genome.</span>
+<span class="sd">            A list of strings is returned containing the genome identity for</span>
+<span class="sd">            all sequences in :py:meth:`~get_seqnames`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_genome</span></div>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">and</span> <span class="s2">&quot;genome&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;genome&quot;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="nf">_setter_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">in_place</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_is_circular</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_genome</span><span class="p">,</span>
+                <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
 
-    <span class="nd">@genome</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">genome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set genome/species information.</span>
-
+<div class="viewcode-block" id="SeqInfo.set_seqnames">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_seqnames">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_seqnames</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">seqnames</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            genome (str): Species name or genome.</span>
+<span class="sd">            seqnames:</span>
+<span class="sd">                List of sequence names, of length equal to the number of names</span>
+<span class="sd">                in this ``SeqInfo`` object. All names should be unique strings.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``SeqInfo`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``SeqInfo`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setter_copy</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_seqnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqnames</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_validate_seqnames</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;genome&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">genome</span></div>
+<div class="viewcode-block" id="SeqInfo.set_seqlengths">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_seqlengths">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_seqlengths</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seqlengths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            seqlengths:</span>
+<span class="sd">                List of sequence lengths, of length equal to the number of</span>
+<span class="sd">                names in this ``SeqInfo`` object. Values may be None or</span>
+<span class="sd">                non-negative integers.</span>
+
+<span class="sd">                Alternatively, a dictionary where keys are the sequence</span>
+<span class="sd">                names and values are the lengths. Not all names need to be</span>
+<span class="sd">                present in which case the length is assumed to be None.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``SeqInfo`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``SeqInfo`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setter_copy</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_seqlengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_validate_seqlengths</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="SeqInfo.set_is_circular">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_is_circular">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_is_circular</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">is_circular</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]],</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            is_circular:</span>
+<span class="sd">                List of circular flags, of length equal to the number of</span>
+<span class="sd">                names in this ``SeqInfo`` object. Values may be None or</span>
+<span class="sd">                booleans.</span>
+
+<span class="sd">                Alternatively, a dictionary where keys are the sequence</span>
+<span class="sd">                names and values are the flags. Not all names need to be</span>
+<span class="sd">                present in which case the flag is assumed to be None.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``SeqInfo`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``SeqInfo`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setter_copy</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_is_circular</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_validate_is_circular</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="SeqInfo.set_genome">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_genome">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_genome</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">genome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            genome:</span>
+<span class="sd">                List of genomes, of length equal to the number of names in this</span>
+<span class="sd">                ``SeqInfo`` object. Values may be None or strings.</span>
+
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``SeqInfo`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``SeqInfo`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setter_copy</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_genome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">genome</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_validate_genome</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="SeqInfo.__len__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__len__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Number of sequences in this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="merge_SeqInfo">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.merge_SeqInfo">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_SeqInfo</span><span class="p">(</span><span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SeqInfo</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SeqInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge multiple :py:class:`~SeqInfo` objects, taking the union of all reference sequences. If the same reference</span>
+<span class="sd">    sequence is present with the same details across ``objects``, only a single instance is present in the final object;</span>
+<span class="sd">    if details are contradictory, they are replaced with None.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        objects: List of ``SeqInfo`` objects.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A single merged ``SeqInfo`` object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_sequences</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">):</span>
+            <span class="n">curlen</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_seqlengths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">curcir</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_is_circular</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">curgen</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_genome</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_sequences</span><span class="p">:</span>
+                <span class="n">all_sequences</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">curlen</span><span class="p">,</span> <span class="n">curcir</span><span class="p">,</span> <span class="n">curgen</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">present</span> <span class="o">=</span> <span class="n">all_sequences</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                <span class="n">prelen</span><span class="p">,</span> <span class="n">precir</span><span class="p">,</span> <span class="n">pregen</span> <span class="o">=</span> <span class="n">present</span>
+                <span class="k">if</span> <span class="n">prelen</span> <span class="o">!=</span> <span class="n">curlen</span><span class="p">:</span>
+                    <span class="n">present</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">precir</span> <span class="o">!=</span> <span class="n">curcir</span><span class="p">:</span>
+                    <span class="n">present</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">pregen</span> <span class="o">!=</span> <span class="n">curgen</span><span class="p">:</span>
+                    <span class="n">present</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">out_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">out_lengths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">out_circular</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">out_genome</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_sequences</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">out_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">out_lengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">out_circular</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">out_genome</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">SeqInfo</span><span class="p">(</span><span class="n">out_names</span><span class="p">,</span> <span class="n">out_lengths</span><span class="p">,</span> <span class="n">out_circular</span><span class="p">,</span> <span class="n">out_genome</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -364,7 +621,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=c1cae59a"></script>
+</div><script src="../../_static/documentation_options.js?v=65b26183"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
