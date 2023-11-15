@@ -15,9 +15,9 @@ class SeqInfo:
     def __init__(
         self,
         seqnames: Sequence[str],
-        seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]],
-        is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]],
-        genome: Optional[Union[str, Sequence[str], Dict[str, str]]],
+        seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]] = None,
+        is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]] = None,
+        genome: Optional[Union[str, Sequence[str], Dict[str, str]]] = None,
         validate: bool = True,
     ) -> None:
         """
