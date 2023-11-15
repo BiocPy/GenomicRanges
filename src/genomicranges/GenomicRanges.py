@@ -232,29 +232,16 @@ class GenomicRanges:
         return self.__copy__()
 
     #################################
-    ######>> Shape and stuff <<######
+    ######>> length and iterators <<######
     #################################
-
-    @property
-    def shape(self) -> Tuple[int, int]:
-        """
-        Returns:
-            Tuple containing the number of rows and columns in this ``BiocFrame``.
-        """
-        return (len(self.seqnames), self.mcols.shape[1])
 
     def __len__(self) -> int:
         """
         Returns:
             Number of rows.
         """
-        return self.shape[0]
+        return len(self.seqnames)
 
     def __iter__(self) -> GenomicRangesIter:
         """Iterator over rows."""
         return GenomicRangesIter(self)
-
-    @property
-    def dims(self) -> Tuple[int, int]:
-        """Alias for :py:attr:`~shape`."""
-        return self.shape
