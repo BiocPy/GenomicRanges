@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, Tuple, Union
+from typing import Optional, Sequence, Union
 
 import biocutils as ut
 import numpy as np
@@ -31,16 +31,17 @@ def _validate_ranges(ranges):
 
 
 def _validate_optional_attrs(num_ranges, strand, mcols, names):
-    if len(strand) != num_ranges:
+    if strand is not None and len(strand) != num_ranges:
         raise ValueError("Length of 'strand' does not match the number of ranges.")
 
-    if not isinstance(mcols, BiocFrame):
-        raise TypeError("'mcols' is not a `BiocFrame` object.")
+    if mcols is not None:
+        if not isinstance(mcols, BiocFrame):
+            raise TypeError("'mcols' is not a `BiocFrame` object.")
 
-    if mcols.shape[0] != num_ranges:
-        raise ValueError("Length of 'mcols' does not match the number of ranges.")
+        if mcols.shape[0] != num_ranges:
+            raise ValueError("Length of 'mcols' does not match the number of ranges.")
 
-    if len(names) != num_ranges:
+    if names is not None and len(names) != num_ranges:
         raise ValueError("Length of 'names' does not match the number of ranges.")
 
 
@@ -144,7 +145,7 @@ class GenomicRanges:
         self._seq_info = seq_info
 
         if not isinstance(seqnames, np.ndarray):
-            seqnames = np.ndarray(
+            seqnames = np.array(
                 [self._seq_info.seqnames.index(x) for x in list(seqnames)]
             )
         self._seqnames = seqnames
@@ -167,7 +168,7 @@ class GenomicRanges:
 
         self._metadata = metadata if metadata is not None else {}
 
-        if validate:
+        if validate is True:
             _validate_seq_info(self._seq_info)
             _validate_ranges(self._ranges)
             num_ranges = _guess_num_ranges(self._seqnames, self._ranges)
@@ -231,17 +232,118 @@ class GenomicRanges:
         """Alias for :py:meth:`~__copy__`."""
         return self.__copy__()
 
-    #################################
+    ######################################
     ######>> length and iterators <<######
-    #################################
+    ######################################
 
     def __len__(self) -> int:
         """
         Returns:
             Number of rows.
         """
-        return len(self.seqnames)
+        return len(self._ranges)
 
     def __iter__(self) -> GenomicRangesIter:
         """Iterator over rows."""
         return GenomicRangesIter(self)
+
+    ##########################
+    ######>> Printing <<######
+    ##########################
+
+    def __repr__(self) -> str:
+        """
+        Returns:
+            A string representation of this ``GenomicRanges``.
+        """
+        output = "GenomicRanges(number_of_ranges=" + str(len(self))
+        output += ", seqnames=" + ut.print_truncated_list(self._seqnames)
+        output += ", ranges=" + repr(self._ranges)
+
+        if self._strand is not None:
+            output += ", strand=" + ut.print_truncated_list(self._strand)
+
+        if self._names is not None:
+            output += ", names=" + ut.print_truncated_list(self._names)
+
+        if self._mcols is not None:
+            output += ", mcols=" + repr(self._mcols)
+
+        if self._seq_info is not None:
+            output += ", seq_info" + repr(self._seq_info)
+
+        if len(self._metadata) > 0:
+            output += ", metadata=" + ut.print_truncated_dict(self._metadata)
+
+        output += ")"
+        return output
+
+    def __str__(self) -> str:
+        """
+        Returns:
+            A pretty-printed string containing the contents of this ``GenomicRanges``.
+        """
+        output = f"GenomicRanges with {len(self)} range{'s' if len(self) != 1 else ''}"
+        output += f" and {len(self._mcols)} metadata column{'s' if len(self._mcols) != 1 else ''}\n"
+
+        nr = len(self)
+        added_table = False
+        if nr:
+            if nr <= 10:
+                indices = range(nr)
+                insert_ellipsis = False
+            else:
+                indices = [0, 1, 2, nr - 3, nr - 2, nr - 1]
+                insert_ellipsis = True
+
+            raw_floating = ut.create_floating_names(self._names, indices)
+            if insert_ellipsis:
+                raw_floating = raw_floating[:3] + [""] + raw_floating[3:]
+            floating = ["", ""] + raw_floating
+
+            columns = []
+            for col in self._column_names:
+                data = self._data[col]
+                showed = ut.show_as_cell(data, indices)
+                header = [col, "<" + ut.print_type(data) + ">"]
+                showed = ut.truncate_strings(
+                    showed, width=max(40, len(header[0]), len(header[1]))
+                )
+                if insert_ellipsis:
+                    showed = showed[:3] + ["..."] + showed[3:]
+                columns.append(header + showed)
+
+            output += ut.print_wrapped_table(columns, floating_names=floating)
+            added_table = True
+
+        footer = []
+        if self.column_data is not None and self.column_data.shape[1]:
+            footer.append(
+                "column_data("
+                + str(self.column_data.shape[1])
+                + "): "
+                + ut.print_truncated_list(
+                    self.column_data.column_names,
+                    sep=" ",
+                    include_brackets=False,
+                    transform=lambda y: y,
+                )
+            )
+        if len(self.metadata):
+            footer.append(
+                "metadata("
+                + str(len(self.metadata))
+                + "): "
+                + ut.print_truncated_list(
+                    list(self.metadata.keys()),
+                    sep=" ",
+                    include_brackets=False,
+                    transform=lambda y: y,
+                )
+            )
+        if len(footer):
+            if added_table:
+                output += "\n------\n"
+            output += "\n".join(footer)
+
+        return output
