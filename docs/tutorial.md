@@ -442,10 +442,10 @@ rank = gr.rank()
 
 ## Combine `GenomicRanges` objects by rows
 
-Use the `combine` generic from [biocgenerics](https://github.com/BiocPy/generics) to concatenate multiple GenomicRanges objects.
+Use the `combine` generic from [biocutils](https://github.com/BiocPy/generics) to concatenate multiple GenomicRanges objects.
 
 ```python
-from biocgenerics.combine import combine
+from biocutils.combine import combine
 combined_gr = combine(gr, gr1, gr2, ...)
 ```
 
@@ -524,7 +524,7 @@ grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
 grlc = grla.combine(grlb)
 
 # or use the combine generic
-from biocgenerics.combine import combine
+from biocutils.combine import combine
 cgrl = combine(grla, grlb)
 ```
 

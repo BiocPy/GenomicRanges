@@ -56,3 +56,34 @@ def test_from_pandas():
     assert len(g_src) == 1
     assert g_src.names is not None
     assert g_src.strand is not None
+
+
+def test__from_pandas_should_fail():
+    with pytest.raises(Exception):
+        df_gr = pd.DataFrame(
+            {
+                "starts": range(100, 110),
+                "ends": range(110, 120),
+                "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
+                "score": range(0, 10),
+                "GC": [random() for _ in range(10)],
+            }
+        )
+
+        GenomicRanges.from_pandas(df_gr)
+
+
+# def test_gr_empty():
+#     gr = GenomicRanges(number_of_rows=100)
+
+#     assert gr is not None
+#     assert isinstance(gr, GenomicRanges)
+#     assert len(gr) == 100
+#     assert gr.shape == (100, 0)
+
+#     gre = GenomicRanges.empty()
+
+#     assert gre is not None
+#     assert isinstance(gre, GenomicRanges)
+#     assert len(gre) == 0
+#     assert gre.shape == (0, 0)

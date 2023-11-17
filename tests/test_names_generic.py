@@ -1,7 +1,7 @@
 import pandas as pd
 from genomicranges import GenomicRanges
-from biocgenerics.rownames import rownames
-from biocgenerics.colnames import colnames
+from biocutils.rownames import rownames
+from biocutils.colnames import colnames
 from random import random
 import genomicranges
 
