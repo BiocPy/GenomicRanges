@@ -37,6 +37,11 @@ def _validate_seqnames(seqnames, seqinfo, num_ranges):
     if not isinstance(seqinfo, SeqInfo):
         raise TypeError("'seqinfo' is not an instance of `SeqInfo` class.")
 
+    if not all(x < len(seqinfo) for x in seqnames):
+        raise ValueError(
+            "'seqnames' contains sequence name not represented in 'seqinfo'."
+        )
+
 
 def _validate_ranges(ranges, num_ranges):
     if ranges is None:
@@ -102,7 +107,7 @@ class GenomicRangesIter:
                 else None
             )
 
-            iter_slice = self._gr.row(self._current_index)
+            iter_slice = self._gr[self._current_index]
             self._current_index += 1
             return (iter_row_index, iter_slice)
 
@@ -168,10 +173,8 @@ class GenomicRanges:
             seqinfo = SeqInfo(seqnames=list(set(seqnames)))
         self._seqinfo = seqinfo
 
-        self._reverse_seqnames = ut.reverse_index.build_reverse_index(
-            self._seqinfo.seqnames
-        )
-        self._seqnames = np.array([self._reverse_seqnames[x] for x in list(seqnames)])
+        self._reverse_seqindex = None
+        self._seqnames = self._sanitize_seqnames(seqnames, self._seqinfo)
         self._ranges = ranges
 
         if strand is None:
@@ -195,6 +198,21 @@ class GenomicRanges:
             _validate_optional_attrs(
                 self._strand, self._mcols, self._names, _num_ranges
             )
+
+    def _build_reverse_seqindex(self, seqinfo: SeqInfo):
+        self._reverse_seqindex = ut.reverse_index.build_reverse_index(seqinfo.seqnames)
+
+    def _remove_reverse_seqindex(self):
+        del self._reverse_seqindex
+
+    def _sanitize_seqnames(self, seqnames, seqinfo):
+        if self._reverse_seqindex is None:
+            self._build_reverse_seqindex(seqinfo)
+
+        if not isinstance(seqnames, np.ndarray):
+            seqnames = np.array([self._reverse_seqindex[x] for x in list(seqnames)])
+
+        return seqnames
 
     def _define_output(self, in_place: bool = False) -> "GenomicRanges":
         if in_place is True:
@@ -533,14 +551,11 @@ class GenomicRanges:
             A modified ``GenomicRanges`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
-        if strand is not None:
-            _validate_optional_attrs(strand, None, None, len(self))
+        if strand is None:
+            strand = np.repeat(0, len(self))
 
-            if strand is None:
-                strand = np.repeat(0, len(self._seqnames))
-            else:
-                strand = sanitize_strand_vector(strand)
-
+        strand = sanitize_strand_vector(strand)
+        _validate_optional_attrs(strand, None, None, len(self))
         output = self._define_output(in_place)
         output._strand = strand
         return output
@@ -1008,6 +1023,105 @@ class GenomicRanges:
             names = [str(i) for i in input.index.to_list()]
 
         return cls(ranges=ranges, seqnames=seqnames, names=names, mcols=mcols)
+
+    #####################################
+    ######>> intra-range methods <<######
+    #####################################
+
+    def flank(
+        self,
+        width: int,
+        start: bool = True,
+        both: bool = False,
+        ignore_strand: bool = False,
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Compute flanking ranges for each range. The logic for this comes from
+        the `R/GenomicRanges` & `IRanges` packages.
+
+        If ``start`` is ``True`` for a given range, the flanking occurs at the `start`,
+        otherwise the `end`.
+        The `widths` of the flanks are given by the ``width`` parameter.
+
+        ``width`` can be negative, in which case the flanking region is
+        reversed so that it represents a prefix or suffix of the range.
+
+        Usage:
+
+            `gr.flank(3, True)`, where "x" indicates a range in ``gr`` and "-" indicates the
+            resulting flanking region:
+                ---xxxxxxx
+            If ``start`` were ``False``, the range in ``gr`` becomes
+                xxxxxxx---
+            For negative width, i.e. `gr.flank(x, -3, FALSE)`, where "*" indicates the overlap
+            between "x" and the result:
+                xxxx***
+            If ``both`` is ``True``, then, for all ranges in "x", the flanking regions are
+            extended into (or out of, if ``width`` is negative) the range, so that the result
+            straddles the given endpoint and has twice the width given by width.
+
+            This is illustrated below for `gr.flank(3, both=TRUE)`:
+                ---***xxxx
+
+        Args:
+            width:
+                Width to flank by. May be negative.
+
+            start:
+                Whether to only flank starts. Defaults to True.
+
+            both:
+                Whether to flank both starts and ends. Defaults to False.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the flanked regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+
+        all_starts = self.start
+        all_ends = self.end
+        all_strands = self.strand
+
+        # figure out which position to pin, start or end?
+        start_flags = np.repeat(start, len(all_strands))
+        if not ignore_strand:
+            start_flags = [
+                start != (all_strands[i] == -1) for i in range(len(all_strands))
+            ]
+
+        new_starts = []
+        new_widths = []
+        # if both is true, then depending on start_flag, we extend it out
+        # I couldn't understand the scenario's with witdh <=0,
+        # so refer to the R implementation here
+        for idx in range(len(start_flags)):
+            sf = start_flags[idx]
+            tstart = 0
+            if both is True:
+                tstart = (
+                    all_starts[idx] - abs(width)
+                    if sf
+                    else all_ends[idx] - abs(width)
+                )
+            else:
+                if width >= 0:
+                    tstart = all_starts[idx] - abs(width) if sf else all_ends[idx]
+                else:
+                    tstart = all_starts[idx] if sf else all_ends[idx] + width
+
+            new_starts.append(tstart)
+            new_widths.append((width * (2 if both else 1) - 1))
+
+        output = self._define_output(in_place)
+        output._ranges = IRanges(new_starts, new_widths)
+        return output
 
 
 @ut.combine_sequences.register

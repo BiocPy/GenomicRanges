@@ -2,30 +2,31 @@ import pytest
 import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
 from random import random
-import genomicranges
+from iranges import IRanges
+from biocframe import BiocFrame
+import numpy as np
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-df_gr = pd.DataFrame(
-    {
-        "seqnames": [
-            "chr1",
-            "chr2",
-            "chr3",
-            "chr2",
-            "chr3",
-        ],
-        "starts": range(101, 106),
-        "ends": [112, 123, 128, 134, 111],
-        "strand": ["*", "-", "*", "+", "-"],
-        "score": range(0, 5),
-        "GC": [random() for _ in range(5)],
-    }
+gr = GenomicRanges(
+    seqnames=[
+        "chr1",
+        "chr2",
+        "chr3",
+        "chr2",
+        "chr3",
+    ],
+    ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
+    strand=["*", "-", "*", "+", "-"],
+    mcols=BiocFrame(
+        {
+            "score": range(0, 5),
+            "GC": [random() for _ in range(5)],
+        }
+    ),
 )
-
-gr = genomicranges.from_pandas(df_gr)
 
 
 def test_flank_default():
@@ -33,9 +34,11 @@ def test_flank_default():
 
     flanked_gr = gr.flank(width=10)
 
+    print(flanked_gr.__repr__())
+
     assert flanked_gr is not None
-    assert flanked_gr.column("starts") == [91, 124, 93, 94, 112]
-    assert flanked_gr.column("ends") == [100, 133, 102, 103, 121]
+    assert (flanked_gr.start == np.array([91, 123, 93, 94, 110])).all()
+    assert (flanked_gr.end == np.array([100, 132, 102, 103, 119])).all()
 
 
 def test_flank_start_false():
@@ -44,8 +47,8 @@ def test_flank_start_false():
     flanked_gr = gr.flank(width=10, start=False)
 
     assert flanked_gr is not None
-    assert flanked_gr.column("starts") == [113, 92, 129, 135, 95]
-    assert flanked_gr.column("ends") == [122, 101, 138, 144, 104]
+    assert (flanked_gr.start == np.array([112, 92, 128, 134, 95])).all()
+    assert (flanked_gr.end == np.array([121, 101, 137, 143, 104])).all()
 
 
 def test_flank_both_true():
@@ -54,8 +57,8 @@ def test_flank_both_true():
     flanked_gr = gr.flank(width=10, both=True)
 
     assert flanked_gr is not None
-    assert flanked_gr.column("starts") == [91, 114, 93, 94, 102]
-    assert flanked_gr.column("ends") == [110, 133, 112, 113, 121]
+    assert (flanked_gr.start == np.array([91, 113, 93, 94, 100])).all()
+    assert (flanked_gr.end == np.array([110, 132, 112, 113, 119])).all()
 
 
 def test_flank_start_false_and_both_true():
@@ -64,5 +67,5 @@ def test_flank_start_false_and_both_true():
     flanked_gr = gr.flank(width=10, start=False, both=True)
 
     assert flanked_gr is not None
-    assert flanked_gr.column("starts") == [103, 92, 119, 125, 95]
-    assert flanked_gr.column("ends") == [122, 111, 138, 144, 114]
+    assert (flanked_gr.start == np.array([102, 92, 118, 124, 95])).all()
+    assert (flanked_gr.end == np.array([121, 111, 137, 143, 114])).all()
