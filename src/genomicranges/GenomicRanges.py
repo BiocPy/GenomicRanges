@@ -1,4 +1,5 @@
-from typing import Optional, Sequence, Union
+from typing import List, Literal, Optional, Sequence, Union
+from warnings import warn
 
 import biocutils as ut
 import numpy as np
@@ -6,7 +7,7 @@ from biocframe import BiocFrame
 from iranges import IRanges
 
 from .SeqInfo import SeqInfo
-from .utils import make_strand_vector
+from .utils import _build_reverse_index, sanitize_strand_vector
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -20,19 +21,47 @@ def _guess_num_ranges(seqnames, ranges):
     return len(seqnames)
 
 
-def _validate_seq_info(seq_info):
-    if not isinstance(seq_info, SeqInfo):
-        raise TypeError("'seq_info' is not an instance of `SeqInfo` class.")
+def _validate_seqnames(seqnames, seqinfo, num_ranges):
+    if seqnames is None:
+        raise ValueError("'seqnames' cannot be None!")
+
+    if len(seqnames) != num_ranges:
+        raise ValueError(
+            "Length of 'seqnames' does not match the number of ranges.",
+            f"Need to be {num_ranges}, provided {len(seqnames)}.",
+        )
+
+    if any(x is None for x in seqnames):
+        raise ValueError("'seqnames' cannot contain None values.")
+
+    if not isinstance(seqinfo, SeqInfo):
+        raise TypeError("'seqinfo' is not an instance of `SeqInfo` class.")
+
+    if not set(seqnames).issubset(seqinfo.seqnames):
+        raise ValueError("'seqnames' contains sequences not represented in 'seqinfo'!")
 
 
-def _validate_ranges(ranges):
+def _validate_ranges(ranges, num_ranges):
+    if ranges is None:
+        raise ValueError("'ranges' cannot be None.")
+
     if not isinstance(ranges, IRanges):
         raise TypeError("'ranges' is not an instance of `IRanges`.")
 
+    if len(ranges) != num_ranges:
+        raise ValueError(
+            "Length of 'ranges' does not match the number of seqnames.",
+            f"Need to be {num_ranges}, provided {len(ranges)}.",
+        )
 
-def _validate_optional_attrs(num_ranges, strand, mcols, names):
-    if strand is not None and len(strand) != num_ranges:
-        raise ValueError("Length of 'strand' does not match the number of ranges.")
+
+def _validate_optional_attrs(strand, mcols, names, num_ranges):
+    if strand is not None:
+        if len(strand) != num_ranges:
+            raise ValueError("Length of 'strand' does not match the number of ranges.")
+
+        if any(x is None for x in strand):
+            raise ValueError("'strand' cannot contain None values.")
 
     if mcols is not None:
         if not isinstance(mcols, BiocFrame):
@@ -41,8 +70,12 @@ def _validate_optional_attrs(num_ranges, strand, mcols, names):
         if mcols.shape[0] != num_ranges:
             raise ValueError("Length of 'mcols' does not match the number of ranges.")
 
-    if names is not None and len(names) != num_ranges:
-        raise ValueError("Length of 'names' does not match the number of ranges.")
+    if names is not None:
+        if len(names) != num_ranges:
+            raise ValueError("Length of 'names' does not match the number of ranges.")
+
+        if any(x is None for x in names):
+            raise ValueError("'strand' cannot contain None values.")
 
 
 class GenomicRangesIter:
@@ -94,12 +127,12 @@ class GenomicRanges:
 
     def __init__(
         self,
-        seqnames: Union[Sequence[str], np.ndarray],
+        seqnames: Sequence[str],
         ranges: IRanges,
         strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]] = None,
         names: Optional[Sequence[str]] = None,
         mcols: Optional[BiocFrame] = None,
-        seq_info: Optional[SeqInfo] = None,
+        seqinfo: Optional[SeqInfo] = None,
         metadata: Optional[dict] = None,
         validate: bool = True,
     ):
@@ -107,10 +140,10 @@ class GenomicRanges:
 
         Args:
             seqnames:
-                Sequence or chromosome names.
+                List of sequence or chromosome names.
 
             ranges:
-                Genomic positions and widths of the range. Must have the same length as ``seqnames``.
+                Genomic positions and widths of each position. Must have the same length as ``seqnames``.
 
             strand:
                 Strand information for each genomic range. This should be 0 (any strand),
@@ -129,7 +162,7 @@ class GenomicRanges:
                 number of genomic ranges, containing per-range annotation. Defaults to None, in which case an empty
                 BiocFrame object is created.
 
-            seq_info:
+            seqinfo:
                 Sequence information. Defaults to None, in which case a
                 :py:class:`~genomicranges.SeqInfo.SeqInfo` object is created with the unique set of
                 chromosome names from ``seqnames``.
@@ -140,26 +173,22 @@ class GenomicRanges:
             validate:
                 Internal use only.
         """
-        if seq_info is None:
-            seq_info = SeqInfo(seqnames=list(set(seqnames)))
-        self._seq_info = seq_info
+        if seqinfo is None:
+            seqinfo = SeqInfo(seqnames=list(set(seqnames)))
+        self._seqinfo = seqinfo
 
-        if not isinstance(seqnames, np.ndarray):
-            seqnames = np.array(
-                [self._seq_info.seqnames.index(x) for x in list(seqnames)]
-            )
-        self._seqnames = seqnames
-
+        self._reverse_seqnames = _build_reverse_index(self._seqinfo.seqnames)
+        self._seqnames = np.array([self._reverse_seqnames[x] for x in list(seqnames)])
         self._ranges = ranges
 
         if strand is None:
             strand = np.repeat(0, len(self._seqnames))
         else:
-            strand = make_strand_vector(strand)
+            strand = sanitize_strand_vector(strand)
         self._strand = strand
 
-        if names is not None and not isinstance(names, ut.StringList):
-            names = ut.StringList(names)
+        if names is not None and not isinstance(names, ut.Names):
+            names = ut.Names(names)
         self._names = names
 
         if mcols is None:
@@ -169,10 +198,12 @@ class GenomicRanges:
         self._metadata = metadata if metadata is not None else {}
 
         if validate is True:
-            _validate_seq_info(self._seq_info)
-            _validate_ranges(self._ranges)
-            num_ranges = _guess_num_ranges(self._seqnames, self._ranges)
-            _validate_optional_attrs(num_ranges, self._strand, self._mcols, self._names)
+            _num_ranges = _guess_num_ranges(self._seqnames, self._seqinfo, self._ranges)
+            _validate_ranges(self._ranges, _num_ranges)
+            _validate_seqnames(self._seqnames, _num_ranges)
+            _validate_optional_attrs(
+                self._strand, self._mcols, self._names, _num_ranges
+            )
 
     def _define_output(self, in_place: bool = False) -> "GenomicRanges":
         if in_place is True:
@@ -196,7 +227,7 @@ class GenomicRanges:
         _strand_copy = deepcopy(self._strand)
         _names_copy = deepcopy(self._names)
         _mcols_copy = deepcopy(self._mcols)
-        _seqinfo_copy = deepcopy(self._seq_info)
+        _seqinfo_copy = deepcopy(self._seqinfo)
         _metadata_copy = deepcopy(self.metadata)
 
         current_class_const = type(self)
@@ -206,7 +237,7 @@ class GenomicRanges:
             strand=_strand_copy,
             names=_names_copy,
             mcols=_mcols_copy,
-            seq_info=_seqinfo_copy,
+            seqinfo=_seqinfo_copy,
             metadata=_metadata_copy,
         )
 
@@ -222,7 +253,7 @@ class GenomicRanges:
             strand=self._strand,
             names=self._names,
             mcols=self._mcols,
-            seq_info=self._seq_info,
+            seqinfo=self._seqinfo,
             metadata=self._metadata,
         )
 
@@ -269,8 +300,8 @@ class GenomicRanges:
         if self._mcols is not None:
             output += ", mcols=" + repr(self._mcols)
 
-        if self._seq_info is not None:
-            output += ", seq_info" + repr(self._seq_info)
+        if self._seqinfo is not None:
+            output += ", seqinfo" + repr(self._seqinfo)
 
         if len(self._metadata) > 0:
             output += ", metadata=" + ut.print_truncated_dict(self._metadata)
@@ -278,6 +309,7 @@ class GenomicRanges:
         output += ")"
         return output
 
+    # TODO: needs some work!!
     def __str__(self) -> str:
         """
         Returns:
@@ -301,35 +333,45 @@ class GenomicRanges:
                 raw_floating = raw_floating[:3] + [""] + raw_floating[3:]
             floating = ["", ""] + raw_floating
 
-            columns = []
-            for col in self._column_names:
-                data = self._data[col]
+            def show_slot(data, colname):
                 showed = ut.show_as_cell(data, indices)
-                header = [col, "<" + ut.print_type(data) + ">"]
+                header = [colname, "<" + ut.print_type(data) + ">"]
                 showed = ut.truncate_strings(
                     showed, width=max(40, len(header[0]), len(header[1]))
                 )
                 if insert_ellipsis:
                     showed = showed[:3] + ["..."] + showed[3:]
-                columns.append(header + showed)
+
+                return header + showed
+
+            columns = []
+            columns.append(show_slot(self._seqnames, "seqnames"))
+            columns.append(str(self._ranges))
+
+            if self._strand is not None:
+                columns.append(show_slot(self._strand, "strand"))
+
+            if self._mcols is not None:
+                for col in self._mcols.colnames:
+                    columns.append(show_slot(self._mcols[col], col))
 
             output += ut.print_wrapped_table(columns, floating_names=floating)
             added_table = True
 
         footer = []
-        if self.column_data is not None and self.column_data.shape[1]:
+        if self._seqinfo is not None and len(self._seqinfo):
             footer.append(
-                "column_data("
-                + str(self.column_data.shape[1])
-                + "): "
+                "seqinfo("
+                + str(len(self._seqinfo))
+                + " sequences): "
                 + ut.print_truncated_list(
-                    self.column_data.column_names,
+                    self._seqinfo.seqnames,
                     sep=" ",
                     include_brackets=False,
                     transform=lambda y: y,
                 )
             )
-        if len(self.metadata):
+        if len(self._metadata):
             footer.append(
                 "metadata("
                 + str(len(self.metadata))
@@ -347,3 +389,628 @@ class GenomicRanges:
             output += "\n".join(footer)
 
         return output
+
+    ##########################
+    ######>> seqnames <<######
+    ##########################
+
+    def get_seqnames(
+        self, as_type: Literal["factor", "list"] = "list"
+    ) -> Union[Union[np.ndarray, List[str]], np.ndarray]:
+        """
+        Returns:
+            List of sequence names.
+        """
+
+        if as_type == "factor":
+            return self._seqnames, self._seqinfo.seqnames
+        elif as_type == "list":
+            return [self._seqinfo.seqnames[x] for x in self._seqnames]
+        else:
+            raise ValueError("Argument 'as_type' must be either 'factor' or 'list'.")
+
+    def set_seqnames(
+        self, seqnames: Union[Sequence[str], np.ndarray], in_place: bool = False
+    ) -> "GenomicRanges":
+        """Set new sequence names.
+
+        Args:
+            seqnames:
+                List of sequence or chromosome names. Optionally can be a numpy array with indices mapped
+                to :py:attr:``~seqinfo``.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+
+        _validate_seqnames(seqnames, len(self))
+
+        if not isinstance(seqnames, np.ndarray):
+            seqnames = np.array(
+                [self._seqinfo.seqnames.index(x) for x in list(seqnames)]
+            )
+
+        output = self._define_output(in_place)
+        output._seqnames = seqnames
+        return output
+
+    @property
+    def seqnames(self) -> Union[Union[np.ndarray, List[str]], np.ndarray]:
+        """Alias for :py:meth:`~get_seqnames`."""
+        return self.get_seqnames()
+
+    @seqnames.setter
+    def seqnames(self, seqnames: Union[Sequence[str], np.ndarray]):
+        """Alias for :py:meth:`~set_seqnames` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'seqnames' is an in-place operation, use 'set_seqnames' instead",
+            UserWarning,
+        )
+        self.set_row_names(seqnames, in_place=True)
+
+    ########################
+    ######>> ranges <<######
+    ########################
+
+    def get_ranges(self) -> IRanges:
+        """
+        Returns:
+            An ``IRanges`` object containing the positions.
+        """
+
+        return self._ranges
+
+    def set_ranges(self, ranges: IRanges, in_place: bool = False) -> "GenomicRanges":
+        """Set new ranges.
+
+        Args:
+            ranges:
+                IRanges containing the genomic positions and widths.
+                Must have the same length as ``seqnames``.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        _validate_ranges(ranges, len(self))
+
+        output = self._define_output(in_place)
+        output._ranges = ranges
+        return output
+
+    @property
+    def ranges(self) -> IRanges:
+        """Alias for :py:meth:`~get_ranges`."""
+        return self.get_seqnames()
+
+    @ranges.setter
+    def ranges(self, ranges: IRanges):
+        """Alias for :py:meth:`~set_ranges` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'ranges' is an in-place operation, use 'set_ranges' instead",
+            UserWarning,
+        )
+        self.set_ranges(ranges, in_place=True)
+
+    ########################
+    ######>> strand <<######
+    ########################
+
+    def get_strand(self) -> np.ndarray:
+        """
+        Returns:
+            A numpy vector representing strand, 0
+            for any strand, -1 for reverse strand
+            and 1 for forward strand.
+        """
+        return self._strand
+
+    def set_strand(
+        self,
+        strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]],
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Set new strand information.
+
+        Args:
+            strand:
+                Strand information for each genomic range. This should be 0 (any strand),
+                1 (forward strand) or -1 (reverse strand). If None, all genomic ranges
+                are assumed to be 0.
+
+                May be provided as a list of strings representing the strand;
+                "+" for forward strand, "-" for reverse strand, or "*" for any strand and will be mapped
+                accordingly to 1, -1 or 0.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if strand is not None:
+            _validate_optional_attrs(strand, None, None, len(self))
+
+            if strand is None:
+                strand = np.repeat(0, len(self._seqnames))
+            else:
+                strand = sanitize_strand_vector(strand)
+
+        output = self._define_output(in_place)
+        output._strand = strand
+        return output
+
+    @property
+    def strand(self) -> np.ndarray:
+        """Alias for :py:meth:`~get_strand`."""
+        return self.get_strand()
+
+    @strand.setter
+    def strand(
+        self,
+        strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]],
+    ):
+        """Alias for :py:meth:`~set_strand` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'strand' is an in-place operation, use 'set_strand' instead",
+            UserWarning,
+        )
+        self.set_strand(strand, in_place=True)
+
+    ########################
+    ######>> names <<#######
+    ########################
+
+    def get_names(self) -> ut.Names:
+        """
+        Returns:
+            A list of names for each genomic range.
+        """
+        return self._names
+
+    def set_names(
+        self,
+        names: Optional[Sequence[str]],
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Set new names.
+
+        Args:
+            names:
+                Names for each genomic range.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if names is not None:
+            _validate_optional_attrs(None, None, names, len(self))
+
+            if not isinstance(names, ut.Names):
+                names = ut.Names(names)
+
+        output = self._define_output(in_place)
+        output._names = names
+        return output
+
+    @property
+    def names(self) -> ut.Names:
+        """Alias for :py:meth:`~get_names`."""
+        return self.get_names()
+
+    @names.setter
+    def names(
+        self,
+        names: Optional[Sequence[str]],
+    ):
+        """Alias for :py:meth:`~set_names` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'names' is an in-place operation, use 'set_names' instead",
+            UserWarning,
+        )
+        self.set_names(names, in_place=True)
+
+    ########################
+    ######>> mcols <<#######
+    ########################
+
+    def get_mcols(self) -> BiocFrame:
+        """
+        Returns:
+            A ~py:class:`~biocframe.BiocFrame.BiocFrame` containing per-range annotations.
+        """
+        return self._mcols
+
+    def set_mcols(
+        self,
+        mcols: Optional[BiocFrame],
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Set new range metadata.
+
+        Args:
+            mcols:
+                A ~py:class:`~biocframe.BiocFrame.BiocFrame` with length same as the number
+                of ranges, containing per-range annotations.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+
+        if mcols is None:
+            mcols = BiocFrame({}, number_of_rows=len(self))
+
+        _validate_optional_attrs(None, mcols, None, len(self))
+
+        output = self._define_output(in_place)
+        output._mcols = mcols
+        return output
+
+    @property
+    def mcols(self) -> BiocFrame:
+        """Alias for :py:meth:`~get_mcols`."""
+        return self.get_mcols()
+
+    @mcols.setter
+    def mcols(
+        self,
+        mcols: Optional[BiocFrame],
+    ):
+        """Alias for :py:meth:`~set_mcols` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'mcols' is an in-place operation, use 'set_mcols' instead",
+            UserWarning,
+        )
+        self.set_mcols(mcols, in_place=True)
+
+    ##########################
+    ######>> seqinfo <<#######
+    ##########################
+
+    def get_seqinfo(self) -> SeqInfo:
+        """
+        Returns:
+            A ~py:class:`~genomicranges.SeqInfo.SeqInfo` containing sequence information.
+        """
+        return self._seqinfo
+
+    def set_seqinfo(
+        self,
+        seqinfo: Optional[SeqInfo],
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Set new sequence information.
+
+        Args:
+            seqinfo:
+                A ~py:class:`~genomicranges.SeqInfo.SeqInfo` object contaning information
+                about sequences in :py:attr:`~seqnames`.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if seqinfo is None:
+            seqinfo = SeqInfo(seqnames=self.get_seqnames(as_type="list"))
+
+        _validate_seqnames(self.seqnames, seqinfo)
+
+        output = self._define_output(in_place)
+        output._seqinfo = seqinfo
+        return output
+
+    @property
+    def seqinfo(self) -> np.ndarray:
+        """Alias for :py:meth:`~get_seqinfo`."""
+        return self.get_seqinfo()
+
+    @seqinfo.setter
+    def seqinfo(
+        self,
+        seqinfo: Optional[SeqInfo],
+    ):
+        """Alias for :py:meth:`~set_seqinfo` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'seqinfo' is an in-place operation, use 'set_seqinfo' instead",
+            UserWarning,
+        )
+        self.set_seqinfo(seqinfo, in_place=True)
+
+    ###########################
+    ######>> metadata <<#######
+    ###########################
+
+    def get_metadata(self) -> dict:
+        """
+        Returns:
+            Dictionary of metadata for this object.
+        """
+        return self._metadata
+
+    def set_metadata(self, metadata: dict, in_place: bool = False) -> "GenomicRanges":
+        """Set additional metadata.
+
+        Args:
+            metadata:
+                New metadata for this object.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if not isinstance(metadata, dict):
+            raise TypeError(
+                f"`metadata` must be a dictionary, provided {type(metadata)}."
+            )
+        output = self._define_output(in_place)
+        output._metadata = metadata
+        return output
+
+    @property
+    def metadata(self) -> dict:
+        """Alias for :py:attr:`~get_metadata`."""
+        return self.get_metadata()
+
+    @metadata.setter
+    def metadata(self, metadata: dict):
+        """Alias for :py:attr:`~set_metadata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'metadata' is an in-place operation, use 'set_metadata' instead",
+            UserWarning,
+        )
+        self.set_metadata(metadata, in_place=True)
+
+    ################################
+    ######>> Single getters <<######
+    ################################
+
+    def get_start(self) -> np.ndarray:
+        """Get all start positions.
+
+        Returns:
+            NumPy array of 32-bit signed integers containing the start
+            positions for all ranges.
+        """
+        return self._ranges.get_start()
+
+    @property
+    def start(self) -> np.ndarray:
+        """Alias for :py:attr:`~get_start`."""
+        return self.get_start()
+
+    def get_end(self) -> np.ndarray:
+        """Get all end positions.
+
+        Returns:
+            NumPy array of 32-bit signed integers containing the end
+            positions for all ranges.
+        """
+        return self._ranges.get_end()
+
+    @property
+    def end(self) -> np.ndarray:
+        """Alias for :py:attr:`~get_end`."""
+        return self.get_end()
+
+    def get_width(self) -> np.ndarray:
+        """Get width of each genomic range.
+
+        Returns:
+            NumPy array of 32-bit signed integers containing the width
+            for all ranges.
+        """
+        return self._ranges.get_width()
+
+    @property
+    def width(self) -> np.ndarray:
+        """Alias for :py:attr:`~get_width`."""
+        return self.get_width()
+
+    #########################
+    ######>> Slicers <<######
+    #########################
+
+    def get_subset(self, subset: Union[str, int, bool, Sequence]) -> "GenomicRanges":
+        """Subset ``GenomicRanges``, based on their indices or names.
+
+        Args:
+            subset:
+                Indices to be extracted. This may be an integer, boolean, string,
+                or any sequence thereof, as supported by
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
+                Scalars are treated as length-1 sequences.
+
+                Strings may only be used if :py:attr:``~names`` are available (see
+                :py:meth:`~get_names`). The first occurrence of each string
+                in the names is used for extraction.
+
+        Returns:
+            A new ``GenomicRanges`` object with the ranges of interest.
+        """
+        idx, _ = ut.normalize_subscript(subset, len(self), self._names)
+
+        current_class_const = type(self)
+        return current_class_const(
+            seqnames=self._seqnames[idx],
+            ranges=self._ranges[idx],
+            strand=self._strand[idx],
+            names=self._names[idx] if self._names is not None else None,
+            mcols=self._mcols[idx, :],
+            seqinfo=self._seqinfo,
+            metadata=self._metadata,
+        )
+
+    def __getitem__(self, subset: Union[str, int, bool, Sequence]) -> "GenomicRanges":
+        """Alias to :py:attr:`~get_subset`."""
+        return self.get_subset(subset)
+
+    def set_subset(
+        self,
+        args: Union[Sequence, int, str, bool, slice, range],
+        value: "GenomicRanges",
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Add or update positions (in-place operation).
+
+        Args:
+            args:
+                Integer indices, a boolean filter, or (if the current object is
+                named) names specifying the ranges to be replaced, see
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
+
+            value:
+                An ``GenomicRanges`` object of length equal to the number of ranges
+                to be replaced, as specified by ``subset``.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        idx, _ = ut.normalize_subscript(args, len(self), self._names)
+
+        output = self._define_output(in_place)
+
+        output._seqnames[idx] = value._seqnames
+        output._ranges[idx] = value._ranges
+        output._strand[idx] = value._strand
+
+        if value._names is not None:
+            if output._names is None:
+                output._names = [""] * len(output)
+            for i, j in enumerate(idx):
+                output._names[j] = value._names[i]
+        elif output._names is not None:
+            for i, j in enumerate(idx):
+                output._names[j] = ""
+
+        if value._mcols is not None:
+            output._mcols[idx, :] = value._mcols
+
+        return output
+
+    def __setitem__(
+        self,
+        args: Union[Sequence, int, str, bool, slice, range],
+        value: "GenomicRanges",
+    ) -> "GenomicRanges":
+        """Alias to :py:attr:`~set_subset`. This operation modifies object in-place."""
+
+        warn(
+            "Modifying a subset of the object is an in-place operation, use 'set_subset' instead",
+            UserWarning,
+        )
+
+        return self.set_subset(args, value, in_place=True)
+
+    ################################
+    ######>> pandas interop <<######
+    ################################
+
+    def to_pandas(self) -> "pandas.DataFrame":
+        """Convert this ``GenomicRanges`` object into a :py:class:`~pandas.DataFrame`.
+
+        Returns:
+            A :py:class:`~pandas.DataFrame` object.
+        """
+        import pandas as pd
+
+        _rdf = self._ranges.to_pandas()
+        _rdf["seqnames"] = self._seqnames
+        _rdf["strand"] = self._strand
+
+        if self._names is not None:
+            _rdf.index = self._names
+
+        if self._mcols is not None:
+            if self._mcols.shape[1] > 0:
+                _rdf = pd.concat([_rdf, self._mcols.to_pandas()])
+
+        return _rdf
+
+    @classmethod
+    def from_pandas(cls, input: "pandas.DataFrame") -> "GenomicRanges":
+        """Create a ``GenomicRanges`` from a :py:class:`~pandas.DataFrame` object.
+
+        Args:
+            input:
+                Input data. must contain columns 'seqnames', 'start' and 'width'.
+
+        Returns:
+            A ``GenomicRanges`` object.
+        """
+        from pandas import DataFrame
+
+        if not isinstance(input, DataFrame):
+            raise TypeError("`input` is not a pandas `DataFrame` object.")
+
+        if "start" not in input.columns:
+            raise ValueError("'input' must contain column 'start'.")
+        start = input["start"].tolist()
+
+        if "width" not in input.columns:
+            raise ValueError("'input' must contain column 'width'.")
+        width = input["width"].tolist()
+
+        if "seqnames" not in input.columns:
+            raise ValueError("'input' must contain column 'seqnames'.")
+        seqnames = input["seqnames"].tolist()
+
+        ranges = IRanges(start, width)
+
+        # mcols
+        mcols_df = input.drop(columns=["start", "width", "seqnames"])
+
+        mcols = None
+        if (not mcols_df.empty) or len(mcols_df.columns) > 0:
+            mcols = BiocFrame.from_pandas(mcols_df)
+
+        names = None
+        if input.index is not None:
+            names = [str(i) for i in input.index.to_list()]
+
+        return cls(ranges=ranges, seqnames=seqnames, names=names, mcols=mcols)

@@ -10,7 +10,7 @@ __license__ = "MIT"
 STRAND_MAP = {"+": 1, "-": -1, "*": 0}
 
 
-def make_strand_vector(strand: Union[Sequence[str], Sequence[int]]) -> np.ndarray:
+def sanitize_strand_vector(strand: Union[Sequence[str], Sequence[int]]) -> np.ndarray:
     """Create a numpy representation for ``strand``.
 
     Mapping: 1 for "+" (forward strand), 0 for "*" (any strand) and -1 for "-" (reverse strand).
@@ -51,3 +51,6 @@ def make_strand_vector(strand: Union[Sequence[str], Sequence[int]]) -> np.ndarra
         TypeError(
             "'strand' must be either a numpy vector, a list of integers or strings representing strand."
         )
+
+
+
