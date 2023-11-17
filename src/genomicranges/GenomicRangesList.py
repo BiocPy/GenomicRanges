@@ -1,10 +1,7 @@
 from typing import Dict, List, Optional, Union
 
 from biocframe import BiocFrame
-from biocgenerics.combine import combine
-from biocgenerics.combine_cols import combine_cols
-from biocgenerics.combine_rows import combine_rows
-from biocutils import is_list_of_type
+from biocutils import is_list_of_type, combine_sequences
 
 from .GenomicRanges import GenomicRanges
 
@@ -357,7 +354,7 @@ class GenomicRangesList:
         """
         return self._generic_accessor("score")
 
-    def to_pandas(self) -> "DataFrame":
+    def to_pandas(self) -> "pandas.DataFrame":
         """Coerce object to a :py:class:`pandas.DataFrame`.
 
         Returns:
@@ -508,9 +505,9 @@ class GenomicRangesList:
 
         all_objects = [self] + list(other)
 
-        new_ranges = combine(*[obj.ranges for obj in all_objects])
-        new_names = combine(*[obj.names for obj in all_objects])
-        new_mcols = combine(*[obj.mcols for obj in all_objects])
+        new_ranges = combine_sequences(*[obj.ranges for obj in all_objects])
+        new_names = combine_sequences(*[obj.names for obj in all_objects])
+        new_mcols = combine_sequences(*[obj.mcols for obj in all_objects])
         new_metadata = {}
         for i, obj in enumerate(all_objects):
             if obj.metadata is not None:
@@ -522,7 +519,7 @@ class GenomicRangesList:
         )
 
 
-@combine.register(GenomicRangesList)
+@combine_sequences.register(GenomicRangesList)
 def _combine_grl(*x: GenomicRangesList):
     if not is_list_of_type(x, GenomicRangesList):
         raise ValueError(
@@ -530,25 +527,3 @@ def _combine_grl(*x: GenomicRangesList):
         )
 
     return x[0].combine(*x[1:])
-
-
-@combine_rows.register(GenomicRangesList)
-def _combine_rows_grl(*x: GenomicRangesList):
-    if not is_list_of_type(x, GenomicRangesList):
-        raise ValueError(
-            "All elements to `combine_rows` must be `GenomicRangesList` objects."
-        )
-
-    return x[0].combine(*x[1:])
-
-
-@combine_cols.register(GenomicRangesList)
-def _combine_cols_grl(*x: GenomicRangesList):
-    if not is_list_of_type(x, GenomicRangesList):
-        raise ValueError(
-            "All elements to `combine_cols` must be `GenomicRangesList` objects."
-        )
-
-    raise NotImplementedError(
-        "`combine_cols` is not implemented for `GenomicRangesList` objects."
-    )

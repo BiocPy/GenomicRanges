@@ -6,8 +6,8 @@ import numpy as np
 from biocframe import BiocFrame
 from iranges import IRanges
 
-from .SeqInfo import SeqInfo
-from .utils import _build_reverse_index, sanitize_strand_vector
+from .SeqInfo import SeqInfo, merge_SeqInfo
+from .utils import sanitize_strand_vector
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -177,7 +177,7 @@ class GenomicRanges:
             seqinfo = SeqInfo(seqnames=list(set(seqnames)))
         self._seqinfo = seqinfo
 
-        self._reverse_seqnames = _build_reverse_index(self._seqinfo.seqnames)
+        self._reverse_seqnames = ut.reverse_index.build_reverse_index(self._seqinfo.seqnames)
         self._seqnames = np.array([self._reverse_seqnames[x] for x in list(seqnames)])
         self._ranges = ranges
 
@@ -1017,3 +1017,32 @@ class GenomicRanges:
             names = [str(i) for i in input.index.to_list()]
 
         return cls(ranges=ranges, seqnames=seqnames, names=names, mcols=mcols)
+
+
+@ut.combine_sequences.register
+def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
+    has_names = False
+    for y in x:
+        if y._names is not None:
+            has_names = True
+            break
+
+    all_names = None
+    if has_names:
+        all_names = []
+        for y in x:
+            if y._names is not None:
+                all_names += y._names
+            else:
+                all_names += [""] * len(y)
+
+    return GenomicRanges(
+        ranges=ut.combine_sequences(*[y._ranges for y in x]),
+        seqnames=ut.combine_sequences(*[y._seqnames for y in x]),
+        strand=ut.combine_sequences(*[y._strand for y in x]),
+        names=all_names,
+        mcols=ut.combine_rows(*[y._mcols for y in x]),
+        seqinfo=merge_SeqInfo([y._seqinfo for y in x]),
+        metadata=x[0]._metadata,
+        validate=False,
+    )
