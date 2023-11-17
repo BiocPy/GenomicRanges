@@ -10,7 +10,9 @@ __license__ = "MIT"
 STRAND_MAP = {"+": 1, "-": -1, "*": 0}
 
 
-def sanitize_strand_vector(strand: Union[Sequence[str], Sequence[int]]) -> np.ndarray:
+def sanitize_strand_vector(
+    strand: Union[Sequence[str], Sequence[int], np.ndarray]
+) -> np.ndarray:
     """Create a numpy representation for ``strand``.
 
     Mapping: 1 for "+" (forward strand), 0 for "*" (any strand) and -1 for "-" (reverse strand).
@@ -38,15 +40,14 @@ def sanitize_strand_vector(strand: Union[Sequence[str], Sequence[int]]) -> np.nd
             raise ValueError(
                 "'strand' must only contain values 1 (forward strand), -1 (reverse strand) or 0 (reverse strand)."
             )
-
         return strand
 
-    if isinstance(strand, ut.StringList):
-        if not set(strand).issubset(["+", "-", "+"]):
+    if ut.is_list_of_type(strand, str):
+        if not set(strand).issubset(["+", "-", "*"]):
             raise ValueError("Values in 'strand' must be either +, - or *.")
-        return np.ndarray([STRAND_MAP[x] for x in strand])
+        return np.array([STRAND_MAP[x] for x in strand])
     elif ut.is_list_of_type(strand, int):
-        return np.ndarray(strand)
+        return np.array(strand)
     else:
         TypeError(
             "'strand' must be either a numpy vector, a list of integers or strings representing strand."

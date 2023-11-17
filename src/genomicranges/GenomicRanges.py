@@ -176,9 +176,7 @@ class GenomicRanges:
 
         if strand is None:
             strand = np.repeat(0, len(self._seqnames))
-        else:
-            strand = sanitize_strand_vector(strand)
-        self._strand = strand
+        self._strand = sanitize_strand_vector(strand)
 
         if names is not None and not isinstance(names, ut.Names):
             names = ut.Names(names)
@@ -344,9 +342,9 @@ class GenomicRanges:
             if self._strand is not None:
                 columns.append(show_slot(self._strand, "strand"))
 
-            if self._mcols is not None:
-                for col in self._mcols.colnames:
-                    columns.append(show_slot(self._mcols[col], col))
+            # if self._mcols is not None:
+            #     for col in self._mcols.colnames:
+            #         columns.append(show_slot(self._mcols[col], col))
 
             output += ut.print_wrapped_table(columns, floating_names=floating)
             added_table = True
@@ -866,7 +864,7 @@ class GenomicRanges:
 
         current_class_const = type(self)
         return current_class_const(
-            seqnames=self._seqnames[idx],
+            seqnames=[self._seqinfo.seqnames[x] for x in self._seqnames[idx]],
             ranges=self._ranges[idx],
             strand=self._strand[idx],
             names=self._names[idx] if self._names is not None else None,
@@ -964,7 +962,7 @@ class GenomicRanges:
 
         if self._mcols is not None:
             if self._mcols.shape[1] > 0:
-                _rdf = pd.concat([_rdf, self._mcols.to_pandas()])
+                _rdf = pd.concat([_rdf, self._mcols.to_pandas()], axis=1)
 
         return _rdf
 
