@@ -177,7 +177,9 @@ class GenomicRanges:
             seqinfo = SeqInfo(seqnames=list(set(seqnames)))
         self._seqinfo = seqinfo
 
-        self._reverse_seqnames = ut.reverse_index.build_reverse_index(self._seqinfo.seqnames)
+        self._reverse_seqnames = ut.reverse_index.build_reverse_index(
+            self._seqinfo.seqnames
+        )
         self._seqnames = np.array([self._reverse_seqnames[x] for x in list(seqnames)])
         self._ranges = ranges
 
