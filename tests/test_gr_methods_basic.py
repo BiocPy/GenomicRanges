@@ -66,7 +66,7 @@ def test_slices():
             }
         ),
     )
-    
+
     subset_gr = gr[5:8]
 
     assert subset_gr is not None
