@@ -3,6 +3,7 @@ from genomicranges import GenomicRanges
 from iranges import IRanges
 from biocframe import BiocFrame
 from random import random
+import pandas as pd
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -35,3 +36,23 @@ def test_create_gr():
 
     assert gr is not None
     assert len(gr) == 10
+
+
+def test_from_pandas():
+    df_src = pd.DataFrame(
+        {
+            "seqnames": ["chr1"],
+            "start": [101],
+            "width": [8],
+        }
+    )
+
+    g_src = GenomicRanges.from_pandas(df_src)
+
+    assert g_src is not None
+    assert isinstance(g_src, GenomicRanges)
+    assert g_src.mcols is not None
+    assert isinstance(g_src.mcols, BiocFrame)
+    assert len(g_src) == 1
+    assert g_src.names is not None
+    assert g_src.strand is not None

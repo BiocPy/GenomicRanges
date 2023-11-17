@@ -30,13 +30,15 @@ df_tgt = pd.DataFrame(
             "chr3",
             "chr3",
         ],
-        "starts": range(101, 111),
-        "ends": range(121, 131),
+        "start": range(101, 111),
+        "end": range(121, 131),
         "strand": ["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
         "score": range(0, 10),
         "GC": [random() for _ in range(10)],
     }
 )
+
+df_tgt["width"] = df_tgt["end"] - df_tgt["start"]
 
 g_tgt = genomicranges.from_pandas(df_tgt)
 

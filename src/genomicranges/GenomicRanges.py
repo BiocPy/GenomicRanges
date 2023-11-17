@@ -37,9 +37,6 @@ def _validate_seqnames(seqnames, seqinfo, num_ranges):
     if not isinstance(seqinfo, SeqInfo):
         raise TypeError("'seqinfo' is not an instance of `SeqInfo` class.")
 
-    if not set(seqnames).issubset(seqinfo.seqnames):
-        raise ValueError("'seqnames' contains sequences not represented in 'seqinfo'!")
-
 
 def _validate_ranges(ranges, num_ranges):
     if ranges is None:
@@ -113,17 +110,12 @@ class GenomicRangesIter:
 
 
 class GenomicRanges:
-    """``GenomicRanges`` provides a container class to represent and operate over genomic regions and annotations.
-
-    Additionally, (checkout
-    :py:class:`~genomicranges.SeqInfo.SeqInfo`) might also contain metadata about the
-    genome, e.g. if it's circular (`is_circular`) or not.
+    """``GenomicRanges`` provides a container class to represent and operate 
+    over genomic regions and annotations.
 
     Note: The documentation for some of the methods are derived from the
     `GenomicRanges R/Bioconductor package <https://github.com/Bioconductor/GenomicRanges>`_.
     """
-
-    required_columns = ["seqnames", "starts", "ends", "strand"]
 
     def __init__(
         self,
@@ -177,7 +169,9 @@ class GenomicRanges:
             seqinfo = SeqInfo(seqnames=list(set(seqnames)))
         self._seqinfo = seqinfo
 
-        self._reverse_seqnames = ut.reverse_index.build_reverse_index(self._seqinfo.seqnames)
+        self._reverse_seqnames = ut.reverse_index.build_reverse_index(
+            self._seqinfo.seqnames
+        )
         self._seqnames = np.array([self._reverse_seqnames[x] for x in list(seqnames)])
         self._ranges = ranges
 
@@ -198,9 +192,9 @@ class GenomicRanges:
         self._metadata = metadata if metadata is not None else {}
 
         if validate is True:
-            _num_ranges = _guess_num_ranges(self._seqnames, self._seqinfo, self._ranges)
+            _num_ranges = _guess_num_ranges(self._seqnames, self._ranges)
             _validate_ranges(self._ranges, _num_ranges)
-            _validate_seqnames(self._seqnames, _num_ranges)
+            _validate_seqnames(self._seqnames, self._seqinfo, _num_ranges)
             _validate_optional_attrs(
                 self._strand, self._mcols, self._names, _num_ranges
             )
