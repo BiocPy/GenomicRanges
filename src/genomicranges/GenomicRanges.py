@@ -1036,8 +1036,8 @@ class GenomicRanges:
         ignore_strand: bool = False,
         in_place: bool = False,
     ) -> "GenomicRanges":
-        """Compute flanking ranges for each range. The logic for this comes from
-        the `R/GenomicRanges` & `IRanges` packages.
+        """Compute flanking ranges for each range. The logic for this comes from the `R/GenomicRanges` & `IRanges`
+        packages.
 
         If ``start`` is ``True`` for a given range, the flanking occurs at the `start`,
         otherwise the `end`.
@@ -1106,9 +1106,7 @@ class GenomicRanges:
             tstart = 0
             if both is True:
                 tstart = (
-                    all_starts[idx] - abs(width)
-                    if sf
-                    else all_ends[idx] - abs(width)
+                    all_starts[idx] - abs(width) if sf else all_ends[idx] - abs(width)
                 )
             else:
                 if width >= 0:
