@@ -1,3 +1,4 @@
+import math
 from typing import List, Literal, Optional, Sequence, Union
 from warnings import warn
 
@@ -1115,7 +1116,95 @@ class GenomicRanges:
                     tstart = all_starts[idx] if sf else all_ends[idx] + width
 
             new_starts.append(tstart)
-            new_widths.append((width * (2 if both else 1) - 1))
+            new_widths.append((width * (2 if both else 1)))
+
+        output = self._define_output(in_place)
+        output._ranges = IRanges(new_starts, new_widths)
+        return output
+
+    def resize(
+        self,
+        width: int,
+        fix: Literal["start", "end", "center"] = "start",
+        ignore_strand: bool = False,
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Resize ranges to the specified ``width`` where either the ``start``, ``end``,
+        or ``center`` is used as an anchor.
+
+        Args:
+            width:
+                Width to resize, cannot be negative!
+
+            fix:
+                Fix positions by "start", "end", or "center".
+                Defaults to "start".
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Raises:
+            ValueError:
+                If parameter ``fix`` is neither `start`, `end`, nor `center`.
+                If ``width`` is negative.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the resized regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+
+        if width < 0:
+            raise ValueError("`width` cannot be negative!")
+
+        if fix not in ["start", "end", "center"]:
+            raise ValueError(
+                f"`fix` must be either 'start', 'end' or 'center', provided {fix}"
+            )
+
+        new_starts = []
+        new_widths = []
+
+        for idx, row in self:
+            ts = None
+            te = None
+
+            _strand = row.strand[0]
+            _start = row.start[0]
+            _end = row.end[0]
+
+            if ignore_strand is True or _strand != -1:
+                if fix == "start":
+                    ts = _start
+                    te = _start + width - 1
+                elif fix == "center":
+                    tmid = math.ceil((_start + _end) / 2)
+                    twidthby2 = (
+                        math.floor(width / 2) if _strand == 1 else math.ceil(width / 2)
+                    )
+                    ts = tmid - twidthby2
+                    te = ts + width - 1
+                else:
+                    te = _end
+                    ts = _end - width   
+            elif _strand == -1:
+                if fix == "end":
+                    ts = _start
+                    te = _start + width - 1
+                elif fix == "center":
+                    tmid = math.ceil((_start + _end) / 2)
+                    twidthby2 = math.ceil(width / 2)
+                    ts = tmid - twidthby2
+                    te = ts + width - 1
+                else:
+                    te = _end
+                    ts = _end - width
+
+            new_starts.append(ts)
+            new_widths.append(te - ts)
 
         output = self._define_output(in_place)
         output._ranges = IRanges(new_starts, new_widths)

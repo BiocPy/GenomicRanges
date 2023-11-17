@@ -38,7 +38,7 @@ def test_flank_default():
 
     assert flanked_gr is not None
     assert (flanked_gr.start == np.array([91, 123, 93, 94, 110])).all()
-    assert (flanked_gr.end == np.array([100, 132, 102, 103, 119])).all()
+    assert (flanked_gr.width == np.array([10, 10, 10, 10, 10])).all()
 
 
 def test_flank_start_false():
@@ -48,7 +48,7 @@ def test_flank_start_false():
 
     assert flanked_gr is not None
     assert (flanked_gr.start == np.array([112, 92, 128, 134, 95])).all()
-    assert (flanked_gr.end == np.array([121, 101, 137, 143, 104])).all()
+    assert (flanked_gr.width == np.array([10, 10, 10, 10, 10])).all()
 
 
 def test_flank_both_true():
@@ -58,7 +58,7 @@ def test_flank_both_true():
 
     assert flanked_gr is not None
     assert (flanked_gr.start == np.array([91, 113, 93, 94, 100])).all()
-    assert (flanked_gr.end == np.array([110, 132, 112, 113, 119])).all()
+    assert (flanked_gr.width == np.array([20, 20, 20, 20, 20])).all()
 
 
 def test_flank_start_false_and_both_true():
@@ -68,4 +68,4 @@ def test_flank_start_false_and_both_true():
 
     assert flanked_gr is not None
     assert (flanked_gr.start == np.array([102, 92, 118, 124, 95])).all()
-    assert (flanked_gr.end == np.array([121, 111, 137, 143, 114])).all()
+    assert (flanked_gr.width == np.array([20, 20, 20, 20, 20])).all()
