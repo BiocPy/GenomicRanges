@@ -51,6 +51,3 @@ def sanitize_strand_vector(strand: Union[Sequence[str], Sequence[int]]) -> np.nd
         TypeError(
             "'strand' must be either a numpy vector, a list of integers or strings representing strand."
         )
-
-
-

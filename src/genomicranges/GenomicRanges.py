@@ -938,7 +938,10 @@ class GenomicRanges:
         args: Union[Sequence, int, str, bool, slice, range],
         value: "GenomicRanges",
     ) -> "GenomicRanges":
-        """Alias to :py:attr:`~set_subset`. This operation modifies object in-place."""
+        """Alias to :py:attr:`~set_subset`.
+
+        This operation modifies object in-place.
+        """
 
         warn(
             "Modifying a subset of the object is an in-place operation, use 'set_subset' instead",
