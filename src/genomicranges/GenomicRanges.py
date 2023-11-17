@@ -110,8 +110,7 @@ class GenomicRangesIter:
 
 
 class GenomicRanges:
-    """``GenomicRanges`` provides a container class to represent and operate 
-    over genomic regions and annotations.
+    """``GenomicRanges`` provides a container class to represent and operate over genomic regions and annotations.
 
     Note: The documentation for some of the methods are derived from the
     `GenomicRanges R/Bioconductor package <https://github.com/Bioconductor/GenomicRanges>`_.
