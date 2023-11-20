@@ -1157,15 +1157,12 @@ class GenomicRanges:
             (in-place-modified) original.
         """
         _REV_FIX = {"start": "end", "end": "start", "center": "center"}
-        print(self.strand)
         if ignore_strand is False:
             fix = [fix] * len(self)
             for i in range(len(self.strand)):
                 if self._strand[i] == -1:
                     fix[i] = _REV_FIX[fix[i]]
 
-
-        print("fix vector", fix)
         output = self._define_output(in_place)
         output._ranges = self._ranges.resize(width=width, fix=fix)
         return output
