@@ -1129,8 +1129,8 @@ class GenomicRanges:
         ignore_strand: bool = False,
         in_place: bool = False,
     ) -> "GenomicRanges":
-        """Resize ranges to the specified ``width`` where either the ``start``, ``end``,
-        or ``center`` is used as an anchor.
+        """Resize ranges to the specified ``width`` where either the ``start``, ``end``, or ``center`` is used as an
+        anchor.
 
         Args:
             width:
