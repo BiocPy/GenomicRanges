@@ -2,30 +2,31 @@ import pytest
 import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
 from random import random
-import genomicranges
+from iranges import IRanges
+from biocframe import BiocFrame
+import numpy as np
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-df_gr = pd.DataFrame(
-    {
-        "seqnames": [
-            "chr1",
-            "chr2",
-            "chr3",
-            "chr2",
-            "chr3",
-        ],
-        "starts": [101, 102, 103, 104, 106],
-        "ends": [112, 123, 128, 134, 111],
-        "strand": ["*", "-", "*", "+", "-"],
-        "score": range(0, 5),
-        "GC": [random() for _ in range(5)],
-    }
+gr = GenomicRanges(
+    seqnames=[
+        "chr1",
+        "chr2",
+        "chr3",
+        "chr2",
+        "chr3",
+    ],
+    ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
+    strand=["*", "-", "*", "+", "-"],
+    mcols=BiocFrame(
+        {
+            "score": range(0, 5),
+            "GC": [random() for _ in range(5)],
+        }
+    ),
 )
-
-gr = genomicranges.from_pandas(df_gr)
 
 
 def test_resize_default():
@@ -34,8 +35,8 @@ def test_resize_default():
     resized_gr = gr.resize(width=10)
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [101, 114, 103, 104, 102]
-    assert resized_gr.column("ends") == [110, 123, 112, 113, 111]
+    assert (resized_gr.start  == np.array([101, 113, 103, 104, 100])).all()
+    assert (resized_gr.width  == np.array([10] * 5)).all()
 
 
 def test_resize_fix_end():
@@ -44,8 +45,8 @@ def test_resize_fix_end():
     resized_gr = gr.resize(width=10, fix="end")
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [103, 102, 119, 125, 106]
-    assert resized_gr.column("ends") == [112, 111, 128, 134, 115]
+    assert (resized_gr.start  == np.array([102, 102, 118, 124, 105])).all()
+    assert (resized_gr.width  == np.array([10] * 5)).all()
 
 
 def test_resize_ignore_strand():
@@ -54,8 +55,8 @@ def test_resize_ignore_strand():
     resized_gr = gr.resize(width=10, ignore_strand=True)
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [101, 102, 103, 104, 106]
-    assert resized_gr.column("ends") == [110, 111, 112, 113, 115]
+    assert (resized_gr.start  == np.array([101, 102, 103, 104, 105])).all()
+    assert (resized_gr.width  == np.array([10] * 5)).all()
 
 
 def test_resize_fix_end_ignore_strand():
@@ -64,8 +65,8 @@ def test_resize_fix_end_ignore_strand():
     resized_gr = gr.resize(width=10, fix="end", ignore_strand=True)
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [103, 114, 119, 125, 102]
-    assert resized_gr.column("ends") == [112, 123, 128, 134, 111]
+    assert (resized_gr.start  == np.array([102, 113, 118, 124, 100])).all()
+    assert (resized_gr.width  == np.array([10] * 5)).all()
 
 
 def test_resize_fix_center_ignore_strand():
@@ -74,8 +75,8 @@ def test_resize_fix_center_ignore_strand():
     resized_gr = gr.resize(width=10, fix="center", ignore_strand=True)
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [102, 108, 111, 114, 104]
-    assert resized_gr.column("ends") == [111, 117, 120, 123, 113]
+    assert (resized_gr.start  == np.array([101, 107, 110, 114, 102])).all()
+    assert (resized_gr.width  == np.array([10] * 5)).all()
 
 
 def test_resize_fix_center():
@@ -84,8 +85,8 @@ def test_resize_fix_center():
     resized_gr = gr.resize(width=10, fix="center")
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [102, 108, 111, 114, 104]
-    assert resized_gr.column("ends") == [111, 117, 120, 123, 113]
+    assert (resized_gr.start  == np.array([101, 107, 110, 114, 102])).all()
+    assert (resized_gr.width  == np.array([10] * 5)).all()
 
 
 def test_resize_default_width_odd():
@@ -94,8 +95,8 @@ def test_resize_default_width_odd():
     resized_gr = gr.resize(width=11)
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [101, 113, 103, 104, 101]
-    assert resized_gr.column("ends") == [111, 123, 113, 114, 111]
+    assert (resized_gr.start  == np.array([101, 112, 103, 104, 99])).all()
+    assert (resized_gr.width  == np.array([11] * 5)).all()
 
 
 def test_resize_default_width_odd_fix_center():
@@ -104,5 +105,5 @@ def test_resize_default_width_odd_fix_center():
     resized_gr = gr.resize(width=11, fix="center")
 
     assert resized_gr is not None
-    assert resized_gr.column("starts") == [101, 107, 110, 114, 103]
-    assert resized_gr.column("ends") == [111, 117, 120, 124, 113]
+    assert (resized_gr.start  == np.array([101, 107, 110, 113, 102])).all()
+    assert (resized_gr.width  == np.array([11] * 5)).all()
