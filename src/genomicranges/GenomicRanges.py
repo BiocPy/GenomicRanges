@@ -1166,6 +1166,92 @@ class GenomicRanges:
         output._ranges = self._ranges.resize(width=width, fix=fix)
         return output
 
+    def shift(
+        self, shift: Union[int, List[int], np.ndarray] = 0, in_place: bool = False
+    ) -> "GenomicRanges":
+        """Shift all intervals.
+
+        Args:
+            shift:
+                Shift interval. If shift is 0, the current
+                object is returned. Defaults to 0.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the shifted regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+        output = self._define_output(in_place)
+
+        if shift == 0:
+            return self
+
+        output._ranges = self._ranges.shift(shift=shift)
+        return output
+
+    def promoters(
+        self, upstream: int = 2000, downstream: int = 200, in_place: bool = False
+    ) -> "GenomicRanges":
+        """Extend intervals to promoter regions.
+
+        Generates promoter ranges relative to the transcription start site (TSS),
+        where TSS is start(x). The promoter range is expanded around the TSS
+        according to the upstream and downstream arguments. Upstream represents
+        the number of nucleotides in the 5' direction and downstream the number
+        in the 3' direction. The full range is defined as, (`start(x) - upstream`)
+        to (`start(x) + downstream - 1`).
+
+        Args:
+            upstream:
+                Number of positions to extend in the 5' direction.
+                Defaults to 2000.
+
+            downstream:
+                Number of positions to extend in the 3' direction.
+                Defaults to 200.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the shifted regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+        all_starts = self.start
+        all_ends = self.end
+        all_strands = self.strand
+
+        start_flags = [all_strands[i] != -1 for i in range(len(all_strands))]
+
+        new_starts = np.array(
+            [
+                (
+                    all_starts[idx] - upstream
+                    if start_flags[idx]
+                    else all_ends[idx] - downstream
+                )
+                for idx in range(len(start_flags))
+            ]
+        )
+        new_ends = np.array(
+            [
+                (
+                    all_starts[idx] + downstream
+                    if start_flags[idx]
+                    else all_ends[idx] + upstream
+                )
+                for idx in range(len(start_flags))
+            ]
+        )
+
+        output = self._define_output(in_place)
+        output._ranges = IRanges(start=new_starts, width=(new_ends - new_starts))
+        return output
+
 
 @ut.combine_sequences.register
 def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
