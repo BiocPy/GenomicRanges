@@ -1347,6 +1347,52 @@ class GenomicRanges:
         output._ranges.width = np.array(new_ends) - output._ranges.start
         return output
 
+    def narrow(
+        self,
+        start: Optional[Union[int, List[int], np.ndarray]] = None,
+        width: Optional[Union[int, List[int], np.ndarray]] = None,
+        end: Optional[Union[int, List[int], np.ndarray]] = None,
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Narrow genomic positions by provided ``start``, ``width`` and ``end`` parameters.
+
+        Important: these parameters are relative shift in positions for each range.
+
+        Args:
+            start:
+                Relative start position. Defaults to None.
+
+            width:
+                Relative end position. Defaults to None.
+
+            end:
+                Relative width of the interval. Defaults to None.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the trimmed regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+        if start is not None and end is not None and width is not None:
+            raise ValueError(
+                "Only provide two of the three parameters - `start`, "
+                "`end` and `width` but not all!"
+            )
+
+        if width is not None:
+            if start is None and end is None:
+                raise ValueError(
+                    "If width is provided, either start or end must be provided."
+                )
+
+        narrow_ir = self._ranges.narrow(start=start, end=end, width=width)
+        output = self._define_output(in_place)
+        output._ranges = narrow_ir
+        return output
+
 
 @ut.combine_sequences.register
 def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
