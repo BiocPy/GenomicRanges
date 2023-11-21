@@ -732,7 +732,7 @@ class GenomicRanges:
         if seqinfo is None:
             seqinfo = SeqInfo(seqnames=self.get_seqnames(as_type="list"))
 
-        _validate_seqnames(self.seqnames, seqinfo)
+        _validate_seqnames(self.seqnames, seqinfo, len(self))
 
         output = self._define_output(in_place)
         output._seqinfo = seqinfo
@@ -1217,7 +1217,7 @@ class GenomicRanges:
                 Whether to modify the ``GenomicRanges`` object in place.
 
         Returns:
-            A modified ``GenomicRanges`` object with the shifted regions,
+            A modified ``GenomicRanges`` object with the promoter regions,
             either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
@@ -1251,6 +1251,97 @@ class GenomicRanges:
         output = self._define_output(in_place)
         output._ranges = IRanges(start=new_starts, width=(new_ends - new_starts))
         return output
+
+    def restrict(
+        self,
+        start: Optional[Union[int, List[int], np.ndarray]] = None,
+        end: Optional[Union[int, List[int], np.ndarray]] = None,
+        keep_all_ranges: bool = False,
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Restrict ranges to a given start and end positions.
+
+        Args:
+            start:
+                Start position. Defaults to None.
+
+            end:
+                End position. Defaults to None.
+
+            keep_all_ranges:
+                Whether to keep intervals that do not overlap with start and end.
+                Defaults to False.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the restricted regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+
+        restricted_ir = self._ranges.restrict(
+            start=start, end=end, keep_all_ranges=True
+        )
+        output = self._define_output(in_place)
+        output._ranges = restricted_ir
+
+        if keep_all_ranges is True:
+            restricted_ir._width = np.clip(restricted_ir.width, 0, None)
+        else:
+            _flt_idx = list(np.where(restricted_ir.width > -1)[0])
+            output = output[_flt_idx]
+
+        return output
+
+    def trim(self, in_place: bool = False) -> "GenomicRanges":
+        """Trim sequences outside of bounds for non-circular chromosomes.
+
+        Args:
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the trimmed regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+
+        if self.seq_info is None:
+            raise ValueError("Cannot trim ranges. `seqinfo` is not available.")
+
+        seqinfos = self.seq_info
+        seqlengths = seqinfos.seqlengths
+        is_circular = seqinfos.is_circular
+
+        if seqlengths is None:
+            raise ValueError("Cannot trim ranges. `seqlengths` is not available.")
+
+        if is_circular is None:
+            warn("considering all sequences as non-circular...")
+
+        all_chrs = self._seqnames
+        all_ends = self.end
+
+        keepers = []
+        for i in range(len(self)):
+            keep = True
+
+            _t_chr = all_chrs[i]
+            s_idx = seqinfos.seqnames.index(_t_chr)
+            if (
+                is_circular is not None
+                and is_circular[s_idx] is False
+                and all_ends[i] > seqlengths[s_idx]
+            ):
+                keep = False
+
+            if keep:
+                keepers.append(i)
+
+        output = self._define_output(in_place)
+        return output[keepers]
 
 
 @ut.combine_sequences.register

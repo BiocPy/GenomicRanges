@@ -56,18 +56,18 @@ def test_restrict():
 
     assert restrict_gr is not None
     assert (restrict_gr.start == np.array([114] * 3)).all()
-    assert (restrict_gr.width == np.array([123, 128, 134])).all()
+    assert (restrict_gr.width == np.array([9, 14, 20])).all()
 
     restrict_gr = gr.restrict(start=114, end=140, keep_all_ranges=True)
 
     assert restrict_gr is not None
     assert (restrict_gr.start == np.array([114] * 5)).all()
-    assert (restrict_gr.width == np.array([112, 123, 128, 134, 111])).all()
+    assert (restrict_gr.width == np.array([0, 9, 14,20, 0])).all()
 
     restrict_gr = gr.restrict(start=1200)
 
     assert restrict_gr is not None
-    assert restrict_gr.dims == (0, 6)
+    assert len(restrict_gr) == 0
 
 
 def test_narrow():
