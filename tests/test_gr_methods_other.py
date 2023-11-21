@@ -62,7 +62,7 @@ def test_restrict():
 
     assert restrict_gr is not None
     assert (restrict_gr.start == np.array([114] * 5)).all()
-    assert (restrict_gr.width == np.array([0, 9, 14,20, 0])).all()
+    assert (restrict_gr.width == np.array([0, 9, 14, 20, 0])).all()
 
     restrict_gr = gr.restrict(start=1200)
 
