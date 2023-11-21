@@ -729,13 +729,19 @@ class GenomicRanges:
             A modified ``GenomicRanges`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
-        if seqinfo is None:
-            seqinfo = SeqInfo(seqnames=self.get_seqnames(as_type="list"))
+        seqnames = self.get_seqnames(as_type="list")
 
-        _validate_seqnames(self.seqnames, seqinfo, len(self))
+        if seqinfo is None:
+            seqinfo = SeqInfo(seqnames=seqnames)
+
+        self._reverse_seqindex = None
+        new_seqnames = self._sanitize_seqnames(seqnames, seqinfo)
+
+        _validate_seqnames(new_seqnames, seqinfo, len(self))
 
         output = self._define_output(in_place)
         output._seqinfo = seqinfo
+        output._seqnames = new_seqnames
         return output
 
     @property
@@ -1308,12 +1314,11 @@ class GenomicRanges:
             (in-place-modified) original.
         """
 
-        if self.seq_info is None:
+        if self.seqinfo is None:
             raise ValueError("Cannot trim ranges. `seqinfo` is not available.")
 
-        seqinfos = self.seq_info
-        seqlengths = seqinfos.seqlengths
-        is_circular = seqinfos.is_circular
+        seqlengths = self.seqinfo.seqlengths
+        is_circular = self.seqinfo.is_circular
 
         if seqlengths is None:
             raise ValueError("Cannot trim ranges. `seqlengths` is not available.")
@@ -1324,24 +1329,23 @@ class GenomicRanges:
         all_chrs = self._seqnames
         all_ends = self.end
 
-        keepers = []
+        new_ends = []
         for i in range(len(self)):
-            keep = True
-
             _t_chr = all_chrs[i]
-            s_idx = seqinfos.seqnames.index(_t_chr)
+            _end = all_ends[i]
+
             if (
                 is_circular is not None
-                and is_circular[s_idx] is False
-                and all_ends[i] > seqlengths[s_idx]
+                and is_circular[_t_chr] is False
+                and _end > seqlengths[_t_chr]
             ):
-                keep = False
+                _end = seqlengths[_t_chr] + 1
 
-            if keep:
-                keepers.append(i)
+            new_ends.append(_end)
 
         output = self._define_output(in_place)
-        return output[keepers]
+        output._ranges.width = np.array(new_ends) - output._ranges.start
+        return output
 
 
 @ut.combine_sequences.register
