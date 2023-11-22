@@ -191,8 +191,6 @@ class GenomicRanges:
 
         self._metadata = metadata if metadata is not None else {}
 
-        print("in constructor", self._mcols)
-
         if validate is True:
             _num_ranges = _guess_num_ranges(self._seqnames, self._ranges)
             _validate_ranges(self._ranges, _num_ranges)
