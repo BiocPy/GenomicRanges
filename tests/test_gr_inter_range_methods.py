@@ -35,10 +35,10 @@ def test_reduce():
     reduced_gr = gr.reduce()
 
     assert reduced_gr is not None
-    assert reduced_gr.seqnames == ["chr1", "chr2", "chr3", "chr2", "chr3"]
-    assert (reduced_gr.start == np.array([101, 102, 103, 104, 105])).all()
-    assert (reduced_gr.width == np.array([11, 21, 25, 30, 5])).all()
-    assert (reduced_gr.strand == np.array([0, -1, 0, 1, -1])).all()
+    assert reduced_gr.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (reduced_gr.start == np.array([101, 104, 102, 105, 103])).all()
+    assert (reduced_gr.width == np.array([11, 30, 21, 5, 25])).all()
+    assert (reduced_gr.strand == np.array([0, 1, -1, -1, 0])).all()
 
     reduced_gr = gr.reduce(ignore_strand=True)
 
@@ -55,10 +55,10 @@ def test_reduce_with_gapwidth():
     reduced_gr = gr.reduce(min_gap_width=10)
 
     assert reduced_gr is not None
-    assert reduced_gr.seqnames == ["chr1", "chr2", "chr3", "chr2", "chr3"]
-    assert (reduced_gr.start == np.array([101, 102, 103, 104, 105])).all()
-    assert (reduced_gr.width == np.array([11, 21, 25, 30, 5])).all()
-    assert (reduced_gr.strand == np.array([0, -1, 0, 1, -1])).all()
+    assert reduced_gr.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (reduced_gr.start == np.array([101, 104, 102, 105, 103])).all()
+    assert (reduced_gr.width == np.array([11, 30, 21, 5, 25])).all()
+    assert (reduced_gr.strand == np.array([0, 1, -1, -1, 0])).all()
 
 
 def test_reduce_with_gapwidth_with_reverse_map():
@@ -67,11 +67,11 @@ def test_reduce_with_gapwidth_with_reverse_map():
     reduced_gr = gr.reduce(min_gap_width=10, with_reverse_map=True)
 
     assert reduced_gr is not None
-    assert reduced_gr.seqnames == ["chr1", "chr2", "chr3", "chr2", "chr3"]
-    assert (reduced_gr.start == np.array([101, 102, 103, 104, 105])).all()
-    assert (reduced_gr.width == np.array([11, 21, 25, 30, 5])).all()
-    assert (reduced_gr.strand == np.array([0, -1, 0, 1, -1])).all()
-    assert reduced_gr.mcols.column("revmap") == [[i] for i in range(5)]
+    assert reduced_gr.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (reduced_gr.start == np.array([101, 104, 102, 105, 103])).all()
+    assert (reduced_gr.width == np.array([11, 30, 21, 5, 25])).all()
+    assert (reduced_gr.strand == np.array([0, 1, -1, -1, 0])).all()
+    assert reduced_gr.mcols.column("revmap") == [[0], [3], [1], [4], [2]]
 
 
 def test_range():
@@ -80,10 +80,10 @@ def test_range():
     range_gr = gr.range()
 
     assert range_gr is not None
-    assert range_gr.seqnames == ["chr1", "chr2", "chr3", "chr2", "chr3"]
-    assert (range_gr.start == np.array([101, 102, 103, 104, 105])).all()
-    assert (range_gr.width == np.array([11, 21, 25, 30, 5])).all()
-    assert (range_gr.strand == np.array([0, -1, 0, 1, -1])).all()
+    assert range_gr.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (range_gr.start == np.array([101, 104, 102, 105, 103])).all()
+    assert (range_gr.width == np.array([11, 30, 21, 5, 25])).all()
+    assert (range_gr.strand == np.array([0, 1, -1, -1, 0])).all()
 
     range_gr = gr.range(ignore_strand=True)
 
@@ -94,49 +94,52 @@ def test_range():
     assert (range_gr.strand == np.array([0, 0, 0])).all()
 
 
-# def test_gaps():
-#     assert gr is not None
+def test_gaps():
+    assert gr is not None
 
-#     gapped_gr = gr.gaps()
+    print("gr seqnames", gr.seqnames, gr._seqnames)
+    print("gr., seqinfo", gr.seqinfo.seqnames)
 
-#     assert gapped_gr is not None
-#     assert gapped_gr.column("seqnames") == ["chr1", "chr2", "chr2", "chr3"]
-#     assert gapped_gr.column("starts") == [1, 1, 104, 1]
-#     assert gapped_gr.column("ends") == [100, 101, 108, 103]
-#     assert gapped_gr.column("strand") == ["*", "-", "-", "+"]
+    out = gr.gaps()
+
+    assert out is not None
+    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([1] * 5)).all()
+    assert (out.width == np.array([100, 103, 101, 104, 102])).all()
+    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
 
 
 # def test_gaps_with_start():
 #     assert gr is not None
 
-#     gapped_gr = gr.gaps(start=5)
+#     out = gr.gaps(start=5)
 
-#     assert gapped_gr is not None
-#     assert gapped_gr.column("seqnames") == ["chr1", "chr2", "chr2", "chr3"]
-#     assert gapped_gr.column("starts") == [5, 5, 104, 5]
-#     assert gapped_gr.column("ends") == [100, 101, 108, 103]
-#     assert gapped_gr.column("strand") == ["*", "-", "-", "+"]
+#     assert out is not None
+#     assert out.seqnames == ["chr1", "chr2", "chr2", "chr3"]
+#     assert out.start == [5, 5, 104, 5]
+#     assert out.width == [100, 101, 108, 103]
+#     assert out.strand == ["*", "-", "-", "+"]
 
 
 # def test_gaps_with_start_filter():
 #     assert gr is not None
 
-#     gapped_gr = gr.gaps(start=103)
+#     out = gr.gaps(start=103)
 
-#     assert gapped_gr is not None
-#     assert gapped_gr.column("seqnames") == ["chr2", "chr3"]
-#     assert gapped_gr.column("starts") == [104, 103]
-#     assert gapped_gr.column("ends") == [108, 103]
-#     assert gapped_gr.column("strand") == ["-", "+"]
+#     assert out is not None
+#     assert out.seqnames == ["chr2", "chr3"]
+#     assert out.start == [104, 103]
+#     assert out.width == [108, 103]
+#     assert out.strand == ["-", "+"]
 
 
 # def test_gaps_with_end():
 #     assert gr is not None
 
-#     gapped_gr = gr.gaps(end={"chr1": 120, "chr2": 120, "chr3": 120})
+#     out = gr.gaps(end={"chr1": 120, "chr2": 120, "chr3": 120})
 
-#     assert gapped_gr is not None
-#     assert gapped_gr.column("seqnames") == [
+#     assert out is not None
+#     assert out.seqnames == [
 #         "chr1",
 #         "chr1",
 #         "chr1",
@@ -149,8 +152,8 @@ def test_range():
 #         "chr3",
 #         "chr3",
 #     ]
-#     assert gapped_gr.column("starts") == [1, 1, 1, 1, 1, 1, 104, 112, 1, 1, 1]
-#     assert gapped_gr.column("ends") == [
+#     assert out.start == [1, 1, 1, 1, 1, 1, 104, 112, 1, 1, 1]
+#     assert out.width == [
 #         100,
 #         120,
 #         120,
@@ -164,7 +167,7 @@ def test_range():
 #         120,
 #     ]
 
-#     assert gapped_gr.column("strand") == [
+#     assert out.strand == [
 #         "*",
 #         "+",
 #         "-",

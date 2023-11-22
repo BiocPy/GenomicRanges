@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Sequence, Union
+from typing import Dict, List, Literal, Optional, Sequence, Union
 from warnings import warn
 
 import biocutils as ut
@@ -170,7 +170,7 @@ class GenomicRanges:
                 Internal use only.
         """
         if seqinfo is None:
-            seqinfo = SeqInfo(seqnames=list(set(seqnames)))
+            seqinfo = SeqInfo(seqnames=sorted(list(set(seqnames))))
         self._seqinfo = seqinfo
 
         self._reverse_seqindex = None
@@ -1440,22 +1440,26 @@ class GenomicRanges:
         all_grp_ranges = []
         rev_map = []
         groups = []
-        for grp, val in chrm_grps.items():
-            _grp_subset = self[val]
-            _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
+        for i in range(len(self._seqinfo.seqnames)):
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{i}_{strd}"
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
 
-            res_ir = _grp_subset._ranges.reduce(
-                with_reverse_map=True,
-                drop_empty_ranges=drop_empty_ranges,
-                min_gap_width=min_gap_width,
-            )
+                    res_ir = _grp_subset._ranges.reduce(
+                        with_reverse_map=True,
+                        drop_empty_ranges=drop_empty_ranges,
+                        min_gap_width=min_gap_width,
+                    )
 
-            groups.append(grp)
-            all_grp_ranges.append(res_ir)
-            _rev_map = []
-            for i in res_ir._mcols.get_column("revmap"):
-                _rev_map.append([_oindices[x] for x in i])
-            rev_map.append(_rev_map[0])
+                    groups.append(_key)
+                    all_grp_ranges.append(res_ir)
+                    _rev_map = []
+                    for j in res_ir._mcols.get_column("revmap"):
+                        _rev_map.append([_oindices[x] for x in j])
+                    rev_map.append(_rev_map[0])
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
@@ -1495,13 +1499,18 @@ class GenomicRanges:
         all_grp_ranges = []
         rev_map = []
         groups = []
-        for grp, val in chrm_grps.items():
-            _grp_subset = self[val]
-            res_ir = _grp_subset._ranges.range()
+        # for grp, val in chrm_grps.items():
+        for i in range(len(self._seqinfo.seqnames)):
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{i}_{strd}"
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    res_ir = _grp_subset._ranges.range()
 
-            groups.append(grp)
-            all_grp_ranges.append(res_ir)
-            rev_map.append(val)
+                    groups.append(_key)
+                    all_grp_ranges.append(res_ir)
+                    rev_map.append(chrm_grps[_key])
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
@@ -1515,6 +1524,90 @@ class GenomicRanges:
 
         if with_reverse_map is True:
             output._mcols.set_column("revmap", rev_map, in_place=True)
+
+        return output
+
+    def gaps(
+        self,
+        start: int = 1,
+        end: Optional[Union[int, Dict[str, int]]] = None,
+        ignore_strand: bool = False,
+    ) -> "GenomicRanges":
+        """Identify complemented ranges for each distinct (seqname, strand) pair.
+
+        Args:
+            start:
+                Restrict chromosome start position. Defaults to 1.
+
+            end:
+                Restrict end position for each chromosome.
+                Defaults to None. If None, extracts sequence information from
+                :py:attr:`~seqinfo` object if available.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            A new `GenomicRanges` with complement ranges.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        # all_range_bounds = self.range(ignore_strand=ignore_strand)
+        all_grp_ranges = []
+        groups = []
+
+        # print("all_ranges", all_range_bounds.__repr__())
+        print(chrm_grps)
+        print("seqnames", self._seqinfo.seqnames)
+        for i, chrm in enumerate(self._seqinfo.seqnames):
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{i}_{strd}"
+                print("$$$$$$$$$", _key, chrm)
+
+                _end = None
+                if isinstance(end, dict):
+                    _end = end[chrm]
+                elif isinstance(end, int):
+                    _end = end
+
+                print("what is end??", _end)
+                gaps = None
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    print("before gaps", start, _end)
+                    gaps = _grp_subset._ranges.gaps(
+                        start=start, end=_end - 1 if _end is not None else _end
+                    )
+                else:
+                    if _end is None:
+                        _end = self._seqinfo.seqlengths[i]
+
+                    print("what is end2??", _end)
+
+                    if end is not None:
+                        print("not in gr, ", _end)
+                        gaps = IRanges(start=[start], width=[_end - start - 1])
+
+                if gaps is not None:
+                    all_grp_ranges.append(gaps)
+                    groups.extend([_key] * len(gaps))
+
+        all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
+
+        splits = [x.split("_") for x in groups]
+        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_strand = np.array([int(x[1]) for x in splits])
+
+        print(new_seqnames)
+        print(new_strand)
+        print(all_merged_ranges)
+
+        output = GenomicRanges(
+            seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
+        )
+
+        print("final, ##%@%@#%#@%@#@@")
+        print(output.__repr__())
 
         return output
 
