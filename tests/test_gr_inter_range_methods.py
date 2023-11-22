@@ -157,41 +157,19 @@ def test_gaps_with_end():
     ]
     assert (out.start == np.array([1, 1, 1, 112, 1, 1, 1, 1, 1, 110, 1])).all()
     assert (
-        out.width
-        == np.array(
-            [
-                120,
-                120,
-                100,
-                9,
-                103,
-                101,
-                120,
-                120,
-                104,
-                11,
-                102,
-            ]
-        )
+        out.width == np.array([120, 120, 100, 9, 103, 101, 120, 120, 104, 11, 102])
     ).all()
 
     assert (out.strand == np.array([1, -1, 0, 0, 1, -1, 0, 1, -1, -1, 0])).all()
 
 
-# def test_disjoin():
-#     assert gr is not None
+def test_disjoin():
+    assert gr is not None
 
-#     disjoin_gr = gr.disjoin()
+    out = gr.disjoin()
 
-#     assert disjoin_gr is not None
-#     assert disjoin_gr.column("seqnames") == [
-#         "chr1",
-#         "chr1",
-#         "chr1",
-#         "chr2",
-#         "chr2",
-#         "chr3",
-#     ]
-#     assert disjoin_gr.column("starts") == [101, 103, 113, 102, 109, 104]
-#     assert disjoin_gr.column("ends") == [102, 112, 128, 103, 111, 134]
-#     assert disjoin_gr.column("strand") == ["*", "*", "*", "-", "-", "+"]
+    assert out is not None
+    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([101, 104, 102, 105, 103])).all()
+    assert (out.width == np.array([11, 30, 21, 5, 25])).all()
+    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()

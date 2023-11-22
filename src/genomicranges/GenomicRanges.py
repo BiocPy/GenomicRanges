@@ -1440,6 +1440,7 @@ class GenomicRanges:
         all_grp_ranges = []
         rev_map = []
         groups = []
+
         for i in range(len(self._seqinfo.seqnames)):
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
@@ -1499,7 +1500,7 @@ class GenomicRanges:
         all_grp_ranges = []
         rev_map = []
         groups = []
-        # for grp, val in chrm_grps.items():
+
         for i in range(len(self._seqinfo.seqnames)):
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
@@ -1591,6 +1592,59 @@ class GenomicRanges:
         output = GenomicRanges(
             seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
         )
+
+        return output
+
+    def disjoin(
+        self, with_reverse_map: bool = False, ignore_strand: bool = False
+    ) -> "GenomicRanges":
+        """Calculate disjoint genomic positions for each distinct (seqname, strand) pair.
+
+        Args:
+            with_reverse_map:
+                Whether to return a map of indices back to the original object.
+                Defaults to False.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            A new `GenomicRanges` containing disjoint ranges.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        all_grp_ranges = []
+        rev_map = []
+        groups = []
+
+        for i in range(len(self._seqinfo.seqnames)):
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{i}_{strd}"
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    res_ir = _grp_subset._ranges.disjoin(with_reverse_map=True)
+
+                    groups.append(_key)
+                    all_grp_ranges.append(res_ir)
+
+                    _rev_map = []
+                    for j in res_ir._mcols.get_column("revmap"):
+                        _rev_map.append([chrm_grps[_key][x] for x in j])
+                    rev_map.append(_rev_map[0])
+
+        all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
+
+        splits = [x.split("_") for x in groups]
+        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_strand = np.array([int(x[1]) for x in splits])
+
+        output = GenomicRanges(
+            seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
+        )
+
+        if with_reverse_map is True:
+            output._mcols.set_column("revmap", rev_map, in_place=True)
 
         return output
 
