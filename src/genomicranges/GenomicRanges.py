@@ -1551,18 +1551,13 @@ class GenomicRanges:
             A new `GenomicRanges` with complement ranges.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        # all_range_bounds = self.range(ignore_strand=ignore_strand)
         all_grp_ranges = []
         groups = []
 
-        # print("all_ranges", all_range_bounds.__repr__())
-        print(chrm_grps)
-        print("seqnames", self._seqinfo.seqnames)
         for i, chrm in enumerate(self._seqinfo.seqnames):
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
                 _key = f"{i}_{strd}"
-                print("$$$$$$$$$", _key, chrm)
 
                 _end = None
                 if isinstance(end, dict):
@@ -1570,23 +1565,18 @@ class GenomicRanges:
                 elif isinstance(end, int):
                     _end = end
 
-                print("what is end??", _end)
                 gaps = None
                 if _key in chrm_grps:
                     _grp_subset = self[chrm_grps[_key]]
-                    print("before gaps", start, _end)
                     gaps = _grp_subset._ranges.gaps(
-                        start=start, end=_end - 1 if _end is not None else _end
+                        start=start, end=_end  # - 1 if _end is not None else _end
                     )
                 else:
                     if _end is None:
                         _end = self._seqinfo.seqlengths[i]
 
-                    print("what is end2??", _end)
-
                     if end is not None:
-                        print("not in gr, ", _end)
-                        gaps = IRanges(start=[start], width=[_end - start - 1])
+                        gaps = IRanges(start=[start], width=[_end - start + 1])
 
                 if gaps is not None:
                     all_grp_ranges.append(gaps)
@@ -1598,16 +1588,9 @@ class GenomicRanges:
         new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
-        print(new_seqnames)
-        print(new_strand)
-        print(all_merged_ranges)
-
         output = GenomicRanges(
             seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
         )
-
-        print("final, ##%@%@#%#@%@#@@")
-        print(output.__repr__())
 
         return output
 
