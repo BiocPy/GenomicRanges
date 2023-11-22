@@ -191,6 +191,8 @@ class GenomicRanges:
 
         self._metadata = metadata if metadata is not None else {}
 
+        print("in constructor", self._mcols)
+
         if validate is True:
             _num_ranges = _guess_num_ranges(self._seqnames, self._ranges)
             _validate_ranges(self._ranges, _num_ranges)
@@ -1399,7 +1401,6 @@ class GenomicRanges:
         drop_empty_ranges: bool = False,
         min_gap_width: int = 1,
         ignore_strand: bool = False,
-        in_place: bool = False,
     ) -> "GenomicRanges":
         """Reduce orders the ranges, then merges overlapping or adjacent ranges.
 
@@ -1422,21 +1423,54 @@ class GenomicRanges:
                 Whether to modify the ``GenomicRanges`` object in place.
 
         Returns:
-            GenomicRanges: A new `GenomicRanges` object with reduced intervals.
+            A new `GenomicRanges` object with reduced intervals.
         """
+        chrm_grps = {}
+        for i in range(len(self)):
+            __strand = self._strand[i] if ignore_strand is False else 0
+            _grp = f"{self._seqnames[i]}_{__strand}"
 
-        if ignore_strand is True:
-            res_ir = self._ranges.reduce(
+            if _grp not in chrm_grps:
+                chrm_grps[_grp] = []
+
+            chrm_grps[_grp].append(i)
+
+        self._ranges._mcols.set_column("reduceindices", range(len(self)), in_place=True)
+
+        all_grp_ranges = []
+        rev_map = []
+        groups = []
+        for grp, val in chrm_grps.items():
+            _grp_subset = self[val]
+            _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
+
+            res_ir = _grp_subset._ranges.reduce(
                 with_reverse_map=True,
                 drop_empty_ranges=drop_empty_ranges,
                 min_gap_width=min_gap_width,
             )
-            indices = res_ir.get_mcols().get_column("revmap")
 
-            output = self._define_output(in_place)
-            output = output[indices]
-            output._ranges = res_ir
-            return output
+            groups.append(grp)
+            all_grp_ranges.append(res_ir)
+            _rev_map = []
+            for i in res_ir._mcols.get_column("revmap"):
+                _rev_map.append([_oindices[x] for x in i])
+            rev_map.append(_rev_map[0])
+
+        all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
+
+        splits = [x.split("_") for x in groups]
+        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_strand = np.array([int(x[1]) for x in splits])
+
+        output = GenomicRanges(
+            seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
+        )
+
+        if with_reverse_map is True:
+            output._mcols.set_column("revmap", rev_map, in_place=True)
+
+        return output
 
 
 @ut.combine_sequences.register
