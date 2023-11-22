@@ -1431,7 +1431,7 @@ class GenomicRanges:
                 Whether to ignore strands. Defaults to False.
 
         Returns:
-            A new `GenomicRanges` object with reduced intervals.
+            A new ``GenomicRanges`` object with reduced intervals.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
@@ -1455,12 +1455,12 @@ class GenomicRanges:
                         min_gap_width=min_gap_width,
                     )
 
-                    groups.append(_key)
+                    groups.extend([_key] * len(res_ir))
                     all_grp_ranges.append(res_ir)
                     _rev_map = []
                     for j in res_ir._mcols.get_column("revmap"):
                         _rev_map.append([_oindices[x] for x in j])
-                    rev_map.append(_rev_map[0])
+                    rev_map.extend(_rev_map[0] * len(res_ir))
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
@@ -1493,7 +1493,7 @@ class GenomicRanges:
                 Whether to ignore strands. Defaults to False.
 
         Returns:
-            A new `GenomicRanges` object with the range bounds.
+            A new ``GenomicRanges`` object with the range bounds.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
@@ -1509,9 +1509,9 @@ class GenomicRanges:
                     _grp_subset = self[chrm_grps[_key]]
                     res_ir = _grp_subset._ranges.range()
 
-                    groups.append(_key)
+                    groups.extend([_key] * len(res_ir))
                     all_grp_ranges.append(res_ir)
-                    rev_map.append(chrm_grps[_key])
+                    rev_map.extend(chrm_grps[_key] * len(res_ir))
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
@@ -1549,7 +1549,7 @@ class GenomicRanges:
                 Whether to ignore strands. Defaults to False.
 
         Returns:
-            A new `GenomicRanges` with complement ranges.
+            A new ``GenomicRanges`` with complement ranges.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         all_grp_ranges = []
@@ -1572,11 +1572,12 @@ class GenomicRanges:
                     gaps = _grp_subset._ranges.gaps(
                         start=start, end=_end  # - 1 if _end is not None else _end
                     )
+                    print("gaps???", gaps)
                 else:
                     if _end is None:
                         _end = self._seqinfo.seqlengths[i]
 
-                    if end is not None:
+                    if _end is not None:
                         gaps = IRanges(start=[start], width=[_end - start + 1])
 
                 if gaps is not None:
@@ -1609,7 +1610,7 @@ class GenomicRanges:
                 Whether to ignore strands. Defaults to False.
 
         Returns:
-            A new `GenomicRanges` containing disjoint ranges.
+            A new ``GenomicRanges`` containing disjoint ranges.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
@@ -1647,6 +1648,90 @@ class GenomicRanges:
             output._mcols.set_column("revmap", rev_map, in_place=True)
 
         return output
+
+    ################################
+    ######>> set operations <<######
+    ################################
+
+    def union(self, other: "GenomicRanges") -> "GenomicRanges":
+        """Find union of genomic intervals with `other`.
+
+        Args:
+            other:
+                The other ``GenomicRanges`` object.
+
+        Raises:
+            TypeError:
+                If ``other`` is not a ``GenomicRanges``.
+
+        Returns:
+            A new ``GenomicRanges`` object with all ranges.
+        """
+
+        if not isinstance(other, GenomicRanges):
+            raise TypeError("'other' is not a `GenomicRanges` object.")
+
+        all_combined = _combine_GenomicRanges(self, other)
+        output = all_combined.reduce(min_gap_width=0, drop_empty_ranges=True)
+        return output
+
+    def setdiff(self, other: "GenomicRanges") -> "GenomicRanges":
+        """Find set difference of genomic intervals with `other`.
+
+        Args:
+            other:
+                The other ``GenomicRanges`` object.
+
+        Raises:
+            TypeError:
+                If ``other`` is not of type ``GenomicRanges``.
+
+
+        Returns:
+            A new ``GenomicRanges`` object with the diff ranges.
+        """
+        if not isinstance(other, GenomicRanges):
+            raise TypeError("'other' is not a `GenomicRanges` object.")
+
+        all_combined = _combine_GenomicRanges(self, other)
+        range_bounds = all_combined.range(ignore_strand=True)
+        rb_ends = {}
+        for _, val in range_bounds:
+            rb_ends[val.seqnames[0]] = val.end[0]
+
+        x_gaps = self.gaps(end=rb_ends)
+        x_gaps_u = x_gaps.union(other)
+        diff = x_gaps_u.gaps(end=rb_ends)
+
+        return diff
+
+    def intersect(self, other: "GenomicRanges") -> "GenomicRanges":
+        """Find intersecting genomic intervals with `other`.
+
+        Args:
+            other:
+                The other ``GenomicRanges`` object.
+
+        Raises:
+            TypeError:
+                If ``other`` is not a ``GenomicRanges``.
+
+        Returns:
+            A new ``GenomicRanges`` object with intersecting ranges.
+        """
+
+        if not isinstance(other, GenomicRanges):
+            raise TypeError("'other' is not a `GenomicRanges` object.")
+
+        all_combined = _combine_GenomicRanges(self, other)
+        range_bounds = all_combined.range(ignore_strand=True)
+        rb_ends = {}
+        for _, val in range_bounds:
+            rb_ends[val.seqnames[0]] = val.end[0]
+
+        _gaps = other.gaps(end=rb_ends)
+        _inter = self.setdiff(_gaps)
+        return _inter
 
 
 @ut.combine_sequences.register

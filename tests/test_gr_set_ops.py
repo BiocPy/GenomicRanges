@@ -1,93 +1,72 @@
+import pytest
 import pandas as pd
+from genomicranges.GenomicRanges import GenomicRanges
 from random import random
-import genomicranges
+from iranges import IRanges
+from biocframe import BiocFrame
+import numpy as np
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-df_src = pd.DataFrame(
-    {
-        "seqnames": ["chr1", "chr2", "chr1", "chr3", "chr2"],
-        "starts": [101, 102, 103, 104, 109],
-        "ends": [112, 103, 128, 134, 111],
-        "strand": ["*", "-", "*", "+", "-"],
-        "score": range(0, 5),
-        "GC": [random() for _ in range(5)],
-    }
+gr0 = GenomicRanges(
+    seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"]
 )
 
-g_src = genomicranges.from_pandas(df_src)
-
-df_tgt = pd.DataFrame(
-    {
-        "seqnames": [
-            "chr1",
-            "chr2",
-            "chr2",
-            "chr2",
-            "chr1",
-            "chr1",
-            "chr3",
-            "chr3",
-            "chr3",
-            "chr3",
-        ],
-        "starts": range(101, 111),
-        "ends": range(121, 131),
-        "strand": ["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
-        "score": range(0, 10),
-        "GC": [random() for _ in range(10)],
-    }
-)
-
-g_tgt = genomicranges.from_pandas(df_tgt)
+gr1 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([5], [6]), strand=["-"])
 
 
 def test_union():
-    assert g_src is not None
-    assert g_tgt is not None
+    gr0 = GenomicRanges(
+        seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"]
+    )
+    gr1 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([5], [6]), strand=["-"])
 
-    union_gr = g_src.union(g_tgt)
+    assert gr0 is not None
+    assert gr1 is not None
 
-    assert union_gr is not None
-    assert union_gr.shape == (6, 4)
-    assert union_gr.column("seqnames") == [
-        "chr1",
-        "chr1",
-        "chr2",
-        "chr2",
-        "chr3",
-        "chr3",
-    ]
-    assert union_gr.column("starts") == [101, 106, 104, 102, 104, 109]
-    assert union_gr.column("ends") == [128, 126, 124, 123, 134, 130]
-    assert union_gr.column("strand") == ["*", "+", "*", "-", "+", "-"]
+    out = gr0.union(gr1)
 
-
-def test_intersect():
-    assert g_src is not None
-    assert g_tgt is not None
-
-    int_gr = g_src.intersect(g_tgt)
-
-    assert int_gr is not None
-    assert int_gr.shape == (6, 4)
-    assert int_gr.column("seqnames") == ["chr1", "chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert int_gr.column("starts") == [101, 106, 104, 102, 104, 109]
-    assert int_gr.column("ends") == [128, 126, 124, 123, 134, 130]
-    assert int_gr.column("strand") == ["*", "+", "*", "-", "+", "-"]
+    assert out is not None
+    assert out.seqnames == ["chr1", "chr1"]
+    assert (out.start == np.array([2, 5])).all()
+    assert (out.width == np.array([6, 15])).all()
+    assert (out.strand == np.array([1, -1])).all()
 
 
 def test_diff():
-    assert g_src is not None
-    assert g_tgt is not None
+    gr0 = GenomicRanges(
+        seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"]
+    )
 
-    diff_gr = g_src.setdiff(g_tgt)
+    gr1 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([5], [6]), strand=["-"])
 
-    assert diff_gr is not None
-    assert diff_gr.shape == (3, 4)
-    assert diff_gr.column("seqnames") == ["chr1", "chr3", "chr3"]
-    assert diff_gr.column("starts") == [126, 104, 129]
-    assert diff_gr.column("ends") == [128, 106, 134]
-    assert diff_gr.column("strand") == ["*", "+", "+"]
+    assert gr0 is not None
+    assert gr1 is not None
+
+    out = gr0.setdiff(gr1)
+
+    assert out is not None
+    assert out.seqnames == ["chr1", "chr1"]
+    assert (out.start == np.array([2, 11])).all()
+    assert (out.width == np.array([6, 9])).all()
+    assert (out.strand == np.array([1, -1])).all()
+
+
+def test_intersect():
+    gr0 = GenomicRanges(
+        seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"]
+    )
+
+    gr1 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([5], [6]), strand=["-"])
+    assert gr0 is not None
+    assert gr1 is not None
+
+    out = gr0.intersect(gr1)
+
+    assert out is not None
+    assert out.seqnames == ["chr1"]
+    assert (out.start == np.array([9])).all()
+    assert (out.width == np.array([2])).all()
+    assert (out.strand == np.array([-1])).all()

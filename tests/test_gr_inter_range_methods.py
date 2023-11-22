@@ -163,6 +163,33 @@ def test_gaps_with_end():
     assert (out.strand == np.array([1, -1, 0, 0, 1, -1, 0, 1, -1, -1, 0])).all()
 
 
+def test_gaps_with_both():
+    assert gr is not None
+
+    out = gr.gaps(start=5, end=120)
+
+    assert out is not None
+    assert out.seqnames == [
+        "chr1",
+        "chr1",
+        "chr1",
+        "chr1",
+        "chr2",
+        "chr2",
+        "chr2",
+        "chr3",
+        "chr3",
+        "chr3",
+        "chr3",
+    ]
+    assert (out.start == np.array([5, 5, 5, 112, 5, 5, 5, 5, 5, 110, 5])).all()
+    assert (
+        out.width == np.array([116, 116, 96, 9, 99, 97, 116, 116, 100, 11, 98])
+    ).all()
+
+    assert (out.strand == np.array([1, -1, 0, 0, 1, -1, 0, 1, -1, -1, 0])).all()
+
+
 def test_disjoin():
     assert gr is not None
 
