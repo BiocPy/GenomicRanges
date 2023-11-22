@@ -1393,6 +1393,51 @@ class GenomicRanges:
         output._ranges = narrow_ir
         return output
 
+    def reduce(
+        self,
+        with_reverse_map: bool = False,
+        drop_empty_ranges: bool = False,
+        min_gap_width: int = 1,
+        ignore_strand: bool = False,
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Reduce orders the ranges, then merges overlapping or adjacent ranges.
+
+        Args:
+            with_reverse_map:
+                Whether to return map of indices back to
+                original object. Defaults to False.
+
+            drop_empty_ranges:
+                Whether to drop empty ranges. Defaults to False.
+
+            min_gap_width:
+                Ranges separated by a gap of
+                at least ``min_gap_width`` positions are not merged. Defaults to 1.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            GenomicRanges: A new `GenomicRanges` object with reduced intervals.
+        """
+
+        if ignore_strand is True:
+            res_ir = self._ranges.reduce(
+                with_reverse_map=True,
+                drop_empty_ranges=drop_empty_ranges,
+                min_gap_width=min_gap_width,
+            )
+            indices = res_ir.get_mcols().get_column("revmap")
+
+            output = self._define_output(in_place)
+            output = output[indices]
+            output._ranges = res_ir
+            return output
+
 
 @ut.combine_sequences.register
 def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
