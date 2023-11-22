@@ -40,6 +40,14 @@ def test_reduce():
     assert (reduced_gr.width == np.array([11, 21, 25, 30, 5])).all()
     assert (reduced_gr.strand == np.array([0, -1, 0, 1, -1])).all()
 
+    reduced_gr = gr.reduce(ignore_strand=True)
+
+    assert reduced_gr is not None
+    assert reduced_gr.seqnames == ["chr1", "chr2", "chr3"]
+    assert (reduced_gr.start == np.array([101, 102, 103])).all()
+    assert (reduced_gr.width == np.array([11, 32, 25])).all()
+    assert (reduced_gr.strand == np.array([0, 0, 0])).all()
+
 
 def test_reduce_with_gapwidth():
     assert gr is not None
@@ -66,17 +74,24 @@ def test_reduce_with_gapwidth_with_reverse_map():
     assert reduced_gr.mcols.column("revmap") == [[i] for i in range(5)]
 
 
-# def test_range():
-#     assert gr is not None
+def test_range():
+    assert gr is not None
 
-#     range_gr = gr.range()
+    range_gr = gr.range()
 
-#     assert range_gr is not None
-#     assert range_gr.shape == (3, 4)
-#     assert range_gr.column("seqnames") == ["chr1", "chr2", "chr3"]
-#     assert range_gr.column("starts") == [101, 102, 104]
-#     assert range_gr.column("ends") == [128, 111, 134]
-#     assert range_gr.column("strand") == ["*", "-", "+"]
+    assert range_gr is not None
+    assert range_gr.seqnames == ["chr1", "chr2", "chr3", "chr2", "chr3"]
+    assert (range_gr.start == np.array([101, 102, 103, 104, 105])).all()
+    assert (range_gr.width == np.array([11, 21, 25, 30, 5])).all()
+    assert (range_gr.strand == np.array([0, -1, 0, 1, -1])).all()
+
+    range_gr = gr.range(ignore_strand=True)
+
+    assert range_gr is not None
+    assert range_gr.seqnames == ["chr1", "chr2", "chr3"]
+    assert (range_gr.start == np.array([101, 102, 103])).all()
+    assert (range_gr.width == np.array([11, 32, 25])).all()
+    assert (range_gr.strand == np.array([0, 0, 0])).all()
 
 
 # def test_gaps():

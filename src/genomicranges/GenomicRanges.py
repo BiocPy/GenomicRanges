@@ -1393,6 +1393,19 @@ class GenomicRanges:
         output._ranges = narrow_ir
         return output
 
+    def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
+        chrm_grps = {}
+        for i in range(len(self)):
+            __strand = self._strand[i] if ignore_strand is False else 0
+            _grp = f"{self._seqnames[i]}_{__strand}"
+
+            if _grp not in chrm_grps:
+                chrm_grps[_grp] = []
+
+            chrm_grps[_grp].append(i)
+
+        return chrm_grps
+
     def reduce(
         self,
         with_reverse_map: bool = False,
@@ -1417,21 +1430,10 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
-            in_place:
-                Whether to modify the ``GenomicRanges`` object in place.
-
         Returns:
             A new `GenomicRanges` object with reduced intervals.
         """
-        chrm_grps = {}
-        for i in range(len(self)):
-            __strand = self._strand[i] if ignore_strand is False else 0
-            _grp = f"{self._seqnames[i]}_{__strand}"
-
-            if _grp not in chrm_grps:
-                chrm_grps[_grp] = []
-
-            chrm_grps[_grp].append(i)
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         self._ranges._mcols.set_column("reduceindices", range(len(self)), in_place=True)
 
@@ -1454,6 +1456,52 @@ class GenomicRanges:
             for i in res_ir._mcols.get_column("revmap"):
                 _rev_map.append([_oindices[x] for x in i])
             rev_map.append(_rev_map[0])
+
+        all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
+
+        splits = [x.split("_") for x in groups]
+        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_strand = np.array([int(x[1]) for x in splits])
+
+        output = GenomicRanges(
+            seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
+        )
+
+        if with_reverse_map is True:
+            output._mcols.set_column("revmap", rev_map, in_place=True)
+
+        self._ranges._mcols.remove_column("reduceindices", in_place=True)
+
+        return output
+
+    def range(
+        self, with_reverse_map: bool = False, ignore_strand: bool = False
+    ) -> "GenomicRanges":
+        """Calculate range bounds for each distinct (seqname, strand) pair.
+
+        Args:
+            with_reverse_map:
+                Whether to return map of indices back to
+                original object. Defaults to False.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            A new `GenomicRanges` object with the range bounds.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        all_grp_ranges = []
+        rev_map = []
+        groups = []
+        for grp, val in chrm_grps.items():
+            _grp_subset = self[val]
+            res_ir = _grp_subset._ranges.range()
+
+            groups.append(grp)
+            all_grp_ranges.append(res_ir)
+            rev_map.append(val)
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
