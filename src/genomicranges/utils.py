@@ -8,6 +8,7 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 STRAND_MAP = {"+": 1, "-": -1, "*": 0}
+REV_STRAND_MAP = {"1": "+", "-1": "-", "0": "*"}
 
 
 def sanitize_strand_vector(
@@ -52,3 +53,37 @@ def sanitize_strand_vector(
         TypeError(
             "'strand' must be either a numpy vector, a list of integers or strings representing strand."
         )
+
+
+def _sanitize_strand_search_ops(query_strand, subject_strand):
+    query_strand = REV_STRAND_MAP[query_strand]
+    subject_strand = REV_STRAND_MAP[subject_strand]
+
+    out = None
+
+    if query_strand == "+":
+        if subject_strand == "+":
+            out = "+"
+        elif subject_strand == "-":
+            out = None
+        elif subject_strand == "*":
+            out = "+"
+    elif query_strand == "-":
+        if subject_strand == "+":
+            out = None
+        elif subject_strand == "-":
+            out = "-"
+        elif subject_strand == "*":
+            out = "-"
+    elif query_strand == "*":
+        if subject_strand == "*":
+            out = "+"
+        elif subject_strand == "-":
+            out = "-"
+        elif subject_strand == "*":
+            out = "-"
+
+    if out is None:
+        return None
+
+    return STRAND_MAP[out]

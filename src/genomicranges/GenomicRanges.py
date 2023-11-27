@@ -7,7 +7,7 @@ from biocframe import BiocFrame
 from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
-from .utils import sanitize_strand_vector
+from .utils import sanitize_strand_vector, _sanitize_strand_search_ops
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -1797,7 +1797,7 @@ class GenomicRanges:
         groups = []
         for i in range(len(query)):
             try:
-                _seqname = self.seqnames.index(query.seqnames[i])
+                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
             except Exception as _:
                 warn(f"'{query.seqnames[i]}' is not present in subject.")
 
@@ -1884,7 +1884,7 @@ class GenomicRanges:
         groups = []
         for i in range(len(query)):
             try:
-                _seqname = self.seqnames.index(query.seqnames[i])
+                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
             except Exception as _:
                 warn(f"'{query.seqnames[i]}' is not present in subject.")
 
@@ -1922,7 +1922,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 1,
         ignore_strand: bool = False,
-    ) -> "BiocFrame":
+    ) -> "GenomicRanges":
         """Subset ``subject`` (self) with overlaps in ``query`` `GenomicRanges` object.
 
         Args:
@@ -1950,11 +1950,11 @@ class GenomicRanges:
                 Whether to ignore strands. Defaults to False.
 
         Raises:
-            TypeError: If ``query`` is not of type `GenomicRanges`.
+            TypeError:
+                If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A ``BiocFrame`` object with the same length as
-            ``query``, containing hits to overlapping indices.
+            A ``GenomicRanges`` object containing overlapping ranges.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
@@ -1970,7 +1970,7 @@ class GenomicRanges:
         rev_map = []
         for i in range(len(query)):
             try:
-                _seqname = self.seqnames.index(query.seqnames[i])
+                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
             except Exception as _:
                 warn(f"'{query.seqnames[i]}' is not present in subject.")
 
@@ -1997,6 +1997,189 @@ class GenomicRanges:
                 rev_map.extend(_rev_map[0])
 
         return self[list(set(rev_map))]
+
+    #################################
+    ######>> nearest methods <<######
+    #################################
+
+    def nearest(
+        self,
+        query: "GenomicRanges",
+        select: Literal["all", "arbitrary"] = "all",
+        ignore_strand: bool = False,
+    ) -> "BiocFrame":
+        """Search nearest positions both upstream and downstream that
+        overlap with each range in ``query``.
+
+        Args:
+            query:
+                Query ``GenomicRanges`` to find nearest positions.
+
+            select:
+                Determine what hit to choose when there are
+                multiple hits for an interval in ``query``.
+
+            ignore_strand:
+                Whether to ignore strand. Defaults to False.
+
+        Returns:
+            A ``BiocFrame`` object with the same length as
+            ``query``, containing 'hits' to overlapping indices.
+        """
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        rev_map = []
+        groups = []
+
+        print(subject_chrm_grps)
+
+        for i in range(len(query)):
+            try:
+                print(self.seqnames)
+                print(query.seqnames)
+                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
+            except Exception as _:
+                warn(f"'{query.seqnames[i]}' is not present in subject.")
+
+            _strand = query._strand[i]
+
+            if ignore_strand is True:
+                _strand = 0
+
+            _key = f"{_seqname}_{_strand}"
+            print(_key)
+            if _key in subject_chrm_grps:
+                print("subject_chrm_grps[_key]", subject_chrm_grps[_key])
+                _grp_subset = self[subject_chrm_grps[_key]]
+                res_idx = _grp_subset._ranges.nearest(
+                    query=query._ranges[i], select=select
+                )
+
+                groups.append(i)
+
+                print(res_idx)
+
+                _rev_map = []
+                for j in res_idx:
+                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
+                rev_map.append(_rev_map[0])
+
+        output = BiocFrame({"query": groups, "subject_hits": rev_map})
+        return output
+
+    def precede(
+        self,
+        query: "GenomicRanges",
+        select: Literal["all", "arbitrary"] = "all",
+        ignore_strand: bool = False,
+    ) -> "BiocFrame":
+        """Search nearest positions only downstream that
+        overlap with each range in ``query``.
+
+        Args:
+            query:
+                Query ``GenomicRanges`` to find nearest positions.
+
+            select:
+                Determine what hit to choose when there are
+                multiple hits for an interval in ``query``.
+
+            ignore_strand:
+                Whether to ignore strand. Defaults to False.
+
+        Returns:
+            A ``BiocFrame`` object with the same length as
+            ``query``, containing 'hits' to overlapping indices.
+        """
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        rev_map = []
+        groups = []
+
+        for i in range(len(query)):
+            try:
+                _seqname = self.seqnames.index(query.seqnames[i])
+            except Exception as _:
+                warn(f"'{query.seqnames[i]}' is not present in subject.")
+
+            _strand = query._strand[i]
+
+            if ignore_strand is True:
+                _strand = 0
+
+            _key = f"{_seqname}_{_strand}"
+            if _key in subject_chrm_grps:
+                _grp_subset = self[subject_chrm_grps[_key]]
+                res_idx = _grp_subset._ranges.precede(
+                    query=query._ranges[i], select=select
+                )
+
+                groups.append(i)
+
+                _rev_map = []
+                for j in res_idx:
+                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
+                rev_map.append(_rev_map[0])
+
+        output = BiocFrame({"query": groups, "subject_hits": rev_map})
+        return output
+
+    def follow(
+        self,
+        query: "GenomicRanges",
+        select: Literal["all", "arbitrary"] = "all",
+        ignore_strand: bool = False,
+    ) -> "BiocFrame":
+        """Search nearest positions only upstream that
+        overlap with each range in ``query``.
+
+        Args:
+            query:
+                Query ``GenomicRanges`` to find nearest positions.
+
+            select:
+                Determine what hit to choose when there are
+                multiple hits for an interval in ``query``.
+
+            ignore_strand:
+                Whether to ignore strand. Defaults to False.
+
+        Returns:
+            A ``BiocFrame`` object with the same length as
+            ``query``, containing 'hits' to overlapping indices.
+        """
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        rev_map = []
+        groups = []
+
+        for i in range(len(query)):
+            try:
+                _seqname = self.seqnames.index(query.seqnames[i])
+            except Exception as _:
+                warn(f"'{query.seqnames[i]}' is not present in subject.")
+
+            _strand = query._strand[i]
+
+            if ignore_strand is True:
+                _strand = 0
+
+            _key = f"{_seqname}_{_strand}"
+            if _key in subject_chrm_grps:
+                _grp_subset = self[subject_chrm_grps[_key]]
+                res_idx = _grp_subset._ranges.follow(
+                    query=query._ranges[i], select=select
+                )
+
+                groups.append(i)
+
+                _rev_map = []
+                for j in res_idx:
+                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
+                rev_map.append(_rev_map[0])
+
+        output = BiocFrame({"query": groups, "subject_hits": rev_map})
+        return output
 
 
 @ut.combine_sequences.register
