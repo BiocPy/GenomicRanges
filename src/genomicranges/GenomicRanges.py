@@ -1996,7 +1996,6 @@ class GenomicRanges:
                     _rev_map.append([subject_chrm_grps[_key][x] for x in j])
                 rev_map.extend(_rev_map[0])
 
-
         return self[list(set(rev_map))]
 
 
