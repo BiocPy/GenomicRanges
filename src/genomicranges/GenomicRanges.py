@@ -1784,7 +1784,7 @@ class GenomicRanges:
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
-            raise TypeError("`query` is not a `GenomicRanges` object.")
+            raise TypeError("'query' is not a `GenomicRanges` object.")
 
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(
@@ -1871,7 +1871,7 @@ class GenomicRanges:
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
-            raise TypeError("`query` is not a `GenomicRanges` object.")
+            raise TypeError("'query' is not a `GenomicRanges` object.")
 
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(
@@ -1958,7 +1958,7 @@ class GenomicRanges:
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
-            raise TypeError("`query` is not a `GenomicRanges` object.")
+            raise TypeError("'query' is not a `GenomicRanges` object.")
 
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(
@@ -2026,17 +2026,16 @@ class GenomicRanges:
             A ``BiocFrame`` object with the same length as
             ``query``, containing 'hits' to overlapping indices.
         """
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("'query' is not a `GenomicRanges` object.")
+
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         rev_map = []
         groups = []
 
-        print(subject_chrm_grps)
-
         for i in range(len(query)):
             try:
-                print(self.seqnames)
-                print(query.seqnames)
                 _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
             except Exception as _:
                 warn(f"'{query.seqnames[i]}' is not present in subject.")
@@ -2047,17 +2046,13 @@ class GenomicRanges:
                 _strand = 0
 
             _key = f"{_seqname}_{_strand}"
-            print(_key)
             if _key in subject_chrm_grps:
-                print("subject_chrm_grps[_key]", subject_chrm_grps[_key])
                 _grp_subset = self[subject_chrm_grps[_key]]
                 res_idx = _grp_subset._ranges.nearest(
                     query=query._ranges[i], select=select
                 )
 
                 groups.append(i)
-
-                print(res_idx)
 
                 _rev_map = []
                 for j in res_idx:
@@ -2091,6 +2086,9 @@ class GenomicRanges:
             A ``BiocFrame`` object with the same length as
             ``query``, containing 'hits' to overlapping indices.
         """
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("'query' is not a `GenomicRanges` object.")
+
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         rev_map = []
@@ -2148,6 +2146,9 @@ class GenomicRanges:
             A ``BiocFrame`` object with the same length as
             ``query``, containing 'hits' to overlapping indices.
         """
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("'query' is not a `GenomicRanges` object.")
+
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         rev_map = []
@@ -2177,6 +2178,66 @@ class GenomicRanges:
                 for j in res_idx:
                     _rev_map.append([subject_chrm_grps[_key][x] for x in j])
                 rev_map.append(_rev_map[0])
+
+        output = BiocFrame({"query": groups, "subject_hits": rev_map})
+        return output
+
+    def match(self, query: "GenomicRanges") -> BiocFrame:
+        """Element wise comparison to find exact match ranges.
+
+        Args:
+            query:
+                Query ``GenomicRanges`` to search for matches.
+
+        Raises:
+            TypeError:
+                If ``query`` is not of type ``GenomicRanges``.
+
+        Returns:
+            A ``BiocFrame`` object with the same length as
+            ``query``, containing 'hits' to matching indices.
+        """
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("'query' is not a `GenomicRanges` object.")
+
+        ignore_strand = False
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        rev_map = []
+        groups = []
+
+        for i in range(len(query)):
+            try:
+                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
+            except Exception as _:
+                warn(f"'{query.seqnames[i]}' is not present in subject.")
+
+            _strand = query._strand[i]
+
+            if ignore_strand is True:
+                _strand = 0
+
+            _key = f"{_seqname}_{_strand}"
+            if _key in subject_chrm_grps:
+                _grp_subset = self[subject_chrm_grps[_key]]
+
+                res_idx = _grp_subset._ranges.find_overlaps(
+                    query=query._ranges[i], query_type="any", select="all"
+                )
+
+                groups.append(i)
+
+                _rev_map = []
+                for j in res_idx:
+                    for x in j:
+                        _mrange = self[subject_chrm_grps[_key][x]]._ranges
+
+                        if (
+                            _mrange.start[0] == query._ranges[i].start[0]
+                            and _mrange.width[0] == query._ranges[i].width[0]
+                        ):
+                            _rev_map.append(subject_chrm_grps[_key][x])
+                rev_map.append(_rev_map)
 
         output = BiocFrame({"query": groups, "subject_hits": rev_map})
         return output
