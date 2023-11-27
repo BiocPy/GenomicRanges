@@ -7,7 +7,7 @@ from biocframe import BiocFrame
 from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
-from .utils import sanitize_strand_vector, _sanitize_strand_search_ops
+from .utils import sanitize_strand_vector
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -2008,8 +2008,7 @@ class GenomicRanges:
         select: Literal["all", "arbitrary"] = "all",
         ignore_strand: bool = False,
     ) -> "BiocFrame":
-        """Search nearest positions both upstream and downstream that
-        overlap with each range in ``query``.
+        """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
         Args:
             query:
@@ -2073,8 +2072,7 @@ class GenomicRanges:
         select: Literal["all", "arbitrary"] = "all",
         ignore_strand: bool = False,
     ) -> "BiocFrame":
-        """Search nearest positions only downstream that
-        overlap with each range in ``query``.
+        """Search nearest positions only downstream that overlap with each range in ``query``.
 
         Args:
             query:
@@ -2130,8 +2128,7 @@ class GenomicRanges:
         select: Literal["all", "arbitrary"] = "all",
         ignore_strand: bool = False,
     ) -> "BiocFrame":
-        """Search nearest positions only upstream that
-        overlap with each range in ``query``.
+        """Search nearest positions only upstream that overlap with each range in ``query``.
 
         Args:
             query:
