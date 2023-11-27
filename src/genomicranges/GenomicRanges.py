@@ -1572,7 +1572,6 @@ class GenomicRanges:
                     gaps = _grp_subset._ranges.gaps(
                         start=start, end=_end  # - 1 if _end is not None else _end
                     )
-                    print("gaps???", gaps)
                 else:
                     if _end is None:
                         _end = self._seqinfo.seqlengths[i]
@@ -1732,6 +1731,273 @@ class GenomicRanges:
         _gaps = other.gaps(end=rb_ends)
         _inter = self.setdiff(_gaps)
         return _inter
+
+    ###################################
+    ######>> search operations <<######
+    ###################################
+
+    def find_overlaps(
+        self,
+        query: "GenomicRanges",
+        query_type: Literal["any", "start", "end", "within"] = "any",
+        select: Literal["all", "first", "last", "arbitrary"] = "all",
+        max_gap: int = -1,
+        min_overlap: int = 1,
+        ignore_strand: bool = False,
+    ) -> "BiocFrame":
+        """Find overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
+
+        Args:
+            query:
+                Query `GenomicRanges`.
+
+            query_type:
+                Overlap query type, must be one of
+
+                - "any": Any overlap is good
+                - "start": Overlap at the beginning of the intervals
+                - "end": Must overlap at the end of the intervals
+                - "within": Fully contain the query interval
+
+                Defaults to "any".
+
+            select:
+                Determine what hit to choose when
+                there are multiple hits for an interval in ``subject``.
+
+            max_gap:
+                Maximum gap allowed in the overlap.
+                Defaults to -1 (no gap allowed).
+
+            min_overlap:
+                Minimum overlap with query. Defaults to 1.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Raises:
+            TypeError: If ``query`` is not of type `GenomicRanges`.
+
+        Returns:
+            A ``BiocFrame`` object with the same length as
+            ``query``, containing hits to overlapping indices.
+        """
+        OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("`query` is not a `GenomicRanges` object.")
+
+        if query_type not in OVERLAP_QUERY_TYPES:
+            raise ValueError(
+                f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}."
+            )
+
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        rev_map = []
+        groups = []
+        for i in range(len(query)):
+            try:
+                _seqname = self.seqnames.index(query.seqnames[i])
+            except Exception as _:
+                warn(f"'{query.seqnames[i]}' is not present in subject.")
+
+            _strand = query._strand[i]
+
+            if ignore_strand is True:
+                _strand = 0
+
+            _key = f"{_seqname}_{_strand}"
+            if _key in subject_chrm_grps:
+                _grp_subset = self[subject_chrm_grps[_key]]
+
+                res_idx = _grp_subset._ranges.find_overlaps(
+                    query=query._ranges[i],
+                    query_type=query_type,
+                    select=select,
+                    max_gap=max_gap,
+                    min_overlap=min_overlap,
+                )
+
+                groups.append(i)
+
+                _rev_map = []
+                for j in res_idx:
+                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
+                rev_map.append(_rev_map[0])
+
+        output = BiocFrame({"query": groups, "subject_hits": rev_map})
+        return output
+
+    def count_overlaps(
+        self,
+        query: "GenomicRanges",
+        query_type: Literal["any", "start", "end", "within"] = "any",
+        max_gap: int = -1,
+        min_overlap: int = 1,
+        ignore_strand: bool = False,
+    ) -> "BiocFrame":
+        """Count overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
+
+        Args:
+            query:
+                Query `GenomicRanges`.
+
+            query_type:
+                Overlap query type, must be one of
+
+                - "any": Any overlap is good
+                - "start": Overlap at the beginning of the intervals
+                - "end": Must overlap at the end of the intervals
+                - "within": Fully contain the query interval
+
+                Defaults to "any".
+
+            max_gap:
+                Maximum gap allowed in the overlap.
+                Defaults to -1 (no gap allowed).
+
+            min_overlap:
+                Minimum overlap with query. Defaults to 1.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Raises:
+            TypeError: If ``query`` is not of type `GenomicRanges`.
+
+        Returns:
+            A ``BiocFrame`` object with the same length as
+            ``query``, containing hits to overlapping indices.
+        """
+        OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("`query` is not a `GenomicRanges` object.")
+
+        if query_type not in OVERLAP_QUERY_TYPES:
+            raise ValueError(
+                f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}."
+            )
+
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        rev_map = []
+        groups = []
+        for i in range(len(query)):
+            try:
+                _seqname = self.seqnames.index(query.seqnames[i])
+            except Exception as _:
+                warn(f"'{query.seqnames[i]}' is not present in subject.")
+
+            _strand = query._strand[i]
+
+            if ignore_strand is True:
+                _strand = 0
+
+            _key = f"{_seqname}_{_strand}"
+            if _key in subject_chrm_grps:
+                _grp_subset = self[subject_chrm_grps[_key]]
+
+                res_idx = _grp_subset._ranges.find_overlaps(
+                    query=query._ranges[i],
+                    query_type=query_type,
+                    select="all",
+                    max_gap=max_gap,
+                    min_overlap=min_overlap,
+                )
+
+                groups.append(i)
+
+                _rev_map = []
+                for j in res_idx:
+                    _rev_map.append([len(j)])
+                rev_map.append(_rev_map[0])
+
+        output = BiocFrame({"query": groups, "subject_hits_count": rev_map})
+        return output
+
+    def subset_by_overlaps(
+        self,
+        query: "GenomicRanges",
+        query_type: Literal["any", "start", "end", "within"] = "any",
+        max_gap: int = -1,
+        min_overlap: int = 1,
+        ignore_strand: bool = False,
+    ) -> "BiocFrame":
+        """Subset ``subject`` (self) with overlaps in ``query`` `GenomicRanges` object.
+
+        Args:
+            query:
+                Query `GenomicRanges`.
+
+            query_type:
+                Overlap query type, must be one of
+
+                - "any": Any overlap is good
+                - "start": Overlap at the beginning of the intervals
+                - "end": Must overlap at the end of the intervals
+                - "within": Fully contain the query interval
+
+                Defaults to "any".
+
+            max_gap:
+                Maximum gap allowed in the overlap.
+                Defaults to -1 (no gap allowed).
+
+            min_overlap:
+                Minimum overlap with query. Defaults to 1.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Raises:
+            TypeError: If ``query`` is not of type `GenomicRanges`.
+
+        Returns:
+            A ``BiocFrame`` object with the same length as
+            ``query``, containing hits to overlapping indices.
+        """
+        OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
+        if not isinstance(query, GenomicRanges):
+            raise TypeError("`query` is not a `GenomicRanges` object.")
+
+        if query_type not in OVERLAP_QUERY_TYPES:
+            raise ValueError(
+                f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}."
+            )
+
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        rev_map = []
+        for i in range(len(query)):
+            try:
+                _seqname = self.seqnames.index(query.seqnames[i])
+            except Exception as _:
+                warn(f"'{query.seqnames[i]}' is not present in subject.")
+
+            _strand = query._strand[i]
+
+            if ignore_strand is True:
+                _strand = 0
+
+            _key = f"{_seqname}_{_strand}"
+            if _key in subject_chrm_grps:
+                _grp_subset = self[subject_chrm_grps[_key]]
+
+                res_idx = _grp_subset._ranges.find_overlaps(
+                    query=query._ranges[i],
+                    query_type=query_type,
+                    select="all",
+                    max_gap=max_gap,
+                    min_overlap=min_overlap,
+                )
+
+                _rev_map = []
+                for j in res_idx:
+                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
+                rev_map.extend(_rev_map[0])
+
+
+        return self[list(set(rev_map))]
 
 
 @ut.combine_sequences.register
