@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, Optional, Sequence, Union
+from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
 from warnings import warn
 
 import biocutils as ut
@@ -2237,6 +2237,114 @@ class GenomicRanges:
                 rev_map.append(_rev_map)
 
         output = BiocFrame({"query": groups, "subject_hits": rev_map})
+        return output
+
+    def _get_ranges_as_list(self) -> List[Tuple[int, int, int]]:
+        """Internal method to get ranges as a list of tuples.
+
+        Returns:
+            List of tuples containing the start, end and the index.
+        """
+        ranges = []
+        for i in range(len(self)):
+            ranges.append(
+                (
+                    self._seqnames[i],
+                    self._strand[i],
+                    self._ranges._start[i],
+                    self._ranges.end[i],
+                    i,
+                )
+            )
+
+        return ranges
+
+    def order(self, decreasing: bool = False) -> np.ndarray:
+        """Get the order of indices for sorting.
+
+        Args:
+            decreasing:
+                Whether to sort in descending order. Defaults to False.
+
+        Returns:
+            NumPy vector containing index positions in the sorted order.
+        """
+        intvals = sorted(self._get_ranges_as_list(), reverse=decreasing)
+        order = [o[4] for o in intvals]
+        return np.array(order)
+
+    def sort(self, decreasing: bool = False, in_place: bool = False) -> "GenomicRanges":
+        """Get the order of indices for sorting.
+
+        Args:
+            decreasing:
+                Whether to sort in descending order. Defaults to False.
+
+            in_place:
+                Whether to modify the object in place. Defaults to False.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the trimmed regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+        order = self.order(decreasing=decreasing)
+        output = self._define_output(in_place)
+        print(order)
+        return output[list(order)]
+
+    def rank(self) -> List[int]:
+        """Get rank of the ``GenomicRanges`` object.
+
+        For each range identifies its position is a sorted order.
+
+        Returns:
+            Numpy vector containing rank.
+        """
+        intvals = sorted(self._get_ranges_as_list())
+        order = [o[4] for o in intvals]
+        rank = [order.index(x) for x in range(len(order))]
+        return rank
+
+    ##############################
+    ######>> misc methods <<######
+    ##############################
+
+    def sample(self, k: int = 5) -> "GenomicRanges":
+        """Randomly sample ``k`` intervals.
+
+        Args:
+            k:
+                Number of intervals to sample. Defaults to 5.
+
+        Returns:
+            A new ``GenomicRanges`` with randomly sampled ranges.
+        """
+        from random import random
+
+        sample = random.sample(range(len(self)), k=k)
+        return self[sample]
+
+    def invert_strand(self, in_place: bool = False) -> "GenomicRanges":
+        """Invert strand for each range.
+
+        Conversion map:
+            - "+" map to "-"
+            - "-" becomes "+"
+            - "*" stays the same
+
+        Args:
+            in_place:
+                Whether to modify the object in place. Defaults to False.
+
+        Returns:
+            GenomicRanges: A new `GenomicRanges` object.
+        """
+        convertor = {"1": "-1", "-1": "1", "0": "0"}
+        inverts = [convertor[str(idx)] for idx in self._strand]
+
+        output = self._define_output(in_place)
+        output._strand = inverts
         return output
 
 

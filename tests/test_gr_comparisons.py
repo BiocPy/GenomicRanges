@@ -38,58 +38,26 @@ def test_matches():
     assert query_hits.column("subject_hits") == [[2], [3], [4]]
 
 
-# def test_duplicated():
-#     assert gr is not None
+def test_order():
+    assert gr is not None
 
-#     query_hits = gr.duplicated()
-
-#     assert query_hits is not None
-#     assert query_hits == [
-#         False,
-#         False,
-#         False,
-#         False,
-#         False,
-#         False,
-#         False,
-#         False,
-#         False,
-#         False,
-#     ]
+    order = gr.order()
+    assert (order == np.array([0, 1, 3, 4, 2])).all()
 
 
-# def test_is_unsorted():
-#     assert gr is not None
+def test_sort():
+    assert gr is not None
+    result = gr.sort()
 
-#     result = gr.is_unsorted()
+    assert result is not None
 
-#     assert result is True
-
-
-# def test_order():
-#     assert gr is not None
-
-#     order = gr.order()
-
-#     assert order == [4, 5, 0, 3, 1, 2, 6, 7, 8, 9]
+    result = gr.sort(decreasing=True)
+    assert result is not None
 
 
-# def test_sort():
-#     assert gr is not None
-#     result = gr.sort()
+def test_rank():
+    assert gr is not None
+    result = gr.rank()
 
-#     assert result is not None
-#     assert result.shape == gr.shape
-
-#     result = gr.sort(decreasing=True)
-
-#     assert result is not None
-#     assert result.shape == gr.shape
-
-
-# def test_rank():
-#     assert gr is not None
-#     result = gr.rank()
-
-#     assert result is not None
-#     assert result == [2, 4, 5, 3, 0, 1, 6, 7, 8, 9]
+    assert result is not None
+    assert (result == np.array([0, 1, 4, 2, 3])).all()
