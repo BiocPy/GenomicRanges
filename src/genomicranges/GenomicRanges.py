@@ -2361,8 +2361,8 @@ class GenomicRanges:
     def tile_by_range(
         self, n: Optional[int] = None, width: Optional[int] = None
     ) -> "GenomicRanges":
-        """Split each sequence length into chunks by ``n`` (number of intervals) or
-        ``width`` (intervals with equal width).
+        """Split each sequence length into chunks by ``n`` (number of intervals) or ``width`` (intervals with equal
+        width).
 
         Note: Either ``n`` or ``width`` must be provided, but not both.
 
