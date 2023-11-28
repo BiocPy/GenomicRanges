@@ -7,7 +7,7 @@ from biocframe import BiocFrame
 from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
-from .utils import sanitize_strand_vector
+from .utils import sanitize_strand_vector, split_intervals, slide_intervals
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -2262,6 +2262,11 @@ class GenomicRanges:
     def order(self, decreasing: bool = False) -> np.ndarray:
         """Get the order of indices for sorting.
 
+        Order orders the genomic ranges by chromosome and strand.
+        Strand is ordered by reverse first (-1), any strand (0) and
+        forward strand (-1). Then by the start positions and width if
+        two regions have the same start.
+
         Args:
             decreasing:
                 Whether to sort in descending order. Defaults to False.
@@ -2338,7 +2343,9 @@ class GenomicRanges:
                 Whether to modify the object in place. Defaults to False.
 
         Returns:
-            GenomicRanges: A new `GenomicRanges` object.
+            A modified ``GenomicRanges`` object with the trimmed regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
         """
         convertor = {"1": "-1", "-1": "1", "0": "0"}
         inverts = [convertor[str(idx)] for idx in self._strand]
@@ -2346,6 +2353,242 @@ class GenomicRanges:
         output = self._define_output(in_place)
         output._strand = inverts
         return output
+
+    ################################
+    ######>> window methods <<######
+    ################################
+
+    def tile_by_range(
+        self, n: Optional[int] = None, width: Optional[int] = None
+    ) -> "GenomicRanges":
+        """Split each sequence length into chunks by ``n`` (number of intervals) or
+        ``width`` (intervals with equal width).
+
+        Note: Either ``n`` or ``width`` must be provided, but not both.
+
+        Also, checkout :py:meth:`~genomicranges.io.tiling.tile_genome` for splitting
+        the genome into chunks.
+
+        Args:
+            n:
+                Number of intervals to split into.
+                Defaults to None.
+
+            width:
+                Width of each interval. Defaults to None.
+
+        Raises:
+            ValueError:
+                If both ``n`` or ``width`` are provided.
+
+        Returns:
+            A new ``GenomicRanges`` with the split ranges.
+        """
+        if n is not None and width is not None:
+            raise ValueError("Either `n` or `width` must be provided but not both.")
+
+        ranges = self.range()
+
+        seqnames = []
+        strand = []
+        starts = []
+        widths = []
+
+        for _, val in ranges:
+            twidth = None
+            if n is not None:
+                twidth = int((val._ranges.width[0]) / n)
+            elif width is not None:
+                twidth = width
+
+            all_intervals = split_intervals(
+                val._ranges._start[0], val._ranges.end[0] - 1, twidth
+            )
+
+            seqnames.extend([val.seqnames[0]] * len(all_intervals))
+            strand.extend([val.strand[0]] * len(all_intervals))
+            starts.extend([x[0] for x in all_intervals])
+            widths.extend(x[1] for x in all_intervals)
+
+        return GenomicRanges(
+            seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths)
+        )
+
+    def tile(
+        self, n: Optional[int] = None, width: Optional[int] = None
+    ) -> "GenomicRanges":
+        """Split each interval by ``n`` (number of sub intervals) or ``width`` (intervals with equal width).
+
+        Note: Either ``n`` or ``width`` must be provided but not both.
+
+        Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
+        a genome into chunks, or
+        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
+
+        Args:
+            n:
+                Number of intervals to split into.
+                Defaults to None.
+
+            width:
+                Width of each interval. Defaults to None.
+
+        Raises:
+            ValueError:
+                If both ``n`` and ``width`` are provided.
+
+        Returns:
+            A new ``GenomicRanges`` with the split ranges.
+        """
+        if n is not None and width is not None:
+            raise ValueError("either `n` or `width` must be provided but not both")
+
+        import math
+
+        seqnames = []
+        strand = []
+        starts = []
+        widths = []
+
+        counter = 0
+        for _, val in self:
+            twidth = None
+            if n is not None:
+                twidth = math.ceil((val._ranges._width + 1) / (n))
+
+                if twidth < 1:
+                    raise RuntimeError(
+                        f"'width' of region is less than 'n' for range in: {counter}."
+                    )
+            elif width is not None:
+                twidth = width
+
+            all_intervals = split_intervals(
+                val._ranges._start[0], val._ranges.end[0] - 1, twidth
+            )
+
+            seqnames.extend([val.seqnames[0]] * len(all_intervals))
+            strand.extend([val.strand[0]] * len(all_intervals))
+            starts.extend([x[0] for x in all_intervals])
+            widths.extend(x[1] for x in all_intervals)
+
+            counter += 1
+
+        return GenomicRanges(
+            seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths)
+        )
+
+    def sliding_windows(self, width: int, step: int = 1) -> "GenomicRanges":
+        """Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.
+
+        Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
+        a gneomic into chunks, or
+        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
+
+        Args:
+            n:
+                Number of intervals to split into.
+                Defaults to None.
+
+            width:
+                Width of each interval. Defaults to None.
+
+        Returns:
+            A new ``GenomicRanges`` with the sliding ranges.
+        """
+        seqnames = []
+        strand = []
+        starts = []
+        widths = []
+
+        for _, val in self:
+            all_intervals = slide_intervals(
+                val._ranges._start[0],
+                val._ranges.end[0] - 1,
+                width=width,
+                step=step,
+            )
+
+            seqnames.extend([val.seqnames[0]] * len(all_intervals))
+            strand.extend([val.strand[0]] * len(all_intervals))
+            starts.extend([x[0] for x in all_intervals])
+            widths.extend(x[1] for x in all_intervals)
+
+        return GenomicRanges(
+            seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths)
+        )
+
+    @classmethod
+    def tile_genome(
+        cls,
+        seqlengths: Union[Dict, SeqInfo],
+        n: Optional[int] = None,
+        width: Optional[int] = None,
+    ) -> "GenomicRanges":
+        """Create a new ``GenomicRanges`` by partitioning a specified genome.
+
+        If ``n`` is provided, the region is split into ``n`` intervals. The last interval may
+        not contain the same 'width' as the other regions.
+
+        Alternatively, ``width`` may be provided for each interval. Similarly, the last region
+        may be less than ``width``.
+
+        Either ``n`` or ``width`` must be provided but not both.
+
+        Args:
+            seqlengths:
+                Sequence lengths of each chromosome.
+
+                ``seqlengths`` may be a dictionary, where keys specify the chromosome
+                and the value is the length of each chromosome in the genome.
+
+                Alternatively, ``seqlengths`` may be an instance of
+                :py:class:`~genomicranges.SeqInfo.SeqInfo`.
+
+            n:
+                Number of intervals to split into.
+                Defaults to None, then 'width' of each interval is computed from ``seqlengths``.
+
+            width:
+                Width of each interval. Defaults to None.
+
+        Raises:
+            ValueError:
+                If both ``n`` and ``width`` are provided.
+
+        Returns:
+            A new ``GenomicRanges`` with the tiled regions.
+        """
+        import math
+
+        if n is not None and width is not None:
+            raise ValueError("Both `n` or `width` are provided!")
+
+        seqlen_ = seqlengths
+        if isinstance(seqlengths, SeqInfo):
+            seqlen_ = dict(zip(seqlengths.seqnames, seqlengths.seqlengths))
+
+        seqnames = []
+        strand = []
+        starts = []
+        widths = []
+        for chrm, chrlen in seqlen_.items():
+            twidth = None
+            if n is not None:
+                twidth = math.ceil(chrlen / n)
+            elif width is not None:
+                twidth = width
+
+            all_intervals = split_intervals(1, chrlen, twidth)
+
+            seqnames.extend([chrm] * len(all_intervals))
+            strand.extend(["*"] * len(all_intervals))
+            starts.extend([x[0] for x in all_intervals])
+            widths.extend(x[1] for x in all_intervals)
+
+        return GenomicRanges(
+            seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths)
+        )
 
 
 @ut.combine_sequences.register

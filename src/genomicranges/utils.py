@@ -1,4 +1,4 @@
-from typing import Sequence, Union
+from typing import List, Sequence, Union
 
 import biocutils as ut
 import numpy as np
@@ -87,3 +87,56 @@ def _sanitize_strand_search_ops(query_strand, subject_strand):
         return None
 
     return STRAND_MAP[out]
+
+
+def split_intervals(start: int, end: int, step: int) -> List:
+    """Split an interval range into equal bins.
+
+    Args:
+        start:
+            Start interval.
+
+        end:
+            End interval.
+
+        step:
+            Width or step of each interval.
+
+    Returns:
+        List of intervals split into bins.
+    """
+    bins = []
+    for i in range(start, end + 1, step):
+        bins.append((i, min(i + step - 1, end) - i))
+
+    return bins
+
+
+def slide_intervals(start: int, end: int, width: int, step: int) -> List:
+    """Sliding intervals.
+
+    Args:
+        start:
+            Start interval.
+
+        end:
+            End interval.
+
+        step:
+            Step of each interval.
+
+        width:
+            Width of each interval.
+
+    Returns:
+        List of intervals split into bins.
+    """
+    bins = []
+
+    if end - width < start:
+        bins.append((start, end - start))
+    else:
+        for i in range(start, end - width + 2, step):
+            bins.append((i, min(i + width - 1, end) - i))
+
+    return bins
