@@ -169,27 +169,27 @@ print(grl)
 ```
 
     ## output
-    GenomicRangesList with 2 genomic elements                 
-                                                            
-    Name: gene1                                              
-    GenomicRanges with 4 ranges and 4 metadata columns       
-            ranges         seqnames           strand    score 
-        <IRanges> <ndarray> <ndarray>   <list>               
-    [0]    1 - 11             chr1                - |      1 
-    [1]    3 - 33             chr2                + |      2 
-    [2]    2 - 52             chr1                * |      3 
-    [3]    4 - 64             chr3                + |      4 
-    ------                                                   
-    seqinfo(3 sequences): chr1 chr2 chr3                     
-    Name: gene2                                              
-    GenomicRanges with 3 ranges and 3 metadata columns       
-            ranges         seqnames           strand    score 
-        <IRanges> <ndarray> <ndarray>   <list>               
-    [0]    3 - 33             chr2                - |      2 
-    [1]    6 - 56             chr4                + |      3 
-    [2]    4 - 64             chr5                * |      4 
-    ------                                                   
-    seqinfo(3 sequences): chr2 chr4 chr5      
+    GenomicRangesList with 2 genomic elements
+
+    Name: gene1
+    GenomicRanges with 4 ranges and 4 metadata columns
+            ranges         seqnames           strand    score
+        <IRanges> <ndarray> <ndarray>   <list>
+    [0]    1 - 11             chr1                - |      1
+    [1]    3 - 33             chr2                + |      2
+    [2]    2 - 52             chr1                * |      3
+    [3]    4 - 64             chr3                + |      4
+    ------
+    seqinfo(3 sequences): chr1 chr2 chr3
+    Name: gene2
+    GenomicRanges with 3 ranges and 3 metadata columns
+            ranges         seqnames           strand    score
+        <IRanges> <ndarray> <ndarray>   <list>
+    [0]    3 - 33             chr2                - |      2
+    [1]    6 - 56             chr4                + |      3
+    [2]    4 - 64             chr5                * |      4
+    ------
+    seqinfo(3 sequences): chr2 chr4 chr5
 
 ## Further information
 
