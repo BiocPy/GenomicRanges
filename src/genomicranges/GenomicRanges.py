@@ -339,7 +339,7 @@ class GenomicRanges:
             raw_floating = ut.create_floating_names(self._names, indices)
             if insert_ellipsis:
                 raw_floating = raw_floating[:3] + [""] + raw_floating[3:]
-            floating = ["", ""] + raw_floating
+            floating = ["", ""] + list(raw_floating)
 
             columns = []
 
@@ -1020,7 +1020,7 @@ class GenomicRanges:
 
         Args:
             input:
-                Input data. must contain columns 'seqnames', 'start' and 'width'.
+                Input data. must contain columns 'seqnames', 'starts' and 'widths' or "ends".
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1030,13 +1030,20 @@ class GenomicRanges:
         if not isinstance(input, DataFrame):
             raise TypeError("`input` is not a pandas `DataFrame` object.")
 
-        if "start" not in input.columns:
-            raise ValueError("'input' must contain column 'start'.")
-        start = input["start"].tolist()
+        if "starts" not in input.columns:
+            raise ValueError("'input' must contain column 'starts'.")
+        start = input["starts"].tolist()
 
-        if "width" not in input.columns:
-            raise ValueError("'input' must contain column 'width'.")
-        width = input["width"].tolist()
+        if "widths" not in input.columns and "ends" not in input.columns:
+            raise ValueError("'input' must contain either 'widths' or 'ends' columns.")
+
+        drops = []
+        if "widths" in input.columns:
+            drops.append["widths"]
+            width = input["widths"].tolist()
+        else:
+            drops.append("ends")
+            width = input["ends"] - input["starts"]
 
         if "seqnames" not in input.columns:
             raise ValueError("'input' must contain column 'seqnames'.")
@@ -1045,7 +1052,8 @@ class GenomicRanges:
         ranges = IRanges(start, width)
 
         # mcols
-        mcols_df = input.drop(columns=["start", "width", "seqnames"])
+        drops.extend(["starts", "seqnames"])
+        mcols_df = input.drop(columns=drops)
 
         mcols = None
         if (not mcols_df.empty) or len(mcols_df.columns) > 0:

@@ -42,8 +42,8 @@ def test_from_pandas():
     df_src = pd.DataFrame(
         {
             "seqnames": ["chr1"],
-            "start": [101],
-            "width": [8],
+            "starts": [101],
+            "widths": [8],
         }
     )
 
@@ -59,17 +59,16 @@ def test_from_pandas():
 
 
 def test_from_pandas_should_fail():
+    df_gr = pd.DataFrame(
+        {
+            "starts": range(100, 110),
+            "ends": range(110, 120),
+            "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
+            "score": range(0, 10),
+            "GC": [random() for _ in range(10)],
+        }
+    )
     with pytest.raises(Exception):
-        df_gr = pd.DataFrame(
-            {
-                "starts": range(100, 110),
-                "ends": range(110, 120),
-                "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
-                "score": range(0, 10),
-                "GC": [random() for _ in range(10)],
-            }
-        )
-
         GenomicRanges.from_pandas(df_gr)
 
 
