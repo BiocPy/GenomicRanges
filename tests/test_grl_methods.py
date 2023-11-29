@@ -25,6 +25,7 @@ b = GenomicRanges(
     mcols=BiocFrame({"score": [2, 3, 4]}),
 )
 
+
 def test_is_empty_False():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
