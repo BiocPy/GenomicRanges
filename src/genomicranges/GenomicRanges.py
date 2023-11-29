@@ -1037,7 +1037,7 @@ class GenomicRanges:
 
         drops = []
         if "widths" in input.columns:
-            drops.append["widths"]
+            drops.append("widths")
             width = input["widths"].tolist()
         else:
             drops.append("ends")
