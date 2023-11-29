@@ -1651,8 +1651,7 @@ class GenomicRanges:
     def coverage(
         self, shift: int = 0, width: Optional[int] = None, weight: int = 1
     ) -> Dict[str, np.ndarray]:
-        """Calculate coverage for each chromosome, For each position,
-        counts the number of ranges that cover it.
+        """Calculate coverage for each chromosome, For each position, counts the number of ranges that cover it.
 
         Args:
             shift:
