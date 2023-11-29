@@ -2,7 +2,6 @@ from typing import Dict, List, Optional, Union, Sequence
 
 from biocframe import BiocFrame
 import biocutils as ut
-from iranges import IRanges
 from .GenomicRanges import GenomicRanges
 from warnings import warn
 
