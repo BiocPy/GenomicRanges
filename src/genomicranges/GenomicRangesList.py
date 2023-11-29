@@ -21,7 +21,12 @@ def _validate_ranges(ranges, num_ranges):
             "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
         )
 
-    if len(ranges) != num_ranges:
+    if isinstance(ranges, list) and len(ranges) != num_ranges:
+        raise ValueError(
+            "Length of 'ranges' does not match the number of genomic elements.",
+            f"Need to be {num_ranges}, provided {len(ranges)}.",
+        )
+    elif isinstance(ranges, GenomicRanges) and num_ranges != 1:
         raise ValueError(
             "Length of 'ranges' does not match the number of genomic elements.",
             f"Need to be {num_ranges}, provided {len(ranges)}.",
@@ -681,26 +686,6 @@ class GenomicRangesList:
         """
         return self._generic_accessor("is_circular")
 
-    @property
-    def genome(self) -> Dict[str, List[int]]:
-        """Get genome of the underlying sequences.
-
-        Returns:
-            A list with the same length as keys in the object,
-            each element in the list contains another list values.
-        """
-        return self._generic_accessor("genome")
-
-    @property
-    def score(self) -> Dict[str, List[int]]:
-        """Get score about the underlying sequences.
-
-        Returns:
-            A list with the same length as keys in the object,
-            each element in the list contains another list values.
-        """
-        return self._generic_accessor("score")
-
     def to_pandas(self) -> "pandas.DataFrame":
         """Coerce object to a :py:class:`pandas.DataFrame`.
 
@@ -843,7 +828,7 @@ def _combine_grl(*x: GenomicRangesList):
             else:
                 all_names += [""] * len(y)
 
-    return GenomicRanges(
+    return GenomicRangesList(
         ranges=ut.combine_sequences(*[y._ranges for y in x]),
         range_lengths=ut.combine_sequences(*[y._range_lengths for y in x]),
         names=all_names,
