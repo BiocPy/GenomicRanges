@@ -17,7 +17,6 @@ finally:
 
 from .GenomicRanges import GenomicRanges
 from .GenomicRangesList import GenomicRangesList
-# from .io.gtf import read_gtf
-from .io.pdf import from_pandas
-# from .io.ucsc import read_ucsc
+from .io.gtf import read_gtf
+from .io.ucsc import read_ucsc
 from .SeqInfo import SeqInfo

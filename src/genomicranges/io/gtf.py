@@ -3,9 +3,6 @@ from typing import Dict
 
 from pandas import DataFrame, read_csv
 
-# from ..GenomicRanges import GenomicRanges
-from .pdf import from_pandas
-
 # Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
 
 __author__ = "jkanche"
@@ -106,5 +103,6 @@ def read_gtf(file: str) -> "GenomicRanges":
     """
     compressed = True if file.endswith("gz") else False
     data = parse_gtf(file, compressed=compressed)
+    from ..GenomicRanges import GenomicRanges
 
-    return from_pandas(data)
+    return GenomicRanges.from_pandas(data)

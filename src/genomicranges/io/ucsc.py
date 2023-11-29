@@ -1,8 +1,6 @@
 from typing import Literal
 
-# from ..GenomicRanges import GenomicRanges
 from .gtf import parse_gtf
-from .pdf import from_pandas
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -63,4 +61,6 @@ def read_ucsc(
     compressed = True
     data = parse_gtf(path, compressed=compressed)
 
-    return from_pandas(data)
+    from ..GenomicRanges import GenomicRanges
+
+    return GenomicRanges.from_pandas(data)
