@@ -343,18 +343,18 @@ class GenomicRanges:
 
             columns = []
 
-            header = ["ranges", f"<{ut.print_type(self._ranges)}>"]
-            showed = [f"{x._start[0]} - {x.end[0]}" for _, x in self._ranges[indices]]
-            if insert_ellipsis:
-                showed = showed[:3] + ["..."] + showed[3:]
-            columns.append(header + showed)
-
             header = ["seqnames", f"<{ut.print_type(self._seqnames)}>"]
             _seqnames = []
             for x in self._seqnames[indices]:
                 _seqnames.append(self._seqinfo.seqnames[x])
 
             showed = _seqnames
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
+
+            header = ["ranges", f"<{ut.print_type(self._ranges)}>"]
+            showed = [f"{x._start[0]} - {x.end[0]}" for _, x in self._ranges[indices]]
             if insert_ellipsis:
                 showed = showed[:3] + ["..."] + showed[3:]
             columns.append(header + showed)
@@ -1052,7 +1052,7 @@ class GenomicRanges:
         strand = None
         if "strand" in input.columns:
             strand = input["strand"].tolist()
-            drops.append(strand)
+            drops.append("strand")
 
         # mcols
         drops.extend(["starts", "seqnames"])

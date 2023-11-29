@@ -68,15 +68,13 @@ print(gr)
 
     ## output
     GenomicRanges with 5 ranges and 5 metadata columns
-        ranges         seqnames           strand     score                  GC
-        <IRanges> <ndarray[int64]> <ndarray[int64]>   <range>              <list>
-    [0] 101 - 112             chr1                * |       0 0.12967911063851112
-    [1] 102 - 123             chr2                - |       1  0.8519503721543515
-    [2] 103 - 128             chr3                * |       2 0.30211343114971334
-    [3] 104 - 134             chr2                + |       3  0.8557886571485658
-    [4] 105 - 110             chr3                - |       4  0.8489220610992196
-    ------
-    seqinfo(3 sequences): chr1 chr2 chr3
+              seqnames    ranges           strand    score                  GC
+      <ndarray[int64]> <IRanges> <ndarray[int64]>   <list>              <list>
+    0             chr1 101 - 112                * |      0  0.9577094406822213
+    1             chr2 102 - 103                - |      1  0.8947394912063824
+    2             chr1 103 - 128                * |      2  0.8635855064433551
+    3             chr3 104 - 134                + |      3 0.20372412804486073
+    4             chr2 109 - 111                - |      4  0.6892415071280414
 
 ### Pandas DataFrame
 
@@ -103,15 +101,13 @@ print(gr)
 
     ## output
     GenomicRanges with 5 ranges and 5 metadata columns
-        ranges         seqnames           strand   strand  score                  GC
-    <IRanges> <ndarray[int64]> <ndarray[int64]>   <list> <list>              <list>
-    0 101 - 112             chr1                * |      *      0   0.631142353726863
-    1 102 - 103             chr2                * |      -      1 0.16347218374502626
-    2 103 - 128             chr1                * |      *      2 0.26447703656847454
-    3 104 - 134             chr3                * |      +      3 0.25647153816556056
-    4 109 - 111             chr2                * |      -      4 0.20365481603223834
-    ------
-    seqinfo(3 sequences): chr1 chr2 chr3
+              seqnames    ranges           strand    score                  GC
+      <ndarray[int64]> <IRanges> <ndarray[int64]>   <list>              <list>
+    0             chr1 101 - 112                * |      0  0.9577094406822213
+    1             chr2 102 - 103                - |      1  0.8947394912063824
+    2             chr1 103 - 128                * |      2  0.8635855064433551
+    3             chr3 104 - 134                + |      3 0.20372412804486073
+    4             chr2 109 - 111                - |      4  0.6892415071280414
 
 ### Interval Operations
 
@@ -169,27 +165,27 @@ print(grl)
 ```
 
     ## output
-    GenomicRangesList with 2 genomic elements
-
-    Name: gene1
-    GenomicRanges with 4 ranges and 4 metadata columns
-            ranges         seqnames           strand    score
-        <IRanges> <ndarray> <ndarray>   <list>
-    [0]    1 - 11             chr1                - |      1
-    [1]    3 - 33             chr2                + |      2
-    [2]    2 - 52             chr1                * |      3
-    [3]    4 - 64             chr3                + |      4
-    ------
-    seqinfo(3 sequences): chr1 chr2 chr3
-    Name: gene2
-    GenomicRanges with 3 ranges and 3 metadata columns
-            ranges         seqnames           strand    score
-        <IRanges> <ndarray> <ndarray>   <list>
-    [0]    3 - 33             chr2                - |      2
-    [1]    6 - 56             chr4                + |      3
-    [2]    4 - 64             chr5                * |      4
-    ------
-    seqinfo(3 sequences): chr2 chr4 chr5
+    GenomicRangesList with 2 genomic elements                 
+                                                            
+    Name: gene1                                              
+    GenomicRanges with 4 ranges and 4 metadata columns       
+                seqnames    ranges           strand    score 
+        <ndarray> <IRanges> <ndarray>   <list>               
+    [0]             chr1    1 - 11                - |      1 
+    [1]             chr2    3 - 33                + |      2 
+    [2]             chr1    2 - 52                * |      3 
+    [3]             chr3    4 - 64                + |      4 
+    ------                                                   
+    seqinfo(3 sequences): chr1 chr2 chr3                     
+    Name: gene2                                              
+    GenomicRanges with 3 ranges and 3 metadata columns       
+                seqnames    ranges           strand    score 
+        <ndarray> <IRanges> <ndarray>   <list>               
+    [0]             chr2    3 - 33                - |      2 
+    [1]             chr4    6 - 56                + |      3 
+    [2]             chr5    4 - 64                * |      4 
+    ------                                                   
+    seqinfo(3 sequences): chr2 chr4 chr5                     
 
 ## Further information
 

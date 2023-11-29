@@ -152,15 +152,24 @@ def create_np_vector(
     """Represent intervals and calculate coverage.
 
     Args:
-        intervals (List[Tuple[int, int]]): Input interval vector.
-        with_reverse_map (bool, optional): Return map of indices? Defaults to False.
-        force_size (int, optional): Force size of the array.
-        dont_sum (bool, optional): Do not sum. Defaults to False.
-        value (int, optional): Default value to increment. Defaults to 1.
+        intervals:
+            Input interval vector.
+
+        with_reverse_map:
+            Return map of indices? Defaults to False.
+
+        force_size:
+            Force size of the array.
+
+        dont_sum:
+            Do not sum. Defaults to False.
+
+        value:
+            Default value to increment. Defaults to 1.
 
     Returns:
-        Tuple[ndarray, Optional[List]]: A numpy array representing
-        coverage from the intervals and optionally the index map.
+        A numpy array representing coverage from the
+        intervals and optionally a reverse index map.
     """
     if len(intervals) < 1:
         return intervals
