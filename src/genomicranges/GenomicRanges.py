@@ -344,10 +344,7 @@ class GenomicRanges:
             columns = []
 
             header = ["ranges", f"<{ut.print_type(self._ranges)}>"]
-            showed = ut.show_as_cell(
-                [f"{x._start[0]} - {x.end[0]}" for _, x in self._ranges[indices]],
-                indices,
-            )
+            showed = [f"{x._start[0]} - {x.end[0]}" for _, x in self._ranges[indices]]
             if insert_ellipsis:
                 showed = showed[:3] + ["..."] + showed[3:]
             columns.append(header + showed)
@@ -357,7 +354,7 @@ class GenomicRanges:
             for x in self._seqnames[indices]:
                 _seqnames.append(self._seqinfo.seqnames[x])
 
-            showed = ut.show_as_cell(_seqnames, indices)
+            showed = _seqnames
             if insert_ellipsis:
                 showed = showed[:3] + ["..."] + showed[3:]
             columns.append(header + showed)
@@ -371,7 +368,8 @@ class GenomicRanges:
                     _strand.append("-")
                 else:
                     _strand.append("*")
-            showed = ut.show_as_cell(_strand, indices)
+
+            showed = _strand
             if insert_ellipsis:
                 showed = showed[:3] + ["..."] + showed[3:]
             columns.append(header + showed)
