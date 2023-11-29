@@ -1049,6 +1049,11 @@ class GenomicRanges:
 
         ranges = IRanges(start, width)
 
+        strand = None
+        if "strand" in input.columns:
+            strand = input["strand"].tolist()
+            drops.append(strand)
+
         # mcols
         drops.extend(["starts", "seqnames"])
         mcols_df = input.drop(columns=drops)
@@ -1061,7 +1066,9 @@ class GenomicRanges:
         if input.index is not None:
             names = [str(i) for i in input.index.to_list()]
 
-        return cls(ranges=ranges, seqnames=seqnames, names=names, mcols=mcols)
+        return cls(
+            ranges=ranges, seqnames=seqnames, strand=strand, names=names, mcols=mcols
+        )
 
     #####################################
     ######>> intra-range methods <<######
