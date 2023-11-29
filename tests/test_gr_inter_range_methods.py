@@ -71,7 +71,7 @@ def test_reduce_with_gapwidth_with_reverse_map():
     assert (out.start == np.array([101, 104, 102, 105, 103])).all()
     assert (out.width == np.array([11, 30, 21, 5, 25])).all()
     assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
-    assert out.mcols.column("revmap") == [[0], [3], [1], [4], [2]]
+    assert out.mcols.column("revmap") == [0, 3, 1, 4, 2]
 
 
 def test_range():

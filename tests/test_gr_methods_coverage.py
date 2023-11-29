@@ -37,11 +37,13 @@ def test_coverage_default():
 
     res = gr.coverage()
 
+    print(res)
+
     assert res is not None
     assert len(res.keys()) == 3
-    assert len(res["chr1"]) == 128
-    assert len(res["chr2"]) == 111
-    assert len(res["chr3"]) == 134
+    assert len(res["chr1"]) == 115
+    assert len(res["chr2"]) == 113
+    assert len(res["chr3"]) == 119
 
 
 def test_coverage_shift():
@@ -51,9 +53,9 @@ def test_coverage_shift():
 
     assert res is not None
     assert len(res.keys()) == 3
-    assert len(res["chr1"]) == 138
-    assert len(res["chr2"]) == 121
-    assert len(res["chr3"]) == 144
+    assert len(res["chr1"]) == 125
+    assert len(res["chr2"]) == 123
+    assert len(res["chr3"]) == 129
 
 
 def test_coverage_shift_width():

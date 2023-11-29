@@ -1,13 +1,82 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Sequence
 
 from biocframe import BiocFrame
-from biocutils import is_list_of_type, combine_sequences
-
+import biocutils as ut
+from iranges import IRanges
 from .GenomicRanges import GenomicRanges
+from warnings import warn
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
+
+
+def _validate_ranges(ranges, num_ranges):
+    if ranges is None:
+        raise ValueError("'ranges' cannot be None.")
+
+    if not (
+        isinstance(ranges, GenomicRanges) or ut.is_list_of_type(ranges, GenomicRanges)
+    ):
+        raise TypeError(
+            "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
+        )
+
+    if len(ranges) != num_ranges:
+        raise ValueError(
+            "Length of 'ranges' does not match the number of genomic elements.",
+            f"Need to be {num_ranges}, provided {len(ranges)}.",
+        )
+
+
+def _validate_optional_attrs(mcols, names, num_ranges):
+    if not isinstance(mcols, BiocFrame):
+        raise TypeError("'mcols' is not a `BiocFrame` object.")
+
+    if mcols.shape[0] != num_ranges:
+        raise ValueError(
+            "Length of 'mcols' does not match the number of genomic elements."
+        )
+
+    if names is not None:
+        if len(names) != num_ranges:
+            raise ValueError(
+                "Length of 'names' does not match the number of genomic elements."
+            )
+
+        if any(x is None for x in names):
+            raise ValueError("'names' cannot contain None values.")
+
+
+class GenomicRangesListIter:
+    """An iterator to a :py:class:`~GenomicRangesList` object."""
+
+    def __init__(self, obj: "GenomicRangesList") -> None:
+        """Initialize the iterator.
+
+        Args:
+            obj:
+                source object to iterate.
+        """
+        self._grl = obj
+        self._current_index = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._current_index < len(self._grl):
+            iter_row_index = (
+                self._grl.names[self._current_index]
+                if self._grl.names is not None
+                else None
+            )
+
+            iter_slice = self._grl[self._current_index]
+            self._current_index += 1
+            return (iter_row_index, iter_slice)
+
+        raise StopIteration
 
 
 class GenomicRangesList:
@@ -26,24 +95,18 @@ class GenomicRangesList:
 
     .. code-block:: python
 
-        gr1 = GenomicRanges(
-            {
-                "seqnames": ["chr1", "chr2", "chr1", "chr3"],
-                "starts": [1, 3, 2, 4],
-                "ends": [10, 30, 50, 60],
-                "strand": ["-", "+", "*", "+"],
-                "score": [1, 2, 3, 4],
-            }
+        a = GenomicRanges(
+            seqnames=["chr1", "chr2", "chr1", "chr3"],
+            ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
+            strand=["-", "+", "*", "+"],
+            mcols=BiocFrame({"score": [1, 2, 3, 4]}),
         )
 
-        gr2 = GenomicRanges(
-            {
-                "seqnames": ["chr2", "chr4", "chr5"],
-                "starts": [3, 6, 4],
-                "ends": [30, 50, 60],
-                "strand": ["-", "+", "*"],
-                "score": [2, 3, 4],
-            }
+        b = GenomicRanges(
+            seqnames=["chr2", "chr4", "chr5"],
+            ranges=IRanges([3, 6, 4], [30, 50, 60]),
+            strand=["-", "+", "*"],
+            mcols=BiocFrame({"score": [2, 3, 4]}),
         )
 
         grl = GenomicRangesList(ranges=[gr1, gr2], names=["gene1", "gene2"])
@@ -59,49 +122,147 @@ class GenomicRangesList:
         names: Optional[List[str]] = None,
         mcols: Optional[BiocFrame] = None,
         metadata: Optional[dict] = None,
+        validate: bool = True,
     ):
         """Initialize a `GenomicRangesList` object.
 
         Args:
-            ranges (GenomicRangesList, optional): List of genomic elements.
-                All elements in this list must be :py:class:`genomicranges.GenomicRanges.GenomicRanges`
-                class.
-            range_lengths (Optional[List[int]], optional): Number of ranges within each genomic element.
-                Defaults to None.
-            names (Optional[List[str]], optional): Names of the genomic elements.
-                The length of this must match the number of genomic elements in ``ranges``.
-                Defaults to None.
-            mcols (BiocFrame, optional): Metadata about each genomic element. Defaults to None.
-            metadata (Optional[Dict], optional): Additional metadata. Defaults to None.
+            ranges:
+                List of genomic elements.
+                All elements in this list must be
+                :py:class:`genomicranges.GenomicRanges.GenomicRanges` objects.
+
+            range_lengths:
+                Number of ranges within each genomic element.
+                Defaults to None, and is inferred from ``ranges``.
+
+            names:
+                Names of the genomic elements.
+                The length of this must match the number of
+                genomic elements in ``ranges``. Defaults to None.
+
+            mcols:
+                Metadata about each genomic element. Defaults to None.
+
+            metadata:
+                Additional metadata. Defaults to None.
+
+            validate:
+                Internal use only.
         """
-        self._validate(ranges)
-        self._data = {"ranges": ranges}
+        self._ranges = ranges
 
         if range_lengths is None:
-            range_lengths = [len(x) for x in ranges]
-
+            if isinstance(ranges, list):
+                range_lengths = [len(x) for x in ranges]
+            else:
+                range_lengths = [1]
         self._range_lengths = range_lengths
 
         if mcols is None:
             mcols = BiocFrame(number_of_rows=len(range_lengths))
-        else:
-            if not isinstance(mcols, BiocFrame):
-                raise TypeError("`mcols` must be a BiocFrame object.")
+        self._mcols = mcols
 
-        self._data["mcols"] = mcols
-
+        if names is not None and not isinstance(names, ut.Names):
+            names = ut.Names(names)
         self._names = names
+
         self._metadata = {} if metadata is None else metadata
 
-    def _validate(self, ranges: Union[GenomicRanges, List[GenomicRanges]]):
-        if not (
-            isinstance(ranges, GenomicRanges) or is_list_of_type(ranges, GenomicRanges)
-        ):
-            raise TypeError(
-                "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
-            )
+        if validate is True:
+            _validate_ranges(self._ranges, len(self._range_lengths))
+            _validate_optional_attrs(self._mcols, self._names, len(self._range_lengths))
 
-    def __repr__(self):
+    def _define_output(self, in_place: bool = False) -> "GenomicRangesList":
+        if in_place is True:
+            return self
+        else:
+            return self.__copy__()
+
+    #########################
+    ######>> Copying <<######
+    #########################
+
+    def __deepcopy__(self, memo=None, _nil=[]):
+        """
+        Returns:
+            A deep copy of the current ``GenomicRangesList``.
+        """
+        from copy import deepcopy
+
+        _ranges_copy = deepcopy(self._ranges)
+        _rangelengths_copy = deepcopy(self._range_lengths)
+        _names_copy = deepcopy(self._names)
+        _mcols_copy = deepcopy(self._mcols)
+        _metadata_copy = deepcopy(self.metadata)
+
+        current_class_const = type(self)
+        return current_class_const(
+            ranges=_ranges_copy,
+            range_lengths=_rangelengths_copy,
+            names=_names_copy,
+            mcols=_mcols_copy,
+            metadata=_metadata_copy,
+        )
+
+    def __copy__(self):
+        """
+        Returns:
+            A shallow copy of the current ``GenomicRangesList``.
+        """
+        current_class_const = type(self)
+        return current_class_const(
+            ranges=self._ranges,
+            range_lengths=self._range_lengths,
+            names=self._names,
+            mcols=self._mcols,
+            metadata=self._metadata,
+        )
+
+    def copy(self):
+        """Alias for :py:meth:`~__copy__`."""
+        return self.__copy__()
+
+    ######################################
+    ######>> length and iterators <<######
+    ######################################
+
+    def __len__(self) -> int:
+        """
+        Returns:
+            Number of rows.
+        """
+        return len(self._range_lengths)
+
+    def __iter__(self) -> GenomicRangesListIter:
+        """Iterator over rows."""
+        return GenomicRangesListIter(self)
+
+    ##########################
+    ######>> Printing <<######
+    ##########################
+
+    def __repr__(self) -> str:
+        """
+        Returns:
+            A string representation of this ``GenomicRangesList``.
+        """
+        output = "GenomicRangesList(number_of_elements=" + str(len(self))
+        output += ", ranges=" + repr(self._ranges)
+
+        if self._names is not None:
+            output += ", names=" + ut.print_truncated_list(self._names)
+
+        if self._mcols is not None:
+            output += ", mcols=" + repr(self._mcols)
+
+        if len(self._metadata) > 0:
+            output += ", metadata=" + ut.print_truncated_dict(self._metadata)
+
+        output += ")"
+        return output
+
+    def __str__(self):
         from io import StringIO
 
         from rich.console import Console
@@ -156,68 +317,255 @@ class GenomicRangesList:
 
         return capture.get()
 
-    @property
-    def metadata(self) -> dict:
-        """Get metadata.
+    ##########################
+    ######>> ranges <<########
+    ##########################
 
-        Returns:
-            dict: Metadata object, usually a dictionary.
+    def get_ranges(self) -> Union[GenomicRanges, List[GenomicRanges]]:
         """
-        return self._metadata
+        Returns:
+            List of genomic ranges.
+        """
 
-    @metadata.setter
-    def metadata(self, metadata: Optional[dict]):
-        """Set metadata.
+        return self._ranges
+
+    def set_ranges(
+        self, ranges: Union[GenomicRanges, List[GenomicRanges]], in_place: bool = False
+    ) -> "GenomicRanges":
+        """Set new genomic ranges.
 
         Args:
-            metadata (dict, optional): New metadata object.
-        """
-        self._metadata = {} if metadata is None else metadata
+            ranges:
+                List of genomic elements.
+                All elements in this list must be
+                :py:class:`genomicranges.GenomicRanges.GenomicRanges` objects.
 
-    @property
-    def ranges(self) -> Dict[str, List[str]]:
-        """Get all ranges.
-
-        Returns:
-            Dict[str, List[str]]: A list with the same length as keys in the object,
-            each element in the list contains another list of ranges names.
-        """
-        return self._data["ranges"]
-
-    @property
-    def groups(self) -> Optional[list]:
-        """Get names of all genomic elements.
+            in_place:
+                Whether to modify the ``GenomicRangesList`` object in place.
 
         Returns:
-            (list, optional): A list with the same length as
-            :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.ranges`,
-            with each element specifying the name of the element. None if names are not provided.
+            A modified ``GenomicRangesList`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+
+        _validate_ranges(ranges, len(self))
+        output = self._define_output(in_place)
+        output._ranges = ranges
+        return output
+
+    @property
+    def ranges(self) -> GenomicRanges:
+        """Alias for :py:meth:`~get_ranges`."""
+        return self.get_ranges()
+
+    @ranges.setter
+    def ranges(self, ranges: GenomicRanges):
+        """Alias for :py:meth:`~set_ranges` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'ranges' is an in-place operation, use 'set_ranges' instead",
+            UserWarning,
+        )
+        self.set_ranges(ranges, in_place=True)
+
+    ########################
+    ######>> names <<#######
+    ########################
+
+    def get_names(self) -> ut.Names:
+        """
+        Returns:
+            A list of names for each genomic element.
         """
         return self._names
 
-    @property
-    def names(self) -> Optional[list]:
-        """Alias to :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.groups`.
+    def set_names(
+        self,
+        names: Optional[Sequence[str]],
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Set new names.
+
+        Args:
+            names:
+                Names for each genomic element.
+
+            in_place:
+                Whether to modify the ``GenomicRangesList`` object in place.
 
         Returns:
-            (list, optional): A list with the same length as
-            :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.ranges`,
-            with each element specifying the name of the element. None if names are not provided.
+            A modified ``GenomicRangesList`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
         """
-        return self.groups
+        if names is not None:
+            _validate_optional_attrs(None, names, len(self))
+
+            if not isinstance(names, ut.Names):
+                names = ut.Names(names)
+
+        output = self._define_output(in_place)
+        output._names = names
+        return output
 
     @property
-    def mcols(self) -> Optional[BiocFrame]:
-        """Get metadata across all genomic elements.
+    def names(self) -> ut.Names:
+        """Alias for :py:meth:`~get_names`."""
+        return self.get_names()
+
+    @names.setter
+    def names(
+        self,
+        names: Optional[Sequence[str]],
+    ):
+        """Alias for :py:meth:`~set_names` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'names' is an in-place operation, use 'set_names' instead",
+            UserWarning,
+        )
+        self.set_names(names, in_place=True)
+
+    ########################
+    ######>> mcols <<#######
+    ########################
+
+    def get_mcols(self) -> BiocFrame:
+        """
+        Returns:
+            A ~py:class:`~biocframe.BiocFrame.BiocFrame` containing
+            per-genomic element annotations.
+        """
+        return self._mcols
+
+    def set_mcols(
+        self,
+        mcols: Optional[BiocFrame],
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Set new range metadata.
+
+        Args:
+            mcols:
+                A ~py:class:`~biocframe.BiocFrame.BiocFrame` with
+                length same as the number of genomic elements, containing
+                per-genomic element annotations.
+
+            in_place:
+                Whether to modify the ``GenomicRangesList`` object in place.
 
         Returns:
-            (BiocFrame, optional): Metadata :py:class:`~biocframe.BiocFrame.Biocframe` or
-            None if there is no element level metadata.
+            A modified ``GenomicRangesList`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
         """
-        if "mcols" in self._data:
-            return self._data["mcols"]
 
-        return None
+        if mcols is None:
+            mcols = BiocFrame({}, number_of_rows=len(self))
+
+        _validate_optional_attrs(mcols, None, len(self))
+
+        output = self._define_output(in_place)
+        output._mcols = mcols
+        return output
+
+    @property
+    def mcols(self) -> BiocFrame:
+        """Alias for :py:meth:`~get_mcols`."""
+        return self.get_mcols()
+
+    @mcols.setter
+    def mcols(
+        self,
+        mcols: Optional[BiocFrame],
+    ):
+        """Alias for :py:meth:`~set_mcols` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'mcols' is an in-place operation, use 'set_mcols' instead",
+            UserWarning,
+        )
+        self.set_mcols(mcols, in_place=True)
+
+    ###########################
+    ######>> metadata <<#######
+    ###########################
+
+    def get_metadata(self) -> dict:
+        """
+        Returns:
+            Dictionary of metadata for this object.
+        """
+        return self._metadata
+
+    def set_metadata(self, metadata: dict, in_place: bool = False) -> "GenomicRanges":
+        """Set additional metadata.
+
+        Args:
+            metadata:
+                New metadata for this object.
+
+            in_place:
+                Whether to modify the ``GenomicRangesList`` object in place.
+
+        Returns:
+            A modified ``GenomicRangesList`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if not isinstance(metadata, dict):
+            raise TypeError(
+                f"`metadata` must be a dictionary, provided {type(metadata)}."
+            )
+
+        output = self._define_output(in_place)
+        output._metadata = metadata
+        return output
+
+    @property
+    def metadata(self) -> dict:
+        """Alias for :py:attr:`~get_metadata`."""
+        return self.get_metadata()
+
+    @metadata.setter
+    def metadata(self, metadata: dict):
+        """Alias for :py:attr:`~set_metadata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'metadata' is an in-place operation, use 'set_metadata' instead",
+            UserWarning,
+        )
+        self.set_metadata(metadata, in_place=True)
+
+    ###########################
+    ######>> groups <<#########
+    ###########################
+
+    def groups(self, group: Union[str, int]) -> "GenomicRangesList":
+        """Get a genomic element by their name or index position.
+
+        Args:
+            group:
+                Name or index of the genomic element to access.
+
+        Returns:
+            The genomic element for group `i`.
+        """
+
+        if isinstance(group, str):
+            group = self._names.map(group)
+
+        if group < 0 or group > len(self):
+            raise ValueError(
+                "'group' must be less than the number of genomic elements."
+            )
+
+        return self[group]
 
     def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, list]:
         _all_prop = {}
@@ -242,7 +590,7 @@ class GenomicRangesList:
         """Get a vector of the length of each element.
 
         Returns:
-            List[int]: An integer vector where each value corresponds to the length of
+            An integer vector where each value corresponds to the length of
             the contained GenomicRanges object.
         """
         return self._generic_accessor("__len__", func=True)
@@ -251,7 +599,7 @@ class GenomicRangesList:
         """Whether ``GRangesList`` has no elements or if all its elements are empty.
 
         Returns:
-            bool: True if the object has no elements.
+            True if the object has no elements.
         """
         if len(self) == 0:
             return True
@@ -269,7 +617,7 @@ class GenomicRangesList:
         """Get all sequence names.
 
         Returns:
-            Dict[str, List[str]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list of sequence names.
         """
         return self._generic_accessor("seqnames")
@@ -279,7 +627,7 @@ class GenomicRangesList:
         """Get all start positions.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("start")
@@ -289,7 +637,7 @@ class GenomicRangesList:
         """Get all end positions.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("end")
@@ -299,7 +647,7 @@ class GenomicRangesList:
         """Get width of all regions across all elements.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("width")
@@ -309,7 +657,7 @@ class GenomicRangesList:
         """Get strand of all regions across all elements.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("strand")
@@ -319,7 +667,7 @@ class GenomicRangesList:
         """Get information about the underlying sequences.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("seq_info")
@@ -329,7 +677,7 @@ class GenomicRangesList:
         """Get the circularity flag.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("is_circular")
@@ -339,7 +687,7 @@ class GenomicRangesList:
         """Get genome of the underlying sequences.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("genome")
@@ -349,7 +697,7 @@ class GenomicRangesList:
         """Get score about the underlying sequences.
 
         Returns:
-            Dict[str, List[int]]: A list with the same length as keys in the object,
+            A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
         return self._generic_accessor("score")
@@ -358,7 +706,7 @@ class GenomicRangesList:
         """Coerce object to a :py:class:`pandas.DataFrame`.
 
         Returns:
-            DataFrame: A :py:class:`~pandas.DataFrame` object.
+            A :py:class:`~pandas.DataFrame` object.
         """
         from pandas import concat
 
@@ -390,32 +738,38 @@ class GenomicRangesList:
     def __getitem__(
         self, args: Union[str, int, tuple, list, slice]
     ) -> Union[GenomicRanges, "GenomicRangesList"]:
-        """Access individual genomic elements.
+        """Subset individual genomic elements.
 
         Args:
-            args (Union[str, int, tuple, list, slice]): Name of the genomic element to access.
+            args:
+                Name of the genomic element to access.
 
-                Alternatively, if names of genomic elements are not available, you may
-                provide an index position of the genomic element to access.
+                Alternatively, if names of genomic elements are not
+                available, you may provide an index position of the
+                genomic element to access.
 
-                Alternatively, ``args`` may also specify a list of positions to slice specified either as a
+                Alternatively, ``args`` may also specify a list of
+                positions to slice specified either as a
                 :py:class:`~list` or :py:class:`~slice`.
 
-                A tuple may also be specified along each dimension. Currently if the tuple contains more than
+                A tuple may also be specified along each dimension.
+                Currently if the tuple contains more than
                 one dimension, its ignored.
 
         Raises:
-            TypeError: If ``args`` is not a supported slice argument.
+            TypeError:
+                If ``args`` is not a supported slice argument.
 
         Returns:
-            Union[GenomicRanges, GenomicRangesList]: The genomic element or a new GenomicRangesList of the slice.
+            The genomic element as a ``GenomicRanges`` object
+            or a new ``GenomicRangesList`` of the slice.
         """
         if isinstance(args, int):
-            return self.ranges[args]
+            return self._ranges[args]
         elif isinstance(args, str):
             if self.names is not None:
-                _idx = self.names.index(args)
-                return self.ranges[_idx]
+                _idx = self.names.map(args)
+                return self._ranges[_idx]
         else:
             new_ranges = None
             new_range_lengths = None
@@ -429,7 +783,7 @@ class GenomicRangesList:
                     args = args[0]
 
             if isinstance(args, list):
-                if is_list_of_type(args, bool):
+                if ut.is_list_of_type(args, bool):
                     if len(args) != len(self):
                         raise ValueError(
                             "`indices` is a boolean vector, length should match the size of the data."
@@ -461,14 +815,6 @@ class GenomicRangesList:
 
         raise TypeError("Arguments to slice is not supported.")
 
-    def __len__(self) -> int:
-        """Number of genomic elements.
-
-        Returns:
-            int: number of genomic elements.
-        """
-        return len(self._range_lengths)
-
     @classmethod
     def empty(cls, n: int):
         """Create an empty ``n``-length `GenomicRangesList` object.
@@ -480,50 +826,29 @@ class GenomicRangesList:
 
         return cls(ranges=GenomicRanges.empty(), range_lengths=_range_lengths)
 
-    def combine(self, *other: "GenomicRangesList") -> "GenomicRangesList":
-        """Combine multiple `GenomicRangesList` objects by row.
 
-        Note: Fills missing columns with an array of `None`s.
-
-        Args:
-            *other (GenomicRangesList): Objects to combine.
-
-        Raises:
-            TypeError: If all objects are not of type GenomicRangesList.
-
-        Returns:
-            GenomicRangesList: A combined `GenomicRangesList` object.
-        """
-        if not is_list_of_type(other, GenomicRangesList):
-            raise TypeError("All objects to combine must be GenomicRangesList objects.")
-
-        # ranges: Union[GenomicRanges, List[GenomicRanges]],
-        # range_lengths: Optional[List[int]] = None,
-        # names: Optional[List[str]] = None,
-        # mcols: Optional[BiocFrame] = None,
-        # metadata: Optional[dict] = None,
-
-        all_objects = [self] + list(other)
-
-        new_ranges = combine_sequences(*[obj.ranges for obj in all_objects])
-        new_names = combine_sequences(*[obj.names for obj in all_objects])
-        new_mcols = combine_sequences(*[obj.mcols for obj in all_objects])
-        new_metadata = {}
-        for i, obj in enumerate(all_objects):
-            if obj.metadata is not None:
-                new_metadata[i] = obj.metadata
-
-        current_class_const = type(self)
-        return current_class_const(
-            new_ranges, names=new_names, mcols=new_mcols, metadata=new_metadata
-        )
-
-
-@combine_sequences.register(GenomicRangesList)
+@ut.combine_sequences.register(GenomicRangesList)
 def _combine_grl(*x: GenomicRangesList):
-    if not is_list_of_type(x, GenomicRangesList):
-        raise ValueError(
-            "All elements to `combine` must be `GenomicRangesList` objects."
-        )
+    has_names = False
+    for y in x:
+        if y._names is not None:
+            has_names = True
+            break
 
-    return x[0].combine(*x[1:])
+    all_names = None
+    if has_names:
+        all_names = []
+        for y in x:
+            if y._names is not None:
+                all_names += y._names
+            else:
+                all_names += [""] * len(y)
+
+    return GenomicRanges(
+        ranges=ut.combine_sequences(*[y._ranges for y in x]),
+        range_lengths=ut.combine_sequences(*[y._range_lengths for y in x]),
+        names=all_names,
+        mcols=ut.combine_rows(*[y._mcols for y in x]),
+        metadata=x[0]._metadata,
+        validate=False,
+    )

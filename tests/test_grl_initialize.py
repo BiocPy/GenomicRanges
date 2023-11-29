@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 from genomicranges import GenomicRanges, GenomicRangesList
 from biocframe import BiocFrame
+from iranges import IRanges
 from random import random
 import genomicranges
 
@@ -10,23 +11,17 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 a = GenomicRanges(
-    {
-        "seqnames": ["chr1", "chr2", "chr1", "chr3"],
-        "starts": [1, 3, 2, 4],
-        "ends": [10, 30, 50, 60],
-        "strand": ["-", "+", "*", "+"],
-        "score": [1, 2, 3, 4],
-    }
+    seqnames=["chr1", "chr2", "chr1", "chr3"],
+    ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
+    strand=["-", "+", "*", "+"],
+    mcols=BiocFrame({"score": [1, 2, 3, 4]}),
 )
 
 b = GenomicRanges(
-    {
-        "seqnames": ["chr2", "chr4", "chr5"],
-        "starts": [3, 6, 4],
-        "ends": [30, 50, 60],
-        "strand": ["-", "+", "*"],
-        "score": [2, 3, 4],
-    }
+    seqnames=["chr2", "chr4", "chr5"],
+    ranges=IRanges([3, 6, 4], [30, 50, 60]),
+    strand=["-", "+", "*"],
+    mcols=BiocFrame({"score": [2, 3, 4]}),
 )
 
 
