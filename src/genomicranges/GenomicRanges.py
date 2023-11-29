@@ -2597,8 +2597,8 @@ class GenomicRanges:
         outname: str = "binned_average",
         in_place: bool = False,
     ) -> "GenomicRanges":
-        """Calculate average for a column across all regions in ``bins``,
-        then set a column specified by 'outname' with those values.
+        """Calculate average for a column across all regions in ``bins``, then set a column specified by 'outname' with
+        those values.
 
         Args:
             scorename:
