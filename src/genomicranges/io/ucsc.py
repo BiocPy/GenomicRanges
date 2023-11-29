@@ -46,8 +46,7 @@ def read_ucsc(
     genome: str,
     type: Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"] = "refGene",
 ) -> "GenomicRanges":
-    """Load a genome annotation from UCSC as
-    :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
+    """Load a genome annotation from UCSC as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
         genome:
