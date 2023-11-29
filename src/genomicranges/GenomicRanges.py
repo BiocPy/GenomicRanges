@@ -7,7 +7,12 @@ from biocframe import BiocFrame
 from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
-from .utils import sanitize_strand_vector, split_intervals, slide_intervals
+from .utils import (
+    sanitize_strand_vector,
+    split_intervals,
+    slide_intervals,
+    create_np_vector,
+)
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -77,21 +82,18 @@ def _validate_optional_attrs(strand, mcols, names, num_ranges):
             raise ValueError("Length of 'names' does not match the number of ranges.")
 
         if any(x is None for x in names):
-            raise ValueError("'strand' cannot contain None values.")
+            raise ValueError("'names' cannot contain None values.")
 
 
 class GenomicRangesIter:
-    """An iterator to a :py:class:`~GenomicRanges` object.
-
-    Args:
-        obj (GenomicRanges): Source object to iterate.
-    """
+    """An iterator to a :py:class:`~GenomicRanges` object."""
 
     def __init__(self, obj: "GenomicRanges") -> None:
         """Initialize the iterator.
 
         Args:
-            obj (GenomicRanges): source object to iterate.
+            obj:
+                Source object to iterate.
         """
         self._gr = obj
         self._current_index = 0
@@ -256,7 +258,7 @@ class GenomicRanges:
             A shallow copy of the current ``GenomicRanges``.
         """
         current_class_const = type(self)
-        new_instance = current_class_const(
+        return current_class_const(
             seqnames=self._seqnames,
             ranges=self._ranges,
             strand=self._strand,
@@ -265,8 +267,6 @@ class GenomicRanges:
             seqinfo=self._seqinfo,
             metadata=self._metadata,
         )
-
-        return new_instance
 
     def copy(self):
         """Alias for :py:meth:`~__copy__`."""
@@ -500,7 +500,7 @@ class GenomicRanges:
     @property
     def ranges(self) -> IRanges:
         """Alias for :py:meth:`~get_ranges`."""
-        return self.get_seqnames()
+        return self.get_ranges()
 
     @ranges.setter
     def ranges(self, ranges: IRanges):
@@ -1648,6 +1648,59 @@ class GenomicRanges:
 
         return output
 
+    def coverage(
+        self, shift: int = 0, width: Optional[int] = None, weight: int = 1
+    ) -> Dict[str, np.ndarray]:
+        """Calculate coverage for each chromosome, For each position,
+        counts the number of ranges that cover it.
+
+        Args:
+            shift:
+                Shift all genomic positions. Defaults to 0.
+
+            width:
+                Restrict the width of all
+                chromosomes. Defaults to None.
+
+            weight:
+                Weight to use. Defaults to 1.
+
+        Returns:
+            A dictionary with chromosome names as keys and the
+            coverage vector as value.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=True)
+
+        shift_arr = None
+        if shift > 0:
+            shift_arr = np.zeros(shift)
+
+        print("chrm_grps", chrm_grps)
+        result = {}
+        for chrm, group in chrm_grps.items():
+            print(chrm, group)
+            _grp_subset = self[group]
+
+            all_intvals = [
+                (x[0], x[1])
+                for x in zip(_grp_subset._ranges._start, _grp_subset._ranges.end)
+            ]
+
+            cov, _ = create_np_vector(intervals=all_intvals, with_reverse_map=False)
+
+            if shift > 0:
+                cov = ut.combine_sequences(shift_arr, cov)
+
+            if weight > 0:
+                cov = cov * weight
+
+            if width is not None:
+                cov = cov[:width]
+
+            result[self._seqinfo._seqnames[int(chrm.split("_")[0])]] = cov
+
+        return result
+
     ################################
     ######>> set operations <<######
     ################################
@@ -2646,6 +2699,15 @@ class GenomicRanges:
         output = bins._define_output(in_place=in_place)
         output._mcols.set_column(outname, outvec, in_place=True)
         return output
+
+    @classmethod
+    def empty(cls):
+        """Create an zero-length `GenomicRanges` object.
+
+        Returns:
+            same type as caller, in this case a `GenomicRanges`.
+        """
+        return cls([], IRanges.empty())
 
 
 @ut.combine_sequences.register

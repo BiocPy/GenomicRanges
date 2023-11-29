@@ -73,17 +73,9 @@ def test__from_pandas_should_fail():
         GenomicRanges.from_pandas(df_gr)
 
 
-# def test_gr_empty():
-#     gr = GenomicRanges(number_of_rows=100)
+def test_gr_empty():
+    gre = GenomicRanges.empty()
 
-#     assert gr is not None
-#     assert isinstance(gr, GenomicRanges)
-#     assert len(gr) == 100
-#     assert gr.shape == (100, 0)
-
-#     gre = GenomicRanges.empty()
-
-#     assert gre is not None
-#     assert isinstance(gre, GenomicRanges)
-#     assert len(gre) == 0
-#     assert gre.shape == (0, 0)
+    assert gre is not None
+    assert isinstance(gre, GenomicRanges)
+    assert len(gre) == 0

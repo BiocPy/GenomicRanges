@@ -1,4 +1,4 @@
-from typing import List, Sequence, Union
+from typing import List, Sequence, Union, Optional, Tuple
 
 import biocutils as ut
 import numpy as np
@@ -140,3 +140,49 @@ def slide_intervals(start: int, end: int, width: int, step: int) -> List:
             bins.append((i, min(i + width - 1, end) - i))
 
     return bins
+
+
+def create_np_vector(
+    intervals: List[Tuple[int, int]],
+    with_reverse_map: bool = False,
+    force_size: Optional[int] = None,
+    dont_sum: bool = False,
+    value: int = 1,
+) -> Tuple[np.ndarray, Optional[List]]:
+    """Represent intervals and calculate coverage.
+
+    Args:
+        intervals (List[Tuple[int, int]]): Input interval vector.
+        with_reverse_map (bool, optional): Return map of indices? Defaults to False.
+        force_size (int, optional): Force size of the array.
+        dont_sum (bool, optional): Do not sum. Defaults to False.
+        value (int, optional): Default value to increment. Defaults to 1.
+
+    Returns:
+        Tuple[ndarray, Optional[List]]: A numpy array representing
+        coverage from the intervals and optionally the index map.
+    """
+    if len(intervals) < 1:
+        return intervals
+
+    max_end = force_size
+    if max_end is None:
+        max_end = max([x[1] for x in intervals])
+    cov = np.zeros(max_end)
+
+    revmap = None
+    if with_reverse_map:
+        revmap = [[] for _ in range(max_end)]
+
+    for idx in range(len(intervals)):
+        i = intervals[idx]
+
+        if dont_sum:
+            cov[i[0] - 1 : i[1]] = value
+        else:
+            cov[i[0] - 1 : i[1]] += value
+
+        if with_reverse_map:
+            _ = [revmap[x].append(idx + 1) for x in range(i[0] - 1, i[1])]
+
+    return cov, revmap
