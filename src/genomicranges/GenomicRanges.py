@@ -2590,6 +2590,63 @@ class GenomicRanges:
             seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths)
         )
 
+    def binned_average(
+        self,
+        scorename: str,
+        bins: "GenomicRanges",
+        outname: str = "binned_average",
+        in_place: bool = False,
+    ) -> "GenomicRanges":
+        """Calculate average for a column across all regions in ``bins``,
+        then set a column specified by 'outname' with those values.
+
+        Args:
+            scorename:
+                Score column to compute averages on.
+
+            bins:
+                Bins you want to use.
+
+            outname:
+                New column name to add to the object.
+
+            in_place:
+                Whether to modify ``bins`` in place.
+
+        Raises:
+            ValueError:
+                If ``scorename`` column does not exist.
+                ``scorename`` is not all ints or floats.
+            TypeError:
+                If ``bins`` is not of type `GenomicRanges`.
+
+        Returns:
+            A modified ``bins`` object with the computed averages,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+        import statistics
+
+        if not isinstance(bins, GenomicRanges):
+            raise TypeError("'bins' is not a `GenomicRanges` object.")
+
+        if scorename not in self._mcols.column_names:
+            raise ValueError(f"'{scorename}' is not a valid column name")
+
+        values = self._mcols.get_column(scorename)
+
+        if not all(isinstance(x, (int, float)) for x in values):
+            raise ValueError(f"'{scorename}' values must be either `ints` or `floats`.")
+
+        outvec = []
+        for _, val in bins:
+            overlap = self.subset_by_overlaps(query=val)
+            outvec.append(statistics.mean(overlap._mcols.get_column(scorename)))
+
+        output = bins._define_output(in_place=in_place)
+        output._mcols.set_column(outname, outvec, in_place=True)
+        return output
+
 
 @ut.combine_sequences.register
 def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
