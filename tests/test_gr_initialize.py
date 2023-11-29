@@ -58,7 +58,7 @@ def test_from_pandas():
     assert g_src.strand is not None
 
 
-def test__from_pandas_should_fail():
+def test_from_pandas_should_fail():
     with pytest.raises(Exception):
         df_gr = pd.DataFrame(
             {
