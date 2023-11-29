@@ -318,7 +318,6 @@ class GenomicRanges:
         output += ")"
         return output
 
-    # TODO: needs some work!!
     def __str__(self) -> str:
         """
         Returns:
@@ -342,27 +341,55 @@ class GenomicRanges:
                 raw_floating = raw_floating[:3] + [""] + raw_floating[3:]
             floating = ["", ""] + raw_floating
 
-            def show_slot(data, colname):
-                showed = ut.show_as_cell(data, indices)
-                header = [colname, "<" + ut.print_type(data) + ">"]
-                showed = ut.truncate_strings(
-                    showed, width=max(40, len(header[0]), len(header[1]))
-                )
-                if insert_ellipsis:
-                    showed = showed[:3] + ["..."] + showed[3:]
-
-                return header + showed
-
             columns = []
-            columns.append(show_slot(self._seqnames, "seqnames"))
-            columns.append(str(self._ranges))
 
-            if self._strand is not None:
-                columns.append(show_slot(self._strand, "strand"))
+            header = ["ranges", f"<{ut.print_type(self._ranges)}>"]
+            showed = ut.show_as_cell(
+                [f"{x._start[0]} - {x.end[0]}" for _, x in self._ranges[indices]],
+                indices,
+            )
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
 
-            # if self._mcols is not None:
-            #     for col in self._mcols.colnames:
-            #         columns.append(show_slot(self._mcols[col], col))
+            header = ["seqnames", f"<{ut.print_type(self._seqnames)}>"]
+            _seqnames = []
+            for x in self._seqnames[indices]:
+                _seqnames.append(self._seqinfo.seqnames[x])
+
+            showed = ut.show_as_cell(_seqnames, indices)
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
+
+            header = ["strand", f"<{ut.print_type(self._strand)}>"]
+            _strand = []
+            for x in self._strand[indices]:
+                if x == 1:
+                    _strand.append("+")
+                elif x == -1:
+                    _strand.append("-")
+                else:
+                    _strand.append("*")
+            showed = ut.show_as_cell(_strand, indices)
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
+
+            if self._mcols.shape[1] > 0:
+                spacer = ["|"] * (len(indices) + insert_ellipsis)
+                columns.append(["", ""] + spacer)
+
+                for col in self._mcols.get_column_names():
+                    data = self._mcols.column(col)
+                    showed = ut.show_as_cell(data, indices)
+                    header = [col, "<" + ut.print_type(data) + ">"]
+                    showed = ut.truncate_strings(
+                        showed, width=max(40, len(header[0]), len(header[1]))
+                    )
+                    if insert_ellipsis:
+                        showed = showed[:3] + ["..."] + showed[3:]
+                    columns.append(header + showed)
 
             output += ut.print_wrapped_table(columns, floating_names=floating)
             added_table = True
