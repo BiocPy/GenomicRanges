@@ -35,7 +35,7 @@ def test_invert():
     result = gr.invert_strand()
 
     assert result is not None
-    assert result._strand.shape == gr._strand.shape
+    assert len(result._strand) == len(gr._strand)
 
 
 def test_sample():

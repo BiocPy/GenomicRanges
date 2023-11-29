@@ -37,8 +37,6 @@ def test_coverage_default():
 
     res = gr.coverage()
 
-    print(res)
-
     assert res is not None
     assert len(res.keys()) == 3
     assert len(res["chr1"]) == 115

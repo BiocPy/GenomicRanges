@@ -2377,9 +2377,9 @@ class GenomicRanges:
         Returns:
             A new ``GenomicRanges`` with randomly sampled ranges.
         """
-        from random import random
+        from random import sample
 
-        sample = random.sample(range(len(self)), k=k)
+        sample = sample(range(len(self)), k=k)
         return self[sample]
 
     def invert_strand(self, in_place: bool = False) -> "GenomicRanges":
