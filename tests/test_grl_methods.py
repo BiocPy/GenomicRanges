@@ -1,8 +1,9 @@
 import pytest
 import pandas as pd
 from genomicranges import GenomicRanges, GenomicRangesList
-from biocgenerics.combine import combine
+from biocutils import combine_sequences
 from biocframe import BiocFrame
+from iranges import IRanges
 from random import random
 import genomicranges
 
@@ -11,23 +12,17 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 a = GenomicRanges(
-    {
-        "seqnames": ["chr1", "chr2", "chr1", "chr3"],
-        "starts": [1, 3, 2, 4],
-        "ends": [10, 30, 50, 60],
-        "strand": ["-", "+", "*", "+"],
-        "score": [1, 2, 3, 4],
-    }
+    seqnames=["chr1", "chr2", "chr1", "chr3"],
+    ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
+    strand=["-", "+", "*", "+"],
+    mcols=BiocFrame({"score": [1, 2, 3, 4]}),
 )
 
 b = GenomicRanges(
-    {
-        "seqnames": ["chr2", "chr4", "chr5"],
-        "starts": [3, 6, 4],
-        "ends": [30, 50, 60],
-        "strand": ["-", "+", "*"],
-        "score": [2, 3, 4],
-    }
+    seqnames=["chr2", "chr4", "chr5"],
+    ranges=IRanges([3, 6, 4], [30, 50, 60]),
+    strand=["-", "+", "*"],
+    mcols=BiocFrame({"score": [2, 3, 4]}),
 )
 
 
@@ -49,19 +44,10 @@ def test_is_empty_slice():
 
 
 def test_is_empty_True():
-    grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0] * 10)
+    grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0])
 
     assert grl.is_empty() == True
-    assert len(grl) == 10
-
-
-def test_is_empty_True_slice():
-    grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0] * 10)
-
-    sgrl = grl[1:5]
-    assert sgrl is not None
-    assert isinstance(sgrl, GenomicRangesList)
-    assert len(sgrl) == 4
+    assert len(grl) == 1
 
 
 def test_nrows():
@@ -76,7 +62,7 @@ def test_nrows():
 def test_props():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
-    props = ["start", "end", "strand", "genome", "score"]
+    props = ["start", "end", "strand"]
 
     for prop in props:
         v = getattr(grl, prop)
@@ -106,8 +92,6 @@ def test_combine():
     grla = GenomicRangesList(ranges=[a], names=["a"])
     grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
 
-    grlc = grla.combine(grlb)
+    cgrl = combine_sequences(grla, grlb)
 
-    cgrl = combine(grla, grlb)
-
-    assert len(grlc) == len(cgrl) == 3
+    assert len(cgrl) == 3

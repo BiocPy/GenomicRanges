@@ -32,7 +32,7 @@ df = pd.DataFrame(
     }
 )
 
-gr = genomicranges.from_pandas(df)
+gr = GenomicRanges.from_pandas(df)
 ```
 
 ### From UCSC or GTF file
@@ -47,20 +47,34 @@ gr = genomicranges.read_gtf(<PATH TO GTF>)
 gr = genomicranges.read_ucsc(genome="hg19")
 ```
 
-### From a dictionary
+### from `IRanges` (Preferred way)
 
-Or simply pass in a dictionary with the required keys.
+If you have all relevant information to create a ``GenomicRanges`` object
 
 ```python
+from genomicranges import GenomicRanges
+from iranges import IRanges
+from biocframe import BiocFrame
+from random import random
+
 gr = GenomicRanges(
-    {
-        "seqnames": ["chr1", "chr2", "chr3"],
-        "starts": [100, 115, 119],
-        "ends": [103, 116, 120],
-    }
+    seqnames=[
+        "chr1",
+        "chr2",
+        "chr3",
+        "chr2",
+        "chr3",
+    ],
+    ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
+    strand=["*", "-", "*", "+", "-"],
+    mcols=BiocFrame(
+        {
+            "score": range(0, 5),
+            "GC": [random() for _ in range(5)],
+        }
+    ),
 )
 ```
-
 
 ### Set sequence information
 
@@ -442,10 +456,10 @@ rank = gr.rank()
 
 ## Combine `GenomicRanges` objects by rows
 
-Use the `combine` generic from [biocgenerics](https://github.com/BiocPy/generics) to concatenate multiple GenomicRanges objects.
+Use the `combine` generic from [biocutils](https://github.com/BiocPy/generics) to concatenate multiple GenomicRanges objects.
 
 ```python
-from biocgenerics.combine import combine
+from biocutils.combine import combine
 combined_gr = combine(gr, gr1, gr2, ...)
 ```
 
@@ -482,23 +496,17 @@ Currently, this class is limited in functionality, purely a read-only class with
 
 ```python
 a = GenomicRanges(
-    {
-        "seqnames": ["chr1", "chr2", "chr1", "chr3"],
-        "starts": [1, 3, 2, 4],
-        "ends": [10, 30, 50, 60],
-        "strand": ["-", "+", "*", "+"],
-        "score": [1, 2, 3, 4],
-    }
+    seqnames=["chr1", "chr2", "chr1", "chr3"],
+    ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
+    strand=["-", "+", "*", "+"],
+    mcols=BiocFrame({"score": [1, 2, 3, 4]}),
 )
 
 b = GenomicRanges(
-    {
-        "seqnames": ["chr2", "chr4", "chr5"],
-        "starts": [3, 6, 4],
-        "ends": [30, 50, 60],
-        "strand": ["-", "+", "*"],
-        "score": [2, 3, 4],
-    }
+    seqnames=["chr2", "chr4", "chr5"],
+    ranges=IRanges([3, 6, 4], [30, 50, 60]),
+    strand=["-", "+", "*"],
+    mcols=BiocFrame({"score": [2, 3, 4]}),
 )
 
 grl = GenomicRangesList(gene1=a, gene2=b)
@@ -524,7 +532,7 @@ grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
 grlc = grla.combine(grlb)
 
 # or use the combine generic
-from biocgenerics.combine import combine
+from biocutils.combine import combine
 cgrl = combine(grla, grlb)
 ```
 

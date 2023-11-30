@@ -1,25 +1,35 @@
 import pytest
-import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
+from iranges import IRanges
+from biocframe import BiocFrame
 from random import random
-import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-df_gr = pd.DataFrame(
-    {
-        "seqnames": ["chr1", "chr2", "chr1", "chr3", "chr2"],
-        "starts": [101, 102, 103, 104, 109],
-        "ends": [112, 103, 128, 134, 111],
-        "strand": ["*", "-", "*", "+", "-"],
-        "score": range(0, 5),
-        "GC": [random() for _ in range(5)],
-    }
+gr = GenomicRanges(
+    seqnames=[
+        "chr1",
+        "chr2",
+        "chr2",
+        "chr2",
+        "chr1",
+        "chr1",
+        "chr3",
+        "chr3",
+        "chr3",
+        "chr3",
+    ],
+    ranges=IRanges(start=range(100, 110), width=[10] * 10),
+    strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
+    mcols=BiocFrame(
+        {
+            "score": range(0, 10),
+            "GC": [random() for _ in range(10)],
+        }
+    ),
 )
-
-gr = genomicranges.from_pandas(df_gr)
 
 
 def test_coverage_default():
@@ -29,9 +39,9 @@ def test_coverage_default():
 
     assert res is not None
     assert len(res.keys()) == 3
-    assert len(res["chr1"]) == 128
-    assert len(res["chr2"]) == 111
-    assert len(res["chr3"]) == 134
+    assert len(res["chr1"]) == 115
+    assert len(res["chr2"]) == 113
+    assert len(res["chr3"]) == 119
 
 
 def test_coverage_shift():
@@ -41,9 +51,9 @@ def test_coverage_shift():
 
     assert res is not None
     assert len(res.keys()) == 3
-    assert len(res["chr1"]) == 138
-    assert len(res["chr2"]) == 121
-    assert len(res["chr3"]) == 144
+    assert len(res["chr1"]) == 125
+    assert len(res["chr2"]) == 123
+    assert len(res["chr3"]) == 129
 
 
 def test_coverage_shift_width():

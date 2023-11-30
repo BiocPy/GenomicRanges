@@ -1,8 +1,6 @@
 from typing import Literal
 
-# from ..GenomicRanges import GenomicRanges
 from .gtf import parse_gtf
-from .pdf import from_pandas
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -17,14 +15,18 @@ def access_gtf_ucsc(
     e.g. for `hg19 genome <http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/>`_.
 
     Args:
-        genome (str): Genome shortcode; e.g. hg19, hg38, mm10 etc.
-        type (Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"]): Defaults to "refGene".
+        genome:
+            Genome shortcode; e.g. hg19, hg38, mm10 etc.
+
+        type:
+            Defaults to "refGene".
 
     Raises:
-        Exception: ValueError, when `type` does not match with a valid input.
+        Exception, ValueError:
+            When ``type`` does not match with a valid input.
 
     Returns:
-        str: The URI to the file.
+        The URI to the file.
     """
     base_path = f"http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/"
 
@@ -45,14 +47,19 @@ def read_ucsc(
     """Load a genome annotation from UCSC as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
-        genome (str): Genome shortcode; e.g. hg19, hg38, mm10 etc.
-        type (Literal["refGene", "ensGene", "knownGene", "ncbiRefSeq"]): Defaults to "refGene".
+        genome:
+            Genome shortcode; e.g. hg19, hg38, mm10 etc.
+
+        type:
+            Defaults to "refGene".
 
     Returns:
-        GenomicRanges: The gene model from UCSC.
+        The gene model from UCSC.
     """
     path = access_gtf_ucsc(genome, type=type)
     compressed = True
     data = parse_gtf(path, compressed=compressed)
 
-    return from_pandas(data)
+    from ..GenomicRanges import GenomicRanges
+
+    return GenomicRanges.from_pandas(data)

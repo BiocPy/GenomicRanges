@@ -1,33 +1,32 @@
 import pandas as pd
 from genomicranges.SeqInfo import SeqInfo
 from random import random
-import genomicranges
+from genomicranges.GenomicRanges import GenomicRanges
+from iranges import IRanges
+from biocframe import BiocFrame
+import numpy as np
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-df_gr = pd.DataFrame(
-    {
-        "seqnames": [
-            "chr1",
-            "chr2",
-            "chr2",
-            "chr2",
-            "chr1",
-            "chr1",
-            "chr3",
-            "chr3",
-            "chr3",
-            "chr3",
-        ],
-        "starts": range(100, 110),
-        "ends": range(110, 120),
-        "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
-        "score": range(0, 10),
-        "GC": [random() for _ in range(10)],
-    }
+gr = GenomicRanges(
+    seqnames=[
+        "chr1",
+        "chr2",
+        "chr3",
+        "chr2",
+        "chr3",
+    ],
+    ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
+    strand=["*", "-", "*", "+", "-"],
+    mcols=BiocFrame(
+        {
+            "score": range(0, 5),
+            "GC": [random() for _ in range(5)],
+        }
+    ),
 )
 
 seq_obj = SeqInfo(
@@ -39,20 +38,18 @@ seq_obj = SeqInfo(
 
 
 def test_gr_seqInfo():
-    gr = genomicranges.from_pandas(df_gr)
     assert gr is not None
-    assert gr.seq_info is None
+    assert gr.seqinfo is not None
 
-    gr.seq_info = seq_obj
-
-    assert gr.seq_info is not None
+    gr.seqinfo = seq_obj
+    assert gr.seqinfo is not None
 
 
 def test_gr_method_trim():
-    gr = genomicranges.from_pandas(df_gr)
-    gr.seq_info = seq_obj
+    gr.seqinfo = seq_obj
 
     trimmed_gr = gr.trim()
 
     assert trimmed_gr is not None
-    assert trimmed_gr.dims == (9, 6)
+    assert (trimmed_gr.start == np.array([101, 102, 103, 104, 105])).all()
+    assert (trimmed_gr.width == np.array([11, 21, 16, 30, 5])).all()

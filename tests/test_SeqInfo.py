@@ -7,9 +7,6 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-seq_obj = {}
-
-
 def test_create_SeqInfo():
     circ = [random() < 0.5 for _ in range(3)]
     seq = SeqInfo(

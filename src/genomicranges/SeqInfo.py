@@ -15,9 +15,9 @@ class SeqInfo:
     def __init__(
         self,
         seqnames: Sequence[str],
-        seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]],
-        is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]],
-        genome: Optional[Union[str, Sequence[str], Dict[str, str]]],
+        seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]] = None,
+        is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]] = None,
+        genome: Optional[Union[str, Sequence[str], Dict[str, str]]] = None,
         validate: bool = True,
     ) -> None:
         """
@@ -74,6 +74,7 @@ class SeqInfo:
                 Whether to validate the arguments, internal use only.
         """
         self._seqnames = list(seqnames)
+        self._reverse_seqnames = None
         self._seqlengths = self._flatten_incoming(seqlengths, int)
         self._is_circular = self._flatten_incoming(is_circular, bool)
         self._genome = self._flatten_incoming(genome, str)
@@ -83,6 +84,17 @@ class SeqInfo:
             self._validate_seqlengths()
             self._validate_is_circular()
             self._validate_genome()
+
+    def _populate_reverse_seqnames_index(self):
+        if self._reverse_seqnames is None:
+            revmap = {}
+            for i, n in enumerate(self):
+                if n not in revmap:
+                    revmap[n] = i
+            self._reverse_seqnames = revmap
+
+    def _wipe_reverse_seqnames_index(self):
+        self._reverse_seqnames = None
 
     def _flatten_incoming(self, values, expected) -> List:
         if values is None or isinstance(values, expected):

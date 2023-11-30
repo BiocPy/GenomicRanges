@@ -4,9 +4,9 @@
 
 # GenomicRanges
 
-GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
+GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html). **_Intervals are inclusive on both ends and starts at 1._**
 
-**_Intervals are inclusive on both ends and starts at 1._**
+**Note: V0.4.0 is a complete overhaul of the package, as such the constructor to GenomicRanges has changed!**
 
 To get started, install the package from [PyPI](https://pypi.org/project/genomicranges/)
 
@@ -35,12 +35,55 @@ print(gr)
 ## ... truncating the console print ...
 ```
 
+### from `IRanges` (Preferred way)
+
+If you have all relevant information to create a GenomicRanges object
+
+```python
+from genomicranges import GenomicRanges
+from iranges import IRanges
+from biocframe import BiocFrame
+from random import random
+
+gr = GenomicRanges(
+    seqnames=[
+        "chr1",
+        "chr2",
+        "chr3",
+        "chr2",
+        "chr3",
+    ],
+    ranges=IRanges(start=[x for x in range(101, 106)], width=[11, 21, 25, 30, 5]),
+    strand=["*", "-", "*", "+", "-"],
+    mcols=BiocFrame(
+        {
+            "score": range(0, 5),
+            "GC": [random() for _ in range(5)],
+        }
+    ),
+)
+
+print(gr)
+```
+
+    ## output
+    GenomicRanges with 5 ranges and 5 metadata columns
+        seqnames    ranges           strand     score                  GC
+           <str> <IRanges> <ndarray[int64]>   <range>              <list>
+    [0]     chr1 101 - 112                * |       0  0.2593301003406461
+    [1]     chr2 102 - 123                - |       1  0.7207993213776644
+    [2]     chr3 103 - 128                * |       2 0.23391468067222065
+    [3]     chr2 104 - 134                + |       3  0.7671026589720187
+    [4]     chr3 105 - 110                - |       4 0.03355777784472458
+    ------
+    seqinfo(3 sequences): chr1 chr2 chr3
+
 ### Pandas DataFrame
 
 A common representation in Python is a pandas `DataFrame` for all tabular datasets. `DataFrame` must contain columns "seqnames", "starts", and "ends" to represent genomic intervals. Here's an example:
 
 ```python
-import genomicranges
+import genomicranges import GenomicRanges
 import pandas as pd
 
 df = pd.DataFrame(
@@ -54,20 +97,21 @@ df = pd.DataFrame(
     }
 )
 
-gr = genomicranges.from_pandas(df)
+gr = GenomicRanges.from_pandas(df)
 print(gr)
 ```
 
     ## output
-    GenomicRanges with 5 intervals & 2 metadata columns
-    ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-    ┃ row_names ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃ GC <list>           ┃
-    ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
-    │ 0         │ chr1            │ 101           │ 112         │ *             │ 0            │ 0.22617584001235103 │
-    │ 1         │ chr2            │ 102           │ 103         │ -             │ 1            │ 0.25464256182466394 │
-    │ ...       │ ...             │ ...           │ ...         │ ...           │ ...          │ ...                 │
-    │ 4         │ chr2            │ 109           │ 111         │ -             │ 4            │ 0.5414168889911801  │
-    └───────────┴─────────────────┴───────────────┴─────────────┴───────────────┴──────────────┴─────────────────────┘
+    GenomicRanges with 5 ranges and 5 metadata columns
+      seqnames    ranges           strand    score                  GC
+         <str> <IRanges> <ndarray[int64]>   <list>              <list>
+    0     chr1 101 - 112                * |      0  0.4862658925128007
+    1     chr2 102 - 103                - |      1 0.27948386889389953
+    2     chr1 103 - 128                * |      2  0.5162697718607901
+    3     chr3 104 - 134                + |      3  0.5979843806415466
+    4     chr2 109 - 111                - |      4 0.04740781186083798
+    ------
+    seqinfo(3 sequences): chr1 chr2 chr3
 
 ### Interval Operations
 
@@ -86,9 +130,12 @@ query = genomicranges.from_pandas(
     )
 )
 
-hits = subject.nearest(query)
+hits = subject.nearest(query, ignore_strand=True)
 print(hits)
 ```
+
+    ## output
+    [[0, 1], [1677082, 1677083, 1677084], [1003411, 1003412]]
 
 ## `GenomicRangesList`
 
@@ -100,25 +147,18 @@ To construct a GenomicRangesList
 
 ```python
 gr1 = GenomicRanges(
-    {
-        "seqnames": ["chr1", "chr2", "chr1", "chr3"],
-        "starts": [1, 3, 2, 4],
-        "ends": [10, 30, 50, 60],
-        "strand": ["-", "+", "*", "+"],
-        "score": [1, 2, 3, 4],
-    }
+    seqnames=["chr1", "chr2", "chr1", "chr3"],
+    ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
+    strand=["-", "+", "*", "+"],
+    mcols=BiocFrame({"score": [1, 2, 3, 4]}),
 )
 
 gr2 = GenomicRanges(
-    {
-        "seqnames": ["chr2", "chr4", "chr5"],
-        "starts": [3, 6, 4],
-        "ends": [30, 50, 60],
-        "strand": ["-", "+", "*"],
-        "score": [2, 3, 4],
-    }
+    seqnames=["chr2", "chr4", "chr5"],
+    ranges=IRanges([3, 6, 4], [30, 50, 60]),
+    strand=["-", "+", "*"],
+    mcols=BiocFrame({"score": [2, 3, 4]}),
 )
-
 grl = GenomicRangesList(ranges=[gr1, gr2], names=["gene1", "gene2"])
 print(grl)
 ```
@@ -127,24 +167,25 @@ print(grl)
     GenomicRangesList with 2 genomic elements
 
     Name: gene1
-                GenomicRanges with 4 intervals & 1 metadata columns
-    ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
-    ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃
-    ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
-    │ chr1            │ 1             │ 10          │ -             │ 1            │
-    │ chr2            │ 3             │ 30          │ +             │ 2            │
-    │ chr3            │ 4             │ 60          │ +             │ 4            │
-    └─────────────────┴───────────────┴─────────────┴───────────────┴──────────────┘
+    GenomicRanges with 4 ranges and 4 metadata columns
+         seqnames    ranges            strand     score
+            <str> <IRanges>         <ndarray>    <list>
+    [0]     chr1    1 - 11                -   |      1
+    [1]     chr2    3 - 33                +   |      2
+    [2]     chr1    2 - 52                *   |      3
+    [3]     chr3    4 - 64                +   |      4
+    ------
+    seqinfo(3 sequences): chr1 chr2 chr3
 
     Name: gene2
-                GenomicRanges with 3 intervals & 1 metadata columns
-    ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
-    ┃ seqnames <list> ┃ starts <list> ┃ ends <list> ┃ strand <list> ┃ score <list> ┃
-    ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
-    │ chr2            │ 3             │ 30          │ -             │ 2            │
-    │ chr4            │ 6             │ 50          │ +             │ 3            │
-    │ chr5            │ 4             │ 60          │ *             │ 4            │
-    └─────────────────┴───────────────┴─────────────┴───────────────┴──────────────┘
+    GenomicRanges with 3 ranges and 3 metadata columns
+         seqnames    ranges            strand    score
+            <str> <IRanges>         <ndarray>   <list>
+    [0]     chr2    3 - 33                -   |      2
+    [1]     chr4    6 - 56                +   |      3
+    [2]     chr5    4 - 64                *   |      4
+    ------
+    seqinfo(3 sequences): chr2 chr4 chr5
 
 ## Further information
 
