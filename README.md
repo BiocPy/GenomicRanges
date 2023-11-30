@@ -53,7 +53,7 @@ gr = GenomicRanges(
         "chr2",
         "chr3",
     ],
-    ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
+    ranges=IRanges(start=[x for x in range(101, 106)], width=[11, 21, 25, 30, 5]),
     strand=["*", "-", "*", "+", "-"],
     mcols=BiocFrame(
         {
@@ -130,17 +130,12 @@ query = genomicranges.from_pandas(
     )
 )
 
-hits = subject.nearest(query)
+hits = subject.nearest(query, ignore_strand=True)
 print(hits)
 ```
 
     ## output
-    BiocFrame with 3 rows and 2 columns
-        query                subject_hits
-        <list>                      <list>
-    [0]      0                      [0, 1]
-    [1]      1 [1677082, 1677083, 1677084]
-    [2]      2          [1003411, 1003412]
+    [[0, 1], [1677082, 1677083, 1677084], [1003411, 1003412]]
 
 ## `GenomicRangesList`
 
