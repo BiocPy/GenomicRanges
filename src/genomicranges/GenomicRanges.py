@@ -343,7 +343,7 @@ class GenomicRanges:
 
             columns = []
 
-            header = ["seqnames", f"<{ut.print_type(self._seqnames)}>"]
+            header = ["seqnames", "<str>"]
             _seqnames = []
             for x in self._seqnames[indices]:
                 _seqnames.append(self._seqinfo.seqnames[x])
@@ -353,7 +353,7 @@ class GenomicRanges:
                 showed = showed[:3] + ["..."] + showed[3:]
             columns.append(header + showed)
 
-            header = ["ranges", f"<{ut.print_type(self._ranges)}>"]
+            header = ["ranges", "<IRanges>"]
             showed = [f"{x._start[0]} - {x.end[0]}" for _, x in self._ranges[indices]]
             if insert_ellipsis:
                 showed = showed[:3] + ["..."] + showed[3:]
@@ -1714,10 +1714,8 @@ class GenomicRanges:
         if shift > 0:
             shift_arr = np.zeros(shift)
 
-        print("chrm_grps", chrm_grps)
         result = {}
         for chrm, group in chrm_grps.items():
-            print(chrm, group)
             _grp_subset = self[group]
 
             all_intvals = [
@@ -2387,7 +2385,6 @@ class GenomicRanges:
         """
         order = self.order(decreasing=decreasing)
         output = self._define_output(in_place)
-        print(order)
         return output[list(order)]
 
     def rank(self) -> List[int]:
