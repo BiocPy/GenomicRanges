@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges.GenomicRangesList - GenomicRanges 0.3.9 documentation</title>
+        <title>genomicranges.GenomicRangesList - GenomicRanges 0.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.3.9 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.9 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,19 +203,98 @@
         </div>
         <article role="main">
           <h1>Source code for genomicranges.GenomicRangesList</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
-<span class="kn">from</span> <span class="nn">biocgenerics.combine</span> <span class="kn">import</span> <span class="n">combine</span>
-<span class="kn">from</span> <span class="nn">biocgenerics.combine_cols</span> <span class="kn">import</span> <span class="n">combine_cols</span>
-<span class="kn">from</span> <span class="nn">biocgenerics.combine_rows</span> <span class="kn">import</span> <span class="n">combine_rows</span>
-<span class="kn">from</span> <span class="nn">biocutils</span> <span class="kn">import</span> <span class="n">is_list_of_type</span>
-
+<span class="kn">import</span> <span class="nn">biocutils</span> <span class="k">as</span> <span class="nn">ut</span>
 <span class="kn">from</span> <span class="nn">.GenomicRanges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">num_ranges</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ranges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;ranges&#39; cannot be None.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ut</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_ranges</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Length of &#39;ranges&#39; does not match the number of genomic elements.&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Need to be </span><span class="si">{</span><span class="n">num_ranges</span><span class="si">}</span><span class="s2">, provided </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span> <span class="ow">and</span> <span class="n">num_ranges</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Length of &#39;ranges&#39; does not match the number of genomic elements.&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Need to be </span><span class="si">{</span><span class="n">num_ranges</span><span class="si">}</span><span class="s2">, provided </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_optional_attrs</span><span class="p">(</span><span class="n">mcols</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">num_ranges</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mcols</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;mcols&#39; is not a `BiocFrame` object.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mcols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">num_ranges</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Length of &#39;mcols&#39; does not match the number of genomic elements.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_ranges</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Length of &#39;names&#39; does not match the number of genomic elements.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">names</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;names&#39; cannot contain None values.&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GenomicRangesListIter">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesListIter">[docs]</a>
+<span class="k">class</span> <span class="nc">GenomicRangesListIter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An iterator to a :py:class:`~GenomicRangesList` object.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the iterator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            obj:</span>
+<span class="sd">                source object to iterate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grl</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="GenomicRangesListIter.__iter__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesListIter.__iter__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesListIter.__next__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesListIter.__next__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grl</span><span class="p">):</span>
+            <span class="n">iter_row_index</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_grl</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grl</span><span class="o">.</span><span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+
+            <span class="n">iter_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grl</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">iter_row_index</span><span class="p">,</span> <span class="n">iter_slice</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">StopIteration</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="GenomicRangesList">
@@ -236,24 +315,18 @@
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        gr1 = GenomicRanges(</span>
-<span class="sd">            {</span>
-<span class="sd">                &quot;seqnames&quot;: [&quot;chr1&quot;, &quot;chr2&quot;, &quot;chr1&quot;, &quot;chr3&quot;],</span>
-<span class="sd">                &quot;starts&quot;: [1, 3, 2, 4],</span>
-<span class="sd">                &quot;ends&quot;: [10, 30, 50, 60],</span>
-<span class="sd">                &quot;strand&quot;: [&quot;-&quot;, &quot;+&quot;, &quot;*&quot;, &quot;+&quot;],</span>
-<span class="sd">                &quot;score&quot;: [1, 2, 3, 4],</span>
-<span class="sd">            }</span>
+<span class="sd">        a = GenomicRanges(</span>
+<span class="sd">            seqnames=[&quot;chr1&quot;, &quot;chr2&quot;, &quot;chr1&quot;, &quot;chr3&quot;],</span>
+<span class="sd">            ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),</span>
+<span class="sd">            strand=[&quot;-&quot;, &quot;+&quot;, &quot;*&quot;, &quot;+&quot;],</span>
+<span class="sd">            mcols=BiocFrame({&quot;score&quot;: [1, 2, 3, 4]}),</span>
 <span class="sd">        )</span>
 
-<span class="sd">        gr2 = GenomicRanges(</span>
-<span class="sd">            {</span>
-<span class="sd">                &quot;seqnames&quot;: [&quot;chr2&quot;, &quot;chr4&quot;, &quot;chr5&quot;],</span>
-<span class="sd">                &quot;starts&quot;: [3, 6, 4],</span>
-<span class="sd">                &quot;ends&quot;: [30, 50, 60],</span>
-<span class="sd">                &quot;strand&quot;: [&quot;-&quot;, &quot;+&quot;, &quot;*&quot;],</span>
-<span class="sd">                &quot;score&quot;: [2, 3, 4],</span>
-<span class="sd">            }</span>
+<span class="sd">        b = GenomicRanges(</span>
+<span class="sd">            seqnames=[&quot;chr2&quot;, &quot;chr4&quot;, &quot;chr5&quot;],</span>
+<span class="sd">            ranges=IRanges([3, 6, 4], [30, 50, 60]),</span>
+<span class="sd">            strand=[&quot;-&quot;, &quot;+&quot;, &quot;*&quot;],</span>
+<span class="sd">            mcols=BiocFrame({&quot;score&quot;: [2, 3, 4]}),</span>
 <span class="sd">        )</span>
 
 <span class="sd">        grl = GenomicRangesList(ranges=[gr1, gr2], names=[&quot;gene1&quot;, &quot;gene2&quot;])</span>
@@ -269,51 +342,165 @@
         <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">mcols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a `GenomicRangesList` object.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ranges (GenomicRangesList, optional): List of genomic elements.</span>
-<span class="sd">                All elements in this list must be :py:class:`genomicranges.GenomicRanges.GenomicRanges`</span>
-<span class="sd">                class.</span>
-<span class="sd">            range_lengths (Optional[List[int]], optional): Number of ranges within each genomic element.</span>
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            names (Optional[List[str]], optional): Names of the genomic elements.</span>
-<span class="sd">                The length of this must match the number of genomic elements in ``ranges``.</span>
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            mcols (BiocFrame, optional): Metadata about each genomic element. Defaults to None.</span>
-<span class="sd">            metadata (Optional[Dict], optional): Additional metadata. Defaults to None.</span>
+<span class="sd">            ranges:</span>
+<span class="sd">                List of genomic elements.</span>
+<span class="sd">                All elements in this list must be</span>
+<span class="sd">                :py:class:`genomicranges.GenomicRanges.GenomicRanges` objects.</span>
+
+<span class="sd">            range_lengths:</span>
+<span class="sd">                Number of ranges within each genomic element.</span>
+<span class="sd">                Defaults to None, and is inferred from ``ranges``.</span>
+
+<span class="sd">            names:</span>
+<span class="sd">                Names of the genomic elements.</span>
+<span class="sd">                The length of this must match the number of</span>
+<span class="sd">                genomic elements in ``ranges``. Defaults to None.</span>
+
+<span class="sd">            mcols:</span>
+<span class="sd">                Metadata about each genomic element. Defaults to None.</span>
+
+<span class="sd">            metadata:</span>
+<span class="sd">                Additional metadata. Defaults to None.</span>
+
+<span class="sd">            validate:</span>
+<span class="sd">                Internal use only.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ranges&quot;</span><span class="p">:</span> <span class="n">ranges</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span> <span class="o">=</span> <span class="n">ranges</span>
 
         <span class="k">if</span> <span class="n">range_lengths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">range_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ranges</span><span class="p">]</span>
-
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">range_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ranges</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">range_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span> <span class="o">=</span> <span class="n">range_lengths</span>
 
         <span class="k">if</span> <span class="n">mcols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mcols</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">(</span><span class="n">number_of_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">range_lengths</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mcols</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`mcols` must be a BiocFrame object.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span> <span class="o">=</span> <span class="n">mcols</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;mcols&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mcols</span>
-
+        <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">):</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="n">names</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">metadata</span>
 
-    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ranges</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`.&quot;</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">validate</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">_validate_ranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span><span class="p">))</span>
+            <span class="n">_validate_optional_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_define_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">in_place</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span>
+
+    <span class="c1">#########################</span>
+    <span class="c1">######&gt;&gt; Copying &lt;&lt;######</span>
+    <span class="c1">#########################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.__deepcopy__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.__deepcopy__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A deep copy of the current ``GenomicRangesList``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+        <span class="n">_ranges_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">)</span>
+        <span class="n">_rangelengths_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span><span class="p">)</span>
+        <span class="n">_names_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">)</span>
+        <span class="n">_mcols_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">)</span>
+        <span class="n">_metadata_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+
+        <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+            <span class="n">ranges</span><span class="o">=</span><span class="n">_ranges_copy</span><span class="p">,</span>
+            <span class="n">range_lengths</span><span class="o">=</span><span class="n">_rangelengths_copy</span><span class="p">,</span>
+            <span class="n">names</span><span class="o">=</span><span class="n">_names_copy</span><span class="p">,</span>
+            <span class="n">mcols</span><span class="o">=</span><span class="n">_mcols_copy</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">_metadata_copy</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.__copy__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.__copy__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A shallow copy of the current ``GenomicRangesList``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+            <span class="n">ranges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span>
+            <span class="n">range_lengths</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span><span class="p">,</span>
+            <span class="n">names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">,</span>
+            <span class="n">mcols</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.copy">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~__copy__`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
+
+
+    <span class="c1">######################################</span>
+    <span class="c1">######&gt;&gt; length and iterators &lt;&lt;######</span>
+    <span class="c1">######################################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.__len__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.__len__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Number of rows.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.__iter__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.__iter__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRangesListIter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over rows.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GenomicRangesListIter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+    <span class="c1">##########################</span>
+    <span class="c1">######&gt;&gt; Printing &lt;&lt;######</span>
+    <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="GenomicRangesList.__repr__">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.__repr__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A string representation of this ``GenomicRangesList``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;GenomicRangesList(number_of_elements=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, ranges=&quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, names=&quot;</span> <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, mcols=&quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, metadata=&quot;</span> <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;)&quot;</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
         <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
@@ -366,71 +553,284 @@
         <span class="k">with</span> <span class="n">console</span><span class="o">.</span><span class="n">capture</span><span class="p">()</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
             <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="c1">##########################</span>
+    <span class="c1">######&gt;&gt; ranges &lt;&lt;########</span>
+    <span class="c1">##########################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.get_ranges">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.get_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of genomic ranges.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.set_ranges">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.set_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_ranges</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ranges</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">]],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new genomic ranges.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ranges:</span>
+<span class="sd">                List of genomic elements.</span>
+<span class="sd">                All elements in this list must be</span>
+<span class="sd">                :py:class:`genomicranges.GenomicRanges.GenomicRanges` objects.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRangesList`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``GenomicRangesList`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_validate_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_ranges</span> <span class="o">=</span> <span class="n">ranges</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~get_ranges`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ranges</span><span class="p">()</span>
+
+    <span class="nd">@ranges</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ranges</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~set_ranges` with ``in_place = True``.</span>
+
+<span class="sd">        As this mutates the original object, a warning is raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Setting property &#39;ranges&#39; is an in-place operation, use &#39;set_ranges&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">########################</span>
+    <span class="c1">######&gt;&gt; names &lt;&lt;#######</span>
+    <span class="c1">########################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.get_names">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.get_names">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of names for each genomic element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.set_names">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.set_names">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_names</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new names.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            names:</span>
+<span class="sd">                Names for each genomic element.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRangesList`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``GenomicRangesList`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_validate_optional_attrs</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">):</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~get_names`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
+
+    <span class="nd">@names</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">names</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~set_names` with ``in_place = True``.</span>
+
+<span class="sd">        As this mutates the original object, a warning is raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Setting property &#39;names&#39; is an in-place operation, use &#39;set_names&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_names</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">########################</span>
+    <span class="c1">######&gt;&gt; mcols &lt;&lt;#######</span>
+    <span class="c1">########################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.get_mcols">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.get_mcols">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BiocFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A ~py:class:`~biocframe.BiocFrame.BiocFrame` containing</span>
+<span class="sd">            per-genomic element annotations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.set_mcols">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.set_mcols">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_mcols</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mcols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocFrame</span><span class="p">],</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new range metadata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mcols:</span>
+<span class="sd">                A ~py:class:`~biocframe.BiocFrame.BiocFrame` with</span>
+<span class="sd">                length same as the number of genomic elements, containing</span>
+<span class="sd">                per-genomic element annotations.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRangesList`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``GenomicRangesList`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">mcols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mcols</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">({},</span> <span class="n">number_of_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="n">_validate_optional_attrs</span><span class="p">(</span><span class="n">mcols</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_mcols</span> <span class="o">=</span> <span class="n">mcols</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BiocFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~get_mcols`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mcols</span><span class="p">()</span>
+
+    <span class="nd">@mcols</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mcols</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mcols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocFrame</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~set_mcols` with ``in_place = True``.</span>
+
+<span class="sd">        As this mutates the original object, a warning is raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Setting property &#39;mcols&#39; is an in-place operation, use &#39;set_mcols&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_mcols</span><span class="p">(</span><span class="n">mcols</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">###########################</span>
+    <span class="c1">######&gt;&gt; metadata &lt;&lt;#######</span>
+    <span class="c1">###########################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.get_metadata">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.get_metadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary of metadata for this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.set_metadata">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.set_metadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set additional metadata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            metadata:</span>
+<span class="sd">                New metadata for this object.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRangesList`` object in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``GenomicRangesList`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`metadata` must be a dictionary, provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dict: Metadata object, usually a dictionary.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:attr:`~get_metadata`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()</span>
 
     <span class="nd">@metadata</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set metadata.</span>
+    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:attr:`~set_metadata` with ``in_place = True``.</span>
+
+<span class="sd">        As this mutates the original object, a warning is raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Setting property &#39;metadata&#39; is an in-place operation, use &#39;set_metadata&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">###########################</span>
+    <span class="c1">######&gt;&gt; groups &lt;&lt;#########</span>
+    <span class="c1">###########################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.groups">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.groups">[docs]</a>
+    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a genomic element by their name or index position.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            metadata (dict, optional): New metadata object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">metadata</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all ranges.</span>
+<span class="sd">            group:</span>
+<span class="sd">                Name or index of the genomic element to access.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[str]]: A list with the same length as keys in the object,</span>
-<span class="sd">            each element in the list contains another list of ranges names.</span>
+<span class="sd">            The genomic element for group `i`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;ranges&quot;</span><span class="p">]</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get names of all genomic elements.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            (list, optional): A list with the same length as</span>
-<span class="sd">            :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.ranges`,</span>
-<span class="sd">            with each element specifying the name of the element. None if names are not provided.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span>
+        <span class="k">if</span> <span class="n">group</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">group</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;group&#39; must be less than the number of genomic elements.&quot;</span>
+            <span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias to :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.groups`.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">group</span><span class="p">]</span></div>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            (list, optional): A list with the same length as</span>
-<span class="sd">            :py:attr:`genomicranges.GenomicRanges.GenomicRangesList.ranges`,</span>
-<span class="sd">            with each element specifying the name of the element. None if names are not provided.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocFrame</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata across all genomic elements.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (BiocFrame, optional): Metadata :py:class:`~biocframe.BiocFrame.Biocframe` or</span>
-<span class="sd">            None if there is no element level metadata.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;mcols&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;mcols&quot;</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_generic_accessor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
         <span class="n">_all_prop</span> <span class="o">=</span> <span class="p">{}</span>
@@ -457,7 +857,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a vector of the length of each element.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[int]: An integer vector where each value corresponds to the length of</span>
+<span class="sd">            An integer vector where each value corresponds to the length of</span>
 <span class="sd">            the contained GenomicRanges object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;__len__&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
@@ -469,7 +869,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether ``GRangesList`` has no elements or if all its elements are empty.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: True if the object has no elements.</span>
+<span class="sd">            True if the object has no elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -488,7 +888,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all sequence names.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[str]]: A list with the same length as keys in the object,</span>
+<span class="sd">            A list with the same length as keys in the object,</span>
 <span class="sd">            each element in the list contains another list of sequence names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;seqnames&quot;</span><span class="p">)</span>
@@ -498,7 +898,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all start positions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
+<span class="sd">            A list with the same length as keys in the object,</span>
 <span class="sd">            each element in the list contains another list values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
@@ -508,7 +908,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all end positions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
+<span class="sd">            A list with the same length as keys in the object,</span>
 <span class="sd">            each element in the list contains another list values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;end&quot;</span><span class="p">)</span>
@@ -518,7 +918,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get width of all regions across all elements.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
+<span class="sd">            A list with the same length as keys in the object,</span>
 <span class="sd">            each element in the list contains another list values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">)</span>
@@ -528,7 +928,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get strand of all regions across all elements.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
+<span class="sd">            A list with the same length as keys in the object,</span>
 <span class="sd">            each element in the list contains another list values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;strand&quot;</span><span class="p">)</span>
@@ -538,7 +938,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get information about the underlying sequences.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
+<span class="sd">            A list with the same length as keys in the object,</span>
 <span class="sd">            each element in the list contains another list values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;seq_info&quot;</span><span class="p">)</span>
@@ -548,38 +948,18 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the circularity flag.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
+<span class="sd">            A list with the same length as keys in the object,</span>
 <span class="sd">            each element in the list contains another list values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;is_circular&quot;</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genome of the underlying sequences.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
-<span class="sd">            each element in the list contains another list values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;genome&quot;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get score about the underlying sequences.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, List[int]]: A list with the same length as keys in the object,</span>
-<span class="sd">            each element in the list contains another list values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_accessor</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">)</span>
-
 <div class="viewcode-block" id="GenomicRangesList.to_pandas">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.to_pandas">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataFrame&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce object to a :py:class:`pandas.DataFrame`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            DataFrame: A :py:class:`~pandas.DataFrame` object.</span>
+<span class="sd">            A :py:class:`~pandas.DataFrame` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">concat</span>
 
@@ -617,32 +997,38 @@
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access individual genomic elements.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset individual genomic elements.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            args (Union[str, int, tuple, list, slice]): Name of the genomic element to access.</span>
+<span class="sd">            args:</span>
+<span class="sd">                Name of the genomic element to access.</span>
 
-<span class="sd">                Alternatively, if names of genomic elements are not available, you may</span>
-<span class="sd">                provide an index position of the genomic element to access.</span>
+<span class="sd">                Alternatively, if names of genomic elements are not</span>
+<span class="sd">                available, you may provide an index position of the</span>
+<span class="sd">                genomic element to access.</span>
 
-<span class="sd">                Alternatively, ``args`` may also specify a list of positions to slice specified either as a</span>
+<span class="sd">                Alternatively, ``args`` may also specify a list of</span>
+<span class="sd">                positions to slice specified either as a</span>
 <span class="sd">                :py:class:`~list` or :py:class:`~slice`.</span>
 
-<span class="sd">                A tuple may also be specified along each dimension. Currently if the tuple contains more than</span>
+<span class="sd">                A tuple may also be specified along each dimension.</span>
+<span class="sd">                Currently if the tuple contains more than</span>
 <span class="sd">                one dimension, its ignored.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If ``args`` is not a supported slice argument.</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                If ``args`` is not a supported slice argument.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Union[GenomicRanges, GenomicRangesList]: The genomic element or a new GenomicRangesList of the slice.</span>
+<span class="sd">            The genomic element as a ``GenomicRanges`` object</span>
+<span class="sd">            or a new ``GenomicRangesList`` of the slice.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranges</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span>
+                <span class="n">_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">_idx</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_ranges</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">new_range_lengths</span> <span class="o">=</span> <span class="kc">None</span>
@@ -656,7 +1042,7 @@
                     <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ut</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="s2">&quot;`indices` is a boolean vector, length should match the size of the data.&quot;</span>
@@ -689,17 +1075,6 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Arguments to slice is not supported.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="GenomicRangesList.__len__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.__len__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of genomic elements.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            int: number of genomic elements.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="GenomicRangesList.empty">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.empty">[docs]</a>
     <span class="nd">@classmethod</span>
@@ -712,80 +1087,34 @@
         <span class="n">_range_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="n">GenomicRanges</span><span class="o">.</span><span class="n">empty</span><span class="p">(),</span> <span class="n">range_lengths</span><span class="o">=</span><span class="n">_range_lengths</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="GenomicRangesList.combine">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.combine">[docs]</a>
-    <span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">:</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Combine multiple `GenomicRangesList` objects by row.</span>
-
-<span class="sd">        Note: Fills missing columns with an array of `None`s.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            *other (GenomicRangesList): Objects to combine.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If all objects are not of type GenomicRangesList.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            GenomicRangesList: A combined `GenomicRangesList` object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All objects to combine must be GenomicRangesList objects.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># ranges: Union[GenomicRanges, List[GenomicRanges]],</span>
-        <span class="c1"># range_lengths: Optional[List[int]] = None,</span>
-        <span class="c1"># names: Optional[List[str]] = None,</span>
-        <span class="c1"># mcols: Optional[BiocFrame] = None,</span>
-        <span class="c1"># metadata: Optional[dict] = None,</span>
-
-        <span class="n">all_objects</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-
-        <span class="n">new_ranges</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">ranges</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">all_objects</span><span class="p">])</span>
-        <span class="n">new_names</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">names</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">all_objects</span><span class="p">])</span>
-        <span class="n">new_mcols</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">mcols</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">all_objects</span><span class="p">])</span>
-        <span class="n">new_metadata</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_objects</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">new_metadata</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">metadata</span>
-
-        <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
-            <span class="n">new_ranges</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">new_names</span><span class="p">,</span> <span class="n">mcols</span><span class="o">=</span><span class="n">new_mcols</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">new_metadata</span>
-        <span class="p">)</span></div>
 </div>
 
 
 
-<span class="nd">@combine</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRangesList</span><span class="p">)</span>
+<span class="nd">@ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRangesList</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_combine_grl</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;All elements to `combine` must be `GenomicRangesList` objects.&quot;</span>
-        <span class="p">)</span>
+    <span class="n">has_names</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">has_names</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
 
-    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">all_names</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">has_names</span><span class="p">:</span>
+        <span class="n">all_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">all_names</span> <span class="o">+=</span> <span class="n">y</span><span class="o">.</span><span class="n">_names</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">all_names</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
-
-<span class="nd">@combine_rows</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRangesList</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_combine_rows_grl</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;All elements to `combine_rows` must be `GenomicRangesList` objects.&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-
-
-<span class="nd">@combine_cols</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRangesList</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_combine_cols_grl</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;All elements to `combine_cols` must be `GenomicRangesList` objects.&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-        <span class="s2">&quot;`combine_cols` is not implemented for `GenomicRangesList` objects.&quot;</span>
+    <span class="k">return</span> <span class="n">GenomicRangesList</span><span class="p">(</span>
+        <span class="n">ranges</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_ranges</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
+        <span class="n">range_lengths</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_range_lengths</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
+        <span class="n">names</span><span class="o">=</span><span class="n">all_names</span><span class="p">,</span>
+        <span class="n">mcols</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">combine_rows</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_mcols</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
+        <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
         </article>
@@ -819,7 +1148,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=65b26183"></script>
+</div><script src="../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>

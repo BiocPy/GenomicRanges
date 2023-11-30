@@ -12,22 +12,6 @@ genomicranges.io.gtf module
    :undoc-members:
    :show-inheritance:
 
-genomicranges.io.pdf module
----------------------------
-
-.. automodule:: genomicranges.io.pdf
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-genomicranges.io.tiling module
-------------------------------
-
-.. automodule:: genomicranges.io.tiling
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 genomicranges.io.ucsc module
 ----------------------------
 

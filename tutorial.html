@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="genomicranges" href="api/modules.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Tutorial - GenomicRanges 0.3.9 documentation</title>
+        <title>Tutorial - GenomicRanges 0.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.3.9 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.3.9 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -231,7 +231,7 @@
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -246,15 +246,30 @@
 </pre></div>
 </div>
 </section>
-<section id="from-a-dictionary">
-<h2>From a dictionary<a class="headerlink" href="#from-a-dictionary" title="Link to this heading">#</a></h2>
-<p>Or simply pass in a dictionary with the required keys.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">119</span><span class="p">],</span>
-        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">103</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">],</span>
-    <span class="p">}</span>
+<section id="from-iranges-preferred-way">
+<h2>from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">#</a></h2>
+<p>If you have all relevant information to create a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
+<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
+
+<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">106</span><span class="p">)],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -630,8 +645,8 @@
 </section>
 <section id="combine-genomicranges-objects-by-rows">
 <h2>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows<a class="headerlink" href="#combine-genomicranges-objects-by-rows" title="Link to this heading">#</a></h2>
-<p>Use the <code class="docutils literal notranslate"><span class="pre">combine</span></code> generic from <a class="reference external" href="https://github.com/BiocPy/generics">biocgenerics</a> to concatenate multiple GenomicRanges objects.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">biocgenerics.combine</span> <span class="kn">import</span> <span class="n">combine</span>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">combine</span></code> generic from <a class="reference external" href="https://github.com/BiocPy/generics">biocutils</a> to concatenate multiple GenomicRanges objects.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">biocutils.combine</span> <span class="kn">import</span> <span class="n">combine</span>
 <span class="n">combined_gr</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -664,23 +679,17 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
 <p>Currently, this class is limited in functionality, purely a read-only class with basic accessors.</p>
 <p><em><strong>Note: This is a work in progress and the functionality is limited.</strong></em></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
-        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-    <span class="p">}</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
 <span class="p">)</span>
 
 <span class="n">b</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="s2">&quot;chr5&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
-        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-    <span class="p">}</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="s2">&quot;chr5&quot;</span><span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
 <span class="p">)</span>
 
 <span class="n">grl</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">gene1</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">gene2</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
@@ -703,7 +712,7 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
 <span class="n">grlc</span> <span class="o">=</span> <span class="n">grla</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">grlb</span><span class="p">)</span>
 
 <span class="c1"># or use the combine generic</span>
-<span class="kn">from</span> <span class="nn">biocgenerics.combine</span> <span class="kn">import</span> <span class="n">combine</span>
+<span class="kn">from</span> <span class="nn">biocutils.combine</span> <span class="kn">import</span> <span class="n">combine</span>
 <span class="n">cgrl</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">grla</span><span class="p">,</span> <span class="n">grlb</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -760,7 +769,7 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=65b26183"></script>
+</div><script src="_static/documentation_options.js?v=6c02275b"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

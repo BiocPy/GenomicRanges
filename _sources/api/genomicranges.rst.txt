@@ -36,10 +36,10 @@ genomicranges.SeqInfo module
    :undoc-members:
    :show-inheritance:
 
-genomicranges.interval module
------------------------------
+genomicranges.utils module
+--------------------------
 
-.. automodule:: genomicranges.interval
+.. automodule:: genomicranges.utils
    :members:
    :undoc-members:
    :show-inheritance:
