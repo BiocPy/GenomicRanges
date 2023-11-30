@@ -1869,7 +1869,7 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A List with the same length as ``query``,
+            A list with the same length as ``query``,
             containing hits to overlapping indices.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
@@ -1955,7 +1955,7 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A List with the same length as ``query``,
+            A list with the same length as ``query``,
             containing number of overlapping indices.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
@@ -2095,7 +2095,7 @@ class GenomicRanges:
         query: "GenomicRanges",
         select: Literal["all", "arbitrary"] = "all",
         ignore_strand: bool = False,
-    ) -> "BiocFrame":
+    ) -> List[List[int]]:
         """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
         Args:
@@ -2110,8 +2110,8 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A ``BiocFrame`` object with the same length as
-            ``query``, containing 'hits' to overlapping indices.
+            A list with the same length as ``query``,
+            containing hits to nearest indices.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2146,15 +2146,14 @@ class GenomicRanges:
                     _rev_map.append([subject_chrm_grps[_key][x] for x in j])
                 rev_map.append(_rev_map[0])
 
-        output = BiocFrame({"query": groups, "subject_hits": rev_map})
-        return output
+        return rev_map
 
     def precede(
         self,
         query: "GenomicRanges",
         select: Literal["all", "arbitrary"] = "all",
         ignore_strand: bool = False,
-    ) -> "BiocFrame":
+    ) -> List[List[int]]:
         """Search nearest positions only downstream that overlap with each range in ``query``.
 
         Args:
@@ -2169,8 +2168,8 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A ``BiocFrame`` object with the same length as
-            ``query``, containing 'hits' to overlapping indices.
+            A List with the same length as ``query``,
+            containing hits to nearest indices.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2205,15 +2204,14 @@ class GenomicRanges:
                     _rev_map.append([subject_chrm_grps[_key][x] for x in j])
                 rev_map.append(_rev_map[0])
 
-        output = BiocFrame({"query": groups, "subject_hits": rev_map})
-        return output
+        return rev_map
 
     def follow(
         self,
         query: "GenomicRanges",
         select: Literal["all", "arbitrary"] = "all",
         ignore_strand: bool = False,
-    ) -> "BiocFrame":
+    ) -> List[List[int]]:
         """Search nearest positions only upstream that overlap with each range in ``query``.
 
         Args:
@@ -2228,8 +2226,8 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A ``BiocFrame`` object with the same length as
-            ``query``, containing 'hits' to overlapping indices.
+            A List with the same length as ``query``,
+            containing hits to nearest indices.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2264,8 +2262,7 @@ class GenomicRanges:
                     _rev_map.append([subject_chrm_grps[_key][x] for x in j])
                 rev_map.append(_rev_map[0])
 
-        output = BiocFrame({"query": groups, "subject_hits": rev_map})
-        return output
+        return rev_map
 
     def match(self, query: "GenomicRanges") -> List[List[int]]:
         """Element wise comparison to find exact match ranges.
