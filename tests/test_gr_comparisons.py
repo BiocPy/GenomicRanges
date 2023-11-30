@@ -35,7 +35,7 @@ def test_matches():
     query_hits = gr.match(gr[2:5])
 
     assert query_hits is not None
-    assert query_hits.column("subject_hits") == [[2], [3], [4]]
+    assert query_hits == [[2], [3], [4]]
 
 
 def test_order():

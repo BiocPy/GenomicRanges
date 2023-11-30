@@ -339,7 +339,7 @@ class GenomicRanges:
             raw_floating = ut.create_floating_names(self._names, indices)
             if insert_ellipsis:
                 raw_floating = raw_floating[:3] + [""] + raw_floating[3:]
-            floating = ["", ""] + list(raw_floating)
+            floating = ["", ""] + raw_floating
 
             columns = []
 
@@ -1834,7 +1834,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 1,
         ignore_strand: bool = False,
-    ) -> "BiocFrame":
+    ) -> List[List[int]]:
         """Find overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
         Args:
@@ -1869,8 +1869,8 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A ``BiocFrame`` object with the same length as
-            ``query``, containing hits to overlapping indices.
+            A List with the same length as ``query``,
+            containing hits to overlapping indices.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
@@ -1915,8 +1915,7 @@ class GenomicRanges:
                     _rev_map.append([subject_chrm_grps[_key][x] for x in j])
                 rev_map.append(_rev_map[0])
 
-        output = BiocFrame({"query": groups, "subject_hits": rev_map})
-        return output
+        return rev_map
 
     def count_overlaps(
         self,
@@ -1925,7 +1924,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 1,
         ignore_strand: bool = False,
-    ) -> "BiocFrame":
+    ) -> List[int]:
         """Count overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
         Args:
@@ -1956,8 +1955,8 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A ``BiocFrame`` object with the same length as
-            ``query``, containing hits to overlapping indices.
+            A List with the same length as ``query``,
+            containing number of overlapping indices.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
@@ -2002,8 +2001,7 @@ class GenomicRanges:
                     _rev_map.append([len(j)])
                 rev_map.append(_rev_map[0])
 
-        output = BiocFrame({"query": groups, "subject_hits_count": rev_map})
-        return output
+        return rev_map
 
     def subset_by_overlaps(
         self,
@@ -2269,7 +2267,7 @@ class GenomicRanges:
         output = BiocFrame({"query": groups, "subject_hits": rev_map})
         return output
 
-    def match(self, query: "GenomicRanges") -> BiocFrame:
+    def match(self, query: "GenomicRanges") -> List[List[int]]:
         """Element wise comparison to find exact match ranges.
 
         Args:
@@ -2281,8 +2279,8 @@ class GenomicRanges:
                 If ``query`` is not of type ``GenomicRanges``.
 
         Returns:
-            A ``BiocFrame`` object with the same length as
-            ``query``, containing 'hits' to matching indices.
+            A List with the same length as ``query``,
+            containing hits to matching indices.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2326,8 +2324,7 @@ class GenomicRanges:
                             _rev_map.append(subject_chrm_grps[_key][x])
                 rev_map.append(_rev_map)
 
-        output = BiocFrame({"query": groups, "subject_hits": rev_map})
-        return output
+        return rev_map
 
     def _get_ranges_as_list(self) -> List[Tuple[int, int, int]]:
         """Internal method to get ranges as a list of tuples.

@@ -48,8 +48,8 @@ def test_find_overlaps():
     res = subject.find_overlaps(query)
 
     assert res is not None
-    assert isinstance(res, BiocFrame)
-    assert res.column("subject_hits") == [[1, 2]]
+    assert isinstance(res, list)
+    assert res == [[1, 2]]
 
 
 def test_find_overlaps_query_type():
@@ -59,7 +59,7 @@ def test_find_overlaps_query_type():
     res = subject.find_overlaps(query, query_type="within")
 
     assert res is not None
-    assert res.column("subject_hits") == [[1, 2]]
+    assert res == [[1, 2]]
 
 
 def test_count_overlaps():
@@ -69,8 +69,8 @@ def test_count_overlaps():
     res = subject.count_overlaps(query)
 
     assert res is not None
-    assert isinstance(res, BiocFrame)
-    assert res.column("subject_hits_count") == [[2]]
+    assert isinstance(res, list)
+    assert res == [[2]]
 
 
 def test_subset_by_overlaps():
@@ -86,4 +86,5 @@ def test_subset_by_overlaps():
     res = subject.subset_by_overlaps(query2)
 
     assert res is not None
+    assert isinstance(res, GenomicRanges)
     assert len(res) == 2
