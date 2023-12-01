@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges.io.gtf - GenomicRanges 0.4.0 documentation</title>
+        <title>genomicranges.io.gtf - GenomicRanges 0.4.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">GenomicRanges 0.4.0 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">GenomicRanges 0.4.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.0 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,7 +204,7 @@
         <article role="main">
           <h1>Source code for genomicranges.io.gtf</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">read_csv</span>
 
@@ -238,7 +238,12 @@
 
 <div class="viewcode-block" id="parse_gtf">
 <a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.gtf.parse_gtf">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_gtf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">compressed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">parse_gtf</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">compressed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">skiprows</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a GTF file as :py:class:`~pandas.DataFrame`.</span>
 
 <span class="sd">    Args:</span>
@@ -247,6 +252,13 @@
 
 <span class="sd">        compressed:</span>
 <span class="sd">            Whether the file is gzip compressed.</span>
+
+<span class="sd">        skiprows:</span>
+<span class="sd">            Rows to skip if the gtf file has header.</span>
+
+<span class="sd">        comment:</span>
+<span class="sd">            Character indicating that the line should not be</span>
+<span class="sd">            parsed. Defaults to &quot;#&quot;.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Genome annotations from GTF as pandas dataframe.</span>
@@ -271,6 +283,8 @@
                 <span class="s2">&quot;group&quot;</span><span class="p">,</span>
             <span class="p">],</span>
             <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+            <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span>
+            <span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span>
@@ -287,6 +301,8 @@
                 <span class="s2">&quot;frame&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;group&quot;</span><span class="p">,</span>
             <span class="p">],</span>
+            <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span>
+            <span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="n">rows</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">2</span><span class="p">)(</span>
@@ -301,12 +317,23 @@
 
 <div class="viewcode-block" id="read_gtf">
 <a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.gtf.read_gtf">[docs]</a>
-<span class="k">def</span> <span class="nf">read_gtf</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read  GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
+<span class="k">def</span> <span class="nf">read_gtf</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">skiprows</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file:</span>
 <span class="sd">            Path to GTF file.</span>
+
+<span class="sd">        skiprows:</span>
+<span class="sd">            Rows to skip if the gtf file has header.</span>
+
+<span class="sd">        comment:</span>
+<span class="sd">            Character indicating that the line should not be</span>
+<span class="sd">            parsed. Defaults to &quot;#&quot;.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Genome annotations from GTF.</span>
@@ -349,7 +376,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+</div><script src="../../../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
