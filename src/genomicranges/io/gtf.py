@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Dict, Union, List
 
 from pandas import DataFrame, read_csv
 
@@ -31,7 +31,12 @@ def _parse_all_attribute(row: str) -> Dict:
     return {**row, **vals}
 
 
-def parse_gtf(path: str, compressed: bool) -> DataFrame:
+def parse_gtf(
+    path: str,
+    compressed: bool,
+    skiprows: Union[int, List[int]] = None,
+    comment: str = "#",
+) -> DataFrame:
     """Read a GTF file as :py:class:`~pandas.DataFrame`.
 
     Args:
@@ -40,6 +45,13 @@ def parse_gtf(path: str, compressed: bool) -> DataFrame:
 
         compressed:
             Whether the file is gzip compressed.
+
+        skiprows:
+            Rows to skip if the gtf file has header.
+
+        comment:
+            Character indicating that the line should not be
+            parsed. Defaults to "#".
 
     Returns:
         Genome annotations from GTF as pandas dataframe.
@@ -64,6 +76,8 @@ def parse_gtf(path: str, compressed: bool) -> DataFrame:
                 "group",
             ],
             compression="gzip",
+            skiprows=skiprows,
+            comment=comment,
         )
     else:
         df = read_csv(
@@ -80,6 +94,8 @@ def parse_gtf(path: str, compressed: bool) -> DataFrame:
                 "frame",
                 "group",
             ],
+            skiprows=skiprows,
+            comment=comment,
         )
 
     rows = Parallel(n_jobs=-2)(
@@ -91,12 +107,23 @@ def parse_gtf(path: str, compressed: bool) -> DataFrame:
     return gtf
 
 
-def read_gtf(file: str) -> "GenomicRanges":
-    """Read  GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
+def read_gtf(
+    file: str,
+    skiprows: Union[int, List[int]] = None,
+    comment: str = "#",
+) -> "GenomicRanges":
+    """Read a GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
     Args:
         file:
             Path to GTF file.
+
+        skiprows:
+            Rows to skip if the gtf file has header.
+
+        comment:
+            Character indicating that the line should not be
+            parsed. Defaults to "#".
 
     Returns:
         Genome annotations from GTF.
