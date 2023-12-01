@@ -430,8 +430,16 @@ class GenomicRanges:
 
     def get_seqnames(
         self, as_type: Literal["factor", "list"] = "list"
-    ) -> Union[Union[np.ndarray, List[str]], np.ndarray]:
-        """
+    ) -> Union[Tuple[np.ndarray, List[str]], List[str]]:
+        """Access sequence names.
+
+        Args:
+            as_type:
+                Access seqnames as factor tuple, in which case, levels and codes
+                are returned.
+
+                If ``list``, then codes are mapped to levels and returned.
+
         Returns:
             List of sequence names.
         """
@@ -441,7 +449,7 @@ class GenomicRanges:
         elif as_type == "list":
             return [self._seqinfo.seqnames[x] for x in self._seqnames]
         else:
-            raise ValueError("Argument 'as_type' must be either 'factor' or 'list'.")
+            raise ValueError("Argument 'as_type' must be 'factor' or 'list'.")
 
     def set_seqnames(
         self, seqnames: Union[Sequence[str], np.ndarray], in_place: bool = False
@@ -543,14 +551,46 @@ class GenomicRanges:
     ######>> strand <<######
     ########################
 
-    def get_strand(self) -> np.ndarray:
-        """
+    def get_strand(
+        self, as_type: Literal["numpy", "factor", "list"] = "numpy"
+    ) -> Union[Tuple[np.ndarray, dict], List[str]]:
+        """Access strand information.
+
+        Args:
+            as_type:
+                Access seqnames as factor codes, in which case, a numpy
+                 vector is retuned.
+
+                If ``factor``, a tuple width levels as a dictionary and
+                  indices to ``seqinfo.seqnames`` is returned.
+
+                If ``list``, then codes are mapped to levels and returned.
+
         Returns:
             A numpy vector representing strand, 0
             for any strand, -1 for reverse strand
             and 1 for forward strand.
+
+            A tuple of codes and levels.
+
+            A list of "+", "-", or "*" for each range.
         """
-        return self._strand
+        if as_type == "numpy":
+            return self._strand
+        elif as_type == "factor":
+            return self._strand, {"-1": "-", "0": "*", "1": "+"}
+        elif as_type == "list":
+            _strand = []
+            for x in self._strand:
+                if x == 1:
+                    _strand.append("+")
+                elif x == -1:
+                    _strand.append("-")
+                else:
+                    _strand.append("*")
+            return _strand
+        else:
+            raise ValueError("Argument 'as_type' must be 'factor' or 'list'.")
 
     def set_strand(
         self,
