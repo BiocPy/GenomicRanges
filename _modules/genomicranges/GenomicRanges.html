@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.1 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.1 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -666,8 +666,16 @@
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_seqnames">[docs]</a>
     <span class="k">def</span> <span class="nf">get_seqnames</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">as_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;factor&quot;</span><span class="p">,</span> <span class="s2">&quot;list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;list&quot;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access sequence names.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            as_type:</span>
+<span class="sd">                Access seqnames as factor tuple, in which case, levels and codes</span>
+<span class="sd">                are returned.</span>
+
+<span class="sd">                If ``list``, then codes are mapped to levels and returned.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            List of sequence names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -677,7 +685,7 @@
         <span class="k">elif</span> <span class="n">as_type</span> <span class="o">==</span> <span class="s2">&quot;list&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;as_type&#39; must be either &#39;factor&#39; or &#39;list&#39;.&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;as_type&#39; must be &#39;factor&#39; or &#39;list&#39;.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.set_seqnames">
@@ -791,14 +799,46 @@
 
 <div class="viewcode-block" id="GenomicRanges.get_strand">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_strand">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_strand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get_strand</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">as_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;factor&quot;</span><span class="p">,</span> <span class="s2">&quot;list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access strand information.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            as_type:</span>
+<span class="sd">                Access seqnames as factor codes, in which case, a numpy</span>
+<span class="sd">                 vector is retuned.</span>
+
+<span class="sd">                If ``factor``, a tuple width levels as a dictionary and</span>
+<span class="sd">                  indices to ``seqinfo.seqnames`` is returned.</span>
+
+<span class="sd">                If ``list``, then codes are mapped to levels and returned.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            A numpy vector representing strand, 0</span>
 <span class="sd">            for any strand, -1 for reverse strand</span>
 <span class="sd">            and 1 for forward strand.</span>
+
+<span class="sd">            A tuple of codes and levels.</span>
+
+<span class="sd">            A list of &quot;+&quot;, &quot;-&quot;, or &quot;*&quot; for each range.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span></div>
+        <span class="k">if</span> <span class="n">as_type</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span>
+        <span class="k">elif</span> <span class="n">as_type</span> <span class="o">==</span> <span class="s2">&quot;factor&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;-1&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;+&quot;</span><span class="p">}</span>
+        <span class="k">elif</span> <span class="n">as_type</span> <span class="o">==</span> <span class="s2">&quot;list&quot;</span><span class="p">:</span>
+            <span class="n">_strand</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">_strand</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">_strand</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_strand</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_strand</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;as_type&#39; must be &#39;factor&#39; or &#39;list&#39;.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.set_strand">
@@ -3202,7 +3242,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=c87aa342"></script>
+</div><script src="../../_static/documentation_options.js?v=ff822928"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
