@@ -18,7 +18,7 @@ A common representation in Python is a pandas DataFrame for all tabular datasets
 **_Note: The DataFrame must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates._**
 
 ```python
-import genomicranges
+from genomicranges import GenomicRanges
 import pandas as pd
 
 df = pd.DataFrame(
@@ -102,7 +102,7 @@ Getters are available to access various properties.
 gr.seqnames
 
 # access all start positions
-gr.starts
+gr.start
 
 # access annotation information if available
 gr.seq_info
@@ -110,19 +110,19 @@ gr.seq_info
 # compute and return the widths of each region
 gr.width
 
-# score if available
-gr.score
-
 # access metadata columns, everything other than genomic locations
-gr.mcols()
+gr.mcols
 ```
 
 ### Setters
 
-Set properties in class
+All property based setters are `in_place` operations. Methods are available to get and set properties on GenomicRanges.
 
 ```python
-gr.score = [<NEW ARRAY OF VALUES>]
+gr.mcols = gr.mcols.set_column("score", range(1,6))
+
+# or use an in-place operation
+gr.mcols.set_column("score", range(1,6), in_place=True)
 ```
 
 ### Access any column
@@ -130,9 +130,7 @@ gr.score = [<NEW ARRAY OF VALUES>]
 Aside from the default getters, `column` methods provides a way to quickly access any column in the object.
 
 ```python
-gr.column("seqnames")
-
-gr.column("score")
+gr.mcols.column("score")
 ```
 
 ### Access ranges
@@ -140,17 +138,7 @@ gr.column("score")
 `ranges()` is a generic method to access only the genomic locations as dictionary, pandas `DataFrame` or something else. you can use any container representation based on a dictionary.
 
 ```python
-# default to dict
-gr.ranges()
-
-# as pandas DataFrame
-gr.ranges(return_type=pd.DataFrame)
-```
-
-`granges()` method returns a new `GenomicRanges` object of just the genomic locations
-
-```python
-gr.granges()
+gr.ranges
 ```
 
 ## Slice operations
@@ -158,11 +146,11 @@ gr.granges()
 You can slice a `GenomicRange` object using the subset (`[]`) operator. This operation accepts different slice input types, you can either specify a boolean vector, a `slice`` object, a list of indices, or row/column names to subset.
 
 ```python
-# slice the first 5 rows
-gr[:5, :]
+# slice the first 3 rows
+gr[:3]
 
-# slice 1,3 and 5th rows
-gr[[1,3,5], :]
+# slice 1, 3 and 2nd rows
+gr[[1,3,2]]
 ```
 
 ## Iterate over intervals
@@ -215,7 +203,6 @@ trimmed_gr = gr.trim()
 - **reduce**: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.
 - **gaps**: Finds gaps in the GenomicRanges object for each distinct (seqname, strand) pairing
 - **disjoin**: Finds disjoint intervals across all locations for each distinct (seqname, strand) pairing.
-- **is_disjoint**: Is the object contain disjoint intervals for each distinct (seqname, strand) pairing?
 
 ```python
 # range
@@ -230,9 +217,6 @@ gapped_gr = gr.gaps(end={"chr1": 120, "chr2": 120, "chr3": 120})
 
 # disjoin
 disjoin_gr = gr.disjoin()
-
-# is Disjoint?
-isdisjoin = gr.is_disjoint()
 ```
 
 ## Set operations on genomic ranges
@@ -242,40 +226,28 @@ isdisjoin = gr.is_disjoint()
 - **setdiff**: compute set difference
 
 ```python
-df_src = pd.DataFrame(
-    {
-        "seqnames": ["chr1", "chr2", "chr1", "chr3", "chr2"],
-        "starts": [101, 102, 103, 104, 109],
-        "ends": [112, 103, 128, 134, 111],
-        "strand": ["*", "-", "*", "+", "-"],
-        "score": range(0, 5),
-        "GC": [random() for _ in range(5)],
-    }
+g_src = GenomicRanges(
+    seqnames = ["chr1", "chr2", "chr1", "chr3", "chr2"],
+    ranges = IRanges(start =[101, 102, 103, 104, 109], width=[112, 103, 128, 134, 111]),
+    strand = ["*", "-", "*", "+", "-"]
 )
 
-g_src = genomicranges.from_pandas(df_src)
-
-df_tgt = pd.DataFrame(
-    {
-        "seqnames": ["chr1","chr2","chr2","chr2","chr1","chr1","chr3","chr3","chr3","chr3"],
-        "starts": range(101, 111),
-        "ends": range(121, 131),
-        "strand": ["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
-        "score": range(0, 10),
-        "GC": [random() for _ in range(10)],
-    }
+g_tgt = GenomicRanges(
+    seqnames = ["chr1","chr2","chr2","chr2","chr1","chr1","chr3","chr3","chr3","chr3"],
+    ranges = IRanges(start =range(101, 111), width=range(121, 131)),
+    strand = ["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"]
 )
-
-g_tgt = genomicranges.from_pandas(df_tgt)
 ```
 
 ```python
-# union
-union_gr = g_src.union(g_tgt)
-
+# intersection
 int_gr = g_src.intersect(g_tgt)
 
+# set diff
 diff_gr = g_src.setdiff(g_tgt)
+
+# union
+union_gr = g_src.union(g_tgt)
 ```
 
 ## Compute over bins
@@ -285,7 +257,7 @@ diff_gr = g_src.setdiff(g_tgt)
 one can use Pandas for this
 
 ```python
-pd.Series(gr.column("score")).describe()
+pd.Series(gr.mcols.get_column("score")).describe()
 ```
 
 ### `binned_average`
@@ -295,24 +267,21 @@ Compute binned average for different positions
 ```python
 bins = pd.DataFrame({"seqnames": ["chr1"], "starts": [101], "ends": [109],})
 
-bins_gr = genomicranges.from_pandas(bins)
+bins_gr = GenomicRanges.from_pandas(bins)
 
-subject = pd.DataFrame(
-    {
-        "seqnames": ["chr1","chr2","chr2","chr2","chr1","chr1","chr3","chr3","chr3","chr3"],
-        "starts": range(101, 111),
-        "ends": range(121, 131),
-        "strand": ["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
+subject = GenomicRanges(
+    seqnames= ["chr1","chr2","chr2","chr2","chr1","chr1","chr3","chr3","chr3","chr3"],
+    ranges=IRanges(range(101, 111), range(121, 131)),
+    strand= ["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
+    mcols=BiocFrame({
         "score": range(0, 10),
-        "GC": [random() for _ in range(10)],
-    }
+    })
 )
-
-subject_gr = genomicranges.from_pandas(subject)
 
 
 # Compute binned average
-binned_avg_gr = g_tgt.binned_average(bins=bins_gr, scorename="score", outname="binned_score")
+binned_avg_gr = subject.binned_average(bins=bins_gr, scorename="score", outname="binned_score")
+binned_avg_gr
 ```
 
 now you might wonder how can I generate these ***bins***?
@@ -337,7 +306,7 @@ tiles = gr.sliding_windows(width=10)
 ```python
 seqlengths = {"chr1": 100, "chr2": 75, "chr3": 200}
 
-tiles = genomicranges.tile_genome(seqlengths=seqlengths, n=10)
+tiles = GenomicRanges.tile_genome(seqlengths=seqlengths, n=10)
 ```
 
 ### Coverage
@@ -355,40 +324,23 @@ res_vector = gr.coverage(shift=10, width=5)
 - **subset_by_overlaps**: subset a `GenomicRanges` object if it overlaps with the ranges in the query
 
 ```python
-df_subject = pd.DataFrame(
-    {
-        "seqnames": [
-            "chr1",
-            "chr2",
-            "chr2",
-            "chr2",
-            "chr1",
-            "chr1",
-            "chr3",
-            "chr3",
-            "chr3",
-            "chr3",
-        ],
-        "starts": range(1, 11),
-        "ends": [10] * 10,
-        "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
+subject = GenomicRanges(
+    seqnames= ["chr1","chr2","chr2","chr2","chr1","chr1","chr3","chr3","chr3","chr3"],
+    ranges=IRanges(range(101, 111), range(121, 131)),
+    strand= ["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
+    mcols=BiocFrame({
         "score": range(0, 10),
-        "GC": [random() for _ in range(10)],
-    }
+    })
 )
-
-subject = genomicranges.from_pandas(df_subject)
 
 df_query = pd.DataFrame(
     {"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]}
 )
 
-query = genomicranges.from_pandas(df_query)
-```
+query = GenomicRanges.from_pandas(df_query)
 
-```python
 # findOverlaps
-res = subject.find_overlaps(query, queryType="within")
+res = subject.find_overlaps(query, query_type="within")
 
 # countOverlaps
 res = subject.count_overlaps(query)
@@ -402,47 +354,30 @@ res = subject.subset_by_overlaps(query)
 - **nearest**: Performs nearest neighbor search along any direction (both upstream and downstream)
 - **follow**: Performs nearest neighbor search only along downstream
 - **precede**: Performs nearest neighbor search only along upstream
-- **distance_to_nearest**: calculate distance to nearest location
 
 ```python
-
-find_regions = genomicranges.from_pandas(
-    pd.DataFrame(
-        {
-            "seqnames": ["chr1", "chr2", "chr3"],
-            "starts": [200, 105, 1190],
-            "ends": [203, 106, 1200],
-        }
-    )
+find_regions = GenomicRanges(
+    seqnames= ["chr1", "chr2", "chr3"],
+    ranges=IRanges([200, 105, 1190],[203, 106, 1200]),
 )
 
 query_hits = gr.nearest(find_regions)
 
-query_hits = gr.precede(test_gr)
+query_hits = gr.precede(find_regions)
 
-query_hits = gr.follow(test_gr)
-
-query_hits = gr.distance_to_nearest(test_gr)
+query_hits = gr.follow(find_regions)
 ```
 
 ## Comparison, rank and order operations
 
-- **duplicated**: if any of the ranges are duplicated
 - **match**: Element wise comparison to find exact match intervals.
-- **is_unsorted**: if the object is not sorted
 - **order**: Get the order of indices for sorting.
 - **sort**: Sort the GenomicRanges object.
 - **rank**: for each interval identifies its position is a sorted order
 
 ```python
-# duplicated
-query_hits = gr.duplicated()
-
 # match
-query_hits = gr.match(gr[2:5, :])
-
-# is unsorted?
-result = gr.is_unsorted()
+query_hits = gr.match(gr[2:5])
 
 # order
 order = gr.order()
@@ -495,6 +430,7 @@ Currently, this class is limited in functionality, purely a read-only class with
 ***Note: This is a work in progress and the functionality is limited.***
 
 ```python
+from genomicranges import GenomicRangesList
 a = GenomicRanges(
     seqnames=["chr1", "chr2", "chr1", "chr3"],
     ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
@@ -509,7 +445,8 @@ b = GenomicRanges(
     mcols=BiocFrame({"score": [2, 3, 4]}),
 )
 
-grl = GenomicRangesList(gene1=a, gene2=b)
+grl = GenomicRangesList(ranges=[a,b], names=["gene1", "gene2"])
+grl
 ```
 
 
@@ -528,8 +465,6 @@ Similar to the combine function from GenomicRanges,
 
 grla = GenomicRangesList(ranges=[a], names=["a"])
 grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
-
-grlc = grla.combine(grlb)
 
 # or use the combine generic
 from biocutils.combine import combine
