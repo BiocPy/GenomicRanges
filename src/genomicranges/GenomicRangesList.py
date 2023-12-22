@@ -1,9 +1,10 @@
-from typing import Dict, List, Optional, Union, Sequence
-
-from biocframe import BiocFrame
-import biocutils as ut
-from .GenomicRanges import GenomicRanges
+from typing import Dict, List, Optional, Sequence, Union
 from warnings import warn
+
+import biocutils as ut
+from biocframe import BiocFrame
+
+from .GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -266,60 +267,65 @@ class GenomicRangesList:
         output += ")"
         return output
 
-    def __str__(self):
-        from io import StringIO
+    def __str__(self) -> str:
+        """
+        Returns:
+            A pretty-printed string containing the contents of this ``GenomicRangesList``.
+        """
+        output = f"GenomicRangesList with {len(self)} range{'s' if len(self) != 1 else ''}"
+        output += f" and {len(self._mcols)} metadata column{'s' if len(self._mcols) != 1 else ''}\n \n"
 
-        from rich.console import Console
-        from rich.table import Table
+        nr = len(self)
+        added_table = False
+        if nr:
+            if nr <= 10:
+                indices = range(nr)
+                insert_ellipsis = False
+            else:
+                indices = [0, 1, 2, nr - 3, nr - 2, nr - 1]
+                insert_ellipsis = True
 
-        table = Table(
-            title=f"GenomicRangesList with {len(self)} genomic elements",
-            show_header=True,
-            box=None,
-            title_justify="left",
-        )
+            raw_floating = ut.create_floating_names(self._names, indices)
+            if insert_ellipsis:
+                raw_floating = raw_floating[:3] + [""] + raw_floating[3:]
+            floating = raw_floating
 
-        _rows = []
-        rows_to_show = 2
-        _top = len(self)
-        if _top > rows_to_show:
-            _top = rows_to_show
+            for idx in range(len(indices)):
+                output += f"Name: {floating[idx]} \n"
+                output += self._ranges[indices[idx]].__str__()
+                output += "\n \n"
 
-        # top two rows
-        for r in range(_top):
-            _elem = r
-            if self.names is not None:
-                _elem = self.names[r]
+        footer = []
+        if self._mcols is not None and self._mcols.shape[1]:
+            footer.append(
+                "mcols("
+                + str(self._mcols.shape[1])
+                + " columns): "
+                + ut.print_truncated_list(
+                    self._mcols.column_names,
+                    sep=" ",
+                    include_brackets=False,
+                    transform=lambda y: y,
+                )
+            )
+        if len(self._metadata):
+            footer.append(
+                "metadata("
+                + str(len(self.metadata))
+                + "): "
+                + ut.print_truncated_list(
+                    list(self.metadata.keys()),
+                    sep=" ",
+                    include_brackets=False,
+                    transform=lambda y: y,
+                )
+            )
+        if len(footer):
+            if added_table:
+                output += "\n------\n"
+            output += "\n".join(footer)
 
-            _rows.append(f"Name: [bold]{_elem}")
-            _rows.append(str(self.ranges[r]))
-
-        if len(self) > rows_to_show:
-            if len(self) > 2 * rows_to_show:
-                # add ...
-                _rows.append("...")
-
-            _last = len(self) - _top
-            if _last <= rows_to_show:
-                _last = len(self) - _top
-
-            # last set of rows
-            for r in range(_last + 1, len(self)):
-                _elem = r
-                if self.names is not None:
-                    _elem = self.names[r]
-
-                _rows.append(f"Name: [bold]{_elem}")
-                _rows.append(str(self.ranges[r]))
-
-        for _row in _rows:
-            table.add_row(_row)
-
-        console = Console(file=StringIO())
-        with console.capture() as capture:
-            console.print(table)
-
-        return capture.get()
+        return output
 
     ##########################
     ######>> ranges <<########
