@@ -272,7 +272,9 @@ class GenomicRangesList:
         Returns:
             A pretty-printed string containing the contents of this ``GenomicRangesList``.
         """
-        output = f"GenomicRangesList with {len(self)} range{'s' if len(self) != 1 else ''}"
+        output = (
+            f"GenomicRangesList with {len(self)} range{'s' if len(self) != 1 else ''}"
+        )
         output += f" and {len(self._mcols)} metadata column{'s' if len(self._mcols) != 1 else ''}\n \n"
 
         nr = len(self)
