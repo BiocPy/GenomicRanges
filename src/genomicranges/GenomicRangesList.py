@@ -22,12 +22,12 @@ def _validate_ranges(ranges, num_ranges):
             "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
         )
 
-    if isinstance(ranges, list) and len(ranges) != num_ranges:
+    if isinstance(ranges, list) and sum([len(x) for x in ranges]) != num_ranges:
         raise ValueError(
             "Length of 'ranges' does not match the number of genomic elements.",
             f"Need to be {num_ranges}, provided {len(ranges)}.",
         )
-    elif isinstance(ranges, GenomicRanges) and num_ranges != 1:
+    elif isinstance(ranges, GenomicRanges) and len(ranges) != num_ranges:
         raise ValueError(
             "Length of 'ranges' does not match the number of genomic elements.",
             f"Need to be {num_ranges}, provided {len(ranges)}.",
@@ -175,7 +175,7 @@ class GenomicRangesList:
         self._metadata = {} if metadata is None else metadata
 
         if validate is True:
-            _validate_ranges(self._ranges, len(self._range_lengths))
+            _validate_ranges(self._ranges, sum(self._range_lengths))
             _validate_optional_attrs(self._mcols, self._names, len(self._range_lengths))
 
     def _define_output(self, in_place: bool = False) -> "GenomicRangesList":
@@ -360,7 +360,7 @@ class GenomicRangesList:
             or as a reference to the (in-place-modified) original.
         """
 
-        _validate_ranges(ranges, len(self))
+        _validate_ranges(ranges, sum(self._range_lengths))
         output = self._define_output(in_place)
         output._ranges = ranges
         return output
@@ -622,6 +622,10 @@ class GenomicRangesList:
 
         return False
 
+    ##############################
+    ######>> accessors <<#########
+    ##############################
+
     # TODO: convert some of these properties to a factorized array
 
     @property
@@ -694,6 +698,10 @@ class GenomicRangesList:
         """
         return self._generic_accessor("is_circular")
 
+    ###################################
+    ######>> pandas interop <<#########
+    ###################################
+
     def to_pandas(self) -> "pandas.DataFrame":
         """Coerce object to a :py:class:`pandas.DataFrame`.
 
@@ -724,8 +732,9 @@ class GenomicRangesList:
 
         return all_concat
 
-    def add_element(self, key, value, element_metadata):
-        raise NotImplementedError("Adding new elements is not yet implemented!")
+    ############################
+    ######>> slicers <<#########
+    ############################
 
     def __getitem__(
         self, args: Union[str, int, tuple, list, slice]
@@ -806,6 +815,10 @@ class GenomicRangesList:
             )
 
         raise TypeError("Arguments to slice is not supported.")
+
+    ##########################
+    ######>> empty <<#########
+    ##########################
 
     @classmethod
     def empty(cls, n: int):

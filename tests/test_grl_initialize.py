@@ -37,3 +37,8 @@ def test_create_grl():
 def test_create_grl_should_fail():
     with pytest.raises(Exception):
         GenomicRangesList(ranges=[a, 2])
+
+
+def test_empty_grl():
+    grl = GenomicRangesList.empty(n=100)
+    assert isinstance(grl, GenomicRangesList)
