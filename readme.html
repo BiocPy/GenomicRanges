@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Tutorial" href="tutorial.html" /><link rel="prev" title="GenomicRanges" href="index.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>GenomicRanges - GenomicRanges 0.4.2 documentation</title>
+        <title>GenomicRanges - GenomicRanges 0.4.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.2 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -360,26 +360,26 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## output
-GenomicRangesList with 2 genomic elements
+GenomicRangesList with 2 ranges and 2 metadata columns
 
 Name: gene1
 GenomicRanges with 4 ranges and 4 metadata columns
-     seqnames    ranges            strand     score
-        &lt;str&gt; &lt;IRanges&gt;         &lt;ndarray&gt;    &lt;list&gt;
-[0]     chr1    1 - 11                -   |      1
-[1]     chr2    3 - 33                +   |      2
-[2]     chr1    2 - 52                *   |      3
-[3]     chr3    4 - 64                +   |      4
+    seqnames    ranges           strand    score
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int64]&gt;   &lt;list&gt;
+[0]     chr1    1 - 11                - |      1
+[1]     chr2    3 - 33                + |      2
+[2]     chr1    2 - 52                * |      3
+[3]     chr3    4 - 64                + |      4
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 
 Name: gene2
 GenomicRanges with 3 ranges and 3 metadata columns
-     seqnames    ranges            strand    score
-        &lt;str&gt; &lt;IRanges&gt;         &lt;ndarray&gt;   &lt;list&gt;
-[0]     chr2    3 - 33                -   |      2
-[1]     chr4    6 - 56                +   |      3
-[2]     chr5    4 - 64                *   |      4
+    seqnames    ranges           strand    score
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int64]&gt;   &lt;list&gt;
+[0]     chr2    3 - 33                - |      2
+[1]     chr4    6 - 56                + |      3
+[2]     chr5    4 - 64                * |      4
 ------
 seqinfo(3 sequences): chr2 chr4 chr5
 </pre></div>
@@ -478,7 +478,7 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=ff822928"></script>
+</div><script src="_static/documentation_options.js?v=5bfaad31"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
