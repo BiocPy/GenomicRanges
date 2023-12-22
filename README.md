@@ -165,8 +165,8 @@ print(grl)
 
     ## output
     GenomicRangesList with 2 ranges and 2 metadata columns
-    
-    Name: gene1 
+
+    Name: gene1
     GenomicRanges with 4 ranges and 4 metadata columns
         seqnames    ranges           strand    score
            <str> <IRanges> <ndarray[int64]>   <list>
@@ -176,8 +176,8 @@ print(grl)
     [3]     chr3    4 - 64                + |      4
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
-    
-    Name: gene2 
+
+    Name: gene2
     GenomicRanges with 3 ranges and 3 metadata columns
         seqnames    ranges           strand    score
            <str> <IRanges> <ndarray[int64]>   <list>
