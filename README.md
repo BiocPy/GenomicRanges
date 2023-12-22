@@ -164,26 +164,26 @@ print(grl)
 ```
 
     ## output
-    GenomicRangesList with 2 genomic elements
-
-    Name: gene1
+    GenomicRangesList with 2 ranges and 2 metadata columns
+    
+    Name: gene1 
     GenomicRanges with 4 ranges and 4 metadata columns
-         seqnames    ranges            strand     score
-            <str> <IRanges>         <ndarray>    <list>
-    [0]     chr1    1 - 11                -   |      1
-    [1]     chr2    3 - 33                +   |      2
-    [2]     chr1    2 - 52                *   |      3
-    [3]     chr3    4 - 64                +   |      4
+        seqnames    ranges           strand    score
+           <str> <IRanges> <ndarray[int64]>   <list>
+    [0]     chr1    1 - 11                - |      1
+    [1]     chr2    3 - 33                + |      2
+    [2]     chr1    2 - 52                * |      3
+    [3]     chr3    4 - 64                + |      4
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
-
-    Name: gene2
+    
+    Name: gene2 
     GenomicRanges with 3 ranges and 3 metadata columns
-         seqnames    ranges            strand    score
-            <str> <IRanges>         <ndarray>   <list>
-    [0]     chr2    3 - 33                -   |      2
-    [1]     chr4    6 - 56                +   |      3
-    [2]     chr5    4 - 64                *   |      4
+        seqnames    ranges           strand    score
+           <str> <IRanges> <ndarray[int64]>   <list>
+    [0]     chr2    3 - 33                - |      2
+    [1]     chr4    6 - 56                + |      3
+    [2]     chr5    4 - 64                * |      4
     ------
     seqinfo(3 sequences): chr2 chr4 chr5
 
