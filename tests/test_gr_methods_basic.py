@@ -73,6 +73,14 @@ def test_slices():
     assert len(subset_gr) == 3
     assert subset_gr.seqnames == ["chr1", "chr3", "chr3"]
 
+def test_gr_empty_subset():
+    gre = GenomicRanges.empty()
+
+    assert gre is not None
+    assert isinstance(gre, GenomicRanges)
+    assert len(gre) == 0
+
+    subset = gre[0:10]
 
 def test_export():
     df = gr.to_pandas()

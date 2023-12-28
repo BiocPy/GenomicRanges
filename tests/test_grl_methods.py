@@ -37,7 +37,7 @@ def test_is_empty_slice():
 
     assert grl.is_empty() == False
 
-    sgrl = grl[0:1, :]
+    sgrl = grl[0:1]
     assert sgrl is not None
     assert isinstance(sgrl, GenomicRangesList)
     assert len(sgrl) == 1
@@ -95,3 +95,12 @@ def test_combine():
     cgrl = combine_sequences(grla, grlb)
 
     assert len(cgrl) == 3
+
+
+def test_empty_grl_slice():
+    grl = GenomicRangesList.empty(n=100)
+    assert isinstance(grl, GenomicRangesList)
+
+    subset = grl[0:10]
+    assert isinstance(subset, GenomicRangesList)
+    assert len(subset) == 10
