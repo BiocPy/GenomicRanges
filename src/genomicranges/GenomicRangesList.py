@@ -773,10 +773,17 @@ class GenomicRangesList:
         else:
             idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
+            print(self._ranges)
+            print(idx)
+
+            if isinstance(idx, range):
+                idx = slice(idx.start, idx.stop, idx.step)
+            print(idx)
+
             return GenomicRangesList(
                 self._ranges[idx],
                 self._range_lengths[idx],
-                self._names[idx],
+                self._names[idx] if self._names is not None else self._names,
                 self._mcols[idx, :],
                 self._metadata,
             )
