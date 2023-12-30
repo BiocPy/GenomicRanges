@@ -42,6 +42,7 @@ def test_is_empty_slice():
     assert isinstance(sgrl, GenomicRangesList)
     assert len(sgrl) == 1
 
+
 def test_slice_by_name():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
@@ -51,6 +52,7 @@ def test_slice_by_name():
     assert sgrl is not None
     assert isinstance(sgrl, GenomicRangesList)
     assert len(sgrl) == 1
+
 
 def test_slice_by_bool():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
@@ -64,6 +66,7 @@ def test_slice_by_bool():
 
     with pytest.raises(Exception):
         grl[[False]]
+
 
 def test_is_empty_True():
     grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0])
