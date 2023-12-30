@@ -773,25 +773,27 @@ class GenomicRangesList:
         else:
             idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
+            print(idx)
             if isinstance(idx, list):
-                if ut.is_list_of_type(args, bool):
-                    if len(args) != len(self):
+                print("is list")
+                if ut.is_list_of_type(idx, bool):
+                    if len(idx) != len(self):
                         raise ValueError(
                             "`indices` is a boolean vector, length should match the size of the data."
                         )
 
-                    args = [i for i in range(len(args)) if args[i] is True]
+                    idx = [i for i in range(len(idx)) if idx[i] is True]
 
-                new_ranges = [self.ranges[i] for i in args]
-                new_range_lengths = [self._range_lengths[i] for i in args]
+                new_ranges = [self.ranges[i] for i in idx]
+                new_range_lengths = [self._range_lengths[i] for i in idx]
 
                 new_names = None
                 if self.names is not None:
-                    new_names = [self.names[i] for i in args]
+                    new_names = [self.names[i] for i in idx]
 
                 new_mcols = None
                 if self.mcols is not None:
-                    new_mcols = self.mcols[args, :]
+                    new_mcols = self.mcols[idx, :]
 
                 return GenomicRangesList(
                     new_ranges, new_range_lengths, new_names, new_mcols, self._metadata
