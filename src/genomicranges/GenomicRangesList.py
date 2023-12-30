@@ -773,20 +773,42 @@ class GenomicRangesList:
         else:
             idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
-            print(self._ranges)
-            print(idx)
+            if isinstance(idx, list):
+                if ut.is_list_of_type(args, bool):
+                    if len(args) != len(self):
+                        raise ValueError(
+                            "`indices` is a boolean vector, length should match the size of the data."
+                        )
 
-            if isinstance(idx, range):
-                idx = slice(idx.start, idx.stop, idx.step)
-            print(idx)
+                    args = [i for i in range(len(args)) if args[i] is True]
 
-            return GenomicRangesList(
-                self._ranges[idx],
-                self._range_lengths[idx],
-                self._names[idx] if self._names is not None else self._names,
-                self._mcols[idx, :],
-                self._metadata,
-            )
+                new_ranges = [self.ranges[i] for i in args]
+                new_range_lengths = [self._range_lengths[i] for i in args]
+
+                new_names = None
+                if self.names is not None:
+                    new_names = [self.names[i] for i in args]
+
+                new_mcols = None
+                if self.mcols is not None:
+                    new_mcols = self.mcols[args, :]
+
+                return GenomicRangesList(
+                    new_ranges, new_range_lengths, new_names, new_mcols, self._metadata
+                )
+            elif isinstance(idx, (slice, range)):
+                if isinstance(idx, range):
+                    idx = slice(idx.start, idx.stop, idx.step)
+
+                return GenomicRangesList(
+                    self._ranges[idx],
+                    self._range_lengths[idx],
+                    self._names[idx] if self._names is not None else self._names,
+                    self._mcols[idx, :],
+                    self._metadata,
+                )
+
+            raise TypeError("Arguments to subset `GenomicRangesList` is not supported.")
 
     ##########################
     ######>> empty <<#########
