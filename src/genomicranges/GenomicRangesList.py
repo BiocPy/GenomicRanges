@@ -773,9 +773,7 @@ class GenomicRangesList:
         else:
             idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
-            print(idx)
             if isinstance(idx, list):
-                print("is list")
                 if ut.is_list_of_type(idx, bool):
                     if len(idx) != len(self):
                         raise ValueError(
