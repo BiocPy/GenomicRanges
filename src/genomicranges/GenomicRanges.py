@@ -947,7 +947,7 @@ class GenomicRanges:
             A new ``GenomicRanges`` object with the ranges of interest.
         """
         print("idx, ", subset, len(self), self._names)
-        
+
         idx, _ = ut.normalize_subscript(subset, len(self), self._names)
 
         print("idx, ", idx, len(self), self._names)
