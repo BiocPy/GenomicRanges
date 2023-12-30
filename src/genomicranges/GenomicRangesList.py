@@ -762,8 +762,7 @@ class GenomicRangesList:
                 If ``args`` is not a supported slice argument.
 
         Returns:
-            The genomic element as a ``GenomicRanges`` object
-            or a new ``GenomicRangesList`` of the slice.
+            A new ``GenomicRangesList`` of the slice.
         """
         if isinstance(args, int):
             return self._ranges[args]
@@ -772,49 +771,44 @@ class GenomicRangesList:
                 _idx = self.names.map(args)
                 return self._ranges[_idx]
         else:
-            new_ranges = None
-            new_range_lengths = None
-            new_names = None
-            new_mcols = None
-            new_metadata = self.metadata
+            idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
-            if isinstance(args, tuple):
-                # TODO: should figure out what to do with the second dimension later.
-                if len(args) >= 1:
-                    args = args[0]
-
-            if isinstance(args, list):
-                if ut.is_list_of_type(args, bool):
-                    if len(args) != len(self):
+            if isinstance(idx, list):
+                if ut.is_list_of_type(idx, bool):
+                    if len(idx) != len(self):
                         raise ValueError(
                             "`indices` is a boolean vector, length should match the size of the data."
                         )
 
-                    args = [i for i in range(len(args)) if args[i] is True]
+                    idx = [i for i in range(len(idx)) if idx[i] is True]
 
-                new_ranges = [self.ranges[i] for i in args]
-                new_range_lengths = [self._range_lengths[i] for i in args]
+                new_ranges = [self.ranges[i] for i in idx]
+                new_range_lengths = [self._range_lengths[i] for i in idx]
+
+                new_names = None
                 if self.names is not None:
-                    new_names = [self.names[i] for i in args]
+                    new_names = [self.names[i] for i in idx]
 
+                new_mcols = None
                 if self.mcols is not None:
-                    new_mcols = self.mcols[args, :]
-            elif isinstance(args, slice):
-                new_ranges = self.ranges[args]
-                new_range_lengths = self._range_lengths[args]
-                if self.names is not None:
-                    new_names = self.names[args]
+                    new_mcols = self.mcols[idx, :]
 
-                if self.mcols is not None:
-                    new_mcols = self.mcols[args, :]
-            else:
-                raise TypeError("Arguments to slice is not a list of supported types.")
+                return GenomicRangesList(
+                    new_ranges, new_range_lengths, new_names, new_mcols, self._metadata
+                )
+            elif isinstance(idx, (slice, range)):
+                if isinstance(idx, range):
+                    idx = slice(idx.start, idx.stop, idx.step)
 
-            return GenomicRangesList(
-                new_ranges, new_range_lengths, new_names, new_mcols, new_metadata
-            )
+                return GenomicRangesList(
+                    self._ranges[idx],
+                    self._range_lengths[idx],
+                    self._names[idx] if self._names is not None else self._names,
+                    self._mcols[idx, :],
+                    self._metadata,
+                )
 
-        raise TypeError("Arguments to slice is not supported.")
+            raise TypeError("Arguments to subset `GenomicRangesList` is not supported.")
 
     ##########################
     ######>> empty <<#########
