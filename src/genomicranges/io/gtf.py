@@ -1,8 +1,6 @@
 import logging
 from typing import Dict, Union, List
 
-from pandas import DataFrame, read_csv
-
 # Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
 
 __author__ = "jkanche"
@@ -36,7 +34,7 @@ def parse_gtf(
     compressed: bool,
     skiprows: Union[int, List[int]] = None,
     comment: str = "#",
-) -> DataFrame:
+):
     """Read a GTF file as :py:class:`~pandas.DataFrame`.
 
     Args:
@@ -58,6 +56,7 @@ def parse_gtf(
     """
 
     from joblib import Parallel, delayed
+    from pandas import DataFrame, read_csv
 
     logging.info(f"Reading File - {path}")
     if compressed:
