@@ -10,7 +10,7 @@ The package does not rely on pandas anymore. While we try to provide backwards c
 
 Most range based methods have been reimplemented and the heavy lifting is done in the [IRanges package](https://github.com/BiocPy/IRanges) for interval operations. The package indirectly depends on [NCLS](https://github.com/pyranges/ncls) interval tree data structure to perform search and overlap operations. 
 
-Tests, documentation and README has been updated to reflect these changes.
+Tests, documentation and readme has been updated to reflect these changes.
 
 ## Version 0.3.0
 This release migrates the package to a more palatable Google's Python style guide. A major modification to the package is with casing, all `camelCase` methods, functions and parameters are now `snake_case`.
