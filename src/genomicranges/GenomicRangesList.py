@@ -275,7 +275,13 @@ class GenomicRangesList:
         output = (
             f"GenomicRangesList with {len(self)} range{'s' if len(self) != 1 else ''}"
         )
-        output += f" and {len(self._mcols)} metadata column{'s' if len(self._mcols) != 1 else ''}\n \n"
+        output += f" and {len(self._mcols)} metadata column{'s' if len(self._mcols) != 1 else ''}\n"
+
+        if isinstance(self._ranges, GenomicRanges) and len(self._ranges) == 0:
+            output += "--- empty genomic ranges list ---"
+            return output
+
+        output += " \n"
 
         nr = len(self)
         added_table = False
