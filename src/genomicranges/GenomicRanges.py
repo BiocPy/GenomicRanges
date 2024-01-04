@@ -946,6 +946,9 @@ class GenomicRanges:
         Returns:
             A new ``GenomicRanges`` object with the ranges of interest.
         """
+        if len(self) == 0:
+            return GenomicRanges.empty()
+
         idx, _ = ut.normalize_subscript(subset, len(self), self._names)
 
         current_class_const = type(self)
