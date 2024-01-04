@@ -130,6 +130,6 @@ def test_empty_grl_slice():
     assert isinstance(subset, GenomicRangesList)
     assert len(subset) == 10
 
-    subset = grl[[1,2,3]]
+    subset = grl[[1, 2, 3]]
     assert isinstance(subset, GenomicRangesList)
     assert len(subset) == 3

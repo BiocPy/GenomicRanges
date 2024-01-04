@@ -280,7 +280,7 @@ class GenomicRangesList:
         if isinstance(self._ranges, GenomicRanges) and len(self._ranges) == 0:
             output += "--- empty genomic ranges list ---"
             return output
-        
+
         output += " \n"
 
         nr = len(self)
