@@ -1,4 +1,4 @@
-from typing import List, Sequence, Union, Optional, Tuple
+from typing import List, Optional, Sequence, Tuple, Union
 
 import biocutils as ut
 import numpy as np
@@ -47,12 +47,17 @@ def sanitize_strand_vector(
         if not set(strand).issubset(["+", "-", "*"]):
             raise ValueError("Values in 'strand' must be either +, - or *.")
         return np.array([STRAND_MAP[x] for x in strand])
-    elif ut.is_list_of_type(strand, int):
+
+    if ut.is_list_of_type(strand, (int, float)):
+        if not set(strand).issubset([1, 0, -1]):
+            raise ValueError(
+                "'strand' must only contain values 1 (forward strand), -1 (reverse strand) or 0 (reverse strand)."
+            )
         return np.array(strand)
-    else:
-        TypeError(
-            "'strand' must be either a numpy vector, a list of integers or strings representing strand."
-        )
+
+    raise TypeError(
+        "'strand' must be either a numpy vector, a list of integers or strings representing strand."
+    )
 
 
 def _sanitize_strand_search_ops(query_strand, subject_strand):

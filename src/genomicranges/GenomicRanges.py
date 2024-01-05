@@ -2532,7 +2532,7 @@ class GenomicRanges:
             )
 
             seqnames.extend([val.seqnames[0]] * len(all_intervals))
-            strand.extend([val.strand[0]] * len(all_intervals))
+            strand.extend([int(val.strand[0])] * len(all_intervals))
             starts.extend([x[0] for x in all_intervals])
             widths.extend(x[1] for x in all_intervals)
 
@@ -2594,7 +2594,7 @@ class GenomicRanges:
             )
 
             seqnames.extend([val.seqnames[0]] * len(all_intervals))
-            strand.extend([val.strand[0]] * len(all_intervals))
+            strand.extend([int(val.strand[0])] * len(all_intervals))
             starts.extend([x[0] for x in all_intervals])
             widths.extend(x[1] for x in all_intervals)
 
@@ -2636,7 +2636,7 @@ class GenomicRanges:
             )
 
             seqnames.extend([val.seqnames[0]] * len(all_intervals))
-            strand.extend([val.strand[0]] * len(all_intervals))
+            strand.extend([int(val.strand[0])] * len(all_intervals))
             starts.extend([x[0] for x in all_intervals])
             widths.extend(x[1] for x in all_intervals)
 
