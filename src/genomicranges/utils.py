@@ -48,7 +48,7 @@ def sanitize_strand_vector(
             raise ValueError("Values in 'strand' must be either +, - or *.")
         return np.array([STRAND_MAP[x] for x in strand])
 
-    if ut.is_list_of_type(strand, (int, float)):
+    if ut.is_list_of_type(strand, (int, float, np.int_)):
         if not set(strand).issubset([1, 0, -1]):
             raise ValueError(
                 "'strand' must only contain values 1 (forward strand), -1 (reverse strand) or 0 (reverse strand)."
