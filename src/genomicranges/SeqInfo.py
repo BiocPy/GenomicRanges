@@ -74,10 +74,8 @@ class SeqInfoIterator:
 
 
 class SeqInfo:
-    """Information about the reference sequences, specifically the name and length of
-    each sequence, whether it is a circular, and the identity of the genome
-    from which it was derived.
-    """
+    """Information about the reference sequences, specifically the name and length of each sequence, whether it is a
+    circular, and the identity of the genome from which it was derived."""
 
     def __init__(
         self,

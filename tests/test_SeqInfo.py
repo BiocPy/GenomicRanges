@@ -63,6 +63,7 @@ def test_create_seqInfo_numpy():
         si.set_seqnames([None, "chrB", "chrC"])
     assert str(ex.value).find("list of strings") >= 0
 
+
 def test_subset_seqinfo_modifiers():
     circ = [random() < 0.5 for _ in range(3)]
     seq = SeqInfo(
@@ -78,6 +79,7 @@ def test_subset_seqinfo_modifiers():
     new_seq = seq.set_genome("hg38")
     assert new_seq.genome == ["hg38"] * 3
 
+
 def test_subset_seqinfo():
     circ = [random() < 0.5 for _ in range(3)]
     seq = SeqInfo(
@@ -92,6 +94,7 @@ def test_subset_seqinfo():
     assert isinstance(subset, SeqInfo)
     assert subset.seqnames == ["chr2", "chr3"]
     assert subset.seqlengths == [101, 102]
+
 
 def test_merge_SeqInfo():
     seq = SeqInfo(
