@@ -1,16 +1,83 @@
 from typing import Dict, List, Optional, Sequence, Union
 from warnings import warn
 
-import biocutils as bu
+import biocutils as ut
+import numpy
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
+def _validate_seqnames(seqnames):
+    if not ut.is_list_of_type(seqnames, str):
+        raise ValueError("'seqnames' should be a list of strings.")
+
+    n = len(seqnames)
+    if n != len(set(seqnames)):
+        raise ValueError("'seqnames' should contain unique strings.")
+
+
+def _validate_seqlengths(seqlengths, num_seqs):
+    if not ut.is_list_of_type(seqlengths, (int, numpy.ndarray), ignore_none=True):
+        raise ValueError("'seqlengths' should be a list of integers.")
+
+    if num_seqs != len(seqlengths):
+        raise ValueError("'seqnames' and 'seqlengths' should have the same length.")
+
+    for sl in seqlengths:
+        if sl is not None and sl < 0:
+            raise ValueError("all entries of 'seqlengths' should be non-negative.")
+
+
+def _validate_is_circular(is_circular, num_seqs):
+    if not ut.is_list_of_type(is_circular, (bool, numpy.ndarray), ignore_none=True):
+        raise ValueError("'is_circular' should be a list of booleans.")
+
+    if num_seqs != len(is_circular):
+        raise ValueError("'seqnames' and 'is_circular' should have the same length.")
+
+
+def _validate_genome(genome, num_seqs):
+    if not ut.is_list_of_type(genome, str, ignore_none=True):
+        raise ValueError("'genome' should be a list of strings.")
+
+    if num_seqs != len(genome):
+        raise ValueError("'seqnames' and 'genome' should have the same length.")
+
+
+class SeqInfoIterator:
+    """An iterator to a :py:class:`~SeqInfo` object."""
+
+    def __init__(self, obj: "SeqInfo") -> None:
+        """Initialize the iterator.
+
+        Args:
+            obj:
+                Source object to iterate.
+        """
+        self._sinfo = obj
+        self._current_index = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._current_index < len(self._sinfo):
+            iter_row_index = self._sinfo.seqnames[self._current_index]
+
+            iter_slice = self._sinfo[self._current_index]
+            self._current_index += 1
+            return (iter_row_index, iter_slice)
+
+        raise StopIteration
+
+
 class SeqInfo:
-    """Information about the reference sequences, specifically the name and length of each sequence, whether it is a
-    circular, and the identity of the genome from which it was derived."""
+    """Information about the reference sequences, specifically the name and length of
+    each sequence, whether it is a circular, and the identity of the genome
+    from which it was derived.
+    """
 
     def __init__(
         self,
@@ -80,10 +147,11 @@ class SeqInfo:
         self._genome = self._flatten_incoming(genome, str)
 
         if validate:
-            self._validate_seqnames()
-            self._validate_seqlengths()
-            self._validate_is_circular()
-            self._validate_genome()
+            _validate_seqnames(self._seqnames)
+            num_seqs = len(self._seqnames)
+            _validate_seqlengths(self._seqlengths, num_seqs)
+            _validate_is_circular(self._is_circular, num_seqs)
+            _validate_genome(self._genome, num_seqs)
 
     def _populate_reverse_seqnames_index(self):
         if self._reverse_seqnames is None:
@@ -99,6 +167,7 @@ class SeqInfo:
     def _flatten_incoming(self, values, expected) -> List:
         if values is None or isinstance(values, expected):
             return [values] * len(self)
+
         if isinstance(values, dict):
             output = []
             for n in self._seqnames:
@@ -107,45 +176,141 @@ class SeqInfo:
                 else:
                     output.append(None)
             return output
+
         if isinstance(values, list):
             return values
+
         return list(values)
 
-    def _validate_seqnames(self):
-        if not bu.is_list_of_type(self._seqnames, str):
-            raise ValueError("'seqnames' should be a list of strings")
-        n = len(self._seqnames)
-        if n != len(set(self._seqnames)):
-            raise ValueError("'seqnames' should contain unique strings")
+    def _define_output(self, in_place: bool = False) -> "SeqInfo":
+        if in_place is True:
+            return self
+        else:
+            return self.__copy__()
 
-    def _validate_seqlengths(self):
-        n = len(self._seqnames)
-        if not bu.is_list_of_type(self._seqlengths, int, ignore_none=True):
-            raise ValueError("'seqlengths' should be a list of integers")
-        if n != len(self._seqlengths):
-            raise ValueError("'seqnames' and 'seqlengths' should have the same length")
-        for sl in self._seqlengths:
-            if sl is not None and sl < 0:
-                raise ValueError("all entries of 'seqlengths' should be non-negative")
+    #########################
+    ######>> Copying <<######
+    #########################
 
-    def _validate_is_circular(self):
-        n = len(self._seqnames)
-        if not bu.is_list_of_type(self._is_circular, bool, ignore_none=True):
-            raise ValueError("'is_circular' should be a list of booleans")
-        if n != len(self._is_circular):
-            raise ValueError("'seqnames' and 'is_circular' should have the same length")
+    def __deepcopy__(self, memo=None, _nil=[]):
+        """
+        Returns:
+            A deep copy of the current ``SeqInfo``.
+        """
+        from copy import deepcopy
 
-    def _validate_genome(self):
-        n = len(self._seqnames)
-        if not bu.is_list_of_type(self._genome, str, ignore_none=True):
-            raise ValueError("'genome' should be a list of strings")
-        if n != len(self._genome):
-            raise ValueError("'seqnames' and 'genome' should have the same length")
+        _seqnames_copy = deepcopy(self._seqnames)
+        _seqlengths_copy = deepcopy(self._seqlengths)
+        _is_circular_copy = deepcopy(self._is_circular)
+        _genome_copy = deepcopy(self._genome)
 
-    @property
-    def seqnames(self) -> List[str]:
-        warn("'seqnames' is deprecated, use 'get_seqnames' instead", DeprecationWarning)
-        return self.get_seqnames()
+        current_class_const = type(self)
+        return current_class_const(
+            seqnames=_seqnames_copy,
+            seqlenghts=_seqlengths_copy,
+            is_circular=_is_circular_copy,
+            genome=_genome_copy,
+            validate=False,
+        )
+
+    def __copy__(self):
+        """
+        Returns:
+            A shallow copy of the current ``SeqInfo``.
+        """
+        current_class_const = type(self)
+        return current_class_const(
+            self._seqnames,
+            self._seqlengths,
+            self._is_circular,
+            self._genome,
+            validate=False,
+        )
+
+    def copy(self):
+        """Alias for :py:meth:`~__copy__`."""
+        return self.__copy__()
+
+    ##########################
+    ######>> Printing <<######
+    ##########################
+
+    def __repr__(self) -> str:
+        """
+        Returns:
+            A string representation of this ``SeqInfo``.
+        """
+        output = "SeqInfo(number_of_seqnames=" + str(len(self))
+        output += ", seqnames=" + ut.print_truncated_list(self._seqnames)
+        output += ", seqlengths=" + repr(self._seqlengths)
+        output += ", is_circular=" + ut.print_truncated_list(self._is_circular)
+        output += ", genome=" + ut.print_truncated_list(self._genome)
+
+        output += ")"
+        return output
+
+    def __str__(self) -> str:
+        """
+        Returns:
+            A pretty-printed string containing the contents of this ``SeqInfo``.
+        """
+        output = f"SeqInfo with {len(self)} sequence{'s' if len(self) != 1 else ''}\n"
+
+        nr = len(self)
+        added_table = False
+        if nr:
+            if nr <= 10:
+                indices = range(nr)
+                insert_ellipsis = False
+            else:
+                indices = [0, 1, 2, nr - 3, nr - 2, nr - 1]
+                insert_ellipsis = True
+
+            raw_floating = ut.create_floating_names(None, indices)
+            if insert_ellipsis:
+                raw_floating = raw_floating[:3] + [""] + raw_floating[3:]
+            floating = ["", ""] + raw_floating
+
+            columns = []
+
+            header = ["seqnames", "<str>"]
+            showed = [f"{self._seqnames[x]}" for x in indices]
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
+
+            header = ["seqlengths", f"<{ut.print_type(self._seqlengths)}>"]
+            showed = [f"{self._seqlengths[x]}" for x in indices]
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
+
+            header = ["is_circular", f"<{ut.print_type(self._is_circular)}>"]
+            showed = [f"{self._is_circular[x]}" for x in indices]
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
+
+            header = ["genome", f"<{ut.print_type(self._genome)}>"]
+            showed = [f"{self._genome[x]}" for x in indices]
+            if insert_ellipsis:
+                showed = showed[:3] + ["..."] + showed[3:]
+            columns.append(header + showed)
+
+            output += ut.print_wrapped_table(columns, floating_names=floating)
+            added_table = True
+
+        footer = []
+        if len(footer):
+            if added_table:
+                output += "\n------\n"
+            output += "\n".join(footer)
+
+        return output
+
+    ##########################
+    ######>> seqnames <<######
+    ##########################
 
     def get_seqnames(self) -> List[str]:
         """
@@ -153,64 +318,6 @@ class SeqInfo:
             List of all chromosome names.
         """
         return self._seqnames
-
-    @property
-    def seqlengths(self) -> List[int]:
-        warn(
-            "'seqlengths' is deprecated, use 'get_seqlengths' instead",
-            DeprecationWarning,
-        )
-        return self.get_seqlengths()
-
-    def get_seqlengths(self) -> List[int]:
-        """
-        Returns:
-            A list of integers is returned containing the lengths of all
-            sequences, in the same order as the sequence names from
-            :py:meth:`~get_seqnames`.
-        """
-        return self._seqlengths
-
-    @property
-    def is_circular(self) -> List[bool]:
-        warn(
-            "'is_circular' is deprecated, use 'get_is_circular' instead",
-            DeprecationWarning,
-        )
-        return self.get_is_circular()
-
-    def get_is_circular(self) -> List[bool]:
-        """
-        Returns:
-            A list of booleans is returned specifying whether each sequence
-            (from :py:meth:`~get_seqnames`) is circular.
-        """
-        return self._is_circular
-
-    @property
-    def genome(self) -> List[str]:
-        warn("'genome' is deprecated, use 'get_genome' instead", DeprecationWarning)
-        return self.get_genome()
-
-    def get_genome(self) -> List[str]:
-        """
-        Returns:
-            A list of strings is returned containing the genome identity for
-            all sequences in :py:meth:`~get_seqnames`.
-        """
-        return self._genome
-
-    def _setter_copy(self, in_place: bool = False) -> "SeqInfo":
-        if in_place:
-            return self
-        else:
-            return type(self)(
-                self._seqnames,
-                self._seqlengths,
-                self._is_circular,
-                self._genome,
-                validate=False,
-            )
 
     def set_seqnames(
         self, seqnames: Sequence[str], in_place: bool = False
@@ -228,10 +335,39 @@ class SeqInfo:
             A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
-        output = self._setter_copy(in_place)
+
+        _validate_seqnames(list(seqnames))
+
+        output = self._define_output(in_place)
         output._seqnames = list(seqnames)
-        output._validate_seqnames()
         return output
+
+    @property
+    def seqnames(self) -> List[str]:
+        warn("'seqnames' is deprecated, use 'get_seqnames' instead", UserWarning)
+        return self.get_seqnames()
+
+    @seqnames.setter
+    def seqnames(self, seqnames: Sequence[str]):
+        warn(
+            "Setting property 'seqnames' is an in-place operation, use 'set_seqnames' instead",
+            UserWarning,
+        )
+
+        self.set_seqnames(seqnames, in_place=True)
+
+    ############################
+    ######>> seqlengths <<######
+    ############################
+
+    def get_seqlengths(self) -> List[int]:
+        """
+        Returns:
+            A list of integers is returned containing the lengths of all
+            sequences, in the same order as the sequence names from
+            :py:meth:`~get_seqnames`.
+        """
+        return self._seqlengths
 
     def set_seqlengths(
         self,
@@ -256,10 +392,43 @@ class SeqInfo:
             A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
-        output = self._setter_copy(in_place)
-        output._seqlengths = self._flatten_incoming(seqlengths, int)
-        output._validate_seqlengths()
+        _seqlengths = self._flatten_incoming(seqlengths, int)
+        _validate_seqlengths(_seqlengths, len(self))
+
+        output = self._define_output(in_place)
+        output._seqlengths = _seqlengths
         return output
+
+    @property
+    def seqlengths(self) -> List[int]:
+        warn(
+            "'seqlengths' is deprecated, use 'get_seqlengths' instead",
+            UserWarning,
+        )
+        return self.get_seqlengths()
+
+    @seqlengths.setter
+    def seqlengths(
+        self, seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]]
+    ):
+        warn(
+            "Setting property 'seqlengths' is an in-place operation, use 'set_seqlengths' instead",
+            UserWarning,
+        )
+
+        self.set_seqlengths(seqlengths, in_place=True)
+
+    #############################
+    ######>> is-circular <<######
+    #############################
+
+    def get_is_circular(self) -> List[bool]:
+        """
+        Returns:
+            A list of booleans is returned specifying whether each sequence
+            (from :py:meth:`~get_seqnames`) is circular.
+        """
+        return self._is_circular
 
     def set_is_circular(
         self,
@@ -284,10 +453,44 @@ class SeqInfo:
             A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
-        output = self._setter_copy(in_place)
-        output._is_circular = self._flatten_incoming(is_circular, bool)
-        output._validate_is_circular()
+
+        _is_circular = self._flatten_incoming(is_circular, bool)
+        _validate_is_circular(_is_circular, len(self))
+
+        output = self._define_output(in_place)
+        output._is_circular = _is_circular
         return output
+
+    @property
+    def is_circular(self) -> List[bool]:
+        warn(
+            "'is_circular' is deprecated, use 'get_is_circular' instead",
+            UserWarning,
+        )
+        return self.get_is_circular()
+
+    @is_circular.setter
+    def is_circular(
+        self, is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]]
+    ):
+        warn(
+            "Setting property 'is_circular' is an in-place operation, use 'set_is_circular' instead",
+            UserWarning,
+        )
+
+        self.set_is_circular(is_circular, in_place=True)
+
+    ########################
+    ######>> genome <<######
+    ########################
+
+    def get_genome(self) -> List[str]:
+        """
+        Returns:
+            A list of strings is returned containing the genome identity for
+            all sequences in :py:meth:`~get_seqnames`.
+        """
+        return self._genome
 
     def set_genome(
         self,
@@ -308,10 +511,30 @@ class SeqInfo:
             A modified ``SeqInfo`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
-        output = self._setter_copy(in_place)
-        output._genome = self._flatten_incoming(genome, str)
-        output._validate_genome()
+        _genome = self._flatten_incoming(genome, str)
+        _validate_genome(_genome, len(self))
+
+        output = self._define_output(in_place)
+        output._genome = _genome
         return output
+
+    @property
+    def genome(self) -> List[str]:
+        warn("'genome' is deprecated, use 'get_genome' instead", UserWarning)
+        return self.get_genome()
+
+    @genome.setter
+    def genome(self, genome: Optional[Union[bool, Sequence[bool], Dict[str, bool]]]):
+        warn(
+            "Setting property 'genome' is an in-place operation, use 'set_genome' instead",
+            UserWarning,
+        )
+
+        self.set_genome(genome, in_place=True)
+
+    ######################################
+    ######>> length and iterators <<######
+    ######################################
 
     def __len__(self) -> int:
         """
@@ -319,6 +542,62 @@ class SeqInfo:
             Number of sequences in this object.
         """
         return len(self._seqnames)
+
+    def __iter__(self) -> SeqInfoIterator:
+        """Iterator over sequences."""
+        return SeqInfoIterator(self)
+
+    #########################
+    ######>> Slicers <<######
+    #########################
+
+    def get_subset(self, subset: Union[str, int, bool, Sequence]) -> "SeqInfo":
+        """Subset ``SeqInfo``, based on their indices or seqnames.
+
+        Args:
+            subset:
+                Indices to be extracted. This may be an integer, boolean, string,
+                or any sequence thereof, as supported by
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
+                Scalars are treated as length-1 sequences.
+
+                Strings may only be used if :py:attr:``~seqnames`` are available (see
+                :py:meth:`~get_seqnames`). The first occurrence of each string
+                in the seqnames is used for extraction.
+
+        Returns:
+            A new ``SeqInfo`` object with the sequences of interest.
+        """
+        if len(self) == 0:
+            return SeqInfo.empty()
+
+        idx, _ = ut.normalize_subscript(subset, len(self), self._seqnames)
+
+        current_class_const = type(self)
+        return current_class_const(
+            seqnames=ut.subset_sequence(self._seqnames, idx),
+            seqlengths=ut.subset_sequence(self._seqlengths, idx),
+            is_circular=ut.subset_sequence(self._is_circular, idx),
+            genome=ut.subset_sequence(self._genome, idx),
+        )
+
+    def __getitem__(self, subset: Union[str, int, bool, Sequence]) -> "SeqInfo":
+        """Alias to :py:attr:`~get_subset`."""
+        return self.get_subset(subset)
+
+    @classmethod
+    def empty(cls):
+        """Create an zero-length `SeqInfo` object.
+
+        Returns:
+            same type as caller, in this case a `SeqInfo`.
+        """
+        return SeqInfo([], [], [], [])
+
+
+@ut.combine_sequences.register
+def _combine_SeqInfo(*x: SeqInfo) -> SeqInfo:
+    return merge_SeqInfo(x)
 
 
 def merge_SeqInfo(objects: List[SeqInfo]) -> SeqInfo:
