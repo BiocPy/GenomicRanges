@@ -63,11 +63,13 @@ def test_create_seqInfo_numpy():
         si.set_seqnames([None, "chrB", "chrC"])
     assert str(ex.value).find("list of strings") >= 0
 
+
 def test_create_empty():
     si = SeqInfo.empty()
 
     with pytest.raises(ValueError) as ex:
         si.set_seqnames([None, "chrB", "chrC"])
+
 
 def test_subset_seqinfo_modifiers():
     circ = [random() < 0.5 for _ in range(3)]
