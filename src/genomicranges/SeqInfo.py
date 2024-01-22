@@ -2,7 +2,6 @@ from typing import Dict, List, Optional, Sequence, Union
 from warnings import warn
 
 import biocutils as ut
-import numpy
 
 from .utils import _sanitize_vec
 
@@ -183,7 +182,7 @@ class SeqInfo:
                 else:
                     output.append(None)
             return output
-        
+
         values = _sanitize_vec(values)
 
         if isinstance(values, list):
@@ -369,7 +368,7 @@ class SeqInfo:
     ######>> seqlengths <<######
     ############################
 
-    def get_seqlengths(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
+    def get_seqlengths(self) -> List[int]:
         """
         Returns:
             A list of integers is returned containing the lengths of all
@@ -409,7 +408,7 @@ class SeqInfo:
         return output
 
     @property
-    def seqlengths(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
+    def seqlengths(self) -> List[int]:
         warn(
             "'seqlengths' is deprecated, use 'get_seqlengths' instead",
             UserWarning,
@@ -431,7 +430,7 @@ class SeqInfo:
     ######>> is-circular <<######
     #############################
 
-    def get_is_circular(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
+    def get_is_circular(self) -> List[bool]:
         """
         Returns:
             A list of booleans is returned specifying whether each sequence
@@ -471,7 +470,7 @@ class SeqInfo:
         return output
 
     @property
-    def is_circular(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
+    def is_circular(self) -> List[bool]:
         warn(
             "'is_circular' is deprecated, use 'get_is_circular' instead",
             UserWarning,
