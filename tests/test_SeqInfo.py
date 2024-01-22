@@ -64,6 +64,17 @@ def test_create_seqInfo_numpy():
     assert str(ex.value).find("list of strings") >= 0
 
 
+def test_create_seqInfo_numpy_masked():
+    si = SeqInfo(
+        ["chrA", "chrB", "chrC"],
+        np.ma.MaskedArray([10, None, 2200], mask=[0, 1, 0]),
+        np.array([None, True, False]),
+        ["hg19", "hg38", None],
+    )
+
+    assert isinstance(si, SeqInfo)
+
+
 def test_create_empty():
     si = SeqInfo.empty()
 

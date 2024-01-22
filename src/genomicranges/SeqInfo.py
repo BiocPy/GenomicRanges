@@ -2,7 +2,8 @@ from typing import Dict, List, Optional, Sequence, Union
 from warnings import warn
 
 import biocutils as ut
-import numpy
+
+from .utils import _sanitize_vec
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -19,7 +20,7 @@ def _validate_seqnames(seqnames):
 
 
 def _validate_seqlengths(seqlengths, num_seqs):
-    if not ut.is_list_of_type(seqlengths, (int, numpy.ndarray), ignore_none=True):
+    if not ut.is_list_of_type(seqlengths, int, ignore_none=True):
         raise ValueError("'seqlengths' should be a list of integers.")
 
     if num_seqs != len(seqlengths):
@@ -31,7 +32,7 @@ def _validate_seqlengths(seqlengths, num_seqs):
 
 
 def _validate_is_circular(is_circular, num_seqs):
-    if not ut.is_list_of_type(is_circular, (bool, numpy.ndarray), ignore_none=True):
+    if not ut.is_list_of_type(is_circular, bool, ignore_none=True):
         raise ValueError("'is_circular' should be a list of booleans.")
 
     if num_seqs != len(is_circular):
@@ -174,6 +175,8 @@ class SeqInfo:
                 else:
                     output.append(None)
             return output
+
+        values = _sanitize_vec(values)
 
         if isinstance(values, list):
             return values

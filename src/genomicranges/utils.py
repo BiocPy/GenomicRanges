@@ -60,6 +60,14 @@ def sanitize_strand_vector(
     )
 
 
+def _sanitize_vec(x: Sequence):
+    if isinstance(x, np.ma.MaskedArray):
+        x.filled(fill_value=None)
+        return x.tolist()
+
+    return list(x)
+
+
 def _sanitize_strand_search_ops(query_strand, subject_strand):
     query_strand = REV_STRAND_MAP[query_strand]
     subject_strand = REV_STRAND_MAP[subject_strand]
