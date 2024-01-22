@@ -4,6 +4,8 @@ from warnings import warn
 import biocutils as ut
 import numpy
 
+from .utils import _sanitize_vec
+
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
@@ -19,7 +21,8 @@ def _validate_seqnames(seqnames):
 
 
 def _validate_seqlengths(seqlengths, num_seqs):
-    if not ut.is_list_of_type(seqlengths, (int, numpy.ndarray), ignore_none=True):
+    print(seqlengths)
+    if not ut.is_list_of_type(seqlengths, int, ignore_none=True):
         raise ValueError("'seqlengths' should be a list of integers.")
 
     if num_seqs != len(seqlengths):
@@ -31,7 +34,7 @@ def _validate_seqlengths(seqlengths, num_seqs):
 
 
 def _validate_is_circular(is_circular, num_seqs):
-    if not ut.is_list_of_type(is_circular, (bool, numpy.ndarray), ignore_none=True):
+    if not ut.is_list_of_type(is_circular, bool, ignore_none=True):
         raise ValueError("'is_circular' should be a list of booleans.")
 
     if num_seqs != len(is_circular):
@@ -140,8 +143,14 @@ class SeqInfo:
         """
         self._seqnames = list(seqnames)
         self._reverse_seqnames = None
+
         self._seqlengths = self._flatten_incoming(seqlengths, int)
+        # self._seqlengths = _sanitize_vec(_seqlengths)
+        # print(self._seqlengths)
+
         self._is_circular = self._flatten_incoming(is_circular, bool)
+        # self._is_circular = _sanitize_vec(_is_circular)
+
         self._genome = self._flatten_incoming(genome, str)
 
         if validate:
@@ -174,6 +183,8 @@ class SeqInfo:
                 else:
                     output.append(None)
             return output
+        
+        values = _sanitize_vec(values)
 
         if isinstance(values, list):
             return values
@@ -358,7 +369,7 @@ class SeqInfo:
     ######>> seqlengths <<######
     ############################
 
-    def get_seqlengths(self) -> List[int]:
+    def get_seqlengths(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
         """
         Returns:
             A list of integers is returned containing the lengths of all
@@ -398,7 +409,7 @@ class SeqInfo:
         return output
 
     @property
-    def seqlengths(self) -> List[int]:
+    def seqlengths(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
         warn(
             "'seqlengths' is deprecated, use 'get_seqlengths' instead",
             UserWarning,
@@ -420,7 +431,7 @@ class SeqInfo:
     ######>> is-circular <<######
     #############################
 
-    def get_is_circular(self) -> List[bool]:
+    def get_is_circular(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
         """
         Returns:
             A list of booleans is returned specifying whether each sequence
@@ -460,7 +471,7 @@ class SeqInfo:
         return output
 
     @property
-    def is_circular(self) -> List[bool]:
+    def is_circular(self) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
         warn(
             "'is_circular' is deprecated, use 'get_is_circular' instead",
             UserWarning,
