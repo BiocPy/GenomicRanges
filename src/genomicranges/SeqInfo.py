@@ -20,7 +20,6 @@ def _validate_seqnames(seqnames):
 
 
 def _validate_seqlengths(seqlengths, num_seqs):
-    print(seqlengths)
     if not ut.is_list_of_type(seqlengths, int, ignore_none=True):
         raise ValueError("'seqlengths' should be a list of integers.")
 
@@ -142,14 +141,8 @@ class SeqInfo:
         """
         self._seqnames = list(seqnames)
         self._reverse_seqnames = None
-
         self._seqlengths = self._flatten_incoming(seqlengths, int)
-        # self._seqlengths = _sanitize_vec(_seqlengths)
-        # print(self._seqlengths)
-
         self._is_circular = self._flatten_incoming(is_circular, bool)
-        # self._is_circular = _sanitize_vec(_is_circular)
-
         self._genome = self._flatten_incoming(genome, str)
 
         if validate:
