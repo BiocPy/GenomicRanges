@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Contributors" href="authors.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Changelog - GenomicRanges 0.4.8 documentation</title>
+        <title>Changelog - GenomicRanges 0.4.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.8 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.8 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -206,8 +206,12 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h1>
-<section id="version-0-4-0-to-0-4-5">
-<h2>Version 0.4.0 to 0.4.5<a class="headerlink" href="#version-0-4-0-to-0-4-5" title="Link to this heading">#</a></h2>
+<section id="version-0-4-9">
+<h2>Version 0.4.9<a class="headerlink" href="#version-0-4-9" title="Link to this heading">#</a></h2>
+<p>Bring <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> upto speed with the rest of the class implementations. Added subset and pretty print functionality.</p>
+</section>
+<section id="version-0-4-0-to-0-4-8">
+<h2>Version 0.4.0 to 0.4.8<a class="headerlink" href="#version-0-4-0-to-0-4-8" title="Link to this heading">#</a></h2>
 <p>This is a complete rewrite of both these classes following the functional paradigm from our <a class="reference external" href="https://github.com/BiocPy/developer_guide#use-functional-discipline">developer notes</a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> is now closer to Bioconductor’s GenomicRanges class both in the design and implementation.</p>
 <p>The package does not rely on pandas anymore. While we try to provide backwards compatibility to construct a GenomicRanges object from a pandas dataframe using the <code class="docutils literal notranslate"><span class="pre">from_pandas</span></code> method, please note that the default constructor to genomic ranges does not accept a pandas data frame anymore!</p>
@@ -289,7 +293,8 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#version-0-4-0-to-0-4-5">Version 0.4.0 to 0.4.5</a></li>
+<li><a class="reference internal" href="#version-0-4-9">Version 0.4.9</a></li>
+<li><a class="reference internal" href="#version-0-4-0-to-0-4-8">Version 0.4.0 to 0.4.8</a></li>
 <li><a class="reference internal" href="#version-0-3-0">Version 0.3.0</a></li>
 <li><a class="reference internal" href="#version-0-2">Version 0.2</a></li>
 <li><a class="reference internal" href="#version-0-1">Version 0.1</a></li>
@@ -304,7 +309,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=4f911454"></script>
+</div><script src="_static/documentation_options.js?v=ebe9904d"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

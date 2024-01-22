@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="genomicranges.io package" href="genomicranges.io.html" /><link rel="prev" title="genomicranges" href="modules.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges package - GenomicRanges 0.4.8 documentation</title>
+        <title>genomicranges package - GenomicRanges 0.4.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.4.8 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.4.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.8 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.9 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -574,7 +574,7 @@ containing hits to nearest indices.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.from_pandas">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.from_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.from_pandas" title="Link to this definition">#</a></dt>
-<dd><p>Create a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> from a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
+<dd><p>Create a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> from a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type">pandas.DataFrame</span>) – Input data. must contain columns ‘seqnames’, ‘starts’ and ‘widths’ or “ends”.</p>
@@ -631,7 +631,7 @@ positions for all ranges.</p>
 <span class="sig-name descname"><span class="pre">get_mcols</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.get_mcols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.get_mcols" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A ~py:class:<cite>~biocframe.BiocFrame.BiocFrame</cite> containing per-range annotations.</p>
@@ -864,7 +864,7 @@ containing hits to matching indices.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.mcols">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mcols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.6)"><span class="pre">BiocFrame</span></a></em><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.mcols" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mcols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.7)"><span class="pre">BiocFrame</span></a></em><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.mcols" title="Link to this definition">#</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.get_mcols" title="genomicranges.GenomicRanges.GenomicRanges.get_mcols"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_mcols()</span></code></a>.</p>
 </dd></dl>
 
@@ -1160,7 +1160,7 @@ either as a copy of the original or as a reference to the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mcols</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a>]</span>) – A ~py:class:<cite>~biocframe.BiocFrame.BiocFrame</cite> with length same as the number
+<li><p><strong>mcols</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a>]</span>) – A ~py:class:<cite>~biocframe.BiocFrame.BiocFrame</cite> with length same as the number
 of ranges, containing per-range annotations.</p></li>
 <li><p><strong>in_place</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to modify the <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object in place.</p></li>
 </ul>
@@ -1565,13 +1565,13 @@ Defaults to None, then ‘width’ of each interval is computed from <code class
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.to_pandas">
 <span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.to_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.to_pandas" title="Link to this definition">#</a></dt>
-<dd><p>Convert this <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object into a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+<dd><p>Convert this <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object into a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">pandas.DataFrame</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
+<dd class="field-even"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1810,7 +1810,7 @@ each element in the list contains another list values.</p>
 <span class="sig-name descname"><span class="pre">get_mcols</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.get_mcols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.get_mcols" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A ~py:class:<cite>~biocframe.BiocFrame.BiocFrame</cite> containing
@@ -1903,7 +1903,7 @@ each element in the list contains another list values.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.mcols">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mcols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.6)"><span class="pre">BiocFrame</span></a></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.mcols" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mcols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.7)"><span class="pre">BiocFrame</span></a></em><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.mcols" title="Link to this definition">#</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#genomicranges.GenomicRangesList.GenomicRangesList.get_mcols" title="genomicranges.GenomicRangesList.GenomicRangesList.get_mcols"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_mcols()</span></code></a>.</p>
 </dd></dl>
 
@@ -1956,7 +1956,7 @@ each element in the list contains another list of sequence names.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mcols</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a>]</span>) – A ~py:class:<cite>~biocframe.BiocFrame.BiocFrame</cite> with
+<li><p><strong>mcols</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://biocpy.github.io/BiocFrame/api/biocframe.html#biocframe.BiocFrame.BiocFrame" title="(in BiocFrame v0.5.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiocFrame</span></code></a>]</span>) – A ~py:class:<cite>~biocframe.BiocFrame.BiocFrame</cite> with
 length same as the number of genomic elements, containing
 per-genomic element annotations.</p></li>
 <li><p><strong>in_place</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to modify the <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object in place.</p></li>
@@ -2064,13 +2064,13 @@ each element in the list contains another list values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.to_pandas">
 <span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.to_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.to_pandas" title="Link to this definition">#</a></dt>
-<dd><p>Coerce object to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>.</p>
+<dd><p>Coerce object to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">pandas.DataFrame</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
+<dd class="field-even"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2116,6 +2116,48 @@ each element in the list contains another list values.</p>
 <p>Information about the reference sequences, specifically the name and length of each sequence, whether it is a
 circular, and the identity of the genome from which it was derived.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.__copy__">
+<span class="sig-name descname"><span class="pre">__copy__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.__copy__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.__copy__" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A shallow copy of the current <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.__deepcopy__">
+<span class="sig-name descname"><span class="pre">__deepcopy__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_nil</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.__deepcopy__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.__deepcopy__" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A deep copy of the current <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.__getitem__" title="Link to this definition">#</a></dt>
+<dd><p>Alias to <a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.get_subset" title="genomicranges.SeqInfo.SeqInfo.get_subset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">get_subset</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo" title="genomicranges.SeqInfo.SeqInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeqInfo</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.__iter__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.__iter__" title="Link to this definition">#</a></dt>
+<dd><p>Iterator over sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfoIterator" title="genomicranges.SeqInfo.SeqInfoIterator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeqInfoIterator</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.__len__">
 <span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.__len__" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
@@ -2124,6 +2166,36 @@ circular, and the identity of the genome from which it was derived.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Number of sequences in this object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.__repr__" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string representation of this <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.copy" title="Link to this definition">#</a></dt>
+<dd><p>Alias for <a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.__copy__" title="genomicranges.SeqInfo.SeqInfo.__copy__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__copy__()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.empty">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.empty" title="Link to this definition">#</a></dt>
+<dd><p>Create an zero-length <cite>SeqInfo</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>same type as caller, in this case a <cite>SeqInfo</cite>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2185,6 +2257,30 @@ sequences, in the same order as the sequence names from
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of all chromosome names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfo.get_subset">
+<span class="sig-name descname"><span class="pre">get_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfo.get_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfo.get_subset" title="Link to this definition">#</a></dt>
+<dd><p>Subset <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code>, based on their indices or seqnames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>subset</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>]</span>) – <p>Indices to be extracted. This may be an integer, boolean, string,
+or any sequence thereof, as supported by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">normalize_subscript()</span></code>.
+Scalars are treated as length-1 sequences.</p>
+<p>Strings may only be used if :py:attr:<code class="docutils literal notranslate"><span class="pre">~seqnames</span></code> are available (see
+<a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.get_seqnames" title="genomicranges.SeqInfo.SeqInfo.get_seqnames"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_seqnames()</span></code></a>). The first occurrence of each string
+in the seqnames is used for extraction.</p>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo" title="genomicranges.SeqInfo.SeqInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeqInfo</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> object with the sequences of interest.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2297,6 +2393,23 @@ or as a reference to the (in-place-modified) original.</p>
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfoIterator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">genomicranges.SeqInfo.</span></span><span class="sig-name descname"><span class="pre">SeqInfoIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfoIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfoIterator" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>An iterator to a <a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo" title="genomicranges.SeqInfo.SeqInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeqInfo</span></code></a> object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfoIterator.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfoIterator.__iter__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfoIterator.__iter__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.SeqInfo.SeqInfoIterator.__next__">
+<span class="sig-name descname"><span class="pre">__next__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/SeqInfo.html#SeqInfoIterator.__next__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.SeqInfo.SeqInfoIterator.__next__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -2603,12 +2716,20 @@ intervals and optionally a reverse index map.</p>
 </li>
 <li><a class="reference internal" href="#module-genomicranges.SeqInfo">genomicranges.SeqInfo module</a><ul>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo"><code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code></a><ul>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.__copy__"><code class="docutils literal notranslate"><span class="pre">SeqInfo.__copy__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.__deepcopy__"><code class="docutils literal notranslate"><span class="pre">SeqInfo.__deepcopy__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.__getitem__"><code class="docutils literal notranslate"><span class="pre">SeqInfo.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.__iter__"><code class="docutils literal notranslate"><span class="pre">SeqInfo.__iter__()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.__len__"><code class="docutils literal notranslate"><span class="pre">SeqInfo.__len__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.__repr__"><code class="docutils literal notranslate"><span class="pre">SeqInfo.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.copy"><code class="docutils literal notranslate"><span class="pre">SeqInfo.copy()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.empty"><code class="docutils literal notranslate"><span class="pre">SeqInfo.empty()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.genome"><code class="docutils literal notranslate"><span class="pre">SeqInfo.genome</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.get_genome"><code class="docutils literal notranslate"><span class="pre">SeqInfo.get_genome()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.get_is_circular"><code class="docutils literal notranslate"><span class="pre">SeqInfo.get_is_circular()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.get_seqlengths"><code class="docutils literal notranslate"><span class="pre">SeqInfo.get_seqlengths()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.get_seqnames"><code class="docutils literal notranslate"><span class="pre">SeqInfo.get_seqnames()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.get_subset"><code class="docutils literal notranslate"><span class="pre">SeqInfo.get_subset()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.is_circular"><code class="docutils literal notranslate"><span class="pre">SeqInfo.is_circular</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.seqlengths"><code class="docutils literal notranslate"><span class="pre">SeqInfo.seqlengths</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.seqnames"><code class="docutils literal notranslate"><span class="pre">SeqInfo.seqnames</span></code></a></li>
@@ -2616,6 +2737,11 @@ intervals and optionally a reverse index map.</p>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.set_is_circular"><code class="docutils literal notranslate"><span class="pre">SeqInfo.set_is_circular()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.set_seqlengths"><code class="docutils literal notranslate"><span class="pre">SeqInfo.set_seqlengths()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfo.set_seqnames"><code class="docutils literal notranslate"><span class="pre">SeqInfo.set_seqnames()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfoIterator"><code class="docutils literal notranslate"><span class="pre">SeqInfoIterator</span></code></a><ul>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfoIterator.__iter__"><code class="docutils literal notranslate"><span class="pre">SeqInfoIterator.__iter__()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.SeqInfo.SeqInfoIterator.__next__"><code class="docutils literal notranslate"><span class="pre">SeqInfoIterator.__next__()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#genomicranges.SeqInfo.merge_SeqInfo"><code class="docutils literal notranslate"><span class="pre">merge_SeqInfo()</span></code></a></li>
@@ -2640,7 +2766,7 @@ intervals and optionally a reverse index map.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=4f911454"></script>
+</div><script src="../_static/documentation_options.js?v=ebe9904d"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
