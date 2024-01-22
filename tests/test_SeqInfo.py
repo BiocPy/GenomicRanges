@@ -67,7 +67,7 @@ def test_create_seqInfo_numpy():
 def test_create_seqInfo_numpy_masked():
     si = SeqInfo(
         ["chrA", "chrB", "chrC"],
-        np.ma.MaskedArray([10, None, 2200], mask=[0,1,0]),
+        np.ma.MaskedArray([10, None, 2200], mask=[0, 1, 0]),
         np.array([None, True, False]),
         ["hg19", "hg38", None],
     )

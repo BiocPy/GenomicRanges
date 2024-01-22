@@ -183,7 +183,7 @@ class SeqInfo:
                 else:
                     output.append(None)
             return output
-        
+
         values = _sanitize_vec(values)
 
         if isinstance(values, list):
