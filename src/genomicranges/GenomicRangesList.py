@@ -3,6 +3,7 @@ from warnings import warn
 
 import biocutils as ut
 from biocframe import BiocFrame
+import numpy as np
 
 from .GenomicRanges import GenomicRanges
 
@@ -51,6 +52,13 @@ def _validate_optional_attrs(mcols, names, num_ranges):
 
         if any(x is None for x in names):
             raise ValueError("'names' cannot contain None values.")
+
+def _sanitize_range_lengths(x):
+    if not isinstance(x, np.ndarray):
+        return np.array(x, dtype=np.int32)
+    
+    return x
+
 
 
 class GenomicRangesListIter:
@@ -123,7 +131,7 @@ class GenomicRangesList:
     def __init__(
         self,
         ranges: Union[GenomicRanges, List[GenomicRanges]],
-        range_lengths: Optional[List[int]] = None,
+        range_lengths: Optional[Sequence[int]] = None,
         names: Optional[List[str]] = None,
         mcols: Optional[BiocFrame] = None,
         metadata: Optional[dict] = None,
@@ -161,8 +169,8 @@ class GenomicRangesList:
             if isinstance(ranges, list):
                 range_lengths = [len(x) for x in ranges]
             else:
-                range_lengths = [1]
-        self._range_lengths = range_lengths
+                range_lengths = [len(ranges)]
+        self._range_lengths = _sanitize_range_lengths(range_lengths)
 
         if mcols is None:
             mcols = BiocFrame(number_of_rows=len(range_lengths))
@@ -703,6 +711,18 @@ class GenomicRangesList:
             each element in the list contains another list values.
         """
         return self._generic_accessor("is_circular")
+
+    def get_range_lengths(self) -> dict:
+        """
+        Returns:
+            Number of ranges for each genomic element.
+        """
+        return self._range_lengths
+
+    @property
+    def range_lengths(self) -> dict:
+        """Alias for :py:attr:`~get_range_lengths`."""
+        return self.get_range_lengths()
 
     ###################################
     ######>> pandas interop <<#########
