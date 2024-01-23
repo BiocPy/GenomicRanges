@@ -53,12 +53,12 @@ def _validate_optional_attrs(mcols, names, num_ranges):
         if any(x is None for x in names):
             raise ValueError("'names' cannot contain None values.")
 
+
 def _sanitize_range_lengths(x):
     if not isinstance(x, np.ndarray):
         return np.array(x, dtype=np.int32)
-    
-    return x
 
+    return x
 
 
 class GenomicRangesListIter:
