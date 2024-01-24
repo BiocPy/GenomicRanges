@@ -2237,6 +2237,28 @@ class GenomicRanges:
 
         return rev_map
 
+    def distance(self, query: Union["GenomicRanges", IRanges]) -> np.ndarray:
+        """Compute the pair-wise distance with intervals in query.
+
+        Args:
+            query:
+                Query `GenomicRanges` or `IRanges`.
+
+        Returns:
+            Numpy vector containing distances for each interval in query.
+        """
+        if not isinstance(query, (IRanges, GenomicRanges)):
+            raise TypeError("'query' is not a `GenomicRanges` or `IRanges` object.")
+
+        if len(self) != len(query):
+            raise ValueError("'query' does not contain the same number of intervals.")
+
+        _qranges = query
+        if isinstance(query, GenomicRanges):
+            _qranges = query.get_ranges()
+
+        return self._ranges.distance(_qranges)
+
     def match(self, query: "GenomicRanges") -> List[List[int]]:
         """Element wise comparison to find exact match ranges.
 

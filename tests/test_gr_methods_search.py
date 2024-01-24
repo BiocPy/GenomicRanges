@@ -69,3 +69,14 @@ def test_follow():
 
     assert query_hits is not None
     assert query_hits == [[4], [], []]
+
+
+def test_distance():
+    query = GenomicRanges(["A", "A", "A"], ranges=IRanges([1, 2, 10], [5, 7, 2]))
+    subject = GenomicRanges(["A", "A", "A"], ranges=IRanges([6, 5, 13], [5, 6, 3]))
+
+    distance = subject.distance(query)
+
+    assert distance is not None
+    assert isinstance(distance, np.ndarray)
+    assert distance.tolist() == [0, 0, 1]
