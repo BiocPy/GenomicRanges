@@ -70,7 +70,7 @@ def test_count_overlaps():
 
     assert res is not None
     assert isinstance(res, list)
-    assert res == [[2]]
+    assert res == [2]
 
 
 def test_subset_by_overlaps():
