@@ -8,10 +8,10 @@ from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
-    sanitize_strand_vector,
-    split_intervals,
-    slide_intervals,
     create_np_vector,
+    sanitize_strand_vector,
+    slide_intervals,
+    split_intervals,
 )
 
 __author__ = "jkanche"
@@ -1480,7 +1480,7 @@ class GenomicRanges:
         chrm_grps = {}
         for i in range(len(self)):
             __strand = self._strand[i] if ignore_strand is False else 0
-            _grp = f"{self._seqnames[i]}_{__strand}"
+            _grp = f"{self._seqinfo.seqnames[self._seqnames[i]]}_{__strand}"
 
             if _grp not in chrm_grps:
                 chrm_grps[_grp] = []
@@ -1518,18 +1518,20 @@ class GenomicRanges:
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        self._ranges._mcols.set_column("reduceindices", range(len(self)), in_place=True)
+        _new_mcols = self._ranges._mcols.set_column("reduceindices", range(len(self)))
+        _new_ranges = self._ranges.set_mcols(_new_mcols)
+        _new_self = self.set_ranges(_new_ranges)
 
         all_grp_ranges = []
         rev_map = []
         groups = []
 
-        for i in range(len(self._seqinfo.seqnames)):
+        for seq in _new_self._seqinfo.seqnames:
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{i}_{strd}"
+                _key = f"{seq}_{strd}"
                 if _key in chrm_grps:
-                    _grp_subset = self[chrm_grps[_key]]
+                    _grp_subset = _new_self[chrm_grps[_key]]
                     _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
 
                     res_ir = _grp_subset._ranges.reduce(
@@ -1548,7 +1550,7 @@ class GenomicRanges:
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
         splits = [x.split("_") for x in groups]
-        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
         output = GenomicRanges(
@@ -1558,7 +1560,7 @@ class GenomicRanges:
         if with_reverse_map is True:
             output._mcols.set_column("revmap", rev_map, in_place=True)
 
-        self._ranges._mcols.remove_column("reduceindices", in_place=True)
+        # self._ranges._mcols.remove_column("reduceindices", in_place=True)
 
         return output
 
@@ -1584,10 +1586,10 @@ class GenomicRanges:
         rev_map = []
         groups = []
 
-        for i in range(len(self._seqinfo.seqnames)):
+        for seq in self._seqinfo.seqnames:
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{i}_{strd}"
+                _key = f"{seq}_{strd}"
                 if _key in chrm_grps:
                     _grp_subset = self[chrm_grps[_key]]
                     res_ir = _grp_subset._ranges.range()
@@ -1599,7 +1601,7 @@ class GenomicRanges:
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
         splits = [x.split("_") for x in groups]
-        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
         output = GenomicRanges(
@@ -1641,7 +1643,7 @@ class GenomicRanges:
         for i, chrm in enumerate(self._seqinfo.seqnames):
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{i}_{strd}"
+                _key = f"{chrm}_{strd}"
 
                 _end = None
                 if isinstance(end, dict):
@@ -1669,7 +1671,7 @@ class GenomicRanges:
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
         splits = [x.split("_") for x in groups]
-        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
         output = GenomicRanges(
@@ -1700,10 +1702,10 @@ class GenomicRanges:
         rev_map = []
         groups = []
 
-        for i in range(len(self._seqinfo.seqnames)):
+        for seq in self._seqinfo.seqnames:
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{i}_{strd}"
+                _key = f"{seq}_{strd}"
                 if _key in chrm_grps:
                     _grp_subset = self[chrm_grps[_key]]
                     res_ir = _grp_subset._ranges.disjoin(with_reverse_map=True)
@@ -1719,7 +1721,7 @@ class GenomicRanges:
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
         splits = [x.split("_") for x in groups]
-        new_seqnames = [self._seqinfo._seqnames[int(x[0])] for x in splits]
+        new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
         output = GenomicRanges(
@@ -1777,7 +1779,7 @@ class GenomicRanges:
             if width is not None:
                 cov = cov[:width]
 
-            result[self._seqinfo._seqnames[int(chrm.split("_")[0])]] = cov
+            result[chrm.split("_")[0]] = cov
 
         return result
 
@@ -1924,39 +1926,27 @@ class GenomicRanges:
                 f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}."
             )
 
+        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        rev_map = []
-        groups = []
-        for i in range(len(query)):
-            try:
-                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
-            except Exception as _:
-                warn(f"'{query.seqnames[i]}' is not present in subject.")
+        for group, indices in query_chrm_grps.items():
+            if group in subject_chrm_grps:
+                _sub_subset = self[subject_chrm_grps[group]]
+                _query_subset = query[indices]
 
-            _strand = query._strand[i]
-
-            if ignore_strand is True:
-                _strand = 0
-
-            _key = f"{_seqname}_{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
-
-                res_idx = _grp_subset._ranges.find_overlaps(
-                    query=query._ranges[i],
+                res_idx = _sub_subset._ranges.find_overlaps(
+                    query=_query_subset._ranges,
                     query_type=query_type,
                     select=select,
                     max_gap=max_gap,
                     min_overlap=min_overlap,
+                    delete_index=False,
                 )
 
-                groups.append(i)
-
-                _rev_map = []
-                for j in res_idx:
-                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
-                rev_map.append(_rev_map[0])
+                for j, val in enumerate(res_idx):
+                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    rev_map[indices[j]] = _rev_map
 
         return rev_map
 
@@ -2010,39 +2000,27 @@ class GenomicRanges:
                 f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}."
             )
 
+        rev_map = [0 for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        rev_map = []
-        groups = []
-        for i in range(len(query)):
-            try:
-                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
-            except Exception as _:
-                warn(f"'{query.seqnames[i]}' is not present in subject.")
+        for group, indices in query_chrm_grps.items():
+            if group in subject_chrm_grps:
+                _sub_subset = self[subject_chrm_grps[group]]
+                _query_subset = query[indices]
 
-            _strand = query._strand[i]
-
-            if ignore_strand is True:
-                _strand = 0
-
-            _key = f"{_seqname}_{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
-
-                res_idx = _grp_subset._ranges.find_overlaps(
-                    query=query._ranges[i],
+                res_idx = _sub_subset._ranges.find_overlaps(
+                    query=_query_subset._ranges,
                     query_type=query_type,
                     select="all",
                     max_gap=max_gap,
                     min_overlap=min_overlap,
+                    delete_index=False,
                 )
 
-                groups.append(i)
-
-                _rev_map = []
-                for j in res_idx:
-                    _rev_map.append([len(j)])
-                rev_map.append(_rev_map[0])
+                for j, val in enumerate(res_idx):
+                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    rev_map[indices[j]] = len(_rev_map)
 
         return rev_map
 
@@ -2096,36 +2074,27 @@ class GenomicRanges:
                 f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}."
             )
 
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-
         rev_map = []
-        for i in range(len(query)):
-            try:
-                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
-            except Exception as _:
-                warn(f"'{query.seqnames[i]}' is not present in subject.")
+        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-            _strand = query._strand[i]
+        for group, indices in query_chrm_grps.items():
+            if group in subject_chrm_grps:
+                _sub_subset = self[subject_chrm_grps[group]]
+                _query_subset = query[indices]
 
-            if ignore_strand is True:
-                _strand = 0
-
-            _key = f"{_seqname}_{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
-
-                res_idx = _grp_subset._ranges.find_overlaps(
-                    query=query._ranges[i],
+                res_idx = _sub_subset._ranges.find_overlaps(
+                    query=_query_subset._ranges,
                     query_type=query_type,
                     select="all",
                     max_gap=max_gap,
                     min_overlap=min_overlap,
+                    delete_index=False,
                 )
 
-                _rev_map = []
-                for j in res_idx:
-                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
-                rev_map.extend(_rev_map[0])
+                for _, val in enumerate(res_idx):
+                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    rev_map.extend(_rev_map)
 
         return self[list(set(rev_map))]
 
@@ -2159,35 +2128,22 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
+        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        rev_map = []
-        groups = []
+        for group, indices in query_chrm_grps.items():
+            if group in subject_chrm_grps:
+                _sub_subset = self[subject_chrm_grps[group]]
+                _query_subset = query[indices]
 
-        for i in range(len(query)):
-            try:
-                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
-            except Exception as _:
-                warn(f"'{query.seqnames[i]}' is not present in subject.")
-
-            _strand = query._strand[i]
-
-            if ignore_strand is True:
-                _strand = 0
-
-            _key = f"{_seqname}_{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
-                res_idx = _grp_subset._ranges.nearest(
-                    query=query._ranges[i], select=select
+                res_idx = _sub_subset._ranges.nearest(
+                    query=_query_subset._ranges, select=select, delete_index=False
                 )
 
-                groups.append(i)
-
-                _rev_map = []
-                for j in res_idx:
-                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
-                rev_map.append(_rev_map[0])
+                for j, val in enumerate(res_idx):
+                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    rev_map[indices[j]] = _rev_map
 
         return rev_map
 
@@ -2217,35 +2173,22 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
+        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        rev_map = []
-        groups = []
+        for group, indices in query_chrm_grps.items():
+            if group in subject_chrm_grps:
+                _sub_subset = self[subject_chrm_grps[group]]
+                _query_subset = query[indices]
 
-        for i in range(len(query)):
-            try:
-                _seqname = self.seqnames.index(query.seqnames[i])
-            except Exception as _:
-                warn(f"'{query.seqnames[i]}' is not present in subject.")
-
-            _strand = query._strand[i]
-
-            if ignore_strand is True:
-                _strand = 0
-
-            _key = f"{_seqname}_{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
-                res_idx = _grp_subset._ranges.precede(
-                    query=query._ranges[i], select=select
+                res_idx = _sub_subset._ranges.precede(
+                    query=_query_subset._ranges, select=select, delete_index=False
                 )
 
-                groups.append(i)
-
-                _rev_map = []
-                for j in res_idx:
-                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
-                rev_map.append(_rev_map[0])
+                for j, val in enumerate(res_idx):
+                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    rev_map[indices[j]] = _rev_map
 
         return rev_map
 
@@ -2275,35 +2218,22 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
+        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        rev_map = []
-        groups = []
+        for group, indices in query_chrm_grps.items():
+            if group in subject_chrm_grps:
+                _sub_subset = self[subject_chrm_grps[group]]
+                _query_subset = query[indices]
 
-        for i in range(len(query)):
-            try:
-                _seqname = self.seqnames.index(query.seqnames[i])
-            except Exception as _:
-                warn(f"'{query.seqnames[i]}' is not present in subject.")
-
-            _strand = query._strand[i]
-
-            if ignore_strand is True:
-                _strand = 0
-
-            _key = f"{_seqname}_{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
-                res_idx = _grp_subset._ranges.follow(
-                    query=query._ranges[i], select=select
+                res_idx = _sub_subset._ranges.follow(
+                    query=_query_subset._ranges, select=select, delete_index=False
                 )
 
-                groups.append(i)
-
-                _rev_map = []
-                for j in res_idx:
-                    _rev_map.append([subject_chrm_grps[_key][x] for x in j])
-                rev_map.append(_rev_map[0])
+                for j, val in enumerate(res_idx):
+                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    rev_map[indices[j]] = _rev_map
 
         return rev_map
 
@@ -2333,7 +2263,7 @@ class GenomicRanges:
 
         for i in range(len(query)):
             try:
-                _seqname = self._seqinfo.seqnames.index(query.seqnames[i])
+                _seqname = query.seqnames[i]
             except Exception as _:
                 warn(f"'{query.seqnames[i]}' is not present in subject.")
 
@@ -2347,7 +2277,10 @@ class GenomicRanges:
                 _grp_subset = self[subject_chrm_grps[_key]]
 
                 res_idx = _grp_subset._ranges.find_overlaps(
-                    query=query._ranges[i], query_type="any", select="all"
+                    query=query._ranges[i],
+                    query_type="any",
+                    select="all",
+                    delete_index=False,
                 )
 
                 groups.append(i)
