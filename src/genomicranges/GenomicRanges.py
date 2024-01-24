@@ -8,10 +8,10 @@ from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
-    sanitize_strand_vector,
-    split_intervals,
-    slide_intervals,
     create_np_vector,
+    sanitize_strand_vector,
+    slide_intervals,
+    split_intervals,
 )
 
 __author__ = "jkanche"
@@ -1949,6 +1949,7 @@ class GenomicRanges:
                     select=select,
                     max_gap=max_gap,
                     min_overlap=min_overlap,
+                    delete_index=False,
                 )
 
                 groups.append(i)
@@ -2035,6 +2036,7 @@ class GenomicRanges:
                     select="all",
                     max_gap=max_gap,
                     min_overlap=min_overlap,
+                    delete_index=False,
                 )
 
                 groups.append(i)
@@ -2120,6 +2122,7 @@ class GenomicRanges:
                     select="all",
                     max_gap=max_gap,
                     min_overlap=min_overlap,
+                    delete_index=False,
                 )
 
                 _rev_map = []
@@ -2179,7 +2182,7 @@ class GenomicRanges:
             if _key in subject_chrm_grps:
                 _grp_subset = self[subject_chrm_grps[_key]]
                 res_idx = _grp_subset._ranges.nearest(
-                    query=query._ranges[i], select=select
+                    query=query._ranges[i], select=select, delete_index=False
                 )
 
                 groups.append(i)
@@ -2237,7 +2240,7 @@ class GenomicRanges:
             if _key in subject_chrm_grps:
                 _grp_subset = self[subject_chrm_grps[_key]]
                 res_idx = _grp_subset._ranges.precede(
-                    query=query._ranges[i], select=select
+                    query=query._ranges[i], select=select, delete_index=False
                 )
 
                 groups.append(i)
@@ -2295,7 +2298,7 @@ class GenomicRanges:
             if _key in subject_chrm_grps:
                 _grp_subset = self[subject_chrm_grps[_key]]
                 res_idx = _grp_subset._ranges.follow(
-                    query=query._ranges[i], select=select
+                    query=query._ranges[i], select=select, delete_index=False
                 )
 
                 groups.append(i)
@@ -2347,7 +2350,10 @@ class GenomicRanges:
                 _grp_subset = self[subject_chrm_grps[_key]]
 
                 res_idx = _grp_subset._ranges.find_overlaps(
-                    query=query._ranges[i], query_type="any", select="all"
+                    query=query._ranges[i],
+                    query_type="any",
+                    select="all",
+                    delete_index=False,
                 )
 
                 groups.append(i)
