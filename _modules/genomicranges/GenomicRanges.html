@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.10 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.10 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.11 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.10 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.11 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -213,10 +213,10 @@
 
 <span class="kn">from</span> <span class="nn">.SeqInfo</span> <span class="kn">import</span> <span class="n">SeqInfo</span><span class="p">,</span> <span class="n">merge_SeqInfo</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">sanitize_strand_vector</span><span class="p">,</span>
-    <span class="n">split_intervals</span><span class="p">,</span>
-    <span class="n">slide_intervals</span><span class="p">,</span>
     <span class="n">create_np_vector</span><span class="p">,</span>
+    <span class="n">sanitize_strand_vector</span><span class="p">,</span>
+    <span class="n">slide_intervals</span><span class="p">,</span>
+    <span class="n">split_intervals</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
@@ -1804,7 +1804,7 @@
         <span class="n">chrm_grps</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
             <span class="n">__strand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="mi">0</span>
-            <span class="n">_grp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">__strand</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">_grp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">__strand</span><span class="si">}</span><span class="s2">&quot;</span>
 
             <span class="k">if</span> <span class="n">_grp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chrm_grps</span><span class="p">:</span>
                 <span class="n">chrm_grps</span><span class="p">[</span><span class="n">_grp</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1844,18 +1844,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;reduceindices&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_new_mcols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;reduceindices&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="n">_new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">set_mcols</span><span class="p">(</span><span class="n">_new_mcols</span><span class="p">)</span>
+        <span class="n">_new_self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_ranges</span><span class="p">(</span><span class="n">_new_ranges</span><span class="p">)</span>
 
         <span class="n">all_grp_ranges</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">_new_self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">:</span>
             <span class="n">_iter_strands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">strd</span> <span class="ow">in</span> <span class="n">_iter_strands</span><span class="p">:</span>
-                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">seq</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">chrm_grps</span><span class="p">:</span>
-                    <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
+                    <span class="n">_grp_subset</span> <span class="o">=</span> <span class="n">_new_self</span><span class="p">[</span><span class="n">chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
                     <span class="n">_oindices</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;reduceindices&quot;</span><span class="p">)</span>
 
                     <span class="n">res_ir</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
@@ -1874,7 +1876,7 @@
         <span class="n">all_merged_ranges</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="n">all_grp_ranges</span><span class="p">)</span>
 
         <span class="n">splits</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
-        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
+        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
@@ -1884,7 +1886,7 @@
         <span class="k">if</span> <span class="n">with_reverse_map</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">output</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;revmap&quot;</span><span class="p">,</span> <span class="n">rev_map</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">remove_column</span><span class="p">(</span><span class="s2">&quot;reduceindices&quot;</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># self._ranges._mcols.remove_column(&quot;reduceindices&quot;, in_place=True)</span>
 
         <span class="k">return</span> <span class="n">output</span></div>
 
@@ -1913,10 +1915,10 @@
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">:</span>
             <span class="n">_iter_strands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">strd</span> <span class="ow">in</span> <span class="n">_iter_strands</span><span class="p">:</span>
-                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">seq</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">chrm_grps</span><span class="p">:</span>
                     <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
                     <span class="n">res_ir</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">range</span><span class="p">()</span>
@@ -1928,7 +1930,7 @@
         <span class="n">all_merged_ranges</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="n">all_grp_ranges</span><span class="p">)</span>
 
         <span class="n">splits</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
-        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
+        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
@@ -1973,7 +1975,7 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chrm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">):</span>
             <span class="n">_iter_strands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">strd</span> <span class="ow">in</span> <span class="n">_iter_strands</span><span class="p">:</span>
-                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chrm</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
 
                 <span class="n">_end</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -2001,7 +2003,7 @@
         <span class="n">all_merged_ranges</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="n">all_grp_ranges</span><span class="p">)</span>
 
         <span class="n">splits</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
-        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
+        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
@@ -2035,10 +2037,10 @@
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">:</span>
             <span class="n">_iter_strands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">strd</span> <span class="ow">in</span> <span class="n">_iter_strands</span><span class="p">:</span>
-                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">seq</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">chrm_grps</span><span class="p">:</span>
                     <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
                     <span class="n">res_ir</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">disjoin</span><span class="p">(</span><span class="n">with_reverse_map</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2054,7 +2056,7 @@
         <span class="n">all_merged_ranges</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="n">all_grp_ranges</span><span class="p">)</span>
 
         <span class="n">splits</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
-        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
+        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
@@ -2115,7 +2117,7 @@
             <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">cov</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[:</span><span class="n">width</span><span class="p">]</span>
 
-            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">chrm</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])]]</span> <span class="o">=</span> <span class="n">cov</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">chrm</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cov</span>
 
         <span class="k">return</span> <span class="n">result</span></div>
 
@@ -2274,39 +2276,27 @@
                 <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
+        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">))]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
+        <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
-        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-            <span class="n">_strand</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">_strand</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_seqname</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">_strand</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
-
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span>
                     <span class="n">query_type</span><span class="o">=</span><span class="n">query_type</span><span class="p">,</span>
                     <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                     <span class="n">max_gap</span><span class="o">=</span><span class="n">max_gap</span><span class="p">,</span>
                     <span class="n">min_overlap</span><span class="o">=</span><span class="n">min_overlap</span><span class="p">,</span>
+                    <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
 
-                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-                <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="p">:</span>
-                    <span class="n">_rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j</span><span class="p">])</span>
-                <span class="n">rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
 
@@ -2363,39 +2353,27 @@
                 <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
+        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">))]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
+        <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
-        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-            <span class="n">_strand</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">_strand</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_seqname</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">_strand</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
-
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span>
                     <span class="n">query_type</span><span class="o">=</span><span class="n">query_type</span><span class="p">,</span>
                     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
                     <span class="n">max_gap</span><span class="o">=</span><span class="n">max_gap</span><span class="p">,</span>
                     <span class="n">min_overlap</span><span class="o">=</span><span class="n">min_overlap</span><span class="p">,</span>
+                    <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
 
-                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-                <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="p">:</span>
-                    <span class="n">_rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">j</span><span class="p">)])</span>
-                <span class="n">rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
 
@@ -2452,36 +2430,27 @@
                 <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
-
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
+        <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
+        <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
-            <span class="n">_strand</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">_strand</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_seqname</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">_strand</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
-
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span>
                     <span class="n">query_type</span><span class="o">=</span><span class="n">query_type</span><span class="p">,</span>
                     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
                     <span class="n">max_gap</span><span class="o">=</span><span class="n">max_gap</span><span class="p">,</span>
                     <span class="n">min_overlap</span><span class="o">=</span><span class="n">min_overlap</span><span class="p">,</span>
+                    <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
 
-                <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="p">:</span>
-                    <span class="n">_rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j</span><span class="p">])</span>
-                <span class="n">rev_map</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">rev_map</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">rev_map</span><span class="p">))]</span></div>
 
@@ -2518,35 +2487,22 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;query&#39; is not a `GenomicRanges` object.&quot;</span><span class="p">)</span>
 
+        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">))]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
+        <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
-        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
-
-            <span class="n">_strand</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">_strand</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_seqname</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">_strand</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
-                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-                <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="p">:</span>
-                    <span class="n">_rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j</span><span class="p">])</span>
-                <span class="n">rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
 
@@ -2579,35 +2535,22 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;query&#39; is not a `GenomicRanges` object.&quot;</span><span class="p">)</span>
 
+        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">))]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
+        <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
-        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
-
-            <span class="n">_strand</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">_strand</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_seqname</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">_strand</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
-                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-                <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="p">:</span>
-                    <span class="n">_rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j</span><span class="p">])</span>
-                <span class="n">rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
 
@@ -2640,35 +2583,22 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;query&#39; is not a `GenomicRanges` object.&quot;</span><span class="p">)</span>
 
+        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">))]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
+        <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
-        <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
-
-            <span class="n">_strand</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">_strand</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_seqname</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">_strand</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
-                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-                <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="p">:</span>
-                    <span class="n">_rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j</span><span class="p">])</span>
-                <span class="n">rev_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
 
@@ -2701,7 +2631,7 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">_seqname</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
                 <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
 
@@ -2715,7 +2645,10 @@
                 <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
 
                 <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">query_type</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">query_type</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
+                    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+                    <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
 
                 <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -3245,7 +3178,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=e3241242"></script>
+</div><script src="../../_static/documentation_options.js?v=475c965b"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
