@@ -83,8 +83,9 @@ print(gr)
 A common representation in Python is a pandas `DataFrame` for all tabular datasets. `DataFrame` must contain columns "seqnames", "starts", and "ends" to represent genomic intervals. Here's an example:
 
 ```python
-import genomicranges import GenomicRanges
+from genomicranges import GenomicRanges
 import pandas as pd
+from random import random
 
 df = pd.DataFrame(
     {
@@ -118,7 +119,7 @@ print(gr)
 `GenomicRanges` supports most [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 ```python
-subject = genomicranges.from_ucsc(genome="hg38")
+subject = genomicranges.read_ucsc(genome="hg38")
 
 query = genomicranges.from_pandas(
     pd.DataFrame(
@@ -146,6 +147,10 @@ Just as it sounds, a `GenomicRangesList` is a named-list like object. If you are
 To construct a GenomicRangesList
 
 ```python
+from genomicranges import GenomicRanges, GenomicRangesList
+from iranges import IRanges
+from biocframe import BiocFrame
+
 gr1 = GenomicRanges(
     seqnames=["chr1", "chr2", "chr1", "chr3"],
     ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
