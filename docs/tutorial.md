@@ -81,6 +81,7 @@ gr = GenomicRanges(
 The package also provides a `SeqInfo` class to update or modify sequence information stored in the object. Read more about this class in [GenomeInfoDb package](https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html).
 
 ```python
+from genomicranges import SeqInfo
 seq_obj = {
     "seqnames": ["chr1", "chr2", "chr3",],
     "seqlengths": range(100, 103),
