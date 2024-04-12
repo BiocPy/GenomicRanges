@@ -1545,7 +1545,7 @@ class GenomicRanges:
                     _rev_map = []
                     for j in res_ir._mcols.get_column("revmap"):
                         _rev_map.append([_oindices[x] for x in j])
-                    rev_map.extend(_rev_map[0] * len(res_ir))
+                    rev_map.extend(_rev_map)
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 

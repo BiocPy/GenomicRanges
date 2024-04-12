@@ -6,12 +6,18 @@
 
 GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html). **_Intervals are inclusive on both ends and starts at 1._**
 
-**Note: V0.4.0 is a complete overhaul of the package, as such the constructor to GenomicRanges has changed!**
+**Note: V0.4.0 is a complete overhaul of the package, as such the constructor to GenomicRanges has changed. Please refer the documentation for updated usage of the classes and the methods.**
 
 To get started, install the package from [PyPI](https://pypi.org/project/genomicranges/)
 
 ```shell
 pip install genomicranges
+```
+
+Some of the methods like `read_ucsc` require optional packages to be installed, e.g. joblib` and can be installed by:
+
+```sh
+pip install genomicranges[optional]
 ```
 
 ## `GenomicRanges`
@@ -83,8 +89,9 @@ print(gr)
 A common representation in Python is a pandas `DataFrame` for all tabular datasets. `DataFrame` must contain columns "seqnames", "starts", and "ends" to represent genomic intervals. Here's an example:
 
 ```python
-import genomicranges import GenomicRanges
+from genomicranges import GenomicRanges
 import pandas as pd
+from random import random
 
 df = pd.DataFrame(
     {
@@ -118,7 +125,7 @@ print(gr)
 `GenomicRanges` supports most [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 ```python
-subject = genomicranges.from_ucsc(genome="hg38")
+subject = genomicranges.read_ucsc(genome="hg38")
 
 query = genomicranges.from_pandas(
     pd.DataFrame(
@@ -146,6 +153,10 @@ Just as it sounds, a `GenomicRangesList` is a named-list like object. If you are
 To construct a GenomicRangesList
 
 ```python
+from genomicranges import GenomicRanges, GenomicRangesList
+from iranges import IRanges
+from biocframe import BiocFrame
+
 gr1 = GenomicRanges(
     seqnames=["chr1", "chr2", "chr1", "chr3"],
     ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
