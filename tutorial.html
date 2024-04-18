@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="genomicranges" href="api/modules.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Tutorial - GenomicRanges 0.4.14 documentation</title>
+    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
+        <title>Tutorial - GenomicRanges 0.4.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.14 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.15 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.14 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.15 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -205,16 +205,16 @@
         </div>
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">#</a></h1>
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">¶</a></h1>
 <p>The package provide classes to represent genomic intervals and methods to perform interval based arithmetic operations.</p>
 <p><strong><em>Intervals are inclusive on both ends and starts at 1.</em></strong></p>
 <p>The implementation details for the classes follow the Bioconductor’s equivalent <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">R/GenomicRanges package</a>.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="construct-a-genomicranges-object">
-<h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object<a class="headerlink" href="#construct-a-genomicranges-object" title="Link to this heading">#</a></h1>
+<h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object<a class="headerlink" href="#construct-a-genomicranges-object" title="Link to this heading">¶</a></h1>
 <p>To construct a <strong>GenomicRanges</strong> object, simply pass in the column representation as a dictionary. This dictionary must contain “seqnames”, “starts”, “ends” columns and optionally specify “strand”. If “strand” column is not provided, “*” is used as the default value for each genomic interval.</p>
 <section id="pandas-dataframe">
-<h2>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Link to this heading">#</a></h2>
+<h2>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Link to this heading">¶</a></h2>
 <p>A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this DataFrame into <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> if it contains the necessary columns.</p>
 <p><strong><em>Note: The DataFrame must contain columns <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>, <code class="docutils literal notranslate"><span class="pre">starts</span></code> and <code class="docutils literal notranslate"><span class="pre">ends</span></code> to represent genomic coordinates.</em></strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
@@ -236,7 +236,7 @@
 </div>
 </section>
 <section id="from-ucsc-or-gtf-file">
-<h2>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Link to this heading">#</a></h2>
+<h2>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Link to this heading">¶</a></h2>
 <p>Methods are available to download, parse and access genomes from UCSC or load a genome annotation from GTF file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
 
@@ -247,7 +247,7 @@
 </div>
 </section>
 <section id="from-iranges-preferred-way">
-<h2>from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">#</a></h2>
+<h2>from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">¶</a></h2>
 <p>If you have all relevant information to create a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 <span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
@@ -275,7 +275,7 @@
 </div>
 </section>
 <section id="set-sequence-information">
-<h2>Set sequence information<a class="headerlink" href="#set-sequence-information" title="Link to this heading">#</a></h2>
+<h2>Set sequence information<a class="headerlink" href="#set-sequence-information" title="Link to this heading">¶</a></h2>
 <p>The package also provides a <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> class to update or modify sequence information stored in the object. Read more about this class in <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html">GenomeInfoDb package</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">SeqInfo</span>
 <span class="n">seq_obj</span> <span class="o">=</span> <span class="p">{</span>
@@ -292,7 +292,7 @@
 </div>
 </section>
 <section id="get-and-set-methods">
-<h2>Get and Set methods<a class="headerlink" href="#get-and-set-methods" title="Link to this heading">#</a></h2>
+<h2>Get and Set methods<a class="headerlink" href="#get-and-set-methods" title="Link to this heading">¶</a></h2>
 <p>Getters are available to access various properties.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># access sequence names</span>
 <span class="n">gr</span><span class="o">.</span><span class="n">seqnames</span>
@@ -311,7 +311,7 @@
 </pre></div>
 </div>
 <section id="setters">
-<h3>Setters<a class="headerlink" href="#setters" title="Link to this heading">#</a></h3>
+<h3>Setters<a class="headerlink" href="#setters" title="Link to this heading">¶</a></h3>
 <p>All property based setters are <code class="docutils literal notranslate"><span class="pre">in_place</span></code> operations. Methods are available to get and set properties on GenomicRanges.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 
@@ -321,14 +321,14 @@
 </div>
 </section>
 <section id="access-any-column">
-<h3>Access any column<a class="headerlink" href="#access-any-column" title="Link to this heading">#</a></h3>
+<h3>Access any column<a class="headerlink" href="#access-any-column" title="Link to this heading">¶</a></h3>
 <p>Aside from the default getters, <code class="docutils literal notranslate"><span class="pre">column</span></code> methods provides a way to quickly access any column in the object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="access-ranges">
-<h3>Access ranges<a class="headerlink" href="#access-ranges" title="Link to this heading">#</a></h3>
+<h3>Access ranges<a class="headerlink" href="#access-ranges" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">ranges()</span></code> is a generic method to access only the genomic locations as dictionary, pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> or something else. you can use any container representation based on a dictionary.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">ranges</span>
 </pre></div>
@@ -336,7 +336,7 @@
 </section>
 </section>
 <section id="slice-operations">
-<h2>Slice operations<a class="headerlink" href="#slice-operations" title="Link to this heading">#</a></h2>
+<h2>Slice operations<a class="headerlink" href="#slice-operations" title="Link to this heading">¶</a></h2>
 <p>You can slice a <code class="docutils literal notranslate"><span class="pre">GenomicRange</span></code> object using the subset (<code class="docutils literal notranslate"><span class="pre">[]</span></code>) operator. This operation accepts different slice input types, you can either specify a boolean vector, a `slice`` object, a list of indices, or row/column names to subset.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># slice the first 3 rows</span>
 <span class="n">gr</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
@@ -347,7 +347,7 @@
 </div>
 </section>
 <section id="iterate-over-intervals">
-<h2>Iterate over intervals<a class="headerlink" href="#iterate-over-intervals" title="Link to this heading">#</a></h2>
+<h2>Iterate over intervals<a class="headerlink" href="#iterate-over-intervals" title="Link to this heading">¶</a></h2>
 <p>You can iterate over the intervals of a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object. <code class="docutils literal notranslate"><span class="pre">rowname</span></code> is None if the object does not have any row names.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">rowname</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gr</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">rowname</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
@@ -355,7 +355,7 @@
 </div>
 </section>
 <section id="intra-range-transformations">
-<h2>Intra-range transformations<a class="headerlink" href="#intra-range-transformations" title="Link to this heading">#</a></h2>
+<h2>Intra-range transformations<a class="headerlink" href="#intra-range-transformations" title="Link to this heading">¶</a></h2>
 <p>For detailed description of these methods, refer to Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">GenomicRanges documentation</a></p>
 <ul class="simple">
 <li><p><strong>flank</strong>: flank the intervals based on start or end or both.</p></li>
@@ -390,7 +390,7 @@
 </div>
 </section>
 <section id="inter-range-methods">
-<h2>Inter-range methods<a class="headerlink" href="#inter-range-methods" title="Link to this heading">#</a></h2>
+<h2>Inter-range methods<a class="headerlink" href="#inter-range-methods" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>range</strong>: returns a new GenomicRanges object containing range bounds for each distinct (seqname, strand) pairing.</p></li>
 <li><p><strong>reduce</strong>: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.</p></li>
@@ -413,7 +413,7 @@
 </div>
 </section>
 <section id="set-operations-on-genomic-ranges">
-<h2>Set operations on genomic ranges<a class="headerlink" href="#set-operations-on-genomic-ranges" title="Link to this heading">#</a></h2>
+<h2>Set operations on genomic ranges<a class="headerlink" href="#set-operations-on-genomic-ranges" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>union</strong>: compute union of intervals across object</p></li>
 <li><p><strong>intersect</strong>: compute intersection or finds overlapping intervals</p></li>
@@ -444,16 +444,16 @@
 </div>
 </section>
 <section id="compute-over-bins">
-<h2>Compute over bins<a class="headerlink" href="#compute-over-bins" title="Link to this heading">#</a></h2>
+<h2>Compute over bins<a class="headerlink" href="#compute-over-bins" title="Link to this heading">¶</a></h2>
 <section id="summary-stats-for-column">
-<h3>Summary stats for column<a class="headerlink" href="#summary-stats-for-column" title="Link to this heading">#</a></h3>
+<h3>Summary stats for column<a class="headerlink" href="#summary-stats-for-column" title="Link to this heading">¶</a></h3>
 <p>one can use Pandas for this</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="binned-average">
-<h3><code class="docutils literal notranslate"><span class="pre">binned_average</span></code><a class="headerlink" href="#binned-average" title="Link to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">binned_average</span></code><a class="headerlink" href="#binned-average" title="Link to this heading">¶</a></h3>
 <p>Compute binned average for different positions</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">109</span><span class="p">],})</span>
 
@@ -477,7 +477,7 @@
 <p>now you might wonder how can I generate these <em><strong>bins</strong></em>?</p>
 </section>
 <section id="generate-tiles-or-bins-from-genomicranges">
-<h3>Generate tiles or bins from <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#generate-tiles-or-bins-from-genomicranges" title="Link to this heading">#</a></h3>
+<h3>Generate tiles or bins from <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#generate-tiles-or-bins-from-genomicranges" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>tile</strong>: Splits each genomic region by n (number of regions) or by width (maximum width of each tile)</p></li>
 <li><p><strong>sliding_windows</strong>: Generates sliding windows within each range, by width and step.</p></li>
@@ -491,7 +491,7 @@
 </div>
 </section>
 <section id="generate-tiles-from-genome">
-<h3>Generate tiles from Genome<a class="headerlink" href="#generate-tiles-from-genome" title="Link to this heading">#</a></h3>
+<h3>Generate tiles from Genome<a class="headerlink" href="#generate-tiles-from-genome" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">tile_genome</span></code> returns a set of genomic regions that form a partitioning of the specified genome.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">seqlengths</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
 
@@ -500,7 +500,7 @@
 </div>
 </section>
 <section id="coverage">
-<h3>Coverage<a class="headerlink" href="#coverage" title="Link to this heading">#</a></h3>
+<h3>Coverage<a class="headerlink" href="#coverage" title="Link to this heading">¶</a></h3>
 <p>Computes number of ranges that overlap for each position in the range.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res_vector</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
@@ -508,7 +508,7 @@
 </section>
 </section>
 <section id="overlap-based-methods">
-<h2>Overlap based methods<a class="headerlink" href="#overlap-based-methods" title="Link to this heading">#</a></h2>
+<h2>Overlap based methods<a class="headerlink" href="#overlap-based-methods" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>find_overlaps</strong>: find overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p></li>
 <li><p><strong>count_overlaps</strong>: count overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p></li>
@@ -541,7 +541,7 @@
 </div>
 </section>
 <section id="search-operations">
-<h2>Search operations<a class="headerlink" href="#search-operations" title="Link to this heading">#</a></h2>
+<h2>Search operations<a class="headerlink" href="#search-operations" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>nearest</strong>: Performs nearest neighbor search along any direction (both upstream and downstream)</p></li>
 <li><p><strong>follow</strong>: Performs nearest neighbor search only along downstream</p></li>
@@ -561,7 +561,7 @@
 </div>
 </section>
 <section id="comparison-rank-and-order-operations">
-<h2>Comparison, rank and order operations<a class="headerlink" href="#comparison-rank-and-order-operations" title="Link to this heading">#</a></h2>
+<h2>Comparison, rank and order operations<a class="headerlink" href="#comparison-rank-and-order-operations" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>match</strong>: Element wise comparison to find exact match intervals.</p></li>
 <li><p><strong>order</strong>: Get the order of indices for sorting.</p></li>
@@ -583,7 +583,7 @@
 </div>
 </section>
 <section id="combine-genomicranges-objects-by-rows">
-<h2>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows<a class="headerlink" href="#combine-genomicranges-objects-by-rows" title="Link to this heading">#</a></h2>
+<h2>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows<a class="headerlink" href="#combine-genomicranges-objects-by-rows" title="Link to this heading">¶</a></h2>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">combine</span></code> generic from <a class="reference external" href="https://github.com/BiocPy/generics">biocutils</a> to concatenate multiple GenomicRanges objects.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">biocutils.combine</span> <span class="kn">import</span> <span class="n">combine</span>
 <span class="n">combined_gr</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
@@ -595,7 +595,7 @@
 </div>
 </section>
 <section id="misc-operations">
-<h2>Misc operations<a class="headerlink" href="#misc-operations" title="Link to this heading">#</a></h2>
+<h2>Misc operations<a class="headerlink" href="#misc-operations" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>invert_strand</strong>: flip the strand for each interval</p></li>
 <li><p><strong>sample</strong>: randomly choose <em><strong>k</strong></em> intervals</p></li>
@@ -610,7 +610,7 @@
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="construct-a-genomicrangeslist-object">
-<h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.<a class="headerlink" href="#construct-a-genomicrangeslist-object" title="Link to this heading">#</a></h1>
+<h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.<a class="headerlink" href="#construct-a-genomicrangeslist-object" title="Link to this heading">¶</a></h1>
 <p>Just as it sounds, a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> is a named-list like object.</p>
 <p>If you are wondering why you need this class, a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object lets us specify multiple
 genomic elements, usually where the genes start and end. Genes are themselves made of many sub
@@ -637,14 +637,14 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">#</a></h2>
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grl</span><span class="o">.</span><span class="n">start</span>
 <span class="n">grl</span><span class="o">.</span><span class="n">width</span>
 </pre></div>
 </div>
 </section>
 <section id="combine-genomicrangeslist-object">
-<h2>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRangeslist</span></code> object<a class="headerlink" href="#combine-genomicrangeslist-object" title="Link to this heading">#</a></h2>
+<h2>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRangeslist</span></code> object<a class="headerlink" href="#combine-genomicrangeslist-object" title="Link to this heading">¶</a></h2>
 <p>Similar to the combine function from GenomicRanges,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="n">grla</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">])</span>
@@ -708,8 +708,8 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=1f5508e5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+</div><script src="_static/documentation_options.js?v=bb2d8cfc"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
     </body>

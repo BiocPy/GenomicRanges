@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Tutorial" href="tutorial.html" /><link rel="prev" title="GenomicRanges" href="index.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>GenomicRanges - GenomicRanges 0.4.14 documentation</title>
+    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
+        <title>GenomicRanges - GenomicRanges 0.4.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.14 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.15 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.14 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.15 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -208,7 +208,7 @@
 <a class="reference external" href="https://pypi.org/project/GenomicRanges/"><img alt="PyPI-Server" src="https://img.shields.io/pypi/v/GenomicRanges.svg" /></a>
 <img alt="Unit tests" src="https://github.com/BiocPy/GenomicRanges/actions/workflows/pypi-test.yml/badge.svg" /></p>
 <section class="tex2jax_ignore mathjax_ignore" id="genomicranges">
-<h1>GenomicRanges<a class="headerlink" href="#genomicranges" title="Link to this heading">#</a></h1>
+<h1>GenomicRanges<a class="headerlink" href="#genomicranges" title="Link to this heading">¶</a></h1>
 <p>GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html">GenomicRanges</a>. <strong><em>Intervals are inclusive on both ends and starts at 1.</em></strong></p>
 <p><strong>Note: V0.4.0 is a complete overhaul of the package, as such the constructor to GenomicRanges has changed. Please refer the documentation for updated usage of the classes and the methods.</strong></p>
 <p>To get started, install the package from <a class="reference external" href="https://pypi.org/project/genomicranges/">PyPI</a></p>
@@ -220,10 +220,10 @@
 </pre></div>
 </div>
 <section id="id1">
-<h2><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> is the base class to represent and operate over genomic regions and annotations.</p>
 <section id="from-ucsc-or-gtf-file">
-<h3>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Link to this heading">#</a></h3>
+<h3>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Link to this heading">¶</a></h3>
 <p>You can easily download and parse genome annotations from UCSC or load a genome annotation from a GTF file,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
 
@@ -239,7 +239,7 @@
 </div>
 </section>
 <section id="from-iranges-preferred-way">
-<h3>from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">#</a></h3>
+<h3>from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">¶</a></h3>
 <p>If you have all relevant information to create a GenomicRanges object</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 <span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
@@ -282,7 +282,7 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </div>
 </section>
 <section id="pandas-dataframe">
-<h3>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Link to this heading">#</a></h3>
+<h3>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Link to this heading">¶</a></h3>
 <p>A common representation in Python is a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> for all tabular datasets. <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> must contain columns “seqnames”, “starts”, and “ends” to represent genomic intervals. Here’s an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -318,7 +318,7 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </div>
 </section>
 <section id="interval-operations">
-<h3>Interval Operations<a class="headerlink" href="#interval-operations" title="Link to this heading">#</a></h3>
+<h3>Interval Operations<a class="headerlink" href="#interval-operations" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> supports most <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html">interval based operations</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg38&quot;</span><span class="p">)</span>
 
@@ -343,7 +343,7 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </section>
 </section>
 <section id="genomicrangeslist">
-<h2><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code><a class="headerlink" href="#genomicrangeslist" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code><a class="headerlink" href="#genomicrangeslist" title="Link to this heading">¶</a></h2>
 <p>Just as it sounds, a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> is a named-list like object. If you are wondering why you need this class, a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object lets us specify multiple genomic elements, usually where the genes start and end. Genes are themselves made of many sub-regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> allows us to represent this nested structure.</p>
 <p><strong>Currently, this class is limited in functionality.</strong></p>
 <p>To construct a GenomicRangesList</p>
@@ -395,7 +395,7 @@ seqinfo(3 sequences): chr2 chr4 chr5
 </div>
 </section>
 <section id="further-information">
-<h2>Further information<a class="headerlink" href="#further-information" title="Link to this heading">#</a></h2>
+<h2>Further information<a class="headerlink" href="#further-information" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://biocpy.github.io/GenomicRanges/tutorial.html">Tutorial</a></p></li>
 <li><p><a class="reference external" href="https://biocpy.github.io/GenomicRanges/api/modules.html">API documentation</a></p></li>
@@ -404,7 +404,7 @@ seqinfo(3 sequences): chr2 chr4 chr5
 <!-- pyscaffold-notes -->
 </section>
 <section id="note">
-<h2>Note<a class="headerlink" href="#note" title="Link to this heading">#</a></h2>
+<h2>Note<a class="headerlink" href="#note" title="Link to this heading">¶</a></h2>
 <p>This project has been set up using PyScaffold 4.1.1. For details and usage
 information on PyScaffold see <a class="reference external" href="https://pyscaffold.org/">https://pyscaffold.org/</a>.</p>
 </section>
@@ -487,8 +487,8 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=1f5508e5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+</div><script src="_static/documentation_options.js?v=bb2d8cfc"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
