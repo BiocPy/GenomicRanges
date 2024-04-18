@@ -89,3 +89,16 @@ def test_export():
 
     assert df is not None
     assert df.shape[0] == len(gr)
+    assert df["seqnames"].tolist() == [
+        "chr1",
+        "chr2",
+        "chr2",
+        "chr2",
+        "chr1",
+        "chr1",
+        "chr3",
+        "chr3",
+        "chr3",
+        "chr3",
+    ]
+    assert df["strand"].tolist() == ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"]
