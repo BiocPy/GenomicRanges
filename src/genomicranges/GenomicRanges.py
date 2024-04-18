@@ -1043,8 +1043,8 @@ class GenomicRanges:
         import pandas as pd
 
         _rdf = self._ranges.to_pandas()
-        _rdf["seqnames"] = self._seqnames
-        _rdf["strand"] = self._strand
+        _rdf["seqnames"] = self.get_seqnames()
+        _rdf["strand"] = self.get_strand(as_type="list")
 
         if self._names is not None:
             _rdf.index = self._names
