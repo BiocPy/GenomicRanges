@@ -48,6 +48,25 @@ def test_reduce():
     assert (out.width == np.array([11, 32, 25])).all()
     assert (out.strand == np.array([0, 0, 0])).all()
 
+def test_reduce_with_contigs():
+    assert gr is not None
+
+    out = gr.reduce()
+
+    assert out is not None
+    assert out.seqnames == ["chr1_gl123", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([101, 104, 102, 105, 103])).all()
+    assert (out.width == np.array([11, 30, 21, 5, 25])).all()
+    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
+
+    out = gr.reduce(ignore_strand=True)
+
+    assert out is not None
+    assert out.seqnames == ["chr1_gl123", "chr2", "chr3"]
+    assert (out.start == np.array([101, 102, 103])).all()
+    assert (out.width == np.array([11, 32, 25])).all()
+    assert (out.strand == np.array([0, 0, 0])).all()
+
 
 def test_reduce_with_gapwidth():
     assert gr is not None

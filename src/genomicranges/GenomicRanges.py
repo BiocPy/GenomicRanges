@@ -18,6 +18,7 @@ __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
+_granges_delim = "__"
 
 def _guess_num_ranges(seqnames, ranges):
     if len(seqnames) != len(ranges):
@@ -1480,7 +1481,7 @@ class GenomicRanges:
         chrm_grps = {}
         for i in range(len(self)):
             __strand = self._strand[i] if ignore_strand is False else 0
-            _grp = f"{self._seqinfo.seqnames[self._seqnames[i]]}_{__strand}"
+            _grp = f"{self._seqinfo.seqnames[self._seqnames[i]]}{_granges_delim}{__strand}"
 
             if _grp not in chrm_grps:
                 chrm_grps[_grp] = []
@@ -1529,7 +1530,7 @@ class GenomicRanges:
         for seq in _new_self._seqinfo.seqnames:
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{seq}_{strd}"
+                _key = f"{seq}{_granges_delim}{strd}"
                 if _key in chrm_grps:
                     _grp_subset = _new_self[chrm_grps[_key]]
                     _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
@@ -1549,7 +1550,7 @@ class GenomicRanges:
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
-        splits = [x.split("_") for x in groups]
+        splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
@@ -1589,7 +1590,7 @@ class GenomicRanges:
         for seq in self._seqinfo.seqnames:
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{seq}_{strd}"
+                _key = f"{seq}{_granges_delim}{strd}"
                 if _key in chrm_grps:
                     _grp_subset = self[chrm_grps[_key]]
                     res_ir = _grp_subset._ranges.range()
@@ -1600,7 +1601,7 @@ class GenomicRanges:
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
-        splits = [x.split("_") for x in groups]
+        splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
@@ -1643,7 +1644,7 @@ class GenomicRanges:
         for i, chrm in enumerate(self._seqinfo.seqnames):
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{chrm}_{strd}"
+                _key = f"{chrm}{_granges_delim}{strd}"
 
                 _end = None
                 if isinstance(end, dict):
@@ -1670,7 +1671,7 @@ class GenomicRanges:
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
-        splits = [x.split("_") for x in groups]
+        splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
@@ -1705,7 +1706,7 @@ class GenomicRanges:
         for seq in self._seqinfo.seqnames:
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
-                _key = f"{seq}_{strd}"
+                _key = f"{seq}{_granges_delim}{strd}"
                 if _key in chrm_grps:
                     _grp_subset = self[chrm_grps[_key]]
                     res_ir = _grp_subset._ranges.disjoin(with_reverse_map=True)
@@ -1720,7 +1721,7 @@ class GenomicRanges:
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
-        splits = [x.split("_") for x in groups]
+        splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
         new_strand = np.array([int(x[1]) for x in splits])
 
@@ -1779,7 +1780,7 @@ class GenomicRanges:
             if width is not None:
                 cov = cov[:width]
 
-            result[chrm.split("_")[0]] = cov
+            result[chrm.split(_granges_delim)[0]] = cov
 
         return result
 
@@ -2294,7 +2295,7 @@ class GenomicRanges:
             if ignore_strand is True:
                 _strand = 0
 
-            _key = f"{_seqname}_{_strand}"
+            _key = f"{_seqname}{_granges_delim}{_strand}"
             if _key in subject_chrm_grps:
                 _grp_subset = self[subject_chrm_grps[_key]]
 
