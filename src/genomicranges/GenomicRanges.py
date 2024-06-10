@@ -20,6 +20,7 @@ __license__ = "MIT"
 
 _granges_delim = "__"
 
+
 def _guess_num_ranges(seqnames, ranges):
     if len(seqnames) != len(ranges):
         raise ValueError("Number of 'seqnames' and 'ranges' do not match!")
@@ -1481,7 +1482,9 @@ class GenomicRanges:
         chrm_grps = {}
         for i in range(len(self)):
             __strand = self._strand[i] if ignore_strand is False else 0
-            _grp = f"{self._seqinfo.seqnames[self._seqnames[i]]}{_granges_delim}{__strand}"
+            _grp = (
+                f"{self._seqinfo.seqnames[self._seqnames[i]]}{_granges_delim}{__strand}"
+            )
 
             if _grp not in chrm_grps:
                 chrm_grps[_grp] = []
