@@ -48,6 +48,7 @@ def test_reduce():
     assert (out.width == np.array([11, 32, 25])).all()
     assert (out.strand == np.array([0, 0, 0])).all()
 
+
 def test_reduce_with_contigs():
     assert gr is not None
 
