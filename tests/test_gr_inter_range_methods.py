@@ -48,10 +48,29 @@ def test_reduce():
     assert (out.width == np.array([11, 32, 25])).all()
     assert (out.strand == np.array([0, 0, 0])).all()
 
-def test_reduce_with_contigs():
-    assert gr is not None
 
-    out = gr.reduce()
+def test_reduce_with_contigs():
+    gr2 = GenomicRanges(
+        seqnames=[
+            "chr1_gl123",
+            "chr2",
+            "chr3",
+            "chr2",
+            "chr3",
+        ],
+        ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
+        strand=["*", "-", "*", "+", "-"],
+        mcols=BiocFrame(
+            {
+                "score": range(0, 5),
+                "GC": [random() for _ in range(5)],
+            }
+        ),
+    )
+
+    assert gr2 is not None
+
+    out = gr2.reduce()
 
     assert out is not None
     assert out.seqnames == ["chr1_gl123", "chr2", "chr2", "chr3", "chr3"]
@@ -59,7 +78,7 @@ def test_reduce_with_contigs():
     assert (out.width == np.array([11, 30, 21, 5, 25])).all()
     assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
 
-    out = gr.reduce(ignore_strand=True)
+    out = gr2.reduce(ignore_strand=True)
 
     assert out is not None
     assert out.seqnames == ["chr1_gl123", "chr2", "chr3"]
