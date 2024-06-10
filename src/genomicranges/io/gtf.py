@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Union, List
+from typing import Dict, List, Union
 
 # Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
 
@@ -52,7 +52,7 @@ def parse_gtf(
             parsed. Defaults to "#".
 
     Returns:
-        Genome annotations from GTF as pandas dataframe.
+        Pandas DataFrame containing annotations from GTF.
     """
 
     from joblib import Parallel, delayed
@@ -125,10 +125,10 @@ def read_gtf(
             parsed. Defaults to "#".
 
     Returns:
-        Genome annotations from GTF.
+        Genomic Ranges with annotations from the GTF file.
     """
     compressed = True if file.endswith("gz") else False
-    data = parse_gtf(file, compressed=compressed)
+    data = parse_gtf(file, compressed=compressed, skiprows=skiprows, comment=comment)
     from ..GenomicRanges import GenomicRanges
 
     return GenomicRanges.from_pandas(data)
