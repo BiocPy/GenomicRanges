@@ -79,7 +79,7 @@ session = bb.new_session()
 df = session.read_gtf_file("your/data/test.gtf").to_polars()
 df = df.rename({"seqname": "seqnames", "start": "starts", "end": "ends"})
 
-gg = GenomicRanges.from_polars(dd)
+gg = GenomicRanges.from_polars(df)
 
 # do stuff w/ a genomic ranges
 print(len(gg), len(df))
