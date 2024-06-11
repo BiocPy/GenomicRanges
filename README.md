@@ -140,7 +140,7 @@ df = pl.DataFrame(
     }
 )
 
-gr = GenomicRanges.from_pandas(df)
+gr = GenomicRanges.from_polars(df)
 print(gr)
 ```
 
