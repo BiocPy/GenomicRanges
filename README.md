@@ -24,25 +24,9 @@ pip install genomicranges[optional]
 
 `GenomicRanges` is the base class to represent and operate over genomic regions and annotations.
 
-### From UCSC or GTF file
+### From Bioinformatic file formats 
 
-You can easily download and parse genome annotations from UCSC or load a genome annotation from a GTF file,
-
-```python
-import genomicranges
-
-gr = genomicranges.read_gtf(<PATH TO GTF>)
-# OR
-gr = genomicranges.read_ucsc(genome="hg19")
-
-print(gr)
-```
-
-    ## output
-    ## GenomicRanges with 1760959 intervals & 10 metadata columns.
-    ## ... truncating the console print ...
-
-### From `biobear`
+#### From `biobear`
 
 Although the parsing capabilities in the package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can easily convert these representations to `GenomicRanges`:
 
@@ -64,7 +48,26 @@ print(len(gg), len(df))
     ## output
     ## 77 77
 
-### from `IRanges` (Preferred way)
+
+#### UCSC or GTF file
+
+You can easily download and parse genome annotations from UCSC or load a genome annotation from a GTF file,
+
+```python
+import genomicranges
+
+gr = genomicranges.read_gtf(<PATH TO GTF>)
+# OR
+gr = genomicranges.read_ucsc(genome="hg19")
+
+print(gr)
+```
+
+    ## output
+    ## GenomicRanges with 1760959 intervals & 10 metadata columns.
+    ## ... truncating the console print ...
+
+### From `IRanges` (Preferred way)
 
 If you have all relevant information to create a GenomicRanges object
 
@@ -107,7 +110,7 @@ print(gr)
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
 
-### Pandas DataFrame
+### Pandas `DataFrame`
 
 A common representation in Python is a pandas `DataFrame` for all tabular datasets. `DataFrame` must contain columns "seqnames", "starts", and "ends" to represent genomic intervals. Here's an example:
 
@@ -143,7 +146,7 @@ print(gr)
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
 
-### Polars DataFrame
+### Polars `DataFrame`
 
 Similarly, To initialize from a polars `DataFrame`:
 
