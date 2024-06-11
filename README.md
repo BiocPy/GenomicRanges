@@ -120,6 +120,42 @@ print(gr)
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
 
+### Polars DataFrame
+
+Similarly, To initialize from a polars `DataFrame`:
+
+```python
+from genomicranges import GenomicRanges
+import polars as pl
+from random import random
+
+df = pl.DataFrame(
+    {
+        "seqnames": ["chr1", "chr2", "chr1", "chr3", "chr2"],
+        "starts": [101, 102, 103, 104, 109],
+        "ends": [112, 103, 128, 134, 111],
+        "strand": ["*", "-", "*", "+", "-"],
+        "score": range(0, 5),
+        "GC": [random() for _ in range(5)],
+    }
+)
+
+gr = GenomicRanges.from_pandas(df)
+print(gr)
+```
+
+    ## output
+    GenomicRanges with 5 ranges and 5 metadata columns
+      seqnames    ranges           strand    score                  GC
+         <str> <IRanges> <ndarray[int64]>   <list>              <list>
+    0     chr1 101 - 112                * |      0  0.4862658925128007
+    1     chr2 102 - 103                - |      1 0.27948386889389953
+    2     chr1 103 - 128                * |      2  0.5162697718607901
+    3     chr3 104 - 134                + |      3  0.5979843806415466
+    4     chr2 109 - 111                - |      4 0.04740781186083798
+    ------
+    seqinfo(3 sequences): chr1 chr2 chr3
+
 ### Interval Operations
 
 `GenomicRanges` supports most [interval based operations](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
