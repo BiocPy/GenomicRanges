@@ -1114,7 +1114,7 @@ class GenomicRanges:
         return cls(
             ranges=ranges, seqnames=seqnames, strand=strand, names=names, mcols=mcols
         )
-    
+
     ################################
     ######>> polars interop <<######
     ################################
@@ -1128,11 +1128,12 @@ class GenomicRanges:
         import polars as pl
 
         _rdf = self._ranges.to_polars()
-        _rdf["seqnames"] = self.get_seqnames()
-        _rdf["strand"] = self.get_strand(as_type="list")
+        _rdf = _rdf.with_columns(
+            seqnames=self.get_seqnames(), strand=self.get_strand(as_type="list")
+        )
 
         if self._names is not None:
-            _rdf["rownames"] = self._names
+            _rdf = _rdf.with_columns(rownames=self._names)
 
         if self._mcols is not None:
             if self._mcols.shape[1] > 0:
@@ -1146,7 +1147,8 @@ class GenomicRanges:
 
         Args:
             input:
-                Input data. must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                Input polars DataFrame.
+                must contain columns 'seqnames', 'starts' and 'widths' or "ends".
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1187,7 +1189,7 @@ class GenomicRanges:
         mcols_df = input.drop(columns=drops)
 
         mcols = None
-        if (not mcols_df.empty) or len(mcols_df.columns) > 0:
+        if (not mcols_df.is_empty()) or len(mcols_df.columns) > 0:
             mcols = BiocFrame.from_polars(mcols_df)
 
         names = None
@@ -1740,7 +1742,8 @@ class GenomicRanges:
                 if _key in chrm_grps:
                     _grp_subset = self[chrm_grps[_key]]
                     gaps = _grp_subset._ranges.gaps(
-                        start=start, end=_end  # - 1 if _end is not None else _end
+                        start=start,
+                        end=_end,  # - 1 if _end is not None else _end
                     )
                 else:
                     if _end is None:
