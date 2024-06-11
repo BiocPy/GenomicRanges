@@ -4,7 +4,7 @@
 
 # GenomicRanges
 
-GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html). **_Intervals are inclusive on both ends and starts at 1._**
+GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 **Note: V0.4.0 is a complete overhaul of the package, as such the constructor to GenomicRanges has changed. Please refer the documentation for updated usage of the classes and the methods.**
 
@@ -14,7 +14,7 @@ To get started, install the package from [PyPI](https://pypi.org/project/genomic
 pip install genomicranges
 ```
 
-Some of the methods like `read_ucsc` require optional packages to be installed, e.g. joblib` and can be installed by:
+Some of the methods like `read_ucsc` require optional packages to be installed, e.g. `joblib` and can be installed by:
 
 ```sh
 pip install genomicranges[optional]
@@ -105,6 +105,42 @@ df = pd.DataFrame(
 )
 
 gr = GenomicRanges.from_pandas(df)
+print(gr)
+```
+
+    ## output
+    GenomicRanges with 5 ranges and 5 metadata columns
+      seqnames    ranges           strand    score                  GC
+         <str> <IRanges> <ndarray[int64]>   <list>              <list>
+    0     chr1 101 - 112                * |      0  0.4862658925128007
+    1     chr2 102 - 103                - |      1 0.27948386889389953
+    2     chr1 103 - 128                * |      2  0.5162697718607901
+    3     chr3 104 - 134                + |      3  0.5979843806415466
+    4     chr2 109 - 111                - |      4 0.04740781186083798
+    ------
+    seqinfo(3 sequences): chr1 chr2 chr3
+
+### Polars DataFrame
+
+Similarly, To initialize from a polars `DataFrame`:
+
+```python
+from genomicranges import GenomicRanges
+import polars as pl
+from random import random
+
+df = pl.DataFrame(
+    {
+        "seqnames": ["chr1", "chr2", "chr1", "chr3", "chr2"],
+        "starts": [101, 102, 103, 104, 109],
+        "ends": [112, 103, 128, 134, 111],
+        "strand": ["*", "-", "*", "+", "-"],
+        "score": range(0, 5),
+        "GC": [random() for _ in range(5)],
+    }
+)
+
+gr = GenomicRanges.from_polars(df)
 print(gr)
 ```
 

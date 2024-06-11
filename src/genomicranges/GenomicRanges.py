@@ -1115,6 +1115,89 @@ class GenomicRanges:
             ranges=ranges, seqnames=seqnames, strand=strand, names=names, mcols=mcols
         )
 
+    ################################
+    ######>> polars interop <<######
+    ################################
+
+    def to_polars(self) -> "polars.DataFrame":
+        """Convert this ``GenomicRanges`` object into a :py:class:`~polars.DataFrame`.
+
+        Returns:
+            A :py:class:`~polars.DataFrame` object.
+        """
+        import polars as pl
+
+        _rdf = self._ranges.to_polars()
+        _rdf = _rdf.with_columns(
+            seqnames=self.get_seqnames(), strand=self.get_strand(as_type="list")
+        )
+
+        if self._names is not None:
+            _rdf = _rdf.with_columns(rownames=self._names)
+
+        if self._mcols is not None:
+            if self._mcols.shape[1] > 0:
+                _rdf = pl.concat([_rdf, self._mcols.to_polars()], how="horizontal")
+
+        return _rdf
+
+    @classmethod
+    def from_polars(cls, input: "polars.DataFrame") -> "GenomicRanges":
+        """Create a ``GenomicRanges`` from a :py:class:`~polars.DataFrame` object.
+
+        Args:
+            input:
+                Input polars DataFrame.
+                must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+
+        Returns:
+            A ``GenomicRanges`` object.
+        """
+        from polars import DataFrame
+
+        if not isinstance(input, DataFrame):
+            raise TypeError("`input` is not a polars `DataFrame` object.")
+
+        if "starts" not in input.columns:
+            raise ValueError("'input' must contain column 'starts'.")
+        start = input["starts"].to_list()
+
+        if "widths" not in input.columns and "ends" not in input.columns:
+            raise ValueError("'input' must contain either 'widths' or 'ends' columns.")
+
+        drops = []
+        if "widths" in input.columns:
+            drops.append("widths")
+            width = input["widths"].to_list()
+        else:
+            drops.append("ends")
+            width = input["ends"] - input["starts"]
+
+        if "seqnames" not in input.columns:
+            raise ValueError("'input' must contain column 'seqnames'.")
+        seqnames = input["seqnames"].to_list()
+
+        ranges = IRanges(start, width)
+
+        strand = None
+        if "strand" in input.columns:
+            strand = input["strand"].to_list()
+            drops.append("strand")
+
+        # mcols
+        drops.extend(["starts", "seqnames"])
+        mcols_df = input.drop(columns=drops)
+
+        mcols = None
+        if (not mcols_df.is_empty()) or len(mcols_df.columns) > 0:
+            mcols = BiocFrame.from_polars(mcols_df)
+
+        names = None
+
+        return cls(
+            ranges=ranges, seqnames=seqnames, strand=strand, names=names, mcols=mcols
+        )
+
     #####################################
     ######>> intra-range methods <<######
     #####################################
@@ -1659,7 +1742,8 @@ class GenomicRanges:
                 if _key in chrm_grps:
                     _grp_subset = self[chrm_grps[_key]]
                     gaps = _grp_subset._ranges.gaps(
-                        start=start, end=_end  # - 1 if _end is not None else _end
+                        start=start,
+                        end=_end,  # - 1 if _end is not None else _end
                     )
                 else:
                     if _end is None:
