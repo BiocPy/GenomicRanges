@@ -81,6 +81,25 @@ human_gr = genomicranges.read_ucsc(genome="hg19")
 print(human_gr)
 ```
 
+## From `biobear`
+
+Although the parsing capabilities in the package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to `GenomicRanges`:
+
+```python
+from genomicranges import GenomicRanges
+import biobear as bb
+
+session = bb.new_session()
+
+df = session.read_gtf_file("your/data/test.gtf").to_polars()
+df = df.rename({"seqname": "seqnames", "start": "starts", "end": "ends"})
+
+gg = GenomicRanges.from_polars(dd)
+
+# do stuff w/ a genomic ranges
+print(len(gg), len(df))
+```
+
 ## Pandas `DataFrame`
 
 If your genomic coordinates are represented as a pandas `DataFrame`, convert this into `GenomicRanges` if it contains the necessary columns.
