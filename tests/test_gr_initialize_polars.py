@@ -59,3 +59,32 @@ def test_to_polars():
 
     assert len(set(roundtrip.columns).difference(df_src.columns)) == 2
     assert len(roundtrip) == len(df_src)
+
+def test_to_polars_complex():
+    gr = GenomicRanges(
+        seqnames=[
+            "chr1",
+            "chr2",
+            "chr2",
+            "chr2",
+            "chr1",
+            "chr1",
+            "chr3",
+            "chr3",
+            "chr3",
+            "chr3",
+        ],
+        ranges=IRanges(start=range(100, 110), width=range(110, 120)),
+        strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
+        mcols=BiocFrame(
+            {
+                "score": range(0, 10),
+                "GC": [random() for _ in range(10)],
+            }
+        ),
+    )
+
+    roundtrip = gr.to_polars()
+
+    assert len(roundtrip.columns) == 7
+    assert len(roundtrip) == len(gr)

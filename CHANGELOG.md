@@ -1,8 +1,15 @@
 # Changelog
 
-## Version 0.4.9
+## Version 0.4.17
+
+Initialize `GenomicRanges` from a polars `DataFrame`. Also coerce a GRanges object 
+to polars.
+
+## Version 0.4.9 - 0.4.16
 
 Bring `SeqInfo` upto speed with the rest of the class implementations. Added subset and pretty print functionality.
+
+Fix minor bugs and update documentation.
 
 ## Version 0.4.0 to 0.4.8
 

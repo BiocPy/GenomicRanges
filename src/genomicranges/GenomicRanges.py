@@ -1137,7 +1137,7 @@ class GenomicRanges:
 
         if self._mcols is not None:
             if self._mcols.shape[1] > 0:
-                _rdf = pl.concat([_rdf, self._mcols.to_polars()], axis=1)
+                _rdf = pl.concat([_rdf, self._mcols.to_polars()], how="horizontal")
 
         return _rdf
 
