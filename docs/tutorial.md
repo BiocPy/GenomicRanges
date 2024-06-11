@@ -106,11 +106,11 @@ gr_from_df = GenomicRanges.from_pandas(df)
 print(gr_from_df)
 ```
 
-## Polars DataFrame
+## Polars `DataFrame`
 
 Similarly, To initialize from a polars `DataFrame`:
 
-```python
+```{code-cell}
 from genomicranges import GenomicRanges
 import polars as pl
 from random import random
