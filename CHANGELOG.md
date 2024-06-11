@@ -2,7 +2,7 @@
 
 ## Version 0.4.17
 
-Initialize `GenomicRanges` from a polars `DataFrame`. Also coerce a GRanges object 
+Initialize `GenomicRanges` from a polars `DataFrame`. Also coerce a GRanges object
 to polars.
 
 ## Version 0.4.9 - 0.4.16

@@ -60,6 +60,7 @@ def test_to_polars():
     assert len(set(roundtrip.columns).difference(df_src.columns)) == 2
     assert len(roundtrip) == len(df_src)
 
+
 def test_to_polars_complex():
     gr = GenomicRanges(
         seqnames=[
