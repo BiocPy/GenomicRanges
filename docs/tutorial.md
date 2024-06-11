@@ -8,7 +8,7 @@ kernelspec:
 
 `GenomicRanges` is a Python package designed to handle genomic locations and facilitate genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html) and uses the [IRanges](https://github.com/BiocPy/IRanges) package under the hood to manage and provide interval-based arithmetic operations.
 
-An `IRanges` holds a **start** position and a **width**, and is typically used to represent coordinates along a genomic sequence. The interpretation of the **start** position depends on the application; for sequences, the **start** is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. `IRanges` uses [nested containment lists](https://github.com/pyranges/ncls) under the hood to perform fast overlap and search-based operations. 
+An `IRanges` holds a **start** position and a **width**, and is typically used to represent coordinates along a genomic sequence. The interpretation of the **start** position depends on the application; for sequences, the **start** is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. `IRanges` uses [nested containment lists](https://github.com/pyranges/ncls) under the hood to perform fast overlap and search-based operations.
 
 The package provides a `GenomicRanges` class to specify multiple genomic elements, typically where genes start and end. Genes are themselves made of many subregions, such as exons, and a `GenomicRangesList` enables the representation of this nested structure.
 
@@ -29,7 +29,7 @@ pip install genomicranges
 
 # Construct a `GenomicRanges` object
 
-We support multiple ways to initialize a `GenomicRanges` object. 
+We support multiple ways to initialize a `GenomicRanges` object.
 
 ## Preferred way
 
@@ -66,7 +66,7 @@ The input for `mcols` is expected to be a `BiocFrame` object and will be convert
 
 ## From UCSC or GTF file
 
-You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages **pandas** and **joblib** to parse and extract various attributes from the gtf file. 
+You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages **pandas** and **joblib** to parse and extract various attributes from the gtf file.
 
 A future version of this package might implement or take advantage of existing genomic parser packages in Python to support various file formats.
 
@@ -163,7 +163,7 @@ print("start positions: ", gr.start)
 gr.seqinfo
 
 # compute and return the widths of each region
-print("width of each region: ", gr.get_width()) 
+print("width of each region: ", gr.get_width())
 # or gr.width
 
 # access mcols
@@ -375,7 +375,7 @@ plt.title("'score' histogram with 'auto' bins")
 plt.show()
 ```
 
-Not the prettiest plot but it works. 
+Not the prettiest plot but it works.
 
 ## Binned average
 
@@ -449,7 +449,7 @@ print(tiles)
 Computes number of ranges that overlap for each position.
 
 ```{code-cell}
-import rich 
+import rich
 
 res_vector = gr.coverage()
 rich.print(res_vector)
@@ -461,7 +461,7 @@ Lets see what the coverage looks like, now with **seaborn**:
 import seaborn as sns
 vector = res_vector["chr1"]
 sns.lineplot(data=pd.DataFrame({
-    "position": [i for i in range(len(vector))], 
+    "position": [i for i in range(len(vector))],
     "coverage":vector
 }), x ="position", y="coverage")
 ```
@@ -592,9 +592,9 @@ samp_gr = gr.sample(k=4)
 
 Just as it sounds, a `GenomicRangesList` is a named-list like object.
 
-If you are wondering why you need this class, a `GenomicRanges` object enables the 
-specification of multiple genomic elements, usually where genes start and end. 
-Genes, in turn, consist of various subregions, such as exons. 
+If you are wondering why you need this class, a `GenomicRanges` object enables the
+specification of multiple genomic elements, usually where genes start and end.
+Genes, in turn, consist of various subregions, such as exons.
 The `GenomicRangesList` allows us to represent this nested structure.
 
 As of now, this class has limited functionality, serving as a read-only class with basic accessors.
