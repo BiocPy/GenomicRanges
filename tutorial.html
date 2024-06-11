@@ -6,9 +6,10 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="genomicranges" href="api/modules.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>Tutorial - GenomicRanges 0.4.16 documentation</title>
+        <title>GenomicRanges: Genomic analysis - GenomicRanges 0.4.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -179,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.16 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.17 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +192,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -203,7 +204,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.16 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.17 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -213,9 +214,22 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tutorial</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>: Genomic analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#construct-a-genomicranges-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#construct-a-genomicrangeslist-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#sequence-information">Sequence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#subset-operations">Subset operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#intra-range-transformations">Intra-range transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#inter-range-methods">Inter-range methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#set-operations">Set operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#compute-over-bins">Compute over bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#generate-tiles-or-bins">Generate tiles or bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#coverage">Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#overlap-based-methods">Overlap based methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#search-operations">Search operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#combine-genomicranges-objects-by-rows">Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#misc-operations">Misc operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#genomicrangeslist-class"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> class</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/genomicranges.io.html">genomicranges.io package</a></li>
@@ -261,58 +275,37 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section class="tex2jax_ignore mathjax_ignore" id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">¶</a></h1>
-<p>The package provide classes to represent genomic intervals and methods to perform interval based arithmetic operations.</p>
-<p><strong><em>Intervals are inclusive on both ends and starts at 1.</em></strong></p>
-<p>The implementation details for the classes follow the Bioconductor’s equivalent <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">R/GenomicRanges package</a>.</p>
+          <section class="tex2jax_ignore mathjax_ignore" id="genomicranges-genomic-analysis">
+<h1><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>: Genomic analysis<a class="headerlink" href="#genomicranges-genomic-analysis" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> is a Python package designed to handle genomic locations and facilitate genomic analysis. It is similar to Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html">GenomicRanges</a> and uses the <a class="reference external" href="https://github.com/BiocPy/IRanges">IRanges</a> package under the hood to manage and provide interval-based arithmetic operations.</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> holds a <strong>start</strong> position and a <strong>width</strong>, and is typically used to represent coordinates along a genomic sequence. The interpretation of the <strong>start</strong> position depends on the application; for sequences, the <strong>start</strong> is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> uses <a class="reference external" href="https://github.com/pyranges/ncls">nested containment lists</a> under the hood to perform fast overlap and search-based operations.</p>
+<p>The package provides a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> class to specify multiple genomic elements, typically where genes start and end. Genes are themselves made of many subregions, such as exons, and a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> enables the representation of this nested structure.</p>
+<p>Moreover, the package also provides a <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> class to update or modify sequence information stored in the object. Learn more about this in the <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html">GenomeInfoDb package</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> class is designed to seamlessly operate with upstream packages like <code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> or <code class="docutils literal notranslate"><span class="pre">SingleCellExperiment</span></code> representations, providing consistent and stable functionality.</p>
+<p>These classes follow a functional paradigm for accessing or setting properties, with further details discussed in <a class="reference external" href="https://biocpy.github.io/tutorial/chapters/philosophy.html#functional-discipline">functional paradigm</a> section.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<p>To get started, install the package from <a class="reference external" href="https://pypi.org/project/genomicranges/">PyPI</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>genomicranges
+</pre></div>
+</div>
+</section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="construct-a-genomicranges-object">
 <h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object<a class="headerlink" href="#construct-a-genomicranges-object" title="Link to this heading">¶</a></h1>
-<p>To construct a <strong>GenomicRanges</strong> object, simply pass in the column representation as a dictionary. This dictionary must contain “seqnames”, “starts”, “ends” columns and optionally specify “strand”. If “strand” column is not provided, “*” is used as the default value for each genomic interval.</p>
-<section id="pandas-dataframe">
-<h2>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Link to this heading">¶</a></h2>
-<p>A common representation in Python is a pandas DataFrame for all tabular datasets. One can convert this DataFrame into <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> if it contains the necessary columns.</p>
-<p><strong><em>Note: The DataFrame must contain columns <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>, <code class="docutils literal notranslate"><span class="pre">starts</span></code> and <code class="docutils literal notranslate"><span class="pre">ends</span></code> to represent genomic coordinates.</em></strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
-        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
-        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
-    <span class="p">}</span>
-<span class="p">)</span>
-
-<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="from-ucsc-or-gtf-file">
-<h2>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Link to this heading">¶</a></h2>
-<p>Methods are available to download, parse and access genomes from UCSC or load a genome annotation from GTF file.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
-
-<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_gtf</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
-<span class="c1"># OR</span>
-<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="from-iranges-preferred-way">
-<h2>from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">¶</a></h2>
-<p>If you have all relevant information to create a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<p>We support multiple ways to initialize a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object.</p>
+<section id="preferred-way">
+<h2>Preferred way<a class="headerlink" href="#preferred-way" title="Link to this heading">¶</a></h2>
+<p>To construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object, we need to provide sequence information and genomic coordinates. This is achieved through the combination of the <code class="docutils literal notranslate"><span class="pre">seqnames</span></code> and <code class="docutils literal notranslate"><span class="pre">ranges</span></code> parameters. Additionally, you have the option to specify the <code class="docutils literal notranslate"><span class="pre">strand</span></code>, represented as a list of “+” (or 1) for the forward strand, “-” (or -1) for the reverse strand, or “*” (or 0) if the strand is unknown. You can also provide a NumPy vector that utilizes either the string or numeric representation to specify the <code class="docutils literal notranslate"><span class="pre">strand</span></code>. Optionally, you can use the <code class="docutils literal notranslate"><span class="pre">mcols</span></code> parameter to provide additional metadata about each genomic region.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 <span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
 <span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
@@ -334,102 +327,353 @@
         <span class="p">}</span>
     <span class="p">),</span>
 <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 5 metadata columns
+    seqnames    ranges          strand     score                  GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
+[0]     chr1 101 - 112               * |       0 0.15629748211174932
+[1]     chr2 102 - 123               - |       1  0.1259699555610595
+[2]     chr3 103 - 128               * |       2 0.07701925842593438
+[3]     chr2 104 - 134               + |       3 0.45911929511240734
+[4]     chr3 105 - 110               - |       4  0.5433199390859063
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:348: UserWarning: &#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead
+  warn(&quot;&#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead&quot;, UserWarning)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The input for <code class="docutils literal notranslate"><span class="pre">mcols</span></code> is expected to be a <code class="docutils literal notranslate"><span class="pre">BiocFrame</span></code> object and will be converted to a <code class="docutils literal notranslate"><span class="pre">BiocFrame</span></code> in case a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> is supplied.</p>
+</section>
+<section id="from-ucsc-or-gtf-file">
+<h2>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Link to this heading">¶</a></h2>
+<p>You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages <strong>pandas</strong> and <strong>joblib</strong> to parse and extract various attributes from the gtf file.</p>
+<p>A future version of this package might implement or take advantage of existing genomic parser packages in Python to support various file formats.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
+
+<span class="c1"># gr = genomicranges.read_gtf(&lt;PATH TO GTF&gt;)</span>
+
+<span class="c1"># OR</span>
+
+<span class="n">human_gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">human_gr</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="set-sequence-information">
-<h2>Set sequence information<a class="headerlink" href="#set-sequence-information" title="Link to this heading">¶</a></h2>
-<p>The package also provides a <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> class to update or modify sequence information stored in the object. Read more about this class in <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html">GenomeInfoDb package</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">SeqInfo</span>
-<span class="n">seq_obj</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,],</span>
-    <span class="s2">&quot;seqlengths&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">103</span><span class="p">),</span>
-    <span class="s2">&quot;is_circular&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span>
-    <span class="s2">&quot;genome&quot;</span><span class="p">:</span> <span class="s2">&quot;hg19&quot;</span><span class="p">,</span>
-<span class="p">}</span>
+<section id="pandas-dataframe">
+<h2>Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code><a class="headerlink" href="#pandas-dataframe" title="Link to this heading">¶</a></h2>
+<p>If your genomic coordinates are represented as a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>, convert this into <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> if it contains the necessary columns.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> must contain columns <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>, <code class="docutils literal notranslate"><span class="pre">starts</span></code> and <code class="docutils literal notranslate"><span class="pre">ends</span></code> to represent genomic coordinates. The rest of the columns are considered metadata and will be available in the <code class="docutils literal notranslate"><span class="pre">mcols</span></code> slot of the <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="n">seq</span> <span class="o">=</span> <span class="n">SeqInfo</span><span class="p">(</span><span class="n">seq_obj</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 
-<span class="n">gr</span><span class="o">.</span><span class="n">seq_info</span> <span class="o">=</span> <span class="n">seq</span>
+<span class="n">gr_from_df</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gr_from_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 5 metadata columns
+  seqnames    ranges          strand    score                 GC
+     &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;             &lt;list&gt;
+0     chr1 101 - 112               * |      0 0.6357024398834322
+1     chr2 102 - 103               - |      1 0.9303613971589609
+2     chr1 103 - 128               * |      2 0.4323637812279718
+3     chr3 104 - 134               + |      3 0.4016362798346784
+4     chr2 109 - 111               - |      4  0.869627055226467
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:348: UserWarning: &#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead
+  warn(&quot;&#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead&quot;, UserWarning)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="polars-dataframe">
+<h2>Polars DataFrame<a class="headerlink" href="#polars-dataframe" title="Link to this heading">¶</a></h2>
+<p>Similarly, To initialize from a polars <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_polars</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="get-and-set-methods">
-<h2>Get and Set methods<a class="headerlink" href="#get-and-set-methods" title="Link to this heading">¶</a></h2>
-<p>Getters are available to access various properties.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># access sequence names</span>
-<span class="n">gr</span><span class="o">.</span><span class="n">seqnames</span>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="sequence-information">
+<h1>Sequence information<a class="headerlink" href="#sequence-information" title="Link to this heading">¶</a></h1>
+<p>The package also provides a <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> class to update or modify sequence information stored in the object. Learn more about this in the <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html">GenomeInfoDb package</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">SeqInfo</span>
+
+<span class="n">seq</span> <span class="o">=</span> <span class="n">SeqInfo</span><span class="p">(</span>
+    <span class="n">seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+    <span class="n">seqlengths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">118</span><span class="p">],</span>
+    <span class="n">is_circular</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+    <span class="n">genome</span> <span class="o">=</span> <span class="s2">&quot;hg19&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">gr_with_seq</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">set_seqinfo</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gr_with_seq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 5 metadata columns
+    seqnames    ranges          strand     score                  GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
+[0]     chr1 101 - 112               * |       0 0.15629748211174932
+[1]     chr2 102 - 123               - |       1  0.1259699555610595
+[2]     chr3 103 - 128               * |       2 0.07701925842593438
+[3]     chr2 104 - 134               + |       3 0.45911929511240734
+[4]     chr3 105 - 110               - |       4  0.5433199390859063
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+</div>
+</div>
+<section id="getters-setters">
+<h2>Getters/Setters<a class="headerlink" href="#getters-setters" title="Link to this heading">¶</a></h2>
+<p>Getters are available to access various attributes using either the property notation or functional style.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># access sequence names</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;seqnames (as property): &quot;</span><span class="p">,</span> <span class="n">gr</span><span class="o">.</span><span class="n">seqnames</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;seqnames (functional style): &quot;</span><span class="p">,</span> <span class="n">gr</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">())</span>
 
 <span class="c1"># access all start positions</span>
-<span class="n">gr</span><span class="o">.</span><span class="n">start</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;start positions: &quot;</span><span class="p">,</span> <span class="n">gr</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
 
 <span class="c1"># access annotation information if available</span>
-<span class="n">gr</span><span class="o">.</span><span class="n">seq_info</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">seqinfo</span>
 
 <span class="c1"># compute and return the widths of each region</span>
-<span class="n">gr</span><span class="o">.</span><span class="n">width</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;width of each region: &quot;</span><span class="p">,</span> <span class="n">gr</span><span class="o">.</span><span class="n">get_width</span><span class="p">())</span>
+<span class="c1"># or gr.width</span>
 
-<span class="c1"># access metadata columns, everything other than genomic locations</span>
-<span class="n">gr</span><span class="o">.</span><span class="n">mcols</span>
+<span class="c1"># access mcols</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>seqnames (as property):  [&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr3&#39;, &#39;chr2&#39;, &#39;chr3&#39;]
+seqnames (functional style):  [&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr3&#39;, &#39;chr2&#39;, &#39;chr3&#39;]
+start positions:  [101 102 103 104 105]
+width of each region:  [11 21 25 30  5]
+BiocFrame with 5 rows and 2 columns
+      score                  GC
+    &lt;range&gt;              &lt;list&gt;
+[0]       0 0.15629748211174932
+[1]       1  0.1259699555610595
+[2]       2 0.07701925842593438
+[3]       3 0.45911929511240734
+[4]       4  0.5433199390859063
+</pre></div>
+</div>
+</div>
 </div>
 <section id="setters">
 <h3>Setters<a class="headerlink" href="#setters" title="Link to this heading">¶</a></h3>
-<p>All property based setters are <code class="docutils literal notranslate"><span class="pre">in_place</span></code> operations. Methods are available to get and set properties on GenomicRanges.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-
-<span class="c1"># or use an in-place operation</span>
-<span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>All property-based setters are <code class="docutils literal notranslate"><span class="pre">in_place</span></code> operations, with further details discussed in <a class="reference internal" href="#../philosophy.qmd#functional-discipline"><span class="xref myst">functional paradigm</span></a> section.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">modified_mcols</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">modified_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">set_mcols</span><span class="p">(</span><span class="n">modified_mcols</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">modified_gr</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="access-any-column">
-<h3>Access any column<a class="headerlink" href="#access-any-column" title="Link to this heading">¶</a></h3>
-<p>Aside from the default getters, <code class="docutils literal notranslate"><span class="pre">column</span></code> methods provides a way to quickly access any column in the object.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">)</span>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 5 metadata columns
+    seqnames    ranges          strand     score                  GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
+[0]     chr1 101 - 112               * |       1 0.15629748211174932
+[1]     chr2 102 - 123               - |       2  0.1259699555610595
+[2]     chr3 103 - 128               * |       3 0.07701925842593438
+[3]     chr2 104 - 134               + |       4 0.45911929511240734
+[4]     chr3 105 - 110               - |       5  0.5433199390859063
+------
+seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
+</div>
+</div>
+</div>
+<p>or use an in-place operation:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BiocFrame with 5 rows and 2 columns
+      score                  GC
+    &lt;range&gt;              &lt;list&gt;
+[0]       1 0.15629748211174932
+[1]       2  0.1259699555610595
+[2]       3 0.07701925842593438
+[3]       4 0.45911929511240734
+[4]       5  0.5433199390859063
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="access-ranges">
 <h3>Access ranges<a class="headerlink" href="#access-ranges" title="Link to this heading">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">ranges()</span></code> is a generic method to access only the genomic locations as dictionary, pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> or something else. you can use any container representation based on a dictionary.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span><span class="o">.</span><span class="n">ranges</span>
+<p><code class="docutils literal notranslate"><span class="pre">get_ranges()</span></code> is a generic method to access only the genomic coordinates:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># or gr.get_ranges()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">ranges</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>IRanges object with 5 ranges and 0 metadata columns
+               start              end            width
+    &lt;ndarray[int32]&gt; &lt;ndarray[int32]&gt; &lt;ndarray[int32]&gt;
+[0]              101              112               11
+[1]              102              123               21
+[2]              103              128               25
+[3]              104              134               30
+[4]              105              110                5
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>
-<section id="slice-operations">
-<h2>Slice operations<a class="headerlink" href="#slice-operations" title="Link to this heading">¶</a></h2>
-<p>You can slice a <code class="docutils literal notranslate"><span class="pre">GenomicRange</span></code> object using the subset (<code class="docutils literal notranslate"><span class="pre">[]</span></code>) operator. This operation accepts different slice input types, you can either specify a boolean vector, a `slice`` object, a list of indices, or row/column names to subset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># slice the first 3 rows</span>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="subset-operations">
+<h1>Subset operations<a class="headerlink" href="#subset-operations" title="Link to this heading">¶</a></h1>
+<p>You can subset a <code class="docutils literal notranslate"><span class="pre">GenomicRange</span></code> object using the subset (<code class="docutils literal notranslate"><span class="pre">[]</span></code>) operator. This operation accepts different slice input types, such as a boolean vector, a <code class="docutils literal notranslate"><span class="pre">slice</span></code> object, a list of indices, or names (if available) to subset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the first 3 regions</span>
 <span class="n">gr</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
 
-<span class="c1"># slice 1, 3 and 2nd rows</span>
-<span class="n">gr</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
+<span class="c1"># get 1, 3 and 2nd rows</span>
+<span class="c1"># note: the order is retained in the result</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
 </pre></div>
 </div>
-</section>
-<section id="iterate-over-intervals">
-<h2>Iterate over intervals<a class="headerlink" href="#iterate-over-intervals" title="Link to this heading">¶</a></h2>
-<p>You can iterate over the intervals of a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object. <code class="docutils literal notranslate"><span class="pre">rowname</span></code> is None if the object does not have any row names.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">rowname</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gr</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">rowname</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 3 ranges and 3 metadata columns
+    seqnames    ranges          strand    score                  GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
+[0]     chr2 102 - 123               - |      2  0.1259699555610595
+[1]     chr2 104 - 134               + |      4 0.45911929511240734
+[2]     chr3 103 - 128               * |      3 0.07701925842593438
+------
+seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
 </div>
+</div>
+</div>
+<section id="iterate-over-ranges">
+<h2>Iterate over ranges<a class="headerlink" href="#iterate-over-ranges" title="Link to this heading">¶</a></h2>
+<p>You can iterate over the regions of a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object. <code class="docutils literal notranslate"><span class="pre">name</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code> if the object does not contain any names. To iterate over the first two ranges:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gr</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>None GenomicRanges with 1 range and 1 metadata column
+    seqnames    ranges          strand    score                  GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
+[0]     chr1 101 - 112               * |      1 0.15629748211174932
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+None GenomicRanges with 1 range and 1 metadata column
+    seqnames    ranges          strand    score                 GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;             &lt;list&gt;
+[0]     chr2 102 - 123               - |      2 0.1259699555610595
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="intra-range-transformations">
-<h2>Intra-range transformations<a class="headerlink" href="#intra-range-transformations" title="Link to this heading">¶</a></h2>
-<p>For detailed description of these methods, refer to Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/manuals/GenomicRanges/man/GenomicRanges.pdf">GenomicRanges documentation</a></p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="intra-range-transformations">
+<h1>Intra-range transformations<a class="headerlink" href="#intra-range-transformations" title="Link to this heading">¶</a></h1>
+<p>For detailed description of these methods, refer to either the Bioconductor’s or BiocPy’s documentation.</p>
 <ul class="simple">
-<li><p><strong>flank</strong>: flank the intervals based on start or end or both.</p></li>
-<li><p><strong>shift</strong>: shifts all the ranges specified by the shift argument.</p></li>
-<li><p><strong>resize</strong>: resizes the ranges to the specified width where either the start, end, or center is used as an anchor</p></li>
-<li><p><strong>narrow</strong>: narrows the ranges</p></li>
-<li><p><strong>promoters</strong>: promoters generates promoter ranges for each range relative to the TSS.The promoter range is expanded around the TSS according to the upstream and downstream parameters.</p></li>
-<li><p><strong>restrict</strong>: restricts the ranges to the interval(s) specified by the start and end arguments</p></li>
-<li><p><strong>trim</strong>: trims out-of-bound ranges located on non-circular sequences whose length is not NA.</p></li>
+<li><p><strong>flank</strong>: Flank the intervals based on <strong>start</strong> or <strong>end</strong> or <strong>both</strong>.</p></li>
+<li><p><strong>shift</strong>: Shifts all the ranges specified by the <strong>shift</strong> argument.</p></li>
+<li><p><strong>resize</strong>: Resizes the ranges to the specified width where either the <strong>start</strong>, <strong>end</strong>, or <strong>center</strong> is used as an anchor.</p></li>
+<li><p><strong>narrow</strong>: Narrows the ranges.</p></li>
+<li><p><strong>promoters</strong>: Promoters generates promoter ranges for each range relative to the TSS. The promoter range is expanded around the TSS according to the <strong>upstream</strong> and <strong>downstream</strong> parameters.</p></li>
+<li><p><strong>restrict</strong>: Restricts the ranges to the interval(s) specified by the <strong>start</strong> and <strong>end</strong> arguments.</p></li>
+<li><p><strong>trim</strong>: Trims out-of-bound ranges located on non-circular sequences whose length is not <code class="docutils literal notranslate"><span class="pre">NA</span></code>.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># flank</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">106</span><span class="p">)],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># flank</span>
 <span class="n">flanked_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">flank</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">both</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># shift</span>
@@ -439,7 +683,7 @@
 <span class="n">resized_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fix</span><span class="o">=</span><span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># narrow</span>
-<span class="n">narrow_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">narrow_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># promoters</span>
 <span class="n">prom_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">promoters</span><span class="p">()</span>
@@ -449,40 +693,113 @@
 
 <span class="c1"># trim</span>
 <span class="n">trimmed_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">trim</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GenomicRanges after the trim operation:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">trimmed_gr</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges after the trim operation:
+GenomicRanges with 5 ranges and 5 metadata columns
+    seqnames    ranges          strand     score                  GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
+[0]     chr1 101 - 112               * |       0  0.6557181889604834
+[1]     chr2 102 - 123               - |       1  0.6845051278924298
+[2]     chr3 103 - 128               * |       2  0.6079373415838185
+[3]     chr2 104 - 134               + |       3 0.21505330044426774
+[4]     chr3 105 - 110               - |       4  0.4264727239502447
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:405: UserWarning: &#39;seqlengths&#39; is deprecated, use &#39;get_seqlengths&#39; instead
+  warn(
+/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:467: UserWarning: &#39;is_circular&#39; is deprecated, use &#39;get_is_circular&#39; instead
+  warn(
+/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/iranges/IRanges.py:290: UserWarning: Setting property &#39;width&#39;is an in-place operation, use &#39;set_width&#39; instead
+  warn(
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="inter-range-methods">
-<h2>Inter-range methods<a class="headerlink" href="#inter-range-methods" title="Link to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="inter-range-methods">
+<h1>Inter-range methods<a class="headerlink" href="#inter-range-methods" title="Link to this heading">¶</a></h1>
 <ul class="simple">
-<li><p><strong>range</strong>: returns a new GenomicRanges object containing range bounds for each distinct (seqname, strand) pairing.</p></li>
-<li><p><strong>reduce</strong>: returns a new GenomicRanges object containing reduced bounds for each distinct (seqname, strand) pairing.</p></li>
-<li><p><strong>gaps</strong>: Finds gaps in the GenomicRanges object for each distinct (seqname, strand) pairing</p></li>
-<li><p><strong>disjoin</strong>: Finds disjoint intervals across all locations for each distinct (seqname, strand) pairing.</p></li>
+<li><p><strong>range</strong>: Returns a new <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object containing range bounds for each distinct (seqname, strand) pair.</p></li>
+<li><p><strong>reduce</strong>: returns a new <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object containing reduced bounds for each distinct (seqname, strand) pair.</p></li>
+<li><p><strong>gaps</strong>: Finds gaps in the <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object for each distinct (seqname, strand) pair.</p></li>
+<li><p><strong>disjoin</strong>: Finds disjoint intervals across all locations for each distinct (seqname, strand) pair.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># range</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">106</span><span class="p">)],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># range</span>
 <span class="n">range_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">range</span><span class="p">()</span>
 
 <span class="c1"># reduce</span>
-<span class="n">reduced_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">min_gap_width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">reduced_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">min_gap_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># gaps</span>
-<span class="n">gapped_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">103</span><span class="p">)</span> <span class="c1"># OR</span>
+<span class="n">gapped_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">103</span><span class="p">)</span>  <span class="c1"># OR</span>
 <span class="n">gapped_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">})</span>
 
 <span class="c1"># disjoin</span>
 <span class="n">disjoin_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">disjoin</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GenomicRanges with the disjoint ranges:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">disjoin_gr</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with the disjoint ranges:
+GenomicRanges with 5 ranges and 5 metadata columns
+    seqnames    ranges          strand
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
+[0]     chr1 101 - 112               *
+[1]     chr2 104 - 134               +
+[2]     chr2 102 - 123               -
+[3]     chr3 105 - 110               -
+[4]     chr3 103 - 128               *
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="set-operations-on-genomic-ranges">
-<h2>Set operations on genomic ranges<a class="headerlink" href="#set-operations-on-genomic-ranges" title="Link to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="set-operations">
+<h1>Set operations<a class="headerlink" href="#set-operations" title="Link to this heading">¶</a></h1>
 <ul class="simple">
-<li><p><strong>union</strong>: compute union of intervals across object</p></li>
-<li><p><strong>intersect</strong>: compute intersection or finds overlapping intervals</p></li>
-<li><p><strong>setdiff</strong>: compute set difference</p></li>
+<li><p><strong>union</strong>: Compute the <code class="docutils literal notranslate"><span class="pre">union</span></code> of intervals across objects.</p></li>
+<li><p><strong>intersect</strong>: Compute the <code class="docutils literal notranslate"><span class="pre">intersection</span></code> or finds overlapping intervals.</p></li>
+<li><p><strong>setdiff</strong>: Compute <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">difference</span></code>.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">g_src</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#| code-fold: true</span>
+<span class="c1">#| code-summary: &quot;Show the code&quot;</span>
+
+<span class="n">g_src</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
     <span class="n">ranges</span> <span class="o">=</span> <span class="n">IRanges</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span><span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">]),</span>
     <span class="n">strand</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span>
@@ -495,7 +812,11 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># intersection</span>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># intersection</span>
 <span class="n">int_gr</span> <span class="o">=</span> <span class="n">g_src</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">g_tgt</span><span class="p">)</span>
 
 <span class="c1"># set diff</span>
@@ -503,24 +824,80 @@
 
 <span class="c1"># union</span>
 <span class="n">union_gr</span> <span class="o">=</span> <span class="n">g_src</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">g_tgt</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GenomicRanges after the union operation:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">union_gr</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges after the union operation:
+GenomicRanges with 6 ranges and 6 metadata columns
+    seqnames    ranges          strand
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
+[0]     chr1 106 - 232               +
+[1]     chr1 101 - 231               *
+[2]     chr2 102 - 226               -
+[3]     chr2 104 - 228               *
+[4]     chr3 104 - 238               +
+[5]     chr3 109 - 240               -
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+</div>
 </div>
 </section>
-<section id="compute-over-bins">
-<h2>Compute over bins<a class="headerlink" href="#compute-over-bins" title="Link to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="compute-over-bins">
+<h1>Compute over bins<a class="headerlink" href="#compute-over-bins" title="Link to this heading">¶</a></h1>
 <section id="summary-stats-for-column">
-<h3>Summary stats for column<a class="headerlink" href="#summary-stats-for-column" title="Link to this heading">¶</a></h3>
-<p>one can use Pandas for this</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<h2>Summary stats for column<a class="headerlink" href="#summary-stats-for-column" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">Pandas</span></code> to compute summary statistics for a column:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count    5.000000
+mean     2.000000
+std      1.581139
+min      0.000000
+25%      1.000000
+50%      2.000000
+75%      3.000000
+max      4.000000
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>With a bit more magic, render a histogram using <strong>matplotlib</strong>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">gr</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">),</span> <span class="n">bins</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;&#39;score&#39; histogram with &#39;auto&#39; bins&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/357e5d852414d365ce1dbc4238043ece5db82ffe28e5ca3f42be07059fa03086.png" src="_images/357e5d852414d365ce1dbc4238043ece5db82ffe28e5ca3f42be07059fa03086.png" />
+</div>
+</div>
+<p>Not the prettiest plot but it works.</p>
 </section>
 <section id="binned-average">
-<h3><code class="docutils literal notranslate"><span class="pre">binned_average</span></code><a class="headerlink" href="#binned-average" title="Link to this heading">¶</a></h3>
-<p>Compute binned average for different positions</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">109</span><span class="p">],})</span>
-
-<span class="n">bins_gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
+<h2>Binned average<a class="headerlink" href="#binned-average" title="Link to this heading">¶</a></h2>
+<p>Compute binned average for a set of query <strong>bins</strong>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
+<span class="n">bins_gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">],</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">101</span><span class="p">],</span> <span class="p">[</span><span class="mi">109</span><span class="p">]))</span>
 
 <span class="n">subject</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span><span class="o">=</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
@@ -531,53 +908,187 @@
     <span class="p">})</span>
 <span class="p">)</span>
 
-
 <span class="c1"># Compute binned average</span>
 <span class="n">binned_avg_gr</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">binned_average</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="n">bins_gr</span><span class="p">,</span> <span class="n">scorename</span><span class="o">=</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;binned_score&quot;</span><span class="p">)</span>
-<span class="n">binned_avg_gr</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">binned_avg_gr</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>now you might wonder how can I generate these <em><strong>bins</strong></em>?</p>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 1 range and 1 metadata column
+    seqnames    ranges          strand   binned_score
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;         &lt;list&gt;
+[0]     chr1 101 - 210               * |            2
+------
+seqinfo(1 sequences): chr1
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:348: UserWarning: &#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead
+  warn(&quot;&#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead&quot;, UserWarning)
+/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:348: UserWarning: &#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead
+  warn(&quot;&#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead&quot;, UserWarning)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now you might wonder how can I generate these <em><strong>bins</strong></em>?</p>
 </section>
-<section id="generate-tiles-or-bins-from-genomicranges">
-<h3>Generate tiles or bins from <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#generate-tiles-or-bins-from-genomicranges" title="Link to this heading">¶</a></h3>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="generate-tiles-or-bins">
+<h1>Generate tiles or bins<a class="headerlink" href="#generate-tiles-or-bins" title="Link to this heading">¶</a></h1>
 <ul class="simple">
-<li><p><strong>tile</strong>: Splits each genomic region by n (number of regions) or by width (maximum width of each tile)</p></li>
-<li><p><strong>sliding_windows</strong>: Generates sliding windows within each range, by width and step.</p></li>
+<li><p><strong>tile</strong>: Splits each genomic region by <strong>n</strong> (number of regions) or by <strong>width</strong> (maximum width of each tile).</p></li>
+<li><p><strong>sliding_windows</strong>: Generates sliding windows within each range, by <strong>width</strong> and <strong>step</strong>.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># tiles</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">106</span><span class="p">)],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># tiles</span>
 <span class="n">tiles</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># slidingwindows</span>
 <span class="n">tiles</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">sliding_windows</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tiles</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 52 ranges and 52 metadata columns
+     seqnames    ranges          strand
+        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
+ [0]     chr1 101 - 110               *
+ [1]     chr1 102 - 111               *
+ [2]     chr2 102 - 111               -
+          ...       ...             ...
+[49]     chr2 123 - 132               +
+[50]     chr2 124 - 133               +
+[51]     chr3 105 - 109               -
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+</div>
+</div>
 <section id="generate-tiles-from-genome">
-<h3>Generate tiles from Genome<a class="headerlink" href="#generate-tiles-from-genome" title="Link to this heading">¶</a></h3>
+<h2>Generate tiles from genome<a class="headerlink" href="#generate-tiles-from-genome" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">tile_genome</span></code> returns a set of genomic regions that form a partitioning of the specified genome.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">seqlengths</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">seqlengths</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
 
 <span class="n">tiles</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">tile_genome</span><span class="p">(</span><span class="n">seqlengths</span><span class="o">=</span><span class="n">seqlengths</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tiles</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="coverage">
-<h3>Coverage<a class="headerlink" href="#coverage" title="Link to this heading">¶</a></h3>
-<p>Computes number of ranges that overlap for each position in the range.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res_vector</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 30 ranges and 30 metadata columns
+     seqnames    ranges          strand
+        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
+ [0]     chr1    1 - 10               *
+ [1]     chr1   11 - 20               *
+ [2]     chr1   21 - 30               *
+          ...       ...             ...
+[27]     chr3 141 - 160               *
+[28]     chr3 161 - 180               *
+[29]     chr3 181 - 200               *
+------
+seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>
-<section id="overlap-based-methods">
-<h2>Overlap based methods<a class="headerlink" href="#overlap-based-methods" title="Link to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="coverage">
+<h1>Coverage<a class="headerlink" href="#coverage" title="Link to this heading">¶</a></h1>
+<p>Computes number of ranges that overlap for each position.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rich</span>
+
+<span class="n">res_vector</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">coverage</span><span class="p">()</span>
+<span class="n">rich</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">res_vector</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">{</span>
+    <span style="color: #008000; text-decoration-color: #008000">'chr1'</span>: <span style="color: #800080; text-decoration-color: #800080; font-weight: bold">array</span><span style="font-weight: bold">([</span><span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.<span style="font-weight: bold">])</span>,
+    <span style="color: #008000; text-decoration-color: #008000">'chr2'</span>: <span style="color: #800080; text-decoration-color: #800080; font-weight: bold">array</span><span style="font-weight: bold">([</span><span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.<span style="font-weight: bold">])</span>,
+    <span style="color: #008000; text-decoration-color: #008000">'chr3'</span>: <span style="color: #800080; text-decoration-color: #800080; font-weight: bold">array</span><span style="font-weight: bold">([</span><span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.,
+       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.<span style="font-weight: bold">])</span>
+<span style="font-weight: bold">}</span>
+</pre>
+</div></div>
+</div>
+<p>Lets see what the coverage looks like, now with <strong>seaborn</strong>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="n">vector</span> <span class="o">=</span> <span class="n">res_vector</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">]</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="p">))],</span>
+    <span class="s2">&quot;coverage&quot;</span><span class="p">:</span><span class="n">vector</span>
+<span class="p">}),</span> <span class="n">x</span> <span class="o">=</span><span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;coverage&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;position&#39;, ylabel=&#39;coverage&#39;&gt;
+</pre></div>
+</div>
+<img alt="_images/b9dd1354b55366ba23ce4ec1a59fbf0db110772631cfd0f34ebfe95cf62391ea.png" src="_images/b9dd1354b55366ba23ce4ec1a59fbf0db110772631cfd0f34ebfe95cf62391ea.png" />
+</div>
+</div>
+<p>I guess that looks ok. :) but someone can help make this visualization better. (something that ports <code class="docutils literal notranslate"><span class="pre">plotRanges</span></code> from R)</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="overlap-based-methods">
+<h1>Overlap based methods<a class="headerlink" href="#overlap-based-methods" title="Link to this heading">¶</a></h1>
 <ul class="simple">
-<li><p><strong>find_overlaps</strong>: find overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p></li>
-<li><p><strong>count_overlaps</strong>: count overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</p></li>
-<li><p><strong>subset_by_overlaps</strong>: subset a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object if it overlaps with the ranges in the query</p></li>
+<li><p><strong>find_overlaps</strong>: Find overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects.</p></li>
+<li><p><strong>count_overlaps</strong>: Count overlaps between two <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects.</p></li>
+<li><p><strong>subset_by_overlaps</strong>: Subset a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object if it overlaps with the ranges in the query.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span><span class="o">=</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span><span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
     <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">111</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="mi">131</span><span class="p">)),</span>
     <span class="n">strand</span><span class="o">=</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
@@ -592,25 +1103,43 @@
 
 <span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df_query</span><span class="p">)</span>
 
-<span class="c1"># findOverlaps</span>
+<span class="c1"># find Overlaps</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">query_type</span><span class="o">=</span><span class="s2">&quot;within&quot;</span><span class="p">)</span>
 
-<span class="c1"># countOverlaps</span>
+<span class="c1"># count Overlaps</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">count_overlaps</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
-<span class="c1"># subsetByOverlaps</span>
+<span class="c1"># subset by Overlaps</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">subset_by_overlaps</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 0 ranges and 0 metadata columns
+seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:348: UserWarning: &#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead
+  warn(&quot;&#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead&quot;, UserWarning)
+/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:348: UserWarning: &#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead
+  warn(&quot;&#39;seqnames&#39; is deprecated, use &#39;get_seqnames&#39; instead&quot;, UserWarning)
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="search-operations">
-<h2>Search operations<a class="headerlink" href="#search-operations" title="Link to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="search-operations">
+<h1>Search operations<a class="headerlink" href="#search-operations" title="Link to this heading">¶</a></h1>
 <ul class="simple">
-<li><p><strong>nearest</strong>: Performs nearest neighbor search along any direction (both upstream and downstream)</p></li>
-<li><p><strong>follow</strong>: Performs nearest neighbor search only along downstream</p></li>
-<li><p><strong>precede</strong>: Performs nearest neighbor search only along upstream</p></li>
+<li><p><strong>nearest</strong>: Performs nearest neighbor search along any direction (both upstream and downstream).</p></li>
+<li><p><strong>follow</strong>: Performs nearest neighbor search only along downstream.</p></li>
+<li><p><strong>precede</strong>: Performs nearest neighbor search only along upstream.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">find_regions</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">find_regions</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span><span class="o">=</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
     <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">1190</span><span class="p">],[</span><span class="mi">203</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">1200</span><span class="p">]),</span>
 <span class="p">)</span>
@@ -620,67 +1149,138 @@
 <span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span><span class="n">find_regions</span><span class="p">)</span>
 
 <span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span><span class="n">find_regions</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">query_hits</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0], [], [2]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> operations, these methods typically return a list of indices from <code class="docutils literal notranslate"><span class="pre">subject</span></code> for each interval in <code class="docutils literal notranslate"><span class="pre">query</span></code>.</p>
 </section>
-<section id="comparison-rank-and-order-operations">
-<h2>Comparison, rank and order operations<a class="headerlink" href="#comparison-rank-and-order-operations" title="Link to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="comparison-rank-and-order-operations">
+<h1>Comparison, rank and order operations<a class="headerlink" href="#comparison-rank-and-order-operations" title="Link to this heading">¶</a></h1>
 <ul class="simple">
-<li><p><strong>match</strong>: Element wise comparison to find exact match intervals.</p></li>
+<li><p><strong>match</strong>: Element-wise comparison to find exact match intervals.</p></li>
 <li><p><strong>order</strong>: Get the order of indices for sorting.</p></li>
-<li><p><strong>sort</strong>: Sort the GenomicRanges object.</p></li>
-<li><p><strong>rank</strong>: for each interval identifies its position is a sorted order</p></li>
+<li><p><strong>sort</strong>: Sort the <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object.</p></li>
+<li><p><strong>rank</strong>: For each interval identifies its position is a sorted order.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># match</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># match</span>
 <span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;matches: &quot;</span><span class="p">,</span> <span class="n">query_hits</span><span class="p">)</span>
 
 <span class="c1"># order</span>
 <span class="n">order</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">order</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;order:&quot;</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
 
 <span class="c1"># sort</span>
 <span class="n">sorted_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sorted:&quot;</span><span class="p">,</span> <span class="n">sorted_gr</span><span class="p">)</span>
 
 <span class="c1"># rank</span>
 <span class="n">rank</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rank:&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>matches:  [[2], [3], [4]]
+order: [0 1 3 4 2]
+sorted: GenomicRanges with 5 ranges and 5 metadata columns
+    seqnames    ranges          strand    score                   GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;               &lt;list&gt;
+[0]     chr1 101 - 112               * |      0 0.059076327873566536
+[1]     chr2 102 - 123               - |      1   0.4959618083756656
+[2]     chr2 104 - 134               + |      3   0.6175756978332635
+[3]     chr3 105 - 110               - |      4   0.7605178525265869
+[4]     chr3 103 - 128               * |      2  0.06885028637361212
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+rank: [0, 1, 4, 2, 3]
+</pre></div>
+</div>
+</div>
 </div>
 </section>
-<section id="combine-genomicranges-objects-by-rows">
-<h2>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows<a class="headerlink" href="#combine-genomicranges-objects-by-rows" title="Link to this heading">¶</a></h2>
-<p>Use the <code class="docutils literal notranslate"><span class="pre">combine</span></code> generic from <a class="reference external" href="https://github.com/BiocPy/generics">biocutils</a> to concatenate multiple GenomicRanges objects.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">biocutils.combine</span> <span class="kn">import</span> <span class="n">combine</span>
-<span class="n">combined_gr</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<section class="tex2jax_ignore mathjax_ignore" id="combine-genomicranges-objects-by-rows">
+<h1>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows<a class="headerlink" href="#combine-genomicranges-objects-by-rows" title="Link to this heading">¶</a></h1>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">combine</span></code> generic from <a class="reference external" href="https://github.com/BiocPy/generics">biocutils</a> to concatenate multiple <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">biocutils.combine</span> <span class="kn">import</span> <span class="n">combine</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
+<span class="p">)</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="s2">&quot;chr5&quot;</span><span class="p">],</span>
+    <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
+<span class="p">)</span>
+
+<span class="n">combined</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">combined</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>or use the `combine`` method,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">combined_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">,</span> <span class="n">gr3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 7 ranges and 7 metadata columns
+    seqnames    ranges          strand    score
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;
+[0]     chr1    1 - 11               - |      1
+[1]     chr2    3 - 33               + |      2
+[2]     chr1    2 - 52               * |      3
+[3]     chr3    4 - 64               + |      4
+[4]     chr1    3 - 33               - |      2
+[5]     chr2    6 - 56               + |      3
+[6]     chr3    4 - 64               * |      4
+------
+seqinfo(5 sequences): chr1 chr2 chr3 chr4 chr5
 </pre></div>
+</div>
+</div>
 </div>
 </section>
-<section id="misc-operations">
-<h2>Misc operations<a class="headerlink" href="#misc-operations" title="Link to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="misc-operations">
+<h1>Misc operations<a class="headerlink" href="#misc-operations" title="Link to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><strong>invert_strand</strong>: flip the strand for each interval</p></li>
 <li><p><strong>sample</strong>: randomly choose <em><strong>k</strong></em> intervals</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># invert strand</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># invert strand</span>
 <span class="n">inv_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">invert_strand</span><span class="p">()</span>
 
 <span class="c1"># sample</span>
 <span class="n">samp_gr</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+</div>
 </section>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="construct-a-genomicrangeslist-object">
-<h1>Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.<a class="headerlink" href="#construct-a-genomicrangeslist-object" title="Link to this heading">¶</a></h1>
+<section class="tex2jax_ignore mathjax_ignore" id="genomicrangeslist-class">
+<h1><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> class<a class="headerlink" href="#genomicrangeslist-class" title="Link to this heading">¶</a></h1>
 <p>Just as it sounds, a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> is a named-list like object.</p>
-<p>If you are wondering why you need this class, a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object lets us specify multiple
-genomic elements, usually where the genes start and end. Genes are themselves made of many sub
-regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> allows us to represent this nested structure.</p>
-<p>Currently, this class is limited in functionality, purely a read-only class with basic accessors.</p>
-<p><em><strong>Note: This is a work in progress and the functionality is limited.</strong></em></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRangesList</span>
+<p>If you are wondering why you need this class, a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object enables the
+specification of multiple genomic elements, usually where genes start and end.
+Genes, in turn, consist of various subregions, such as exons.
+The <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> allows us to represent this nested structure.</p>
+<p>As of now, this class has limited functionality, serving as a read-only class with basic accessors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRangesList</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
     <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]),</span>
@@ -696,21 +1296,61 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
 <span class="p">)</span>
 
 <span class="n">grl</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gene1&quot;</span><span class="p">,</span> <span class="s2">&quot;gene2&quot;</span><span class="p">])</span>
-<span class="n">grl</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grl</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRangesList with 2 ranges and 2 metadata columns
+ 
+Name: gene1 
+GenomicRanges with 4 ranges and 4 metadata columns
+    seqnames    ranges          strand    score
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;
+[0]     chr1    1 - 11               - |      1
+[1]     chr2    3 - 33               + |      2
+[2]     chr1    2 - 52               * |      3
+[3]     chr3    4 - 64               + |      4
+------
+seqinfo(3 sequences): chr1 chr2 chr3
+ 
+Name: gene2 
+GenomicRanges with 3 ranges and 3 metadata columns
+    seqnames    ranges          strand    score
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;
+[0]     chr2    3 - 33               - |      2
+[1]     chr4    6 - 56               + |      3
+[2]     chr5    4 - 64               * |      4
+------
+seqinfo(3 sequences): chr2 chr4 chr5
+ 
+</pre></div>
+</div>
+</div>
 </div>
 <section id="properties">
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grl</span><span class="o">.</span><span class="n">start</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grl</span><span class="o">.</span><span class="n">start</span>
 <span class="n">grl</span><span class="o">.</span><span class="n">width</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;gene1&#39;: array([10, 30, 50, 60], dtype=int32),
+ &#39;gene2&#39;: array([30, 50, 60], dtype=int32)}
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="combine-genomicrangeslist-object">
 <h2>Combine <code class="docutils literal notranslate"><span class="pre">GenomicRangeslist</span></code> object<a class="headerlink" href="#combine-genomicrangeslist-object" title="Link to this heading">¶</a></h2>
-<p>Similar to the combine function from GenomicRanges,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="n">grla</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">])</span>
+<p>Similar to the combine function from <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>,</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grla</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">])</span>
 <span class="n">grlb</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
 
 <span class="c1"># or use the combine generic</span>
@@ -718,7 +1358,52 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
 <span class="n">cgrl</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">grla</span><span class="p">,</span> <span class="n">grlb</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>and that’s all for now! Check back later for more updates.</p>
+</div>
+</div>
+<p>The functionality in <code class="docutils literal notranslate"><span class="pre">GenomicRangesLlist</span></code> is limited to read-only and a few methods. Updates are expected to be made as more features become available.</p>
+</section>
+<section id="empty-ranges">
+<h2>Empty ranges<a class="headerlink" href="#empty-ranges" title="Link to this heading">¶</a></h2>
+<p>Both of these classes can also contain no range information, and they tend to be useful when incorporates into larger data structures but do not contain any data themselves.</p>
+<p>To create an empty <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">empty_gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">empty_gr</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 0 ranges and 0 metadata columns
+</pre></div>
+</div>
+</div>
+</div>
+<p>Similarly, an empty <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> can be created:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">empty_grl</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">empty_grl</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRangesList with 100 ranges and 100 metadata columns
+--- empty genomic ranges list ---
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="futher-reading">
+<h2>Futher reading<a class="headerlink" href="#futher-reading" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Check out <a class="reference external" href="https://biocpy.github.io/GenomicRanges/">the reference documentation</a> for more details.</p></li>
+<li><p>Visit Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/GenomicRanges"><strong>GenomicRanges</strong></a> package.</p></li>
+</ul>
 </section>
 </section>
 
@@ -765,13 +1450,76 @@ regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>: Genomic analysis</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#construct-a-genomicranges-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a><ul>
+<li><a class="reference internal" href="#preferred-way">Preferred way</a></li>
+<li><a class="reference internal" href="#from-ucsc-or-gtf-file">From UCSC or GTF file</a></li>
+<li><a class="reference internal" href="#pandas-dataframe">Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></a></li>
+<li><a class="reference internal" href="#polars-dataframe">Polars DataFrame</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sequence-information">Sequence information</a><ul>
+<li><a class="reference internal" href="#getters-setters">Getters/Setters</a><ul>
+<li><a class="reference internal" href="#setters">Setters</a></li>
+<li><a class="reference internal" href="#access-ranges">Access ranges</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#subset-operations">Subset operations</a><ul>
+<li><a class="reference internal" href="#iterate-over-ranges">Iterate over ranges</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#intra-range-transformations">Intra-range transformations</a></li>
+<li><a class="reference internal" href="#inter-range-methods">Inter-range methods</a></li>
+<li><a class="reference internal" href="#set-operations">Set operations</a></li>
+<li><a class="reference internal" href="#compute-over-bins">Compute over bins</a><ul>
+<li><a class="reference internal" href="#summary-stats-for-column">Summary stats for column</a></li>
+<li><a class="reference internal" href="#binned-average">Binned average</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#generate-tiles-or-bins">Generate tiles or bins</a><ul>
+<li><a class="reference internal" href="#generate-tiles-from-genome">Generate tiles from genome</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#coverage">Coverage</a></li>
+<li><a class="reference internal" href="#overlap-based-methods">Overlap based methods</a></li>
+<li><a class="reference internal" href="#search-operations">Search operations</a></li>
+<li><a class="reference internal" href="#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
+<li><a class="reference internal" href="#combine-genomicranges-objects-by-rows">Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
+<li><a class="reference internal" href="#misc-operations">Misc operations</a></li>
+<li><a class="reference internal" href="#genomicrangeslist-class"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> class</a><ul>
+<li><a class="reference internal" href="#properties">Properties</a></li>
+<li><a class="reference internal" href="#combine-genomicrangeslist-object">Combine <code class="docutils literal notranslate"><span class="pre">GenomicRangeslist</span></code> object</a></li>
+<li><a class="reference internal" href="#empty-ranges">Empty ranges</a></li>
+<li><a class="reference internal" href="#futher-reading">Futher reading</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=8cd50696"></script>
+</div><script src="_static/documentation_options.js?v=28ad828f"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>

@@ -5,9 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges.io.gtf - GenomicRanges 0.4.16 documentation</title>
+        <title>genomicranges.io.gtf - GenomicRanges 0.4.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -178,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">GenomicRanges 0.4.16 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">GenomicRanges 0.4.17 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -202,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.16 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.17 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -212,9 +213,22 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>: Genomic analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#construct-a-genomicranges-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#construct-a-genomicrangeslist-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#sequence-information">Sequence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#subset-operations">Subset operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#intra-range-transformations">Intra-range transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#inter-range-methods">Inter-range methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#set-operations">Set operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#compute-over-bins">Compute over bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#generate-tiles-or-bins">Generate tiles or bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#coverage">Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#overlap-based-methods">Overlap based methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#search-operations">Search operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#combine-genomicranges-objects-by-rows">Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#misc-operations">Misc operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html#genomicrangeslist-class"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> class</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/genomicranges.io.html">genomicranges.io package</a></li>
@@ -262,7 +276,7 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for genomicranges.io.gtf</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="c1"># Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py</span>
 
@@ -317,7 +331,7 @@
 <span class="sd">            parsed. Defaults to &quot;#&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Genome annotations from GTF as pandas dataframe.</span>
+<span class="sd">        Pandas DataFrame containing annotations from GTF.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
@@ -393,10 +407,10 @@
 <span class="sd">            parsed. Defaults to &quot;#&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Genome annotations from GTF.</span>
+<span class="sd">        Genomic Ranges with annotations from the GTF file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">compressed</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;gz&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_gtf</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="n">compressed</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_gtf</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="n">compressed</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">)</span>
     <span class="kn">from</span> <span class="nn">..GenomicRanges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 
     <span class="k">return</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
@@ -433,7 +447,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=8cd50696"></script>
+</div><script src="../../../_static/documentation_options.js?v=28ad828f"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=4e2eecee"></script>

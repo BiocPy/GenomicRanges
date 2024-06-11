@@ -6,9 +6,10 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Contributors" href="authors.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>Changelog - GenomicRanges 0.4.16 documentation</title>
+        <title>Changelog - GenomicRanges 0.4.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -179,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.16 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.17 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -203,7 +204,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.16 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.17 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -213,9 +214,22 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>: Genomic analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html#construct-a-genomicranges-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html#construct-a-genomicrangeslist-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#sequence-information">Sequence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#subset-operations">Subset operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#intra-range-transformations">Intra-range transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#inter-range-methods">Inter-range methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#set-operations">Set operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#compute-over-bins">Compute over bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#generate-tiles-or-bins">Generate tiles or bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#coverage">Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#overlap-based-methods">Overlap based methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#search-operations">Search operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#combine-genomicranges-objects-by-rows">Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#misc-operations">Misc operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#genomicrangeslist-class"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> class</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/genomicranges.io.html">genomicranges.io package</a></li>
@@ -269,9 +283,15 @@
         <article role="main" id="furo-main-content">
           <section class="tex2jax_ignore mathjax_ignore" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
-<section id="version-0-4-9">
-<h2>Version 0.4.9<a class="headerlink" href="#version-0-4-9" title="Link to this heading">¶</a></h2>
+<section id="version-0-4-17">
+<h2>Version 0.4.17<a class="headerlink" href="#version-0-4-17" title="Link to this heading">¶</a></h2>
+<p>Initialize <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> from a polars <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. Also coerce a GRanges object
+to polars.</p>
+</section>
+<section id="version-0-4-9-0-4-16">
+<h2>Version 0.4.9 - 0.4.16<a class="headerlink" href="#version-0-4-9-0-4-16" title="Link to this heading">¶</a></h2>
 <p>Bring <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> upto speed with the rest of the class implementations. Added subset and pretty print functionality.</p>
+<p>Fix minor bugs and update documentation.</p>
 </section>
 <section id="version-0-4-0-to-0-4-8">
 <h2>Version 0.4.0 to 0.4.8<a class="headerlink" href="#version-0-4-0-to-0-4-8" title="Link to this heading">¶</a></h2>
@@ -356,7 +376,8 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#version-0-4-9">Version 0.4.9</a></li>
+<li><a class="reference internal" href="#version-0-4-17">Version 0.4.17</a></li>
+<li><a class="reference internal" href="#version-0-4-9-0-4-16">Version 0.4.9 - 0.4.16</a></li>
 <li><a class="reference internal" href="#version-0-4-0-to-0-4-8">Version 0.4.0 to 0.4.8</a></li>
 <li><a class="reference internal" href="#version-0-3-0">Version 0.3.0</a></li>
 <li><a class="reference internal" href="#version-0-2">Version 0.2</a></li>
@@ -372,7 +393,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=8cd50696"></script>
+</div><script src="_static/documentation_options.js?v=28ad828f"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>

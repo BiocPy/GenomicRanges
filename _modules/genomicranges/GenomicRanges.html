@@ -5,9 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.16 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -178,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.16 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.17 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -202,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.16 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.17 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -212,9 +213,22 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>: Genomic analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#construct-a-genomicranges-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#construct-a-genomicrangeslist-object">Construct a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> object.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#sequence-information">Sequence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#subset-operations">Subset operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#intra-range-transformations">Intra-range transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#inter-range-methods">Inter-range methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#set-operations">Set operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#compute-over-bins">Compute over bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#generate-tiles-or-bins">Generate tiles or bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#coverage">Coverage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#overlap-based-methods">Overlap based methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#search-operations">Search operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#combine-genomicranges-objects-by-rows">Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#misc-operations">Misc operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#genomicrangeslist-class"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> class</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/genomicranges.io.html">genomicranges.io package</a></li>
@@ -355,6 +369,8 @@
 <span class="k">class</span> <span class="nc">GenomicRangesIter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An iterator to a :py:class:`~GenomicRanges` object.&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="GenomicRangesIter.__init__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRangesIter.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the iterator.</span>
 
@@ -363,7 +379,8 @@
 <span class="sd">                Source object to iterate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span> <span class="o">=</span> <span class="n">obj</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">=</span> <span class="mi">0</span></div>
+
 
 <div class="viewcode-block" id="GenomicRangesIter.__iter__">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRangesIter.__iter__">[docs]</a>
@@ -399,6 +416,8 @@
 <span class="sd">    `GenomicRanges R/Bioconductor package &lt;https://github.com/Bioconductor/GenomicRanges&gt;`_.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="GenomicRanges.__init__">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">seqnames</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -475,7 +494,8 @@
             <span class="n">_validate_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="p">,</span> <span class="n">_num_ranges</span><span class="p">)</span>
             <span class="n">_validate_optional_attrs</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">,</span> <span class="n">_num_ranges</span>
-            <span class="p">)</span>
+            <span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_build_reverse_seqindex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqinfo</span><span class="p">:</span> <span class="n">SeqInfo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqindex</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">reverse_index</span><span class="o">.</span><span class="n">build_reverse_index</span><span class="p">(</span><span class="n">seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">)</span>
@@ -1476,6 +1496,95 @@
         <span class="p">)</span></div>
 
 
+    <span class="c1">################################</span>
+    <span class="c1">######&gt;&gt; polars interop &lt;&lt;######</span>
+    <span class="c1">################################</span>
+
+<div class="viewcode-block" id="GenomicRanges.to_polars">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.to_polars">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_polars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;polars.DataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this ``GenomicRanges`` object into a :py:class:`~polars.DataFrame`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A :py:class:`~polars.DataFrame` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
+
+        <span class="n">_rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
+        <span class="n">_rdf</span> <span class="o">=</span> <span class="n">_rdf</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+            <span class="n">seqnames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">(),</span> <span class="n">strand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_strand</span><span class="p">(</span><span class="n">as_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_rdf</span> <span class="o">=</span> <span class="n">_rdf</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">rownames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_rdf</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">_rdf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_rdf</span></div>
+
+
+<div class="viewcode-block" id="GenomicRanges.from_polars">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.from_polars">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_polars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="s2">&quot;polars.DataFrame&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a ``GenomicRanges`` from a :py:class:`~polars.DataFrame` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input:</span>
+<span class="sd">                Input polars DataFrame.</span>
+<span class="sd">                must contain columns &#39;seqnames&#39;, &#39;starts&#39; and &#39;widths&#39; or &quot;ends&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A ``GenomicRanges`` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">polars</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`input` is not a polars `DataFrame` object.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;starts&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;input&#39; must contain column &#39;starts&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">&quot;widths&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;ends&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;input&#39; must contain either &#39;widths&#39; or &#39;ends&#39; columns.&quot;</span><span class="p">)</span>
+
+        <span class="n">drops</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">&quot;widths&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">drops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;widths&quot;</span><span class="p">)</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;widths&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">drops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ends&quot;</span><span class="p">)</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;starts&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;seqnames&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;input&#39; must contain column &#39;seqnames&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">seqnames</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;seqnames&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+        <span class="n">ranges</span> <span class="o">=</span> <span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+
+        <span class="n">strand</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;strand&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">strand</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;strand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+            <span class="n">drops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;strand&quot;</span><span class="p">)</span>
+
+        <span class="c1"># mcols</span>
+        <span class="n">drops</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;seqnames&quot;</span><span class="p">])</span>
+        <span class="n">mcols_df</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">drops</span><span class="p">)</span>
+
+        <span class="n">mcols</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">mcols_df</span><span class="o">.</span><span class="n">is_empty</span><span class="p">())</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">mcols_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">mcols</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="o">.</span><span class="n">from_polars</span><span class="p">(</span><span class="n">mcols_df</span><span class="p">)</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">ranges</span><span class="o">=</span><span class="n">ranges</span><span class="p">,</span> <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">mcols</span><span class="o">=</span><span class="n">mcols</span>
+        <span class="p">)</span></div>
+
+
     <span class="c1">#####################################</span>
     <span class="c1">######&gt;&gt; intra-range methods &lt;&lt;######</span>
     <span class="c1">#####################################</span>
@@ -2049,7 +2158,8 @@
                 <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">chrm_grps</span><span class="p">:</span>
                     <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">chrm_grps</span><span class="p">[</span><span class="n">_key</span><span class="p">]]</span>
                     <span class="n">gaps</span> <span class="o">=</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span>
-                        <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">_end</span>  <span class="c1"># - 1 if _end is not None else _end</span>
+                        <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                        <span class="n">end</span><span class="o">=</span><span class="n">_end</span><span class="p">,</span>  <span class="c1"># - 1 if _end is not None else _end</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3265,7 +3375,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=8cd50696"></script>
+</div><script src="../../_static/documentation_options.js?v=28ad828f"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>
