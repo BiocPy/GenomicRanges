@@ -44,7 +44,7 @@ print(gr)
 
 ### From `biobear`
 
-Although the parsing capabilities in the package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to `GenomicRanges`:
+Although the parsing capabilities in the package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can easily convert these representations to `GenomicRanges`:
 
 ```python
 from genomicranges import GenomicRanges
