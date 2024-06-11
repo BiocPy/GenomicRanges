@@ -4,7 +4,7 @@
 
 # GenomicRanges
 
-GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html). **_Intervals are inclusive on both ends and starts at 1._**
+GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
 **Note: V0.4.0 is a complete overhaul of the package, as such the constructor to GenomicRanges has changed. Please refer the documentation for updated usage of the classes and the methods.**
 
@@ -14,7 +14,7 @@ To get started, install the package from [PyPI](https://pypi.org/project/genomic
 pip install genomicranges
 ```
 
-Some of the methods like `read_ucsc` require optional packages to be installed, e.g. joblib` and can be installed by:
+Some of the methods like `read_ucsc` require optional packages to be installed, e.g. `joblib` and can be installed by:
 
 ```sh
 pip install genomicranges[optional]
