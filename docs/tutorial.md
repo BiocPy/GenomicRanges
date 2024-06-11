@@ -64,7 +64,7 @@ print(gr)
 
 The input for `mcols` is expected to be a `BiocFrame` object and will be converted to a `BiocFrame` in case a pandas `DataFrame` is supplied.
 
-## From Bioinformatic file formats 
+## From Bioinformatic file formats
 
 ### From `biobear`
 
