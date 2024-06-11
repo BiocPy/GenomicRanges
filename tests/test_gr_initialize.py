@@ -36,7 +36,7 @@ def test_create_gr():
 
     assert gr is not None
     assert len(gr) == 10
-    
+
 
 def test_gr_empty():
     gre = GenomicRanges.empty()
