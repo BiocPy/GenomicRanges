@@ -64,7 +64,28 @@ print(gr)
 
 The input for `mcols` is expected to be a `BiocFrame` object and will be converted to a `BiocFrame` in case a pandas `DataFrame` is supplied.
 
-## From UCSC or GTF file
+## From Bioinformatic file formats
+
+### From `biobear`
+
+Although the parsing capabilities in the package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to `GenomicRanges`:
+
+```python
+from genomicranges import GenomicRanges
+import biobear as bb
+
+session = bb.new_session()
+
+df = session.read_gtf_file("your/data/test.gtf").to_polars()
+df = df.rename({"seqname": "seqnames", "start": "starts", "end": "ends"})
+
+gg = GenomicRanges.from_polars(df)
+
+# do stuff w/ a genomic ranges
+print(len(gg), len(df))
+```
+
+### From UCSC or GTF file
 
 You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages **pandas** and **joblib** to parse and extract various attributes from the gtf file.
 
@@ -106,11 +127,11 @@ gr_from_df = GenomicRanges.from_pandas(df)
 print(gr_from_df)
 ```
 
-## Polars DataFrame
+## Polars `DataFrame`
 
 Similarly, To initialize from a polars `DataFrame`:
 
-```python
+```{code-cell}
 from genomicranges import GenomicRanges
 import polars as pl
 from random import random

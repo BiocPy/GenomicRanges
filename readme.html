@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="GenomicRanges: Genomic analysis" href="tutorial.html" /><link rel="prev" title="GenomicRanges" href="index.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>GenomicRanges - GenomicRanges 0.4.17 documentation</title>
+        <title>GenomicRanges - GenomicRanges 0.4.18 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -180,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.17 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.4.18 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -204,7 +204,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.17 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.18 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -299,8 +299,32 @@
 <section id="id1">
 <h2><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> is the base class to represent and operate over genomic regions and annotations.</p>
-<section id="from-ucsc-or-gtf-file">
-<h3>From UCSC or GTF file<a class="headerlink" href="#from-ucsc-or-gtf-file" title="Link to this heading">¶</a></h3>
+<section id="from-bioinformatic-file-formats">
+<h3>From Bioinformatic file formats<a class="headerlink" href="#from-bioinformatic-file-formats" title="Link to this heading">¶</a></h3>
+<section id="from-biobear">
+<h4>From <code class="docutils literal notranslate"><span class="pre">biobear</span></code><a class="headerlink" href="#from-biobear" title="Link to this heading">¶</a></h4>
+<p>Although the parsing capabilities in the package are limited, the <a class="reference external" href="https://github.com/wheretrue/biobear">biobear</a> library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can easily convert these representations to <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">import</span> <span class="nn">biobear</span> <span class="k">as</span> <span class="nn">bb</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">new_session</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_gtf_file</span><span class="p">(</span><span class="s2">&quot;path/to/test.gtf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;seqname&quot;</span><span class="p">:</span> <span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;ends&quot;</span><span class="p">})</span>
+
+<span class="n">gg</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_polars</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># do stuff w/ a genomic ranges</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gg</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## output
+## 77 77
+</pre></div>
+</div>
+</section>
+<section id="ucsc-or-gtf-file">
+<h4>UCSC or GTF file<a class="headerlink" href="#ucsc-or-gtf-file" title="Link to this heading">¶</a></h4>
 <p>You can easily download and parse genome annotations from UCSC or load a genome annotation from a GTF file,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
 
@@ -309,14 +333,17 @@
 <span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span>
-<span class="c1">## output</span>
-<span class="c1">## GenomicRanges with 1760959 intervals &amp; 10 metadata columns.</span>
-<span class="c1">## ... truncating the console print ...</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## output
+## GenomicRanges with 1760959 intervals &amp; 10 metadata columns.
+## ... truncating the console print ...
 </pre></div>
 </div>
 </section>
+</section>
 <section id="from-iranges-preferred-way">
-<h3>from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">¶</a></h3>
+<h3>From <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">¶</a></h3>
 <p>If you have all relevant information to create a GenomicRanges object</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 <span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
@@ -359,7 +386,7 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </div>
 </section>
 <section id="pandas-dataframe">
-<h3>Pandas DataFrame<a class="headerlink" href="#pandas-dataframe" title="Link to this heading">¶</a></h3>
+<h3>Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code><a class="headerlink" href="#pandas-dataframe" title="Link to this heading">¶</a></h3>
 <p>A common representation in Python is a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> for all tabular datasets. <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> must contain columns “seqnames”, “starts”, and “ends” to represent genomic intervals. Here’s an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -395,7 +422,7 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </div>
 </section>
 <section id="polars-dataframe">
-<h3>Polars DataFrame<a class="headerlink" href="#polars-dataframe" title="Link to this heading">¶</a></h3>
+<h3>Polars <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code><a class="headerlink" href="#polars-dataframe" title="Link to this heading">¶</a></h3>
 <p>Similarly, To initialize from a polars <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 <span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -580,10 +607,14 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
             <ul>
 <li><a class="reference internal" href="#">GenomicRanges</a><ul>
 <li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code></a><ul>
-<li><a class="reference internal" href="#from-ucsc-or-gtf-file">From UCSC or GTF file</a></li>
-<li><a class="reference internal" href="#from-iranges-preferred-way">from <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)</a></li>
-<li><a class="reference internal" href="#pandas-dataframe">Pandas DataFrame</a></li>
-<li><a class="reference internal" href="#polars-dataframe">Polars DataFrame</a></li>
+<li><a class="reference internal" href="#from-bioinformatic-file-formats">From Bioinformatic file formats</a><ul>
+<li><a class="reference internal" href="#from-biobear">From <code class="docutils literal notranslate"><span class="pre">biobear</span></code></a></li>
+<li><a class="reference internal" href="#ucsc-or-gtf-file">UCSC or GTF file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#from-iranges-preferred-way">From <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)</a></li>
+<li><a class="reference internal" href="#pandas-dataframe">Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></a></li>
+<li><a class="reference internal" href="#polars-dataframe">Polars <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></a></li>
 <li><a class="reference internal" href="#interval-operations">Interval Operations</a></li>
 </ul>
 </li>
@@ -601,7 +632,7 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=28ad828f"></script>
+</div><script src="_static/documentation_options.js?v=c0b7214d"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>
