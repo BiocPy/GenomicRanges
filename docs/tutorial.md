@@ -64,24 +64,9 @@ print(gr)
 
 The input for `mcols` is expected to be a `BiocFrame` object and will be converted to a `BiocFrame` in case a pandas `DataFrame` is supplied.
 
-## From UCSC or GTF file
+## From Bioinformatic file formats
 
-You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages **pandas** and **joblib** to parse and extract various attributes from the gtf file.
-
-A future version of this package might implement or take advantage of existing genomic parser packages in Python to support various file formats.
-
-```python
-import genomicranges
-
-# gr = genomicranges.read_gtf(<PATH TO GTF>)
-
-# OR
-
-human_gr = genomicranges.read_ucsc(genome="hg19")
-print(human_gr)
-```
-
-## From `biobear`
+### From `biobear`
 
 Although the parsing capabilities in the package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to `GenomicRanges`:
 
@@ -98,6 +83,23 @@ gg = GenomicRanges.from_polars(dd)
 
 # do stuff w/ a genomic ranges
 print(len(gg), len(df))
+```
+
+### From UCSC or GTF file
+
+You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages **pandas** and **joblib** to parse and extract various attributes from the gtf file.
+
+A future version of this package might implement or take advantage of existing genomic parser packages in Python to support various file formats.
+
+```python
+import genomicranges
+
+# gr = genomicranges.read_gtf(<PATH TO GTF>)
+
+# OR
+
+human_gr = genomicranges.read_ucsc(genome="hg19")
+print(human_gr)
 ```
 
 ## Pandas `DataFrame`

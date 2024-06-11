@@ -24,7 +24,7 @@ pip install genomicranges[optional]
 
 `GenomicRanges` is the base class to represent and operate over genomic regions and annotations.
 
-### From Bioinformatic file formats 
+### From Bioinformatic file formats
 
 #### From `biobear`
 
