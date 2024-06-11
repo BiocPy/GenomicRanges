@@ -1114,7 +1114,7 @@ class GenomicRanges:
         return cls(
             ranges=ranges, seqnames=seqnames, strand=strand, names=names, mcols=mcols
         )
-    
+
     ################################
     ######>> polars interop <<######
     ################################
