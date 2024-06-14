@@ -16,8 +16,9 @@ Moreover, the package also provides a `SeqInfo` class to update or modify sequen
 
 The `GenomicRanges` class is designed to seamlessly operate with upstream packages like `RangeSummarizedExperiment` or `SingleCellExperiment` representations, providing consistent and stable functionality.
 
+:::{note}
 These classes follow a functional paradigm for accessing or setting properties, with further details discussed in [functional paradigm](https://biocpy.github.io/tutorial/chapters/philosophy.html#functional-discipline) section.
-
+:::
 
 ## Installation
 
@@ -30,6 +31,43 @@ pip install genomicranges
 # Construct a `GenomicRanges` object
 
 We support multiple ways to initialize a `GenomicRanges` object.
+
+## From Bioinformatic file formats
+
+### From `biobear`
+
+Although the parsing capabilities in this package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to `GenomicRanges` (or [read more here](https://www.wheretrue.dev/docs/exon/biobear/genomicranges-integration)):
+
+```python
+from genomicranges import GenomicRanges
+import biobear as bb
+
+session = bb.new_session()
+
+df = session.read_gtf_file("path/to/test.gtf").to_polars()
+df = df.rename({"seqname": "seqnames", "start": "starts", "end": "ends"})
+
+gg = GenomicRanges.from_polars(df)
+
+# do stuff w/ a genomic ranges
+print(len(gg), len(df))
+```
+
+### From UCSC or GTF file
+
+You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages **pandas** and **joblib** to parse and extract various attributes from the gtf file.
+
+```python
+import genomicranges
+
+# gr = genomicranges.read_gtf(<PATH TO GTF>)
+
+# OR
+
+human_gr = genomicranges.read_ucsc(genome="hg19")
+print(human_gr)
+```
+
 
 ## Preferred way
 
@@ -62,51 +100,17 @@ gr = GenomicRanges(
 print(gr)
 ```
 
+:::{note}
 The input for `mcols` is expected to be a `BiocFrame` object and will be converted to a `BiocFrame` in case a pandas `DataFrame` is supplied.
-
-## From Bioinformatic file formats
-
-### From `biobear`
-
-Although the parsing capabilities in this package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to `GenomicRanges` (or [read more here](https://www.wheretrue.dev/docs/exon/biobear/genomicranges-integration)):
-
-```python
-from genomicranges import GenomicRanges
-import biobear as bb
-
-session = bb.new_session()
-
-df = session.read_gtf_file("path/to/test.gtf").to_polars()
-df = df.rename({"seqname": "seqnames", "start": "starts", "end": "ends"})
-
-gg = GenomicRanges.from_polars(df)
-
-# do stuff w/ a genomic ranges
-print(len(gg), len(df))
-```
-
-### From UCSC or GTF file
-
-You can also import genomes from UCSC or load a genome annotation from a GTF file. This requires installation of additional packages **pandas** and **joblib** to parse and extract various attributes from the gtf file.
-
-A future version of this package might implement or take advantage of existing genomic parser packages in Python to support various file formats.
-
-```python
-import genomicranges
-
-# gr = genomicranges.read_gtf(<PATH TO GTF>)
-
-# OR
-
-human_gr = genomicranges.read_ucsc(genome="hg19")
-print(human_gr)
-```
+:::
 
 ## Pandas `DataFrame`
 
 If your genomic coordinates are represented as a pandas `DataFrame`, convert this into `GenomicRanges` if it contains the necessary columns.
 
+::: {important}
 The `DataFrame` must contain columns `seqnames`, `starts` and `ends` to represent genomic coordinates. The rest of the columns are considered metadata and will be available in the `mcols` slot of the `GenomicRanges` object.
+:::
 
 ```{code-cell}
 from genomicranges import GenomicRanges
@@ -193,7 +197,9 @@ print(gr.mcols)
 
 ### Setters
 
-All property-based setters are `in_place` operations, with further details discussed in [functional paradigm](../philosophy.qmd#functional-discipline) section.
+:::{important}
+All property-based setters are `in_place` operations, with further details discussed in [functional paradigm](https://biocpy.github.io/tutorial/chapters/philosophy.html#functional-discipline) section.
+:::
 
 ```{code-cell}
 modified_mcols = gr.mcols.set_column("score", range(1,6))
@@ -420,7 +426,9 @@ binned_avg_gr = subject.binned_average(bins=bins_gr, scorename="score", outname=
 print(binned_avg_gr)
 ```
 
+::: {tip}
 Now you might wonder how can I generate these ***bins***?
+:::
 
 # Generate tiles or bins
 
@@ -544,7 +552,9 @@ query_hits = gr.follow(find_regions)
 print(query_hits)
 ```
 
+::: {note}
 Similar to `IRanges` operations, these methods typically return a list of indices from `subject` for each interval in `query`.
+:::
 
 # Comparison, rank and order operations
 
