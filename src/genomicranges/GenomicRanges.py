@@ -2848,7 +2848,7 @@ def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
         seqnames=ut.combine_sequences(*[y._seqnames for y in x]),
         strand=ut.combine_sequences(*[y._strand for y in x]),
         names=all_names,
-        mcols=ut.combine_rows(*[y._mcols for y in x]),
+        mcols=ut.relaxed_combine_rows(*[y._mcols for y in x]),
         seqinfo=merge_SeqInfo([y._seqinfo for y in x]),
         metadata=x[0]._metadata,
         validate=False,
