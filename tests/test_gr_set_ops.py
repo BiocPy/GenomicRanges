@@ -70,3 +70,43 @@ def test_intersect():
     assert (out.start == np.array([9])).all()
     assert (out.width == np.array([2])).all()
     assert (out.strand == np.array([-1])).all()
+
+
+def test_intersect():
+    g_src = GenomicRanges(
+        seqnames=["chr1", "chr2", "chr1", "chr3", "chr2"],
+        ranges=IRanges(
+            start=[101, 102, 103, 104, 109], width=[112, 103, 128, 134, 111]
+        ),
+        strand=["*", "-", "*", "+", "-"],
+    )
+
+    g_tgt = GenomicRanges(
+        seqnames=[
+            "chr1",
+            "chr2",
+            "chr2",
+            "chr2",
+            "chr1",
+            "chr1",
+            "chr3",
+            "chr3",
+            "chr3",
+            "chr3",
+        ],
+        ranges=IRanges(start=range(101, 111), width=range(121, 131)),
+        strand=["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
+        mcols=BiocFrame(
+            {
+                "score": range(0, 10),
+                "GC": [random() for _ in range(10)],
+            }
+        ),
+    )
+    assert g_src is not None
+    assert g_tgt is not None
+
+    out = g_src.intersect(g_tgt)
+
+    assert out is not None
+    assert len(out) == 3
