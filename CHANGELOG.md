@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.4.20
+
+Updated dependencies (especially `IRanges`), to be compatible with NumPy's 2.0 release.
+
+## Version 0.4.19
+
+- Fix an issue related to combining `GenomicRanges` or `GenomicRangesList` objects containing different metadata columns. This switches the operation from `combine_rows` to `relaxed_combine_rows`.
+- Set NumPy to <2.0.0 before the migration to 2.0 release.
+- Updated tests
+
 ## Version 0.4.17
 
 Initialize `GenomicRanges` from a polars `DataFrame`. Also coerce a GRanges object
