@@ -108,7 +108,5 @@ def test_intersect():
 
     out = g_src.intersect(g_tgt)
 
-    print(out)
-
     assert out is not None
     assert len(out) == 3
