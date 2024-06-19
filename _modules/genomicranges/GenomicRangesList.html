@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges.GenomicRangesList - GenomicRanges 0.4.18 documentation</title>
+        <title>genomicranges.GenomicRangesList - GenomicRanges 0.4.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -179,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.18 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.19 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -203,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.18 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.19 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -1231,7 +1231,7 @@
         <span class="n">ranges</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_ranges</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
         <span class="n">range_lengths</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_range_lengths</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
         <span class="n">names</span><span class="o">=</span><span class="n">all_names</span><span class="p">,</span>
-        <span class="n">mcols</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">combine_rows</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_mcols</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
+        <span class="n">mcols</span><span class="o">=</span><span class="n">ut</span><span class="o">.</span><span class="n">relaxed_combine_rows</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_mcols</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]),</span>
         <span class="n">metadata</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
         <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1267,7 +1267,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=c0b7214d"></script>
+</div><script src="../../_static/documentation_options.js?v=64cfa554"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>
