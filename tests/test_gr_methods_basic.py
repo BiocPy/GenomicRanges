@@ -104,6 +104,7 @@ def test_export():
     ]
     assert df["strand"].tolist() == ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"]
 
+
 def test_combine():
     g_src = GenomicRanges(
         seqnames=["chr1", "chr2", "chr1", "chr3", "chr2"],
@@ -138,7 +139,7 @@ def test_combine():
     assert g_src is not None
     assert g_tgt is not None
 
-    out:GenomicRanges = ut.combine_sequences(g_src, g_tgt)
+    out: GenomicRanges = ut.combine_sequences(g_src, g_tgt)
 
     assert out is not None
     assert len(out) == 15
