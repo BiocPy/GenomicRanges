@@ -873,7 +873,7 @@ def _combine_grl(*x: GenomicRangesList):
         ranges=ut.combine_sequences(*[y._ranges for y in x]),
         range_lengths=ut.combine_sequences(*[y._range_lengths for y in x]),
         names=all_names,
-        mcols=ut.combine_rows(*[y._mcols for y in x]),
+        mcols=ut.relaxed_combine_rows(*[y._mcols for y in x]),
         metadata=x[0]._metadata,
         validate=False,
     )

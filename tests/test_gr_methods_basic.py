@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from genomicranges import GenomicRanges
 from biocframe import BiocFrame
+import biocutils as ut
 from iranges import IRanges
 from random import random
 import genomicranges
@@ -102,3 +103,44 @@ def test_export():
         "chr3",
     ]
     assert df["strand"].tolist() == ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"]
+
+
+def test_combine():
+    g_src = GenomicRanges(
+        seqnames=["chr1", "chr2", "chr1", "chr3", "chr2"],
+        ranges=IRanges(
+            start=[101, 102, 103, 104, 109], width=[112, 103, 128, 134, 111]
+        ),
+        strand=["*", "-", "*", "+", "-"],
+    )
+
+    g_tgt = GenomicRanges(
+        seqnames=[
+            "chr1",
+            "chr2",
+            "chr2",
+            "chr2",
+            "chr1",
+            "chr1",
+            "chr3",
+            "chr3",
+            "chr3",
+            "chr3",
+        ],
+        ranges=IRanges(start=range(101, 111), width=range(121, 131)),
+        strand=["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
+        mcols=BiocFrame(
+            {
+                "score": range(0, 10),
+                "GC": [random() for _ in range(10)],
+            }
+        ),
+    )
+    assert g_src is not None
+    assert g_tgt is not None
+
+    out: GenomicRanges = ut.combine_sequences(g_src, g_tgt)
+
+    assert out is not None
+    assert len(out) == 15
+    assert len(out.get_mcols().get_column_names()) == 2
