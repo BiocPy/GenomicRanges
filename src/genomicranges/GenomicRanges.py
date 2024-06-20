@@ -217,7 +217,9 @@ class GenomicRanges:
             self._build_reverse_seqindex(seqinfo)
 
         if not isinstance(seqnames, np.ndarray):
-            seqnames = np.asarray([self._reverse_seqindex[x] for x in seqnames], dtype=np.int8)
+            seqnames = np.asarray(
+                [self._reverse_seqindex[x] for x in seqnames], dtype=np.int8
+            )
 
         return seqnames
 
