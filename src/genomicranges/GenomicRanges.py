@@ -38,13 +38,14 @@ def _validate_seqnames(seqnames, seqinfo, num_ranges):
             f"Need to be {num_ranges}, provided {len(seqnames)}.",
         )
 
-    if any(x is None for x in seqnames):
+    if np.isnan(seqnames).any():
         raise ValueError("'seqnames' cannot contain None values.")
 
     if not isinstance(seqinfo, SeqInfo):
         raise TypeError("'seqinfo' is not an instance of `SeqInfo` class.")
 
-    if not all(x < len(seqinfo) for x in seqnames):
+    _l = len(seqinfo)
+    if (seqnames > _l).any():
         raise ValueError(
             "'seqnames' contains sequence name not represented in 'seqinfo'."
         )
@@ -69,7 +70,7 @@ def _validate_optional_attrs(strand, mcols, names, num_ranges):
         if len(strand) != num_ranges:
             raise ValueError("Length of 'strand' does not match the number of ranges.")
 
-        if any(x is None for x in strand):
+        if np.isnan(strand).any():
             raise ValueError("'strand' cannot contain None values.")
 
     if mcols is not None:
@@ -183,7 +184,9 @@ class GenomicRanges:
 
         if strand is None:
             strand = np.repeat(0, len(self._seqnames))
-        self._strand = sanitize_strand_vector(strand)
+            self._strand = np.asarray(strand, dtype=np.int8)
+        else:
+            self._strand = sanitize_strand_vector(strand)
 
         if names is not None and not isinstance(names, ut.Names):
             names = ut.Names(names)
@@ -214,7 +217,7 @@ class GenomicRanges:
             self._build_reverse_seqindex(seqinfo)
 
         if not isinstance(seqnames, np.ndarray):
-            seqnames = np.array([self._reverse_seqindex[x] for x in list(seqnames)])
+            seqnames = np.asarray([self._reverse_seqindex[x] for x in seqnames], dtype=np.int8)
 
         return seqnames
 
@@ -474,7 +477,7 @@ class GenomicRanges:
         _validate_seqnames(seqnames, len(self))
 
         if not isinstance(seqnames, np.ndarray):
-            seqnames = np.array(
+            seqnames = np.asarray(
                 [self._seqinfo.seqnames.index(x) for x in list(seqnames)]
             )
 
@@ -1401,7 +1404,7 @@ class GenomicRanges:
 
         start_flags = [all_strands[i] != -1 for i in range(len(all_strands))]
 
-        new_starts = np.array(
+        new_starts = np.asarray(
             [
                 (
                     all_starts[idx] - upstream
@@ -1411,7 +1414,7 @@ class GenomicRanges:
                 for idx in range(len(start_flags))
             ]
         )
-        new_ends = np.array(
+        new_ends = np.asarray(
             [
                 (
                     all_starts[idx] + downstream
@@ -1512,7 +1515,7 @@ class GenomicRanges:
             new_ends.append(_end)
 
         output = self._define_output(in_place)
-        output._ranges.width = np.array(new_ends) - output._ranges.start
+        output._ranges.width = np.asarray(new_ends) - output._ranges.start
         return output
 
     def narrow(
@@ -1638,7 +1641,7 @@ class GenomicRanges:
 
         splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
-        new_strand = np.array([int(x[1]) for x in splits])
+        new_strand = np.asarray([int(x[1]) for x in splits])
 
         output = GenomicRanges(
             seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
@@ -1689,7 +1692,7 @@ class GenomicRanges:
 
         splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
-        new_strand = np.array([int(x[1]) for x in splits])
+        new_strand = np.asarray([int(x[1]) for x in splits])
 
         output = GenomicRanges(
             seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
@@ -1760,7 +1763,7 @@ class GenomicRanges:
 
         splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
-        new_strand = np.array([int(x[1]) for x in splits])
+        new_strand = np.asarray([int(x[1]) for x in splits])
 
         output = GenomicRanges(
             seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
@@ -1810,7 +1813,7 @@ class GenomicRanges:
 
         splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
-        new_strand = np.array([int(x[1]) for x in splits])
+        new_strand = np.asarray([int(x[1]) for x in splits])
 
         output = GenomicRanges(
             seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges
@@ -2446,7 +2449,7 @@ class GenomicRanges:
         """
         intvals = sorted(self._get_ranges_as_list(), reverse=decreasing)
         order = [o[4] for o in intvals]
-        return np.array(order)
+        return np.asarray(order)
 
     def sort(self, decreasing: bool = False, in_place: bool = False) -> "GenomicRanges":
         """Get the order of indices for sorting.
