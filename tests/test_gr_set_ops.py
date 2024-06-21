@@ -72,7 +72,7 @@ def test_intersect():
     assert (out.strand == np.array([-1])).all()
 
 
-def test_intersect():
+def test_intersect_complex():
     g_src = GenomicRanges(
         seqnames=["chr1", "chr2", "chr1", "chr3", "chr2"],
         ranges=IRanges(
@@ -110,3 +110,21 @@ def test_intersect():
 
     assert out is not None
     assert len(out) == 3
+
+
+def test_intersect_ncls():
+    gr0 = GenomicRanges(
+        seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"]
+    )
+
+    gr1 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([5], [6]), strand=["-"])
+    assert gr0 is not None
+    assert gr1 is not None
+
+    out = gr0.intersect_ncls(gr1).reduce()
+
+    assert out is not None
+    assert out.seqnames == ["chr1"]
+    assert (out.start == np.array([9])).all()
+    assert (out.width == np.array([2])).all()
+    assert (out.strand == np.array([-1])).all()
