@@ -217,7 +217,9 @@ class GenomicRanges:
             self._build_reverse_seqindex(seqinfo)
 
         if not isinstance(seqnames, np.ndarray):
-            seqnames = np.asarray([self._reverse_seqindex[x] for x in seqnames], dtype=np.int8)
+            seqnames = np.asarray(
+                [self._reverse_seqindex[x] for x in seqnames], dtype=np.int8
+            )
 
         return seqnames
 
@@ -958,7 +960,7 @@ class GenomicRanges:
 
         current_class_const = type(self)
         return current_class_const(
-            seqnames=[self._seqinfo.seqnames[x] for x in self._seqnames[idx]],
+            seqnames=self._seqnames[idx],
             ranges=self._ranges[idx],
             strand=self._strand[idx],
             names=self._names[idx] if self._names is not None else None,
@@ -1565,17 +1567,20 @@ class GenomicRanges:
         return output
 
     def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
-        chrm_grps = {}
-        for i in range(len(self)):
-            __strand = self._strand[i] if ignore_strand is False else 0
-            _grp = (
-                f"{self._seqinfo.seqnames[self._seqnames[i]]}{_granges_delim}{__strand}"
-            )
+        __strand = self._strand
+        if ignore_strand:
+            __strand = np.zeros(len(self), dtype=np.int8)
 
-            if _grp not in chrm_grps:
-                chrm_grps[_grp] = []
+        _seqnames = [self._seqinfo._seqnames[i] for i in self._seqnames]
+        grp_keys = np.char.add(
+            np.char.add(_seqnames, f"{_granges_delim}"), __strand.astype(str)
+        )
+        unique_grps, inverse_indices = np.unique(grp_keys, return_inverse=True)
 
-            chrm_grps[_grp].append(i)
+        chrm_grps = {
+            str(grp): np.where(inverse_indices == i)[0].tolist()
+            for i, grp in enumerate(unique_grps)
+        }
 
         return chrm_grps
 
@@ -1616,7 +1621,7 @@ class GenomicRanges:
         rev_map = []
         groups = []
 
-        for seq in _new_self._seqinfo.seqnames:
+        for seq in _new_self._seqinfo._seqnames:
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
                 _key = f"{seq}{_granges_delim}{strd}"
@@ -1918,7 +1923,7 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _combine_GenomicRanges(self, other)
+        all_combined = _fast_combine_GenomicRanges(self, other)
         range_bounds = all_combined.range(ignore_strand=True)
         rb_ends = {}
         for _, val in range_bounds:
@@ -1948,15 +1953,78 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _combine_GenomicRanges(self, other)
+        all_combined = _fast_combine_GenomicRanges(self, other)
         range_bounds = all_combined.range(ignore_strand=True)
         rb_ends = {}
         for _, val in range_bounds:
             rb_ends[val.seqnames[0]] = val.end[0]
 
         _gaps = other.gaps(end=rb_ends)
-        _inter = self.setdiff(_gaps)
-        return _inter
+        # _inter = self.setdiff(_gaps)
+        x_gaps = self.gaps(end=rb_ends)
+        x_gaps_u = x_gaps.union(_gaps)
+        diff = x_gaps_u.gaps(end=rb_ends)
+        return diff
+
+    def _get_chrm_grps(self):
+        chrm_grps = []
+        for i in range(len(self)):
+            __strand = self._strand[i]
+            _grp = f"{self._seqinfo._seqnames[self._seqnames[i]]}{_granges_delim}{__strand}"
+            chrm_grps.append(_grp)
+        return chrm_grps
+
+    def intersect_ncls(self, other: "GenomicRanges") -> "GenomicRanges":
+        """Find intersecting genomic intervals with `other` (uses NCLS index).
+
+        Args:
+            other:
+                The other ``GenomicRanges`` object.
+
+        Raises:
+            TypeError:
+                If ``other`` is not a ``GenomicRanges``.
+
+        Returns:
+            A new ``GenomicRanges`` object with intersecting ranges.
+        """
+        if not isinstance(other, GenomicRanges):
+            raise TypeError("'other' is not a `GenomicRanges` object.")
+
+        if not ut.package_utils.is_package_installed("ncls"):
+            raise ImportError("package: 'ncls' is not installed.")
+
+        from ncls import NCLS
+
+        other_ncls = NCLS(other.start, other.end, np.arange(len(other)))
+        _self_indexes, _other_indexes = other_ncls.all_overlaps_both(
+            self.start, self.end, np.arange(len(self))
+        )
+
+        other_grp_keys = np.array(other._get_chrm_grps())
+        self_grp_keys = np.array(self._get_chrm_grps())
+        all_self_keys = self_grp_keys[_self_indexes]
+        filtered_indexes = all_self_keys == other_grp_keys[_other_indexes]
+
+        self_starts = self.start[_self_indexes][filtered_indexes]
+        other_starts = other.start[_other_indexes][filtered_indexes]
+        new_starts = np.where(self_starts > other_starts, self_starts, other_starts)
+
+        self_ends = self.end[_self_indexes][filtered_indexes]
+        other_ends = other.end[_other_indexes][filtered_indexes]
+        new_ends = np.where(self_ends < other_ends, self_ends, other_ends)
+
+        filtered_keys = all_self_keys[filtered_indexes]
+        splits = [x.split(_granges_delim) for x in filtered_keys]
+        new_seqnames, new_strands = zip(*splits)
+
+        output = GenomicRanges(
+            seqnames=new_seqnames,
+            ranges=IRanges(new_starts, new_ends - new_starts),
+            strand=np.array(new_strands).astype(np.int8),
+        )
+
+        return output
 
     ###################################
     ######>> search operations <<######
@@ -2827,6 +2895,19 @@ class GenomicRanges:
             same type as caller, in this case a `GenomicRanges`.
         """
         return cls([], IRanges.empty())
+
+
+def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
+    return GenomicRanges(
+        ranges=ut.combine_sequences(*[y._ranges for y in x]),
+        seqnames=ut.combine_sequences(*[y._seqnames for y in x]),
+        strand=ut.combine_sequences(*[y._strand for y in x]),
+        names=None,
+        mcols=None,
+        seqinfo=merge_SeqInfo([y._seqinfo for y in x]),
+        metadata=None,
+        validate=False,
+    )
 
 
 @ut.combine_sequences.register

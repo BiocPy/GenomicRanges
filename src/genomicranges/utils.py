@@ -42,22 +42,20 @@ def sanitize_strand_vector(
                 "'strand' must only contain values 1 (forward strand), -1 (reverse strand) or 0 (reverse strand)."
             )
         return strand.astype(np.int8)
-
-    if ut.is_list_of_type(strand, str):
+    elif ut.is_list_of_type(strand, str):
         if not set(strand).issubset(["+", "-", "*"]):
             raise ValueError("Values in 'strand' must be either +, - or *.")
         return np.asarray([STRAND_MAP[x] for x in strand], dtype=np.int8)
-
-    if ut.is_list_of_type(strand, (int, float, np.int_)):
+    elif ut.is_list_of_type(strand, (int, float)):
         if not set(strand).issubset([1, 0, -1]):
             raise ValueError(
                 "'strand' must only contain values 1 (forward strand), -1 (reverse strand) or 0 (reverse strand)."
             )
         return np.asarray(strand, dtype=np.int8)
-
-    raise TypeError(
-        "'strand' must be either a numpy vector, a list of integers or strings representing strand."
-    )
+    else:
+        raise TypeError(
+            "'strand' must be either a numpy vector, a list of integers or strings representing strand."
+        )
 
 
 def _sanitize_vec(x: Sequence):
