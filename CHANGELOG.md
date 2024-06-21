@@ -3,7 +3,7 @@
 ## Version 0.4.21
 
 - Optimize `intersect` operation on large number of genomic regions
-- Add a `fast_combine_granges` method that only concatenates seqnames and intervals. 
+- Add a `fast_combine_granges` method that only concatenates seqnames and intervals.
 - Use `np.asarray` as much as possible for conversion
 - Update tests and documentation
 
