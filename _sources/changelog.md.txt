@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.4.21
+
+- Optimize `intersect` operation on large number of genomic regions
+- Add a `fast_combine_granges` method that only concatenates seqnames and intervals.
+- Use `np.asarray` as much as possible for conversion
+- Update tests and documentation
+
 ## Version 0.4.20
 
 Updated dependencies (especially `IRanges`), to be compatible with NumPy's 2.0 release.
