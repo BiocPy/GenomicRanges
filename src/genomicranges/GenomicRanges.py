@@ -1996,13 +1996,19 @@ class GenomicRanges:
             self.start, self_end, np.arange(len(self))
         )
 
-        other_chrms = np.array([other._seqinfo._seqnames[other._seqnames[i]] for i in _other_indexes])
-        self_chrms = np.array([self._seqinfo._seqnames[self._seqnames[i]] for i in _self_indexes])
+        other_chrms = np.array(
+            [other._seqinfo._seqnames[other._seqnames[i]] for i in _other_indexes]
+        )
+        self_chrms = np.array(
+            [self._seqinfo._seqnames[self._seqnames[i]] for i in _self_indexes]
+        )
 
         other_strands = other._strand[_other_indexes]
         self_strands = self._strand[_self_indexes]
 
-        filtered_indexes = np.logical_and(other_chrms == self_chrms, other_strands == self_strands)
+        filtered_indexes = np.logical_and(
+            other_chrms == self_chrms, other_strands == self_strands
+        )
 
         self_starts = self.start[_self_indexes][filtered_indexes]
         other_starts = other.start[_other_indexes][filtered_indexes]
