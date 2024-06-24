@@ -155,7 +155,7 @@ class SeqInfo:
     def _populate_reverse_seqnames_index(self):
         if self._reverse_seqnames is None:
             revmap = {}
-            for i, n in enumerate(self):
+            for i, n in enumerate(self._seqnames):
                 if n not in revmap:
                     revmap[n] = i
             self._reverse_seqnames = revmap

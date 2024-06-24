@@ -1966,14 +1966,6 @@ class GenomicRanges:
         diff = x_gaps_u.gaps(end=rb_ends)
         return diff
 
-    def _get_chrm_grps(self):
-        chrm_grps = []
-        for i in range(len(self)):
-            __strand = self._strand[i]
-            _grp = f"{self._seqinfo._seqnames[self._seqnames[i]]}{_granges_delim}{__strand}"
-            chrm_grps.append(_grp)
-        return chrm_grps
-
     def intersect_ncls(self, other: "GenomicRanges") -> "GenomicRanges":
         """Find intersecting genomic intervals with `other` (uses NCLS index).
 
@@ -1996,27 +1988,34 @@ class GenomicRanges:
 
         from ncls import NCLS
 
-        other_ncls = NCLS(other.start, other.end, np.arange(len(other)))
+        self_end = self.end
+        other_end = other.end
+
+        other_ncls = NCLS(other.start, other_end, np.arange(len(other)))
         _self_indexes, _other_indexes = other_ncls.all_overlaps_both(
-            self.start, self.end, np.arange(len(self))
+            self.start, self_end, np.arange(len(self))
         )
 
-        other_grp_keys = np.array(other._get_chrm_grps())
-        self_grp_keys = np.array(self._get_chrm_grps())
-        all_self_keys = self_grp_keys[_self_indexes]
-        filtered_indexes = all_self_keys == other_grp_keys[_other_indexes]
+        other_chrms = np.array([other._seqinfo._seqnames[other._seqnames[i]] for i in _other_indexes])
+        self_chrms = np.array([self._seqinfo._seqnames[self._seqnames[i]] for i in _self_indexes])
+
+        other_strands = other._strand[_other_indexes]
+        self_strands = self._strand[_self_indexes]
+
+        filtered_indexes = np.logical_and(other_chrms == self_chrms, other_strands == self_strands)
 
         self_starts = self.start[_self_indexes][filtered_indexes]
         other_starts = other.start[_other_indexes][filtered_indexes]
         new_starts = np.where(self_starts > other_starts, self_starts, other_starts)
 
-        self_ends = self.end[_self_indexes][filtered_indexes]
-        other_ends = other.end[_other_indexes][filtered_indexes]
+        self_ends = self_end[_self_indexes][filtered_indexes]
+        other_ends = other_end[_other_indexes][filtered_indexes]
         new_ends = np.where(self_ends < other_ends, self_ends, other_ends)
 
-        filtered_keys = all_self_keys[filtered_indexes]
-        splits = [x.split(_granges_delim) for x in filtered_keys]
-        new_seqnames, new_strands = zip(*splits)
+        # filtered_keys = self_grp_keys[filtered_indexes]
+        # splits = [x.split(_granges_delim) for x in filtered_keys]
+        new_seqnames = self_chrms[filtered_indexes].tolist()
+        new_strands = self_strands[filtered_indexes]
 
         output = GenomicRanges(
             seqnames=new_seqnames,
