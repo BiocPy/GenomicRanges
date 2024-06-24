@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.21 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.22 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -179,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.21 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.22 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -203,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.21 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.22 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -2398,14 +2398,6 @@
         <span class="k">return</span> <span class="n">diff</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_chrm_grps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">chrm_grps</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
-            <span class="n">__strand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">_grp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}{</span><span class="n">__strand</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">chrm_grps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_grp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">chrm_grps</span>
-
 <div class="viewcode-block" id="GenomicRanges.intersect_ncls">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.intersect_ncls">[docs]</a>
     <span class="k">def</span> <span class="nf">intersect_ncls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
@@ -2430,27 +2422,40 @@
 
         <span class="kn">from</span> <span class="nn">ncls</span> <span class="kn">import</span> <span class="n">NCLS</span>
 
-        <span class="n">other_ncls</span> <span class="o">=</span> <span class="n">NCLS</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span>
+        <span class="n">self_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span>
+        <span class="n">other_end</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">end</span>
+
+        <span class="n">other_ncls</span> <span class="o">=</span> <span class="n">NCLS</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">other_end</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span>
         <span class="n">_self_indexes</span><span class="p">,</span> <span class="n">_other_indexes</span> <span class="o">=</span> <span class="n">other_ncls</span><span class="o">.</span><span class="n">all_overlaps_both</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">self_end</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="p">)</span>
 
-        <span class="n">other_grp_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_get_chrm_grps</span><span class="p">())</span>
-        <span class="n">self_grp_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_chrm_grps</span><span class="p">())</span>
-        <span class="n">all_self_keys</span> <span class="o">=</span> <span class="n">self_grp_keys</span><span class="p">[</span><span class="n">_self_indexes</span><span class="p">]</span>
-        <span class="n">filtered_indexes</span> <span class="o">=</span> <span class="n">all_self_keys</span> <span class="o">==</span> <span class="n">other_grp_keys</span><span class="p">[</span><span class="n">_other_indexes</span><span class="p">]</span>
+        <span class="n">other_chrms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_other_indexes</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">self_chrms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_self_indexes</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">other_strands</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">_other_indexes</span><span class="p">]</span>
+        <span class="n">self_strands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">_self_indexes</span><span class="p">]</span>
+
+        <span class="n">filtered_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+            <span class="n">other_chrms</span> <span class="o">==</span> <span class="n">self_chrms</span><span class="p">,</span> <span class="n">other_strands</span> <span class="o">==</span> <span class="n">self_strands</span>
+        <span class="p">)</span>
 
         <span class="n">self_starts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="n">_self_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
         <span class="n">other_starts</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="n">_other_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
         <span class="n">new_starts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">self_starts</span> <span class="o">&gt;</span> <span class="n">other_starts</span><span class="p">,</span> <span class="n">self_starts</span><span class="p">,</span> <span class="n">other_starts</span><span class="p">)</span>
 
-        <span class="n">self_ends</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="n">_self_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
-        <span class="n">other_ends</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="n">_other_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
+        <span class="n">self_ends</span> <span class="o">=</span> <span class="n">self_end</span><span class="p">[</span><span class="n">_self_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
+        <span class="n">other_ends</span> <span class="o">=</span> <span class="n">other_end</span><span class="p">[</span><span class="n">_other_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
         <span class="n">new_ends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">self_ends</span> <span class="o">&lt;</span> <span class="n">other_ends</span><span class="p">,</span> <span class="n">self_ends</span><span class="p">,</span> <span class="n">other_ends</span><span class="p">)</span>
 
-        <span class="n">filtered_keys</span> <span class="o">=</span> <span class="n">all_self_keys</span><span class="p">[</span><span class="n">filtered_indexes</span><span class="p">]</span>
-        <span class="n">splits</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_granges_delim</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filtered_keys</span><span class="p">]</span>
-        <span class="n">new_seqnames</span><span class="p">,</span> <span class="n">new_strands</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">splits</span><span class="p">)</span>
+        <span class="c1"># filtered_keys = self_grp_keys[filtered_indexes]</span>
+        <span class="c1"># splits = [x.split(_granges_delim) for x in filtered_keys]</span>
+        <span class="n">new_seqnames</span> <span class="o">=</span> <span class="n">self_chrms</span><span class="p">[</span><span class="n">filtered_indexes</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">new_strands</span> <span class="o">=</span> <span class="n">self_strands</span><span class="p">[</span><span class="n">filtered_indexes</span><span class="p">]</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
             <span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span>
@@ -3462,7 +3467,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=ea0ce697"></script>
+</div><script src="../../_static/documentation_options.js?v=ddf46cfd"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>
