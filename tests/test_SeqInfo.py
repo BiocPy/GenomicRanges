@@ -140,3 +140,21 @@ def test_merge_SeqInfo():
     assert combined.get_seqlengths() == [100, 101, None, 101, 102]
     assert combined.get_is_circular() == [False, True, False, True, False]
     assert combined.get_genome() == ["hg19", "hg19", None, "hg38", "hg38"]
+
+
+def test_copy_SeqInfo():
+    circ = [random() < 0.5 for _ in range(3)]
+    seq = SeqInfo(
+        seqnames=["chr1", "chr2", "chr3"],
+        seqlengths=range(100, 103),
+        is_circular=circ,
+        genome="hg19",
+    )
+
+    from copy import copy, deepcopy
+
+    copy_seq = copy(seq)
+    assert seq.seqnames == copy_seq.seqnames
+
+    deepcopy_seq = deepcopy(seq)
+    assert seq.seqnames == copy_seq.seqnames

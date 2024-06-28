@@ -208,7 +208,7 @@ class SeqInfo:
         current_class_const = type(self)
         return current_class_const(
             seqnames=_seqnames_copy,
-            seqlenghts=_seqlengths_copy,
+            seqlengths=_seqlengths_copy,
             is_circular=_is_circular_copy,
             genome=_genome_copy,
             validate=False,
