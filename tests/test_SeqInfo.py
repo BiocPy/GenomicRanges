@@ -157,4 +157,4 @@ def test_copy_SeqInfo():
     assert seq.seqnames == copy_seq.seqnames
 
     deepcopy_seq = deepcopy(seq)
-    assert seq.seqnames == copy_seq.seqnames
+    assert seq.seqnames == deepcopy_seq.seqnames
