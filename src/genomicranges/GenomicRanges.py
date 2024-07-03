@@ -1191,7 +1191,7 @@ class GenomicRanges:
 
         # mcols
         drops.extend(["starts", "seqnames"])
-        mcols_df = input.drop(columns=drops)
+        mcols_df = input.drop(drops)
 
         mcols = None
         if (not mcols_df.is_empty()) or len(mcols_df.columns) > 0:
