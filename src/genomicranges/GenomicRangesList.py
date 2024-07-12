@@ -2,8 +2,8 @@ from typing import Dict, List, Optional, Sequence, Union
 from warnings import warn
 
 import biocutils as ut
-from biocframe import BiocFrame
 import numpy as np
+from biocframe import BiocFrame
 
 from .GenomicRanges import GenomicRanges
 
@@ -593,7 +593,9 @@ class GenomicRangesList:
 
         return self[group]
 
-    def _generic_accessor(self, prop: str, func: bool = False) -> Dict[str, list]:
+    def generic_accessor(
+        self, prop: str, func: bool = False, cast: bool = False
+    ) -> Union[Dict[str, list], "GenomicRangesList"]:
         _all_prop = {}
         _ranges = self.ranges
         _groups = self.names
@@ -610,6 +612,10 @@ class GenomicRangesList:
 
             _all_prop[_key] = _val
 
+        if cast is True:
+            current_class_const = type(self)
+            return current_class_const.from_dict(_all_prop)
+
         return _all_prop
 
     def element_nrows(self) -> Dict[str, List[str]]:
@@ -619,7 +625,7 @@ class GenomicRangesList:
             An integer vector where each value corresponds to the length of
             the contained GenomicRanges object.
         """
-        return self._generic_accessor("__len__", func=True)
+        return self.generic_accessor("__len__", func=True)
 
     def is_empty(self) -> bool:
         """Whether ``GRangesList`` has no elements or if all its elements are empty.
@@ -650,7 +656,7 @@ class GenomicRangesList:
             A list with the same length as keys in the object,
             each element in the list contains another list of sequence names.
         """
-        return self._generic_accessor("seqnames")
+        return self.generic_accessor("seqnames")
 
     @property
     def start(self) -> Dict[str, List[int]]:
@@ -660,7 +666,7 @@ class GenomicRangesList:
             A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("start")
+        return self.generic_accessor("start")
 
     @property
     def end(self) -> Dict[str, List[int]]:
@@ -670,7 +676,7 @@ class GenomicRangesList:
             A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("end")
+        return self.generic_accessor("end")
 
     @property
     def width(self) -> Dict[str, List[int]]:
@@ -680,7 +686,7 @@ class GenomicRangesList:
             A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("width")
+        return self.generic_accessor("width")
 
     @property
     def strand(self) -> Dict[str, List[int]]:
@@ -690,7 +696,7 @@ class GenomicRangesList:
             A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("strand")
+        return self.generic_accessor("strand")
 
     @property
     def seq_info(self) -> Dict[str, List[int]]:
@@ -700,7 +706,7 @@ class GenomicRangesList:
             A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("seq_info")
+        return self.generic_accessor("seq_info")
 
     @property
     def is_circular(self) -> Dict[str, List[int]]:
@@ -710,7 +716,7 @@ class GenomicRangesList:
             A list with the same length as keys in the object,
             each element in the list contains another list values.
         """
-        return self._generic_accessor("is_circular")
+        return self.generic_accessor("is_circular")
 
     def get_range_lengths(self) -> dict:
         """
@@ -836,9 +842,9 @@ class GenomicRangesList:
 
             raise TypeError("Arguments to subset `GenomicRangesList` is not supported.")
 
-    ##########################
-    ######>> empty <<#########
-    ##########################
+    #######################################
+    ######>> class initializers <<#########
+    #######################################
 
     @classmethod
     def empty(cls, n: int):
@@ -851,11 +857,20 @@ class GenomicRangesList:
 
         return cls(ranges=GenomicRanges.empty(), range_lengths=_range_lengths)
 
+    @classmethod
+    def from_dict(cls, x: dict):
+        """Create a `GenomicRangesList` object from :py:class:`~dict`.
+
+        Returns:
+            same type as caller, in this case a `GenomicRangesList`.
+        """
+        return cls(ranges=list(x.values()), names=list(x.keys()))
+
     ###############################
     ######>> to granges <<#########
     ###############################
 
-    def to_genomic_ranges(self) -> GenomicRanges:
+    def as_genomic_ranges(self) -> GenomicRanges:
         """Coerce object to a :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
 
         Returns:
@@ -873,10 +888,21 @@ class GenomicRangesList:
 
         return _combined_ranges
 
-    def to_granges(self) -> GenomicRanges:
+    def as_granges(self) -> GenomicRanges:
         """Alias to :py:meth:`~to_genomic_ranges`."""
-        return self.to_genomic_ranges()
+        return self.as_genomic_ranges()
 
+    ####################################
+    ######>> GRanges methods <<#########
+    ####################################
+
+    def range(self) -> "GenomicRangesList":
+        """Calculate range bounds for each genomic element.
+
+        Returns:
+            A new ``GenomicRangesList`` object with the range bounds.
+        """
+        return self.generic_accessor("range", func=True, cast=True)
 
 @ut.combine_sequences.register(GenomicRangesList)
 def _combine_grl(*x: GenomicRangesList):
