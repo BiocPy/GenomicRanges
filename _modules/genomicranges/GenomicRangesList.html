@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges.GenomicRangesList - GenomicRanges 0.4.24 documentation</title>
+        <title>genomicranges.GenomicRangesList - GenomicRanges 0.4.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -179,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.24 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.25 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -203,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.24 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.25 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -595,7 +595,7 @@
         <span class="n">output</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;GenomicRangesList with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> range</span><span class="si">{</span><span class="s1">&#39;s&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">)</span><span class="si">}</span><span class="s2"> metadata column</span><span class="si">{</span><span class="s1">&#39;s&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">get_column_names</span><span class="p">())</span><span class="si">}</span><span class="s2"> metadata column</span><span class="si">{</span><span class="s1">&#39;s&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">get_column_names</span><span class="p">())</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;--- empty genomic ranges list ---&quot;</span>
@@ -1079,7 +1079,7 @@
 <div class="viewcode-block" id="GenomicRangesList.to_pandas">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.to_pandas">[docs]</a>
     <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce object to a :py:class:`pandas.DataFrame`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce object to a :py:class:`~pandas.DataFrame`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A :py:class:`~pandas.DataFrame` object.</span>
@@ -1206,6 +1206,38 @@
         <span class="n">_range_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="n">GenomicRanges</span><span class="o">.</span><span class="n">empty</span><span class="p">(),</span> <span class="n">range_lengths</span><span class="o">=</span><span class="n">_range_lengths</span><span class="p">)</span></div>
+
+
+    <span class="c1">###############################</span>
+    <span class="c1">######&gt;&gt; to granges &lt;&lt;#########</span>
+    <span class="c1">###############################</span>
+
+<div class="viewcode-block" id="GenomicRangesList.to_genomic_ranges">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.to_genomic_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_genomic_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce object to a :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A :py:class:`~genomicranges.GenomicRanges.GenomicRanges` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_combined_ranges</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">)</span>
+        <span class="n">_combined_names</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_combined_names</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">rl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_lengths</span><span class="p">):</span>
+                <span class="n">_combined_names</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="n">rl</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">_combined_ranges</span><span class="o">.</span><span class="n">set_names</span><span class="p">(</span><span class="n">_combined_names</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_combined_ranges</span></div>
+
+
+<div class="viewcode-block" id="GenomicRangesList.to_granges">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.to_granges">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_granges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias to :py:meth:`~to_genomic_ranges`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_genomic_ranges</span><span class="p">()</span></div>
 </div>
 
 
@@ -1267,7 +1299,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=b2057829"></script>
+</div><script src="../../_static/documentation_options.js?v=167dfc30"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>

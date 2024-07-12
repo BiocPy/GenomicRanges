@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.24 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -179,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.24 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.25 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -203,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.24 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.25 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -286,6 +286,7 @@
 <span class="kn">from</span> <span class="nn">.SeqInfo</span> <span class="kn">import</span> <span class="n">SeqInfo</span><span class="p">,</span> <span class="n">merge_SeqInfo</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">create_np_vector</span><span class="p">,</span>
+    <span class="n">group_by_indices</span><span class="p">,</span>
     <span class="n">sanitize_strand_vector</span><span class="p">,</span>
     <span class="n">slide_intervals</span><span class="p">,</span>
     <span class="n">split_intervals</span><span class="p">,</span>
@@ -643,7 +644,7 @@
 <span class="sd">            A pretty-printed string containing the contents of this ``GenomicRanges``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;GenomicRanges with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> range</span><span class="si">{</span><span class="s1">&#39;s&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">)</span><span class="si">}</span><span class="s2"> metadata column</span><span class="si">{</span><span class="s1">&#39;s&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">get_column_names</span><span class="p">())</span><span class="si">}</span><span class="s2"> metadata column</span><span class="si">{</span><span class="s1">&#39;s&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">get_column_names</span><span class="p">())</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="n">nr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">added_table</span> <span class="o">=</span> <span class="kc">False</span>
@@ -3381,6 +3382,50 @@
         <span class="k">return</span> <span class="n">output</span></div>
 
 
+    <span class="c1">#######################</span>
+    <span class="c1">######&gt;&gt; split &lt;&lt;######</span>
+    <span class="c1">#######################</span>
+
+<div class="viewcode-block" id="GenomicRanges.split">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.split">[docs]</a>
+    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split the `GenomicRanges` object into a :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            groups:</span>
+<span class="sd">                A list specifying the groups or factors to split by.</span>
+
+<span class="sd">                Must have the same length as the number of genomic elements</span>
+<span class="sd">                in the object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `GenomicRangesList` containing the groups and their</span>
+<span class="sd">            corresponding elements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Number of groups must match the number of genomic elements.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">gdict</span> <span class="o">=</span> <span class="n">group_by_indices</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">)</span>
+
+        <span class="n">_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_grs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">_grs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">v</span><span class="p">])</span>
+
+        <span class="kn">from</span> <span class="nn">.GenomicRangesList</span> <span class="kn">import</span> <span class="n">GenomicRangesList</span>
+
+        <span class="k">return</span> <span class="n">GenomicRangesList</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="n">_grs</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">_names</span><span class="p">)</span></div>
+
+
+    <span class="c1">#######################</span>
+    <span class="c1">######&gt;&gt; empty &lt;&lt;######</span>
+    <span class="c1">#######################</span>
+
 <div class="viewcode-block" id="GenomicRanges.empty">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.empty">[docs]</a>
     <span class="nd">@classmethod</span>
@@ -3467,7 +3512,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=b2057829"></script>
+</div><script src="../../_static/documentation_options.js?v=167dfc30"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>

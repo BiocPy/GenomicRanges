@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="genomicranges package" href="genomicranges.html" /><link rel="prev" title="GenomicRanges: Genomic analysis" href="../tutorial.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges - GenomicRanges 0.4.24 documentation</title>
+        <title>genomicranges - GenomicRanges 0.4.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -180,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.4.24 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.4.25 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -204,7 +204,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.24 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.25 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -365,6 +365,7 @@
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.shift"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.shift()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.sliding_windows"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.sliding_windows()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.sort"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.sort()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.split"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.split()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.start"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.start</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.strand"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.strand</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.subset_by_overlaps"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.subset_by_overlaps()</span></code></a></li>
@@ -420,6 +421,8 @@
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.set_ranges"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.set_ranges()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.start"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.start</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.strand"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.strand</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.to_genomic_ranges"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.to_genomic_ranges()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.to_granges"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.to_granges()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.to_pandas"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.to_pandas()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="genomicranges.html#genomicranges.GenomicRangesList.GenomicRangesList.width"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList.width</span></code></a></li>
 </ul>
@@ -469,6 +472,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="genomicranges.html#module-genomicranges.utils">genomicranges.utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="genomicranges.html#genomicranges.utils.create_np_vector"><code class="docutils literal notranslate"><span class="pre">create_np_vector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genomicranges.html#genomicranges.utils.group_by_indices"><code class="docutils literal notranslate"><span class="pre">group_by_indices()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genomicranges.html#genomicranges.utils.sanitize_strand_vector"><code class="docutils literal notranslate"><span class="pre">sanitize_strand_vector()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genomicranges.html#genomicranges.utils.slide_intervals"><code class="docutils literal notranslate"><span class="pre">slide_intervals()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genomicranges.html#genomicranges.utils.split_intervals"><code class="docutils literal notranslate"><span class="pre">split_intervals()</span></code></a></li>
@@ -530,7 +534,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b2057829"></script>
+</div><script src="../_static/documentation_options.js?v=167dfc30"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=4e2eecee"></script>
