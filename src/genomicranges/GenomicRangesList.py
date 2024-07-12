@@ -729,7 +729,7 @@ class GenomicRangesList:
     ###################################
 
     def to_pandas(self) -> "pandas.DataFrame":
-        """Coerce object to a :py:class:`pandas.DataFrame`.
+        """Coerce object to a :py:class:`~pandas.DataFrame`.
 
         Returns:
             A :py:class:`~pandas.DataFrame` object.
@@ -851,6 +851,31 @@ class GenomicRangesList:
 
         return cls(ranges=GenomicRanges.empty(), range_lengths=_range_lengths)
 
+    ###############################
+    ######>> to granges <<#########
+    ###############################
+
+    def to_genomic_ranges(self) -> GenomicRanges:
+        """Coerce object to a :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
+
+        Returns:
+            A :py:class:`~genomicranges.GenomicRanges.GenomicRanges` object.
+        """
+        _combined_ranges = ut.combine_sequences(*self._ranges)
+        _combined_names = None
+
+        if self._names is not None:
+            _combined_names = []
+            for i, rl in enumerate(self._range_lengths):
+                _combined_names.extend([self._names[i]] * rl)
+
+            return _combined_ranges.set_names(_combined_names)
+
+        return _combined_ranges
+
+    def to_granges(self) -> GenomicRanges:
+        """Alias to :py:meth:`~to_genomic_ranges`."""
+        return self.to_genomic_ranges()
 
 @ut.combine_sequences.register(GenomicRangesList)
 def _combine_grl(*x: GenomicRangesList):

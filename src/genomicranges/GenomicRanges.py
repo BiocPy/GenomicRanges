@@ -2897,7 +2897,27 @@ class GenomicRanges:
     ######>> split <<######
     #######################
 
-    def split(self, groups: list):
+    def split(self, groups: list) -> "GenomicRangesList":
+        """Split the `GenomicRanges` object into a
+        :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList`.
+
+        Args:
+            groups:
+                A list specifying the groups or factors to split by.
+
+                Must have the same length as the number of genomic elements
+                in the object.
+
+        Returns:
+            A `GenomicRangesList` containing the groups and their
+            corresponding elements.
+        """
+
+        if len(groups) != len(self):
+            raise ValueError(
+                "Number of groups must match the number of genomic elements."
+            )
+
         gdict = group_by_indices(groups=groups)
 
         _names = []

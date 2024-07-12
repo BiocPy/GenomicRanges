@@ -58,3 +58,27 @@ def test_split():
     assert len(splits) == 3
     print(splits.element_nrows())
     assert sum(splits.get_range_lengths()) == len(subject)
+
+def test_to_granges():
+    assert subject is not None
+
+    splits = subject.split(
+        [
+            "chr1",
+            "chr2",
+            "chr2",
+            "chr2",
+            "chr1",
+            "chr1",
+            "chr3",
+            "chr3",
+            "chr3",
+            "chr3",
+        ]
+    )
+
+    roundtrip = splits.to_genomic_ranges()
+
+    assert roundtrip is not None
+    assert isinstance(roundtrip, GenomicRanges)
+    assert len(roundtrip) == len(subject)
