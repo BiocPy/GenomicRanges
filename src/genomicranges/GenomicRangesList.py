@@ -904,6 +904,7 @@ class GenomicRangesList:
         """
         return self.generic_accessor("range", func=True, cast=True)
 
+
 @ut.combine_sequences.register(GenomicRangesList)
 def _combine_grl(*x: GenomicRangesList):
     has_names = False
