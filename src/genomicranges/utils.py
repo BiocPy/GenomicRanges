@@ -1,3 +1,4 @@
+from itertools import groupby
 from typing import List, Optional, Sequence, Tuple, Union
 
 import biocutils as ut
@@ -206,3 +207,12 @@ def create_np_vector(
             _ = [revmap[x].append(idx + 1) for x in range(i[0] - 1, i[1])]
 
     return cov, revmap
+
+
+def group_by_indices(groups: list) -> dict:
+    return {
+        k: [x[0] for x in v]
+        for k, v in groupby(
+            sorted(enumerate(groups), key=lambda x: x[1]), lambda x: x[1]
+        )
+    }

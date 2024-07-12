@@ -9,6 +9,7 @@ from iranges import IRanges
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
     create_np_vector,
+    group_by_indices,
     sanitize_strand_vector,
     slide_intervals,
     split_intervals,
@@ -331,7 +332,7 @@ class GenomicRanges:
             A pretty-printed string containing the contents of this ``GenomicRanges``.
         """
         output = f"GenomicRanges with {len(self)} range{'s' if len(self) != 1 else ''}"
-        output += f" and {len(self._mcols)} metadata column{'s' if len(self._mcols) != 1 else ''}\n"
+        output += f" and {len(self._mcols.get_column_names())} metadata column{'s' if len(self._mcols.get_column_names()) != 1 else ''}\n"
 
         nr = len(self)
         added_table = False
@@ -2891,6 +2892,47 @@ class GenomicRanges:
         output = bins._define_output(in_place=in_place)
         output._mcols.set_column(outname, outvec, in_place=True)
         return output
+
+    #######################
+    ######>> split <<######
+    #######################
+
+    def split(self, groups: list) -> "GenomicRangesList":
+        """Split the `GenomicRanges` object into a :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList`.
+
+        Args:
+            groups:
+                A list specifying the groups or factors to split by.
+
+                Must have the same length as the number of genomic elements
+                in the object.
+
+        Returns:
+            A `GenomicRangesList` containing the groups and their
+            corresponding elements.
+        """
+
+        if len(groups) != len(self):
+            raise ValueError(
+                "Number of groups must match the number of genomic elements."
+            )
+
+        gdict = group_by_indices(groups=groups)
+
+        _names = []
+        _grs = []
+
+        for k, v in gdict.items():
+            _names.append(k)
+            _grs.append(self[v])
+
+        from .GenomicRangesList import GenomicRangesList
+
+        return GenomicRangesList(ranges=_grs, names=_names)
+
+    #######################
+    ######>> empty <<######
+    #######################
 
     @classmethod
     def empty(cls):
