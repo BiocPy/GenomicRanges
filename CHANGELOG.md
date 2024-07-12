@@ -1,6 +1,13 @@
 # Changelog
 
-## Version 0.4.21
+## Version 0.4.25
+
+- Method to split `GenomicRanges` by a list of groups.
+- Coerce `GenomicRangesList` to `GenomicRanges`.
+- Add tests and documentation.
+
+
+## Version 0.4.21 - 0.4.24
 
 - Optimize `intersect` operation on large number of genomic regions
 - Add a `fast_combine_granges` method that only concatenates seqnames and intervals.
