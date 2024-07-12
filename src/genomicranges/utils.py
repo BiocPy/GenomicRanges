@@ -1,3 +1,4 @@
+from itertools import groupby
 from typing import List, Optional, Sequence, Tuple, Union
 
 import biocutils as ut
@@ -11,9 +12,7 @@ STRAND_MAP = {"+": 1, "-": -1, "*": 0}
 REV_STRAND_MAP = {"1": "+", "-1": "-", "0": "*"}
 
 
-def sanitize_strand_vector(
-    strand: Union[Sequence[str], Sequence[int], np.ndarray]
-) -> np.ndarray:
+def sanitize_strand_vector(strand: Union[Sequence[str], Sequence[int], np.ndarray]) -> np.ndarray:
     """Create a numpy representation for ``strand``.
 
     Mapping: 1 for "+" (forward strand), 0 for "*" (any strand) and -1 for "-" (reverse strand).
@@ -53,9 +52,7 @@ def sanitize_strand_vector(
             )
         return np.asarray(strand, dtype=np.int8)
     else:
-        raise TypeError(
-            "'strand' must be either a numpy vector, a list of integers or strings representing strand."
-        )
+        raise TypeError("'strand' must be either a numpy vector, a list of integers or strings representing strand.")
 
 
 def _sanitize_vec(x: Sequence):
@@ -206,3 +203,7 @@ def create_np_vector(
             _ = [revmap[x].append(idx + 1) for x in range(i[0] - 1, i[1])]
 
     return cov, revmap
+
+
+def group_by_indices(groups: list) -> dict:
+    return {k: [x[0] for x in v] for k, v in groupby(sorted(enumerate(groups), key=lambda x: x[1]), lambda x: x[1])}
