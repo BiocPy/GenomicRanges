@@ -877,6 +877,7 @@ class GenomicRangesList:
         """Alias to :py:meth:`~to_genomic_ranges`."""
         return self.to_genomic_ranges()
 
+
 @ut.combine_sequences.register(GenomicRangesList)
 def _combine_grl(*x: GenomicRangesList):
     has_names = False

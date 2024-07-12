@@ -2898,8 +2898,7 @@ class GenomicRanges:
     #######################
 
     def split(self, groups: list) -> "GenomicRangesList":
-        """Split the `GenomicRanges` object into a
-        :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList`.
+        """Split the `GenomicRanges` object into a :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList`.
 
         Args:
             groups:

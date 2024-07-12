@@ -59,6 +59,7 @@ def test_split():
     print(splits.element_nrows())
     assert sum(splits.get_range_lengths()) == len(subject)
 
+
 def test_to_granges():
     assert subject is not None
 
