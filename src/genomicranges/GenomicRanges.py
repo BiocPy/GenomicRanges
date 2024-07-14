@@ -1571,8 +1571,8 @@ class GenomicRanges:
         __strand = self._strand.copy()
         if ignore_strand:
             __strand = np.zeros(len(self), dtype=np.int8)
-        else:
-            __strand[__strand == 1] = 0
+        # else:
+        #     __strand[__strand == 0] = 1
 
         _seqnames = [self._seqinfo._seqnames[i] for i in self._seqnames]
         grp_keys = np.char.add(
