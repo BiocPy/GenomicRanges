@@ -1568,9 +1568,11 @@ class GenomicRanges:
         return output
 
     def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
-        __strand = self._strand
+        __strand = self._strand.copy()
         if ignore_strand:
             __strand = np.zeros(len(self), dtype=np.int8)
+        # else:
+        #     __strand[__strand == 0] = 1
 
         _seqnames = [self._seqinfo._seqnames[i] for i in self._seqnames]
         grp_keys = np.char.add(

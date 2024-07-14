@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.4.26
+
+- Expose the `generic_accessor` method used internally by `GenomicRangesList` to call functions from the underlying GenomicRanges for each element.
+- Add class method to initialize `GenomicRangesList` from dictionary.
+- Update tests
+
 ## Version 0.4.25
 
 - Method to split `GenomicRanges` by a list of groups.
