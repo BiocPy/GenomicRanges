@@ -78,7 +78,7 @@ def test_to_granges():
         ]
     )
 
-    roundtrip = splits.to_genomic_ranges()
+    roundtrip = splits.as_genomic_ranges()
 
     assert roundtrip is not None
     assert isinstance(roundtrip, GenomicRanges)
