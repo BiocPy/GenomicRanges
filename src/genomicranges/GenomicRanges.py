@@ -2952,8 +2952,8 @@ class GenomicRanges:
     def subtract(
         self, x: "GenomicRanges", min_overlap: int = 1, ignore_strand: bool = False
     ) -> "GenomicRangesList":
-        """Subtract searches for features in ``x`` that overlap ``self`` by at least
-        the number of base pairs given by ``min_overlap``.
+        """Subtract searches for features in ``x`` that overlap ``self`` by at least the number of base pairs given by
+        ``min_overlap``.
 
         Args:
             x:
