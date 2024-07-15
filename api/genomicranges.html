@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="genomicranges.io package" href="genomicranges.io.html" /><link rel="prev" title="genomicranges" href="modules.html" />
 
-    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>genomicranges package - GenomicRanges 0.4.26 documentation</title>
+    <!-- Generated with Sphinx 7.4.3 and Furo 2024.05.06 -->
+        <title>genomicranges package - GenomicRanges 0.4.27 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -180,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.4.26 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.4.27 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -204,7 +204,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.26 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.27 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -1655,6 +1655,31 @@ Defaults to -1 (no gap allowed).</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.subtract">
+<span class="sig-name descname"><span class="pre">subtract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.subtract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.subtract" title="Link to this definition">¶</a></dt>
+<dd><p>Subtract searches for features in <code class="docutils literal notranslate"><span class="pre">x</span></code> that overlap <code class="docutils literal notranslate"><span class="pre">self</span></code> by at least the number of base pairs given by
+<code class="docutils literal notranslate"><span class="pre">min_overlap</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type">GenomicRanges</span>) – Object to subtract.</p></li>
+<li><p><strong>min_overlap</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Minimum overlap with query.
+Defaults to 1.</p></li>
+<li><p><strong>ignore_strand</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to ignore strands.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">GenomicRangesList</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>GenomicRangesList</cite> with the same size as <code class="docutils literal notranslate"><span class="pre">self</span></code> containing
+the subtracted regions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.tile">
 <span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.tile" title="Link to this definition">¶</a></dt>
 <dd><p>Split each interval by <code class="docutils literal notranslate"><span class="pre">n</span></code> (number of sub intervals) or <code class="docutils literal notranslate"><span class="pre">width</span></code> (intervals with equal width).</p>
@@ -3049,6 +3074,7 @@ intervals and optionally a reverse index map.</p>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.start"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.start</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.strand"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.strand</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.subset_by_overlaps"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.subset_by_overlaps()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.subtract"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.subtract()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.tile"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.tile()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.tile_by_range"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.tile_by_range()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.tile_genome"><code class="docutils literal notranslate"><span class="pre">GenomicRanges.tile_genome()</span></code></a></li>
@@ -3173,7 +3199,7 @@ intervals and optionally a reverse index map.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=2185765a"></script>
+</div><script src="../_static/documentation_options.js?v=85fdf243"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=4e2eecee"></script>
