@@ -2945,6 +2945,57 @@ class GenomicRanges:
         """
         return cls([], IRanges.empty())
 
+    ##########################
+    ######>> subtract <<######
+    ##########################
+
+    def subtract(
+        self, x: "GenomicRanges", min_overlap: int = 1, ignore_strand: bool = False
+    ) -> "GenomicRangesList":
+        """Subtract searches for features in ``x`` that overlap ``self`` by at least the number of base pairs given by
+        ``min_overlap``.
+
+        Args:
+            x:
+                Object to subtract.
+
+            min_overlap:
+                Minimum overlap with query.
+                Defaults to 1.
+
+            ignore_strand:
+                Whether to ignore strands.
+                Defaults to False.
+
+        Returns:
+            `GenomicRangesList` with the same size as ``self`` containing
+            the subtracted regions.
+        """
+        _x_reduce = x.reduce(ignore_strand=ignore_strand)
+        hits = self.find_overlaps(
+            _x_reduce, min_overlap=min_overlap, ignore_strand=ignore_strand
+        )
+
+        gr_idxs = [[] for _ in range(len(self))]
+        for ii, ix in enumerate(hits):
+            for hix in ix:
+                gr_idxs[hix].append(ii)
+
+        gresults = {}
+        for idx, iids in enumerate(gr_idxs):
+            _name = str(idx)
+            if self._names is not None:
+                _name = self._names[idx]
+
+            if len(iids) > 0:
+                gresults[_name] = self[idx].setdiff(x[iids])
+            else:
+                gresults[_name] = self[idx]
+
+        from .GenomicRangesList import GenomicRangesList
+
+        return GenomicRangesList.from_dict(gresults)
+
 
 def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
     return GenomicRanges(
