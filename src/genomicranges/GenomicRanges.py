@@ -2972,7 +2972,7 @@ class GenomicRanges:
             the subtracted regions.
         """
         _x_reduce = x.reduce(ignore_strand=ignore_strand)
-        hits = x.find_overlaps(
+        hits = self.find_overlaps(
             _x_reduce, min_overlap=min_overlap, ignore_strand=ignore_strand
         )
 
