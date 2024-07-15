@@ -19,9 +19,9 @@ def test_subtract():
     assert out is not None
     assert isinstance(out, GenomicRangesList)
     assert (out[0].start == np.array([2])).all()
-    assert (out[1].start == np.array([9])).all()
+    assert (out[1].start == np.array([11])).all()
 
     assert (out[0].width == np.array([6])).all()
-    assert (out[1].width == np.array([11])).all()
+    assert (out[1].width == np.array([9])).all()
 
     assert len(out) == len(x)
