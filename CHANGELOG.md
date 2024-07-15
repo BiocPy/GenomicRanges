@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.27
+
+- Implement `subtract` method, add tests.
+
 ## Version 0.4.26
 
 - Expose the `generic_accessor` method used internally by `GenomicRangesList` to call functions from the underlying GenomicRanges for each element.
