@@ -61,9 +61,10 @@ def test_find_overlaps_query_type():
     assert res is not None
     assert res == [[1, 2, 3]]
 
+
 def test_find_overlaps_rtrip():
-    x = GenomicRanges(["chr1", "chr1"], IRanges([2, 9] , [7, 19]), strand=["+", "-"])
-    y = GenomicRanges(["chr1"], IRanges([5], [10]), strand=["*"]) 
+    x = GenomicRanges(["chr1", "chr1"], IRanges([2, 9], [7, 19]), strand=["+", "-"])
+    y = GenomicRanges(["chr1"], IRanges([5], [10]), strand=["*"])
 
     resxy = x.find_overlaps(y)
     assert resxy is not None
@@ -72,6 +73,7 @@ def test_find_overlaps_rtrip():
     resyx = y.find_overlaps(x)
     assert resyx is not None
     assert resyx == [[0], [0]]
+
 
 def test_count_overlaps():
     assert subject is not None
