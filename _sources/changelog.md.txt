@@ -1,8 +1,11 @@
 # Changelog
 
-## Version 0.4.27
+## Version 0.4.27 - 0.4.28
 
 - Implement `subtract` method, add tests.
+- Use accessor methods to access properties especially `get_seqnames()`
+- Modify search and overlap methods for strand-awareness.
+- Update tests and documentation.
 
 ## Version 0.4.26
 

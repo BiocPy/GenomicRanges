@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.4.3 and Furo 2024.05.06 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.27 documentation</title>
+    <!-- Generated with Sphinx 7.4.4 and Furo 2024.05.06 -->
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.28 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -179,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.27 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.28 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -203,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.27 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.4.28 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -502,7 +502,9 @@
 
 
     <span class="k">def</span> <span class="nf">_build_reverse_seqindex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqinfo</span><span class="p">:</span> <span class="n">SeqInfo</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqindex</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">reverse_index</span><span class="o">.</span><span class="n">build_reverse_index</span><span class="p">(</span><span class="n">seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqindex</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">reverse_index</span><span class="o">.</span><span class="n">build_reverse_index</span><span class="p">(</span>
+            <span class="n">seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_remove_reverse_seqindex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqindex</span>
@@ -666,7 +668,7 @@
             <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;str&gt;&quot;</span><span class="p">]</span>
             <span class="n">_seqnames</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">indices</span><span class="p">]:</span>
-                <span class="n">_seqnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+                <span class="n">_seqnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="n">x</span><span class="p">])</span>
 
             <span class="n">showed</span> <span class="o">=</span> <span class="n">_seqnames</span>
             <span class="k">if</span> <span class="n">insert_ellipsis</span><span class="p">:</span>
@@ -719,7 +721,7 @@
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="p">))</span>
                 <span class="o">+</span> <span class="s2">&quot; sequences): &quot;</span>
                 <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">(),</span>
                     <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span>
                     <span class="n">include_brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">transform</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
@@ -767,9 +769,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">as_type</span> <span class="o">==</span> <span class="s2">&quot;factor&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">as_type</span> <span class="o">==</span> <span class="s2">&quot;list&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;as_type&#39; must be &#39;factor&#39; or &#39;list&#39;.&quot;</span><span class="p">)</span></div>
 
@@ -798,7 +800,7 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">seqnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqnames</span><span class="p">)]</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqnames</span><span class="p">)]</span>
             <span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
@@ -896,7 +898,7 @@
 <span class="sd">                 vector is retuned.</span>
 
 <span class="sd">                If ``factor``, a tuple width levels as a dictionary and</span>
-<span class="sd">                  indices to ``seqinfo.seqnames`` is returned.</span>
+<span class="sd">                  indices to ``seqinfo.get_seqnames()`` is returned.</span>
 
 <span class="sd">                If ``list``, then codes are mapped to levels and returned.</span>
 
@@ -2097,7 +2099,7 @@
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">():</span>
             <span class="n">_iter_strands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">strd</span> <span class="ow">in</span> <span class="n">_iter_strands</span><span class="p">:</span>
                 <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">seq</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -2154,7 +2156,7 @@
         <span class="n">all_grp_ranges</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chrm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chrm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()):</span>
             <span class="n">_iter_strands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">strd</span> <span class="ow">in</span> <span class="n">_iter_strands</span><span class="p">:</span>
                 <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chrm</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -2220,7 +2222,7 @@
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">seqnames</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">():</span>
             <span class="n">_iter_strands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">strd</span> <span class="ow">in</span> <span class="n">_iter_strands</span><span class="p">:</span>
                 <span class="n">_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">seq</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}{</span><span class="n">strd</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -2358,7 +2360,7 @@
         <span class="n">range_bounds</span> <span class="o">=</span> <span class="n">all_combined</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">rb_ends</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">range_bounds</span><span class="p">:</span>
-            <span class="n">rb_ends</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rb_ends</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">x_gaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="n">rb_ends</span><span class="p">)</span>
         <span class="n">x_gaps_u</span> <span class="o">=</span> <span class="n">x_gaps</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -2391,7 +2393,7 @@
         <span class="n">range_bounds</span> <span class="o">=</span> <span class="n">all_combined</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">rb_ends</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">range_bounds</span><span class="p">:</span>
-            <span class="n">rb_ends</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rb_ends</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">_gaps</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">gaps</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="n">rb_ends</span><span class="p">)</span>
         <span class="c1"># _inter = self.setdiff(_gaps)</span>
@@ -2535,8 +2537,26 @@
         <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_subset</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">])</span>
+
+            <span class="n">_grp_split</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_granges_delim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_grp_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">0&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+
+                <span class="n">_any_grp_rev</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">-1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_rev</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_rev</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
                 <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
@@ -2549,7 +2569,7 @@
                 <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
-                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
                     <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
@@ -2612,8 +2632,26 @@
         <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_subset</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">])</span>
+
+            <span class="n">_grp_split</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_granges_delim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_grp_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">0&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+
+                <span class="n">_any_grp_rev</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">-1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_rev</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_rev</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
                 <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
@@ -2626,7 +2664,7 @@
                 <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
-                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
                     <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
@@ -2689,8 +2727,26 @@
         <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_subset</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">])</span>
+
+            <span class="n">_grp_split</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_granges_delim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_grp_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">0&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+
+                <span class="n">_any_grp_rev</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">-1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_rev</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_rev</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
                 <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
@@ -2703,7 +2759,7 @@
                 <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
-                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
                     <span class="n">rev_map</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_rev_map</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">rev_map</span><span class="p">))]</span></div>
@@ -2746,8 +2802,26 @@
         <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_subset</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">])</span>
+
+            <span class="n">_grp_split</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_granges_delim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_grp_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">0&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+
+                <span class="n">_any_grp_rev</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">-1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_rev</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_rev</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
                 <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span>
@@ -2755,7 +2829,7 @@
                 <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
-                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
                     <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
@@ -2794,8 +2868,26 @@
         <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_subset</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">])</span>
+
+            <span class="n">_grp_split</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_granges_delim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_grp_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">0&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+
+                <span class="n">_any_grp_rev</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">-1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_rev</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_rev</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
                 <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span>
@@ -2803,7 +2895,7 @@
                 <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
-                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
                     <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
@@ -2842,8 +2934,26 @@
         <span class="n">query_chrm_grps</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">query_chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_subset</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
-                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">]]</span>
+                <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">])</span>
+
+            <span class="n">_grp_split</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_granges_delim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_grp_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">0&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_any_grp_fwd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_fwd</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_fwd</span><span class="p">])</span>
+
+                <span class="n">_any_grp_rev</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_grp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">-1&quot;</span>
+                <span class="k">if</span> <span class="n">_any_grp_rev</span> <span class="ow">in</span> <span class="n">subject_chrm_grps</span><span class="p">:</span>
+                    <span class="n">_subset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">_any_grp_rev</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_subset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
                 <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span>
@@ -2851,7 +2961,7 @@
                 <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
-                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_chrm_grps</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+                    <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
                     <span class="n">rev_map</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_rev_map</span>
 
         <span class="k">return</span> <span class="n">rev_map</span></div>
@@ -2910,9 +3020,9 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">_seqname</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">_seqname</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
+                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; is not present in subject.&quot;</span><span class="p">)</span>
 
             <span class="n">_strand</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
@@ -3129,7 +3239,7 @@
                 <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">twidth</span>
             <span class="p">)</span>
 
-            <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
+            <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">strand</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">strand</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">starts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">])</span>
             <span class="n">widths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">)</span>
@@ -3194,7 +3304,7 @@
                 <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">twidth</span>
             <span class="p">)</span>
 
-            <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
+            <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">strand</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">strand</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">starts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">])</span>
             <span class="n">widths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">)</span>
@@ -3239,7 +3349,7 @@
                 <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">seqnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
+            <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">strand</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">strand</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">starts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">])</span>
             <span class="n">widths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">)</span>
@@ -3299,7 +3409,7 @@
 
         <span class="n">seqlen_</span> <span class="o">=</span> <span class="n">seqlengths</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="n">SeqInfo</span><span class="p">):</span>
-            <span class="n">seqlen_</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">seqlengths</span><span class="o">.</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">seqlengths</span><span class="o">.</span><span class="n">seqlengths</span><span class="p">))</span>
+            <span class="n">seqlen_</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">seqlengths</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">(),</span> <span class="n">seqlengths</span><span class="o">.</span><span class="n">seqlengths</span><span class="p">))</span>
 
         <span class="n">seqnames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">strand</span> <span class="o">=</span> <span class="p">[]</span>
@@ -3568,7 +3678,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=85fdf243"></script>
+</div><script src="../../_static/documentation_options.js?v=6de75181"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>
