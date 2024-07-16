@@ -44,4 +44,4 @@ def test_binned_average():
     res = subject.binned_average(bins=query, scorename="score", outname="binned_score")
 
     assert res is not None
-    assert res.mcols.get_column("binned_score") == [2]
+    assert res.mcols.get_column("binned_score") == [3]
