@@ -208,7 +208,9 @@ class GenomicRanges:
             )
 
     def _build_reverse_seqindex(self, seqinfo: SeqInfo):
-        self._reverse_seqindex = ut.reverse_index.build_reverse_index(seqinfo.get_seqnames())
+        self._reverse_seqindex = ut.reverse_index.build_reverse_index(
+            seqinfo.get_seqnames()
+        )
 
     def _remove_reverse_seqindex(self):
         del self._reverse_seqindex
