@@ -2098,8 +2098,18 @@ class GenomicRanges:
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         for group, indices in query_chrm_grps.items():
+            _subset = []
             if group in subject_chrm_grps:
-                _sub_subset = self[subject_chrm_grps[group]]
+                _subset.extend(subject_chrm_grps[group])
+            
+            _grp_split = group.split(_granges_delim)
+            if _grp_split[1] != "0":
+                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
+                if _any_grp_fwd in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+
+            if len(_subset) > 0:
+                _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.find_overlaps(
@@ -2112,7 +2122,7 @@ class GenomicRanges:
                 )
 
                 for j, val in enumerate(res_idx):
-                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    _rev_map = [_subset[x] for x in val]
                     rev_map[indices[j]] = _rev_map
 
         return rev_map
@@ -2172,8 +2182,18 @@ class GenomicRanges:
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         for group, indices in query_chrm_grps.items():
+            _subset = []
             if group in subject_chrm_grps:
-                _sub_subset = self[subject_chrm_grps[group]]
+                _subset.extend(subject_chrm_grps[group])
+            
+            _grp_split = group.split(_granges_delim)
+            if _grp_split[1] != "0":
+                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
+                if _any_grp_fwd in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+
+            if len(_subset) > 0:
+                _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.find_overlaps(
@@ -2186,7 +2206,7 @@ class GenomicRanges:
                 )
 
                 for j, val in enumerate(res_idx):
-                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    _rev_map = [_subset[x] for x in val]
                     rev_map[indices[j]] = len(_rev_map)
 
         return rev_map
@@ -2246,8 +2266,18 @@ class GenomicRanges:
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         for group, indices in query_chrm_grps.items():
+            _subset = []
             if group in subject_chrm_grps:
-                _sub_subset = self[subject_chrm_grps[group]]
+                _subset.extend(subject_chrm_grps[group])
+            
+            _grp_split = group.split(_granges_delim)
+            if _grp_split[1] != "0":
+                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
+                if _any_grp_fwd in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+
+            if len(_subset) > 0:
+                _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.find_overlaps(
@@ -2260,7 +2290,7 @@ class GenomicRanges:
                 )
 
                 for _, val in enumerate(res_idx):
-                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    _rev_map = [_subset[x] for x in val]
                     rev_map.extend(_rev_map)
 
         return self[list(set(rev_map))]
@@ -2300,8 +2330,33 @@ class GenomicRanges:
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         for group, indices in query_chrm_grps.items():
+            _subset = []
             if group in subject_chrm_grps:
-                _sub_subset = self[subject_chrm_grps[group]]
+                _subset.extend(subject_chrm_grps[group])
+            
+            print(group)
+            _grp_split = group.split(_granges_delim)
+            print(_grp_split)
+            if _grp_split[1] != "0":
+                print("if part")
+                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
+                print("any_grp_fwd", _any_grp_fwd)
+                if _any_grp_fwd in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+            else:
+                print("else")
+                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
+                print("any_grp_fwd", _any_grp_fwd)
+                if _any_grp_fwd in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+
+                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
+                print("_any_grp_rev", _any_grp_rev)
+                if _any_grp_rev in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_rev])
+
+            if len(_subset) > 0:
+                _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.nearest(
@@ -2309,7 +2364,7 @@ class GenomicRanges:
                 )
 
                 for j, val in enumerate(res_idx):
-                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    _rev_map = [_subset[x] for x in val]
                     rev_map[indices[j]] = _rev_map
 
         return rev_map
@@ -2345,8 +2400,18 @@ class GenomicRanges:
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         for group, indices in query_chrm_grps.items():
+            _subset = []
             if group in subject_chrm_grps:
-                _sub_subset = self[subject_chrm_grps[group]]
+                _subset.extend(subject_chrm_grps[group])
+            
+            _grp_split = group.split(_granges_delim)
+            if _grp_split[1] != "0":
+                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
+                if _any_grp_fwd in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+
+            if len(_subset) > 0:
+                _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.precede(
@@ -2354,7 +2419,7 @@ class GenomicRanges:
                 )
 
                 for j, val in enumerate(res_idx):
-                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    _rev_map = [_subset[x] for x in val]
                     rev_map[indices[j]] = _rev_map
 
         return rev_map
@@ -2390,16 +2455,30 @@ class GenomicRanges:
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         for group, indices in query_chrm_grps.items():
+            _subset = []
             if group in subject_chrm_grps:
-                _sub_subset = self[subject_chrm_grps[group]]
+                _subset.extend(subject_chrm_grps[group])
+
+            print(group)
+            
+            _grp_split = group.split(_granges_delim)
+            if _grp_split[1] != "0":
+                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
+                if _any_grp_fwd in subject_chrm_grps:
+                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+
+            if len(_subset) > 0:
+                _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.follow(
                     query=_query_subset._ranges, select=select, delete_index=False
                 )
 
+                print(res_idx)
+
                 for j, val in enumerate(res_idx):
-                    _rev_map = [subject_chrm_grps[group][x] for x in val]
+                    _rev_map = [_subset[x] for x in val]
                     rev_map[indices[j]] = _rev_map
 
         return rev_map
