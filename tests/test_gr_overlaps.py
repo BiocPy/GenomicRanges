@@ -49,7 +49,7 @@ def test_find_overlaps():
 
     assert res is not None
     assert isinstance(res, list)
-    assert res == [[1, 2]]
+    assert res == [[1, 2, 3]]
 
 
 def test_find_overlaps_query_type():
@@ -59,7 +59,20 @@ def test_find_overlaps_query_type():
     res = subject.find_overlaps(query, query_type="within")
 
     assert res is not None
-    assert res == [[1, 2]]
+    assert res == [[1, 2, 3]]
+
+
+def test_find_overlaps_rtrip():
+    x = GenomicRanges(["chr1", "chr1"], IRanges([2, 9], [7, 19]), strand=["+", "-"])
+    y = GenomicRanges(["chr1"], IRanges([5], [10]), strand=["*"])
+
+    resxy = x.find_overlaps(y)
+    assert resxy is not None
+    assert resxy == [[0, 1]]
+
+    resyx = y.find_overlaps(x)
+    assert resyx is not None
+    assert resyx == [[0], [0]]
 
 
 def test_count_overlaps():
@@ -70,7 +83,7 @@ def test_count_overlaps():
 
     assert res is not None
     assert isinstance(res, list)
-    assert res == [2]
+    assert res == [3]
 
 
 def test_subset_by_overlaps():
@@ -87,4 +100,4 @@ def test_subset_by_overlaps():
 
     assert res is not None
     assert isinstance(res, GenomicRanges)
-    assert len(res) == 2
+    assert len(res) == 3

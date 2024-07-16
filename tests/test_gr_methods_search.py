@@ -40,7 +40,7 @@ def test_nearest():
     query_hits = gr.nearest(q_gr)
 
     assert query_hits is not None
-    assert query_hits == [[4], [3], []]
+    assert query_hits == [[5], [1, 2, 3], [9]]
 
 
 def test_precede():
@@ -68,7 +68,7 @@ def test_follow():
     query_hits = gr.follow(q_gr)
 
     assert query_hits is not None
-    assert query_hits == [[4], [], []]
+    assert query_hits == [[5], [], [9]]
 
 
 def test_distance():
