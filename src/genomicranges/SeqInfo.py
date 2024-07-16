@@ -65,7 +65,7 @@ class SeqInfoIterator:
 
     def __next__(self):
         if self._current_index < len(self._sinfo):
-            iter_row_index = self._sinfo.seqnames[self._current_index]
+            iter_row_index = self._sinfo._seqnames[self._current_index]
 
             iter_slice = self._sinfo[self._current_index]
             self._current_index += 1

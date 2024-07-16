@@ -208,7 +208,7 @@ class GenomicRanges:
             )
 
     def _build_reverse_seqindex(self, seqinfo: SeqInfo):
-        self._reverse_seqindex = ut.reverse_index.build_reverse_index(seqinfo.seqnames)
+        self._reverse_seqindex = ut.reverse_index.build_reverse_index(seqinfo.get_seqnames())
 
     def _remove_reverse_seqindex(self):
         del self._reverse_seqindex
@@ -354,7 +354,7 @@ class GenomicRanges:
             header = ["seqnames", "<str>"]
             _seqnames = []
             for x in self._seqnames[indices]:
-                _seqnames.append(self._seqinfo.seqnames[x])
+                _seqnames.append(self._seqinfo.get_seqnames()[x])
 
             showed = _seqnames
             if insert_ellipsis:
@@ -407,7 +407,7 @@ class GenomicRanges:
                 + str(len(self._seqinfo))
                 + " sequences): "
                 + ut.print_truncated_list(
-                    self._seqinfo.seqnames,
+                    self._seqinfo.get_seqnames(),
                     sep=" ",
                     include_brackets=False,
                     transform=lambda y: y,
@@ -453,9 +453,9 @@ class GenomicRanges:
         """
 
         if as_type == "factor":
-            return self._seqnames, self._seqinfo.seqnames
+            return self._seqnames, self._seqinfo.get_seqnames()
         elif as_type == "list":
-            return [self._seqinfo.seqnames[x] for x in self._seqnames]
+            return [self._seqinfo.get_seqnames()[x] for x in self._seqnames]
         else:
             raise ValueError("Argument 'as_type' must be 'factor' or 'list'.")
 
@@ -481,7 +481,7 @@ class GenomicRanges:
 
         if not isinstance(seqnames, np.ndarray):
             seqnames = np.asarray(
-                [self._seqinfo.seqnames.index(x) for x in list(seqnames)]
+                [self._seqinfo.get_seqnames().index(x) for x in list(seqnames)]
             )
 
         output = self._define_output(in_place)
@@ -570,7 +570,7 @@ class GenomicRanges:
                  vector is retuned.
 
                 If ``factor``, a tuple width levels as a dictionary and
-                  indices to ``seqinfo.seqnames`` is returned.
+                  indices to ``seqinfo.get_seqnames()`` is returned.
 
                 If ``list``, then codes are mapped to levels and returned.
 
@@ -1684,7 +1684,7 @@ class GenomicRanges:
         rev_map = []
         groups = []
 
-        for seq in self._seqinfo.seqnames:
+        for seq in self._seqinfo.get_seqnames():
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
                 _key = f"{seq}{_granges_delim}{strd}"
@@ -1738,7 +1738,7 @@ class GenomicRanges:
         all_grp_ranges = []
         groups = []
 
-        for i, chrm in enumerate(self._seqinfo.seqnames):
+        for i, chrm in enumerate(self._seqinfo.get_seqnames()):
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
                 _key = f"{chrm}{_granges_delim}{strd}"
@@ -1801,7 +1801,7 @@ class GenomicRanges:
         rev_map = []
         groups = []
 
-        for seq in self._seqinfo.seqnames:
+        for seq in self._seqinfo.get_seqnames():
             _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
             for strd in _iter_strands:
                 _key = f"{seq}{_granges_delim}{strd}"
@@ -1930,7 +1930,7 @@ class GenomicRanges:
         range_bounds = all_combined.range(ignore_strand=True)
         rb_ends = {}
         for _, val in range_bounds:
-            rb_ends[val.seqnames[0]] = val.end[0]
+            rb_ends[val.get_seqnames()[0]] = val.end[0]
 
         x_gaps = self.gaps(end=rb_ends)
         x_gaps_u = x_gaps.union(other)
@@ -1960,7 +1960,7 @@ class GenomicRanges:
         range_bounds = all_combined.range(ignore_strand=True)
         rb_ends = {}
         for _, val in range_bounds:
-            rb_ends[val.seqnames[0]] = val.end[0]
+            rb_ends[val.get_seqnames()[0]] = val.end[0]
 
         _gaps = other.gaps(end=rb_ends)
         # _inter = self.setdiff(_gaps)
@@ -2452,9 +2452,9 @@ class GenomicRanges:
 
         for i in range(len(query)):
             try:
-                _seqname = query.seqnames[i]
+                _seqname = query.get_seqnames()[i]
             except Exception as _:
-                warn(f"'{query.seqnames[i]}' is not present in subject.")
+                warn(f"'{query.get_seqnames()[i]}' is not present in subject.")
 
             _strand = query._strand[i]
 
@@ -2653,7 +2653,7 @@ class GenomicRanges:
                 val._ranges._start[0], val._ranges.end[0] - 1, twidth
             )
 
-            seqnames.extend([val.seqnames[0]] * len(all_intervals))
+            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
             strand.extend([int(val.strand[0])] * len(all_intervals))
             starts.extend([x[0] for x in all_intervals])
             widths.extend(x[1] for x in all_intervals)
@@ -2715,7 +2715,7 @@ class GenomicRanges:
                 val._ranges._start[0], val._ranges.end[0] - 1, twidth
             )
 
-            seqnames.extend([val.seqnames[0]] * len(all_intervals))
+            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
             strand.extend([int(val.strand[0])] * len(all_intervals))
             starts.extend([x[0] for x in all_intervals])
             widths.extend(x[1] for x in all_intervals)
@@ -2757,7 +2757,7 @@ class GenomicRanges:
                 step=step,
             )
 
-            seqnames.extend([val.seqnames[0]] * len(all_intervals))
+            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
             strand.extend([int(val.strand[0])] * len(all_intervals))
             starts.extend([x[0] for x in all_intervals])
             widths.extend(x[1] for x in all_intervals)
@@ -2814,7 +2814,7 @@ class GenomicRanges:
 
         seqlen_ = seqlengths
         if isinstance(seqlengths, SeqInfo):
-            seqlen_ = dict(zip(seqlengths.seqnames, seqlengths.seqlengths))
+            seqlen_ = dict(zip(seqlengths.get_seqnames(), seqlengths.seqlengths))
 
         seqnames = []
         strand = []
