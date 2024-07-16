@@ -2099,24 +2099,17 @@ class GenomicRanges:
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        print("subkect keys", subject_chrm_grps.keys())
-        print("query keys", query_chrm_grps.keys())
-
         for group, indices in query_chrm_grps.items():
-            print(group)
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
-            print(_grp_split)
             if _grp_split[1] != "0":
-                print("if")
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
                 if _any_grp_fwd in subject_chrm_grps:
                     _subset.extend(subject_chrm_grps[_any_grp_fwd])
             else:
-                print("else")
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
                 if _any_grp_fwd in subject_chrm_grps:
                     _subset.extend(subject_chrm_grps[_any_grp_fwd])
@@ -2202,7 +2195,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
@@ -2294,7 +2287,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
@@ -2429,7 +2422,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
