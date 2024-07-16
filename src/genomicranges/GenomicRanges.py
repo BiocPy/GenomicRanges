@@ -2103,7 +2103,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
@@ -2187,7 +2187,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
@@ -2271,7 +2271,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
@@ -2335,7 +2335,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             print(group)
             _grp_split = group.split(_granges_delim)
             print(_grp_split)
@@ -2405,7 +2405,7 @@ class GenomicRanges:
             _subset = []
             if group in subject_chrm_grps:
                 _subset.extend(subject_chrm_grps[group])
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
@@ -2462,7 +2462,7 @@ class GenomicRanges:
                 _subset.extend(subject_chrm_grps[group])
 
             print(group)
-            
+
             _grp_split = group.split(_granges_delim)
             if _grp_split[1] != "0":
                 _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
