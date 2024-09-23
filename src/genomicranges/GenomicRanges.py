@@ -222,7 +222,7 @@ class GenomicRanges:
         if not isinstance(seqnames, np.ndarray):
             seqnames = np.asarray([self._reverse_seqindex[x] for x in seqnames])
 
-            num_uniq = len(np.unique(seqnames))
+            num_uniq = np.max(seqnames)
             if num_uniq < 2**8:
                 seqnames = seqnames.astype(np.int8)
             elif num_uniq < 2**16:
