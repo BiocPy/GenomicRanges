@@ -426,7 +426,7 @@ class GenomicRangesList:
             or as a reference to the (in-place-modified) original.
         """
         if names is not None:
-            _validate_optional_attrs(None, names, len(self))
+            _validate_optional_attrs(self.get_mcols(), names, len(self))
 
             if not isinstance(names, ut.Names):
                 names = ut.Names(names)

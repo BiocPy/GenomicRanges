@@ -42,3 +42,12 @@ def test_create_grl_should_fail():
 def test_empty_grl():
     grl = GenomicRangesList.empty(n=100)
     assert isinstance(grl, GenomicRangesList)
+
+def test_grl_set_names():
+    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
+
+    grl_replace_names = grl.set_names(["aa", "bb"])
+
+    assert grl_replace_names is not None    
+    assert isinstance(grl_replace_names, GenomicRangesList)
+    assert list(grl.get_names()) == ["a", "b"]
