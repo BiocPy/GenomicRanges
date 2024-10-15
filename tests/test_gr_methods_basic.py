@@ -150,8 +150,23 @@ def test_combine():
     assert g_src is not None
     assert g_tgt is not None
 
-    out: GenomicRanges = ut.combine_sequences(g_src, g_tgt)
+    out = ut.combine_sequences(g_src, g_tgt)
 
     assert out is not None
     assert len(out) == 15
     assert len(out.get_mcols().get_column_names()) == 2
+
+
+def test_combine_diff():
+    a = GenomicRanges(["A"], IRanges([0], [10]))
+    b = GenomicRanges(["B"], IRanges([5], [15]))
+
+    assert a is not None
+    assert b is not None
+
+    out = ut.combine_sequences(a, b)
+
+    assert out is not None
+    assert len(out) == 2
+    assert len(out.get_mcols().get_column_names()) == 0
+    assert out.get_seqnames() == ["A", "B"]
