@@ -3120,7 +3120,7 @@ class GenomicRanges:
 def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
     return GenomicRanges(
         ranges=ut.combine_sequences(*[y._ranges for y in x]),
-        seqnames=ut.combine_sequences(*[y._seqnames for y in x]),
+        seqnames=ut.combine_sequences(*[y.get_seqnames() for y in x]),
         strand=ut.combine_sequences(*[y._strand for y in x]),
         names=None,
         mcols=None,
@@ -3149,7 +3149,7 @@ def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
 
     return GenomicRanges(
         ranges=ut.combine_sequences(*[y._ranges for y in x]),
-        seqnames=ut.combine_sequences(*[y._seqnames for y in x]),
+        seqnames=ut.combine_sequences(*[y.get_seqnames() for y in x]),
         strand=ut.combine_sequences(*[y._strand for y in x]),
         names=all_names,
         mcols=ut.relaxed_combine_rows(*[y._mcols for y in x]),
