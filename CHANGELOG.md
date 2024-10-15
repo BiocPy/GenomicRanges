@@ -2,7 +2,7 @@
 
 ## Version 0.4.32
 
-- Bump IRanges package version to fix coercion issues to pandas. 
+- Bump IRanges package version to fix coercion issues to pandas.
 - Remove reverse mapping in iranges in `reduce` operation.
 
 ## Version 0.4.27 - 0.4.31
