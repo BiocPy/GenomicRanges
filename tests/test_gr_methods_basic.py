@@ -105,6 +105,17 @@ def test_export():
     assert df["strand"].tolist() == ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"]
 
 
+def test_export_pandas_with_mcols():
+    df = (
+        GenomicRanges(seqnames=["A"], ranges=IRanges(start=[0], width=[10]))
+        .reduce()
+        .to_pandas()
+    )
+
+    assert df is not None
+    assert isinstance(df, pd.DataFrame)
+
+
 def test_combine():
     g_src = GenomicRanges(
         seqnames=["chr1", "chr2", "chr1", "chr3", "chr2"],
