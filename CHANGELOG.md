@@ -1,9 +1,10 @@
 # Changelog
 
-## Version 0.4.32
+## Version 0.4.32 - 0.4.33
 
 - Bump IRanges package version to fix coercion issues to pandas.
 - Remove reverse mapping in iranges in `reduce` operation.
+- Fixes issue with combine merging sequence names without properly using the accessor methods.
 
 ## Version 0.4.27 - 0.4.31
 
