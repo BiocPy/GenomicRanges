@@ -1,6 +1,11 @@
 # Changelog
 
-## Version 0.4.27 - 0.4.30
+## Version 0.4.32
+
+- Bump IRanges package version to fix coercion issues to pandas. 
+- Remove reverse mapping in iranges in `reduce` operation.
+
+## Version 0.4.27 - 0.4.31
 
 - Implement `subtract` method, add tests.
 - Use accessor methods to access properties especially `get_seqnames()`
