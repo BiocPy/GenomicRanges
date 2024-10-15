@@ -128,3 +128,11 @@ def test_intersect_ncls():
     assert (out.start == np.array([9])).all()
     assert (out.width == np.array([2])).all()
     assert (out.strand == np.array([-1])).all()
+
+
+def test_diff_with_reduce():
+    g = GenomicRanges(["A"], IRanges([0], [10])).reduce()
+    res = g.setdiff(g)
+
+    assert res is not None
+    assert isinstance(res, GenomicRanges)

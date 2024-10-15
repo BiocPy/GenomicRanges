@@ -1657,6 +1657,7 @@ class GenomicRanges:
                     rev_map.extend(_rev_map)
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
+        all_merged_ranges._mcols.remove_column("revmap", in_place=True)
 
         splits = [x.split(_granges_delim) for x in groups]
         new_seqnames = [x[0] for x in splits]
