@@ -156,10 +156,11 @@ def test_combine():
     assert len(out) == 15
     assert len(out.get_mcols().get_column_names()) == 2
 
+
 def test_combine_diff():
     a = GenomicRanges(["A"], IRanges([0], [10]))
     b = GenomicRanges(["B"], IRanges([5], [15]))
-    
+
     assert a is not None
     assert b is not None
 
