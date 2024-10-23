@@ -226,12 +226,11 @@ class GenomicRanges:
                 seqnames = seqnames.astype(np.uint8)
             else:
                 num_uniq = np.max(seqnames)
-                if num_uniq < 2**8:
-                    seqnames = seqnames.astype(np.uint8)
-                elif num_uniq < 2**16:
-                    seqnames = seqnames.astype(np.uint16)
-                elif num_uniq < 2**32:
-                    seqnames = seqnames.astype(np.uint32)
+                _types = [np.uint8, np.uint16, np.uint32, np.uint64]
+                for _dtype in _types:
+                    if num_uniq < np.iinfo(_dtype).max:
+                        seqnames = seqnames.astype(_dtype)
+                        break
 
         return seqnames
 
