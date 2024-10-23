@@ -18,7 +18,7 @@ def test_create_gr():
     )
 
     assert gr is not None
-    assert gr._seqnames.dtype == np.int8
+    assert gr._seqnames.dtype == np.uint8
 
     gr16 = GenomicRanges(
         seqnames=[f"chr{i}" for i in range(500)],
@@ -26,7 +26,7 @@ def test_create_gr():
     )
 
     assert gr16 is not None
-    assert gr16._seqnames.dtype == np.int16
+    assert gr16._seqnames.dtype == np.uint16
 
     gr32 = GenomicRanges(
         seqnames=[f"chr{i}" for i in range(2**16 + 1)],
@@ -34,4 +34,4 @@ def test_create_gr():
     )
 
     assert gr32 is not None
-    assert gr32._seqnames.dtype == np.int32
+    assert gr32._seqnames.dtype == np.uint32
