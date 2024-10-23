@@ -223,15 +223,14 @@ class GenomicRanges:
             seqnames = np.asarray([self._reverse_seqindex[x] for x in seqnames])
 
             if len(seqnames) == 0:
-                seqnames = seqnames.astype(np.int8)
+                seqnames = seqnames.astype(np.uint8)
             else:
                 num_uniq = np.max(seqnames)
-                if num_uniq < 2**8:
-                    seqnames = seqnames.astype(np.int8)
-                elif num_uniq < 2**16:
-                    seqnames = seqnames.astype(np.int16)
-                elif num_uniq < 2**32:
-                    seqnames = seqnames.astype(np.int32)
+                _types = [np.uint8, np.uint16, np.uint32, np.uint64]
+                for _dtype in _types:
+                    if num_uniq < np.iinfo(_dtype).max:
+                        seqnames = seqnames.astype(_dtype)
+                        break
 
         return seqnames
 
