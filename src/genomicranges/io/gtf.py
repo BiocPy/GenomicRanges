@@ -97,9 +97,7 @@ def parse_gtf(
             comment=comment,
         )
 
-    rows = Parallel(n_jobs=-2)(
-        delayed(_parse_all_attribute)(row) for _, row in df.iterrows()
-    )
+    rows = Parallel(n_jobs=-2)(delayed(_parse_all_attribute)(row) for _, row in df.iterrows())
     gtf = DataFrame.from_records(rows)
     gtf.drop(["group"], axis=1)
 
