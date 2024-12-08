@@ -320,9 +320,7 @@ class SeqInfo:
         """
         return self._seqnames
 
-    def set_seqnames(
-        self, seqnames: Sequence[str], in_place: bool = False
-    ) -> "SeqInfo":
+    def set_seqnames(self, seqnames: Sequence[str], in_place: bool = False) -> "SeqInfo":
         """
         Args:
             seqnames:
@@ -409,9 +407,7 @@ class SeqInfo:
         return self.get_seqlengths()
 
     @seqlengths.setter
-    def seqlengths(
-        self, seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]]
-    ):
+    def seqlengths(self, seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]]):
         warn(
             "Setting property 'seqlengths' is an in-place operation, use 'set_seqlengths' instead",
             UserWarning,
@@ -471,9 +467,7 @@ class SeqInfo:
         return self.get_is_circular()
 
     @is_circular.setter
-    def is_circular(
-        self, is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]]
-    ):
+    def is_circular(self, is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]]):
         warn(
             "Setting property 'is_circular' is an in-place operation, use 'set_is_circular' instead",
             UserWarning,

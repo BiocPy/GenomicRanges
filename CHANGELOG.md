@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.5.0
+
+- chore: Remove Python 3.8 (EOL)
+- precommit: Replace docformatter with ruff's formatter
+
 ## Version 0.4.32 - 0.4.33
 
 - Bump IRanges package version to fix coercion issues to pandas.

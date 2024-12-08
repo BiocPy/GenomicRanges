@@ -18,18 +18,18 @@ repos:
     args: ['--fix=auto']  # replace 'auto' with 'lf' to enforce Linux/Mac line endings or 'crlf' for Windows
 
 # - repo: https://github.com/PyCQA/docformatter
-#   rev: v1.7.5
+#   rev: master
 #   hooks:
 #     - id: docformatter
 #       additional_dependencies: [tomli]
 #       args: [--in-place, --wrap-descriptions=120, --wrap-summaries=120]
 #       # --config, ./pyproject.toml
 
-- repo: https://github.com/psf/black
-  rev: 24.8.0
-  hooks:
-  - id: black
-    language_version: python3
+# - repo: https://github.com/psf/black
+#   rev: 24.8.0
+#   hooks:
+#   - id: black
+#     language_version: python3
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
@@ -37,6 +37,7 @@ repos:
   hooks:
     - id: ruff
       args: [--fix, --exit-non-zero-on-fix]
+    - id: ruff-format
 
 ## If like to embrace black styles even in the docs:
 # - repo: https://github.com/asottile/blacken-docs
