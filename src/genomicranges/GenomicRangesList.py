@@ -97,20 +97,84 @@ class GenomicRangesList:
     .. code-block:: python
 
         a = GenomicRanges(
-            seqnames=["chr1", "chr2", "chr1", "chr3"],
-            ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
-            strand=["-", "+", "*", "+"],
-            mcols=BiocFrame({"score": [1, 2, 3, 4]}),
+            seqnames=[
+                "chr1",
+                "chr2",
+                "chr1",
+                "chr3",
+            ],
+            ranges=IRanges(
+                [
+                    1,
+                    3,
+                    2,
+                    4,
+                ],
+                [
+                    10,
+                    30,
+                    50,
+                    60,
+                ],
+            ),
+            strand=[
+                "-",
+                "+",
+                "*",
+                "+",
+            ],
+            mcols=BiocFrame(
+                {
+                    "score": [
+                        1,
+                        2,
+                        3,
+                        4,
+                    ]
+                }
+            ),
         )
 
         b = GenomicRanges(
-            seqnames=["chr2", "chr4", "chr5"],
-            ranges=IRanges([3, 6, 4], [30, 50, 60]),
-            strand=["-", "+", "*"],
-            mcols=BiocFrame({"score": [2, 3, 4]}),
+            seqnames=[
+                "chr2",
+                "chr4",
+                "chr5",
+            ],
+            ranges=IRanges(
+                [3, 6, 4],
+                [
+                    30,
+                    50,
+                    60,
+                ],
+            ),
+            strand=[
+                "-",
+                "+",
+                "*",
+            ],
+            mcols=BiocFrame(
+                {
+                    "score": [
+                        2,
+                        3,
+                        4,
+                    ]
+                }
+            ),
         )
 
-        grl = GenomicRangesList(ranges=[gr1, gr2], names=["gene1", "gene2"])
+        grl = GenomicRangesList(
+            ranges=[
+                gr1,
+                gr2,
+            ],
+            names=[
+                "gene1",
+                "gene2",
+            ],
+        )
 
     Additionally, you may also provide metadata about the genomic elements in the dictionary
     using mcols attribute.
