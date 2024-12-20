@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.4.34 documentation</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.4.34 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.34 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -311,9 +311,7 @@
 
     <span class="n">_l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqinfo</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">seqnames</span> <span class="o">&gt;</span> <span class="n">_l</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;&#39;seqnames&#39; contains sequence name not represented in &#39;seqinfo&#39;.&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqnames&#39; contains sequence name not represented in &#39;seqinfo&#39;.&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_validate_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">num_ranges</span><span class="p">):</span>
@@ -381,11 +379,7 @@
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRangesIter.__next__">[docs]</a>
     <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="p">):</span>
-            <span class="n">iter_row_index</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="o">.</span><span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="kc">None</span>
-            <span class="p">)</span>
+            <span class="n">iter_row_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="o">.</span><span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
 
             <span class="n">iter_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -483,15 +477,11 @@
             <span class="n">_num_ranges</span> <span class="o">=</span> <span class="n">_guess_num_ranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">)</span>
             <span class="n">_validate_ranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">_num_ranges</span><span class="p">)</span>
             <span class="n">_validate_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="p">,</span> <span class="n">_num_ranges</span><span class="p">)</span>
-            <span class="n">_validate_optional_attrs</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">,</span> <span class="n">_num_ranges</span>
-            <span class="p">)</span></div>
+            <span class="n">_validate_optional_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">,</span> <span class="n">_num_ranges</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_build_reverse_seqindex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqinfo</span><span class="p">:</span> <span class="n">SeqInfo</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqindex</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">reverse_index</span><span class="o">.</span><span class="n">build_reverse_index</span><span class="p">(</span>
-            <span class="n">seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqindex</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">reverse_index</span><span class="o">.</span><span class="n">build_reverse_index</span><span class="p">(</span><span class="n">seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">_remove_reverse_seqindex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqindex</span>
@@ -699,9 +689,7 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
                     <span class="n">showed</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">show_as_cell</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
                     <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">]</span>
-                    <span class="n">showed</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">truncate_strings</span><span class="p">(</span>
-                        <span class="n">showed</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-                    <span class="p">)</span>
+                    <span class="n">showed</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">truncate_strings</span><span class="p">(</span><span class="n">showed</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
                     <span class="k">if</span> <span class="n">insert_ellipsis</span><span class="p">:</span>
                         <span class="n">showed</span> <span class="o">=</span> <span class="n">showed</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;...&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">showed</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
                     <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header</span> <span class="o">+</span> <span class="n">showed</span><span class="p">)</span>
@@ -773,9 +761,7 @@
 
 <div class="viewcode-block" id="GenomicRanges.set_seqnames">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_seqnames">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_seqnames</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">seqnames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">set_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqnames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new sequence names.</span>
 
 <span class="sd">        Args:</span>
@@ -794,9 +780,7 @@
         <span class="n">_validate_seqnames</span><span class="p">(</span><span class="n">seqnames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">seqnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqnames</span><span class="p">)]</span>
-            <span class="p">)</span>
+            <span class="n">seqnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqnames</span><span class="p">)])</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">_seqnames</span> <span class="o">=</span> <span class="n">seqnames</span>
@@ -1213,9 +1197,7 @@
 <span class="sd">            or as a reference to the (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;`metadata` must be a dictionary, provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`metadata` must be a dictionary, provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
         <span class="k">return</span> <span class="n">output</span></div>
@@ -1494,9 +1476,7 @@
         <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()]</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ranges</span><span class="o">=</span><span class="n">ranges</span><span class="p">,</span> <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">mcols</span><span class="o">=</span><span class="n">mcols</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="n">ranges</span><span class="p">,</span> <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">mcols</span><span class="o">=</span><span class="n">mcols</span><span class="p">)</span></div>
 
 
     <span class="c1">################################</span>
@@ -1514,9 +1494,7 @@
         <span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
 
         <span class="n">_rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
-        <span class="n">_rdf</span> <span class="o">=</span> <span class="n">_rdf</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">(),</span> <span class="n">strand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_strand</span><span class="p">(</span><span class="n">as_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">_rdf</span> <span class="o">=</span> <span class="n">_rdf</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">(),</span> <span class="n">strand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_strand</span><span class="p">(</span><span class="n">as_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_rdf</span> <span class="o">=</span> <span class="n">_rdf</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">rownames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">)</span>
@@ -1583,9 +1561,7 @@
 
         <span class="n">names</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ranges</span><span class="o">=</span><span class="n">ranges</span><span class="p">,</span> <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">mcols</span><span class="o">=</span><span class="n">mcols</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ranges</span><span class="o">=</span><span class="n">ranges</span><span class="p">,</span> <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">mcols</span><span class="o">=</span><span class="n">mcols</span><span class="p">)</span></div>
 
 
     <span class="c1">#####################################</span>
@@ -1658,9 +1634,7 @@
         <span class="c1"># figure out which position to pin, start or end?</span>
         <span class="n">start_flags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_strands</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_strand</span><span class="p">:</span>
-            <span class="n">start_flags</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">start</span> <span class="o">!=</span> <span class="p">(</span><span class="n">all_strands</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_strands</span><span class="p">))</span>
-            <span class="p">]</span>
+            <span class="n">start_flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span> <span class="o">!=</span> <span class="p">(</span><span class="n">all_strands</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_strands</span><span class="p">))]</span>
 
         <span class="n">new_starts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">new_widths</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1671,9 +1645,7 @@
             <span class="n">sf</span> <span class="o">=</span> <span class="n">start_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
             <span class="n">tstart</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">if</span> <span class="n">both</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">tstart</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="k">if</span> <span class="n">sf</span> <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="n">tstart</span> <span class="o">=</span> <span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="k">if</span> <span class="n">sf</span> <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">tstart</span> <span class="o">=</span> <span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="k">if</span> <span class="n">sf</span> <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
@@ -1738,9 +1710,7 @@
 
 <div class="viewcode-block" id="GenomicRanges.shift">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.shift">[docs]</a>
-    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift all intervals.</span>
 
 <span class="sd">        Args:</span>
@@ -1767,9 +1737,7 @@
 
 <div class="viewcode-block" id="GenomicRanges.promoters">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.promoters">[docs]</a>
-    <span class="k">def</span> <span class="nf">promoters</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">promoters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend intervals to promoter regions.</span>
 
 <span class="sd">        Generates promoter ranges relative to the transcription start site (TSS),</span>
@@ -1804,21 +1772,13 @@
 
         <span class="n">new_starts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="p">(</span>
-                    <span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">upstream</span>
-                    <span class="k">if</span> <span class="n">start_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-                    <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">downstream</span>
-                <span class="p">)</span>
+                <span class="p">(</span><span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">upstream</span> <span class="k">if</span> <span class="n">start_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">downstream</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">start_flags</span><span class="p">))</span>
             <span class="p">]</span>
         <span class="p">)</span>
         <span class="n">new_ends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="p">(</span>
-                    <span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">downstream</span>
-                    <span class="k">if</span> <span class="n">start_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-                    <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">upstream</span>
-                <span class="p">)</span>
+                <span class="p">(</span><span class="n">all_starts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">downstream</span> <span class="k">if</span> <span class="n">start_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">else</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">upstream</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">start_flags</span><span class="p">))</span>
             <span class="p">]</span>
         <span class="p">)</span>
@@ -1859,9 +1819,7 @@
 <span class="sd">            (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">restricted_ir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">restrict</span><span class="p">(</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">keep_all_ranges</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
+        <span class="n">restricted_ir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">restrict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">keep_all_ranges</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">_ranges</span> <span class="o">=</span> <span class="n">restricted_ir</span>
 
@@ -1909,11 +1867,7 @@
             <span class="n">_t_chr</span> <span class="o">=</span> <span class="n">all_chrs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">_end</span> <span class="o">=</span> <span class="n">all_ends</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">is_circular</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="n">is_circular</span><span class="p">[</span><span class="n">_t_chr</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span>
-                <span class="ow">and</span> <span class="n">_end</span> <span class="o">&gt;</span> <span class="n">seqlengths</span><span class="p">[</span><span class="n">_t_chr</span><span class="p">]</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_circular</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_circular</span><span class="p">[</span><span class="n">_t_chr</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">_end</span> <span class="o">&gt;</span> <span class="n">seqlengths</span><span class="p">[</span><span class="n">_t_chr</span><span class="p">]:</span>
                 <span class="n">_end</span> <span class="o">=</span> <span class="n">seqlengths</span><span class="p">[</span><span class="n">_t_chr</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
 
             <span class="n">new_ends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_end</span><span class="p">)</span>
@@ -1955,16 +1909,11 @@
 <span class="sd">            (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Only provide two of the three parameters - `start`, &quot;</span>
-                <span class="s2">&quot;`end` and `width` but not all!&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only provide two of the three parameters - `start`, &quot;</span> <span class="s2">&quot;`end` and `width` but not all!&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;If width is provided, either start or end must be provided.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If width is provided, either start or end must be provided.&quot;</span><span class="p">)</span>
 
         <span class="n">narrow_ir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
@@ -1980,15 +1929,10 @@
         <span class="c1">#     __strand[__strand == 0] = 1</span>
 
         <span class="n">_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">]</span>
-        <span class="n">grp_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_seqnames</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">__strand</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">grp_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_seqnames</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_granges_delim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">__strand</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
         <span class="n">unique_grps</span><span class="p">,</span> <span class="n">inverse_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">grp_keys</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">chrm_grps</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="p">):</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">inverse_indices</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">grp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_grps</span><span class="p">)</span>
-        <span class="p">}</span>
+        <span class="n">chrm_grps</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">grp</span><span class="p">):</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">inverse_indices</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">grp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_grps</span><span class="p">)}</span>
 
         <span class="k">return</span> <span class="n">chrm_grps</span>
 
@@ -2059,9 +2003,7 @@
         <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span>
-        <span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">with_reverse_map</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">output</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;revmap&quot;</span><span class="p">,</span> <span class="n">rev_map</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2073,9 +2015,7 @@
 
 <div class="viewcode-block" id="GenomicRanges.range">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.range">[docs]</a>
-    <span class="k">def</span> <span class="nf">range</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate range bounds for each distinct (seqname, strand) pair.</span>
 
 <span class="sd">        Args:</span>
@@ -2113,9 +2053,7 @@
         <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span>
-        <span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">with_reverse_map</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">output</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;revmap&quot;</span><span class="p">,</span> <span class="n">rev_map</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2187,18 +2125,14 @@
         <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span>
-        <span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.disjoin">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.disjoin">[docs]</a>
-    <span class="k">def</span> <span class="nf">disjoin</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">disjoin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate disjoint genomic positions for each distinct (seqname, strand) pair.</span>
 
 <span class="sd">        Args:</span>
@@ -2240,9 +2174,7 @@
         <span class="n">new_seqnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">]</span>
         <span class="n">new_strand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span>
-        <span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">new_seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">new_strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">all_merged_ranges</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">with_reverse_map</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">output</span><span class="o">.</span><span class="n">_mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;revmap&quot;</span><span class="p">,</span> <span class="n">rev_map</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2252,9 +2184,7 @@
 
 <div class="viewcode-block" id="GenomicRanges.coverage">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.coverage">[docs]</a>
-    <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome, For each position, counts the number of ranges that cover it.</span>
 
 <span class="sd">        Args:</span>
@@ -2282,10 +2212,7 @@
         <span class="k">for</span> <span class="n">chrm</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">chrm_grps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">_grp_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
 
-            <span class="n">all_intvals</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
-            <span class="p">]</span>
+            <span class="n">all_intvals</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">_grp_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">)]</span>
 
             <span class="n">cov</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_np_vector</span><span class="p">(</span><span class="n">intervals</span><span class="o">=</span><span class="n">all_intvals</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -2427,23 +2354,15 @@
         <span class="n">other_end</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">end</span>
 
         <span class="n">other_ncls</span> <span class="o">=</span> <span class="n">NCLS</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">other_end</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span>
-        <span class="n">_self_indexes</span><span class="p">,</span> <span class="n">_other_indexes</span> <span class="o">=</span> <span class="n">other_ncls</span><span class="o">.</span><span class="n">all_overlaps_both</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">self_end</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="p">)</span>
+        <span class="n">_self_indexes</span><span class="p">,</span> <span class="n">_other_indexes</span> <span class="o">=</span> <span class="n">other_ncls</span><span class="o">.</span><span class="n">all_overlaps_both</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">self_end</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
 
-        <span class="n">other_chrms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_other_indexes</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">self_chrms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_self_indexes</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="n">other_chrms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">other</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_other_indexes</span><span class="p">])</span>
+        <span class="n">self_chrms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_self_indexes</span><span class="p">])</span>
 
         <span class="n">other_strands</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">_other_indexes</span><span class="p">]</span>
         <span class="n">self_strands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">_self_indexes</span><span class="p">]</span>
 
-        <span class="n">filtered_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-            <span class="n">other_chrms</span> <span class="o">==</span> <span class="n">self_chrms</span><span class="p">,</span> <span class="n">other_strands</span> <span class="o">==</span> <span class="n">self_strands</span>
-        <span class="p">)</span>
+        <span class="n">filtered_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">other_chrms</span> <span class="o">==</span> <span class="n">self_chrms</span><span class="p">,</span> <span class="n">other_strands</span> <span class="o">==</span> <span class="n">self_strands</span><span class="p">)</span>
 
         <span class="n">self_starts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="n">_self_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
         <span class="n">other_starts</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="n">_other_indexes</span><span class="p">][</span><span class="n">filtered_indexes</span><span class="p">]</span>
@@ -2524,9 +2443,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;query&#39; is not a `GenomicRanges` object.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">query_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OVERLAP_QUERY_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">))]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
@@ -2619,9 +2536,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;query&#39; is not a `GenomicRanges` object.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">query_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OVERLAP_QUERY_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">))]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
@@ -2714,9 +2629,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;query&#39; is not a `GenomicRanges` object.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">query_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OVERLAP_QUERY_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">}</span><span class="s2">&#39; must be one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OVERLAP_QUERY_TYPES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="n">rev_map</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">subject_chrm_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_indices_by_chrm</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
@@ -2820,9 +2733,7 @@
                 <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span>
-                <span class="p">)</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
                     <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
@@ -2886,9 +2797,7 @@
                 <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span>
-                <span class="p">)</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
                     <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
@@ -2952,9 +2861,7 @@
                 <span class="n">_sub_subset</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">_subset</span><span class="p">]</span>
                 <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span>
-                <span class="p">)</span>
+                <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_idx</span><span class="p">):</span>
                     <span class="n">_rev_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
@@ -3188,9 +3095,7 @@
 
 <div class="viewcode-block" id="GenomicRanges.tile_by_range">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.tile_by_range">[docs]</a>
-    <span class="k">def</span> <span class="nf">tile_by_range</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">tile_by_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each sequence length into chunks by ``n`` (number of intervals) or ``width`` (intervals with equal</span>
 <span class="sd">        width).</span>
 
@@ -3231,25 +3136,19 @@
             <span class="k">elif</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">twidth</span> <span class="o">=</span> <span class="n">width</span>
 
-            <span class="n">all_intervals</span> <span class="o">=</span> <span class="n">split_intervals</span><span class="p">(</span>
-                <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">twidth</span>
-            <span class="p">)</span>
+            <span class="n">all_intervals</span> <span class="o">=</span> <span class="n">split_intervals</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">twidth</span><span class="p">)</span>
 
             <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">strand</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">strand</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">starts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">])</span>
             <span class="n">widths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.tile">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.tile">[docs]</a>
-    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each interval by ``n`` (number of sub intervals) or ``width`` (intervals with equal width).</span>
 
 <span class="sd">        Note: Either ``n`` or ``width`` must be provided but not both.</span>
@@ -3290,15 +3189,11 @@
                 <span class="n">twidth</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_width</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="p">))</span>
 
                 <span class="k">if</span> <span class="n">twidth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;&#39;width&#39; of region is less than &#39;n&#39; for range in: </span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">.&quot;</span>
-                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;width&#39; of region is less than &#39;n&#39; for range in: </span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">twidth</span> <span class="o">=</span> <span class="n">width</span>
 
-            <span class="n">all_intervals</span> <span class="o">=</span> <span class="n">split_intervals</span><span class="p">(</span>
-                <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">twidth</span>
-            <span class="p">)</span>
+            <span class="n">all_intervals</span> <span class="o">=</span> <span class="n">split_intervals</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">twidth</span><span class="p">)</span>
 
             <span class="n">seqnames</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">get_seqnames</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
             <span class="n">strand</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">strand</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_intervals</span><span class="p">))</span>
@@ -3307,9 +3202,7 @@
 
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.sliding_windows">
@@ -3350,9 +3243,7 @@
             <span class="n">starts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">])</span>
             <span class="n">widths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.tile_genome">
@@ -3425,9 +3316,7 @@
             <span class="n">starts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">])</span>
             <span class="n">widths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">all_intervals</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-            <span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="n">seqnames</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">starts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.binned_average">
@@ -3512,9 +3401,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Number of groups must match the number of genomic elements.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of groups must match the number of genomic elements.&quot;</span><span class="p">)</span>
 
         <span class="n">gdict</span> <span class="o">=</span> <span class="n">group_by_indices</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">)</span>
 
@@ -3552,9 +3439,7 @@
 
 <div class="viewcode-block" id="GenomicRanges.subtract">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.subtract">[docs]</a>
-    <span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">min_overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">,</span> <span class="n">min_overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRangesList&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subtract searches for features in ``x`` that overlap ``self`` by at least the number of base pairs given by</span>
 <span class="sd">        ``min_overlap``.</span>
 
@@ -3575,9 +3460,7 @@
 <span class="sd">            the subtracted regions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_x_reduce</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
-        <span class="n">hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
-            <span class="n">_x_reduce</span><span class="p">,</span> <span class="n">min_overlap</span><span class="o">=</span><span class="n">min_overlap</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span>
-        <span class="p">)</span>
+        <span class="n">hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span><span class="n">_x_reduce</span><span class="p">,</span> <span class="n">min_overlap</span><span class="o">=</span><span class="n">min_overlap</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
 
         <span class="n">gr_idxs</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))]</span>
         <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hits</span><span class="p">):</span>
@@ -3674,8 +3557,8 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=d6caa86d"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
     </body>

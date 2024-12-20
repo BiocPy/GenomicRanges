@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="genomicranges" href="api/modules.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>GenomicRanges: Genomic analysis - GenomicRanges 0.4.34 documentation</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>GenomicRanges: Genomic analysis - GenomicRanges 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.4.34 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.4.34 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -361,11 +361,11 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand     score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |       0 0.10357051378357851
-[1]     chr2 102 - 123               - |       1 0.16809795185427945
-[2]     chr3 103 - 128               * |       2 0.16282250745112314
-[3]     chr2 104 - 134               + |       3  0.9187454274425203
-[4]     chr3 105 - 110               - |       4 0.03505606764547764
+[0]     chr1 101 - 112               * |       0 0.30512786538112413
+[1]     chr2 102 - 123               - |       1 0.31034212437830033
+[2]     chr3 103 - 128               * |       2  0.6735505843446804
+[3]     chr2 104 - 134               + |       3  0.6962610835774451
+[4]     chr3 105 - 110               - |       4  0.6836050248415592
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -407,13 +407,13 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
-  seqnames    ranges          strand    score                 GC
-     &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;             &lt;list&gt;
-0     chr1 101 - 112               * |      0 0.6473458956095213
-1     chr2 102 - 103               - |      1 0.3044918530621029
-2     chr1 103 - 128               * |      2 0.9926453230821358
-3     chr3 104 - 134               + |      3 0.9687348490385125
-4     chr2 109 - 111               - |      4 0.1398550028102059
+  seqnames    ranges          strand    score                   GC
+     &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;               &lt;list&gt;
+0     chr1 101 - 112               * |      0 0.054193787295036544
+1     chr2 102 - 103               - |      1   0.6680032477505821
+2     chr1 103 - 128               * |      2   0.2078792966016676
+3     chr3 104 - 134               + |      3  0.49633701088582116
+4     chr2 109 - 111               - |      4  0.47314404219610984
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -450,11 +450,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand    score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |      0  0.5955988767074603
-[1]     chr2 102 - 103               - |      1 0.11133799437035996
-[2]     chr1 103 - 128               * |      2  0.3251245331978275
-[3]     chr3 104 - 134               + |      3 0.07300060492886284
-[4]     chr2 109 - 111               - |      4 0.44130761480011205
+[0]     chr1 101 - 112               * |      0  0.9246848325181382
+[1]     chr2 102 - 103               - |      1  0.9238162744131853
+[2]     chr1 103 - 128               * |      2  0.7760865501405001
+[3]     chr3 104 - 134               + |      3 0.43857083470890124
+[4]     chr2 109 - 111               - |      4  0.8270156938961579
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -485,11 +485,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand    score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |      0  0.5955988767074603
-[1]     chr2 102 - 103               - |      1 0.11133799437035996
-[2]     chr1 103 - 128               * |      2  0.3251245331978275
-[3]     chr3 104 - 134               + |      3 0.07300060492886284
-[4]     chr2 109 - 111               - |      4 0.44130761480011205
+[0]     chr1 101 - 112               * |      0  0.9246848325181382
+[1]     chr2 102 - 103               - |      1  0.9238162744131853
+[2]     chr1 103 - 128               * |      2  0.7760865501405001
+[3]     chr3 104 - 134               + |      3 0.43857083470890124
+[4]     chr2 109 - 111               - |      4  0.8270156938961579
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -528,11 +528,11 @@ width of each region:  [11  1 25 30  2]
 BiocFrame with 5 rows and 2 columns
      score                  GC
     &lt;list&gt;              &lt;list&gt;
-[0]      0  0.5955988767074603
-[1]      1 0.11133799437035996
-[2]      2  0.3251245331978275
-[3]      3 0.07300060492886284
-[4]      4 0.44130761480011205
+[0]      0  0.9246848325181382
+[1]      1  0.9238162744131853
+[2]      2  0.7760865501405001
+[3]      3 0.43857083470890124
+[4]      4  0.8270156938961579
 </pre></div>
 </div>
 </div>
@@ -555,11 +555,11 @@ BiocFrame with 5 rows and 2 columns
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand     score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |       1  0.5955988767074603
-[1]     chr2 102 - 103               - |       2 0.11133799437035996
-[2]     chr1 103 - 128               * |       3  0.3251245331978275
-[3]     chr3 104 - 134               + |       4 0.07300060492886284
-[4]     chr2 109 - 111               - |       5 0.44130761480011205
+[0]     chr1 101 - 112               * |       1  0.9246848325181382
+[1]     chr2 102 - 103               - |       2  0.9238162744131853
+[2]     chr1 103 - 128               * |       3  0.7760865501405001
+[3]     chr3 104 - 134               + |       4 0.43857083470890124
+[4]     chr2 109 - 111               - |       5  0.8270156938961579
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -578,11 +578,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BiocFrame with 5 rows and 2 columns
       score                  GC
     &lt;range&gt;              &lt;list&gt;
-[0]       1  0.5955988767074603
-[1]       2 0.11133799437035996
-[2]       3  0.3251245331978275
-[3]       4 0.07300060492886284
-[4]       5 0.44130761480011205
+[0]       1  0.9246848325181382
+[1]       2  0.9238162744131853
+[2]       3  0.7760865501405001
+[3]       4 0.43857083470890124
+[4]       5  0.8270156938961579
 </pre></div>
 </div>
 </div>
@@ -632,9 +632,9 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 3 ranges and 2 metadata columns
     seqnames    ranges          strand    score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr2 102 - 103               - |      2 0.11133799437035996
-[1]     chr3 104 - 134               + |      4 0.07300060492886284
-[2]     chr1 103 - 128               * |      3  0.3251245331978275
+[0]     chr2 102 - 103               - |      2  0.9238162744131853
+[1]     chr3 104 - 134               + |      4 0.43857083470890124
+[2]     chr1 103 - 128               * |      3  0.7760865501405001
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -655,13 +655,13 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>None GenomicRanges with 1 range and 2 metadata columns
     seqnames    ranges          strand    score                 GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;             &lt;list&gt;
-[0]     chr1 101 - 112               * |      1 0.5955988767074603
+[0]     chr1 101 - 112               * |      1 0.9246848325181382
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 None GenomicRanges with 1 range and 2 metadata columns
-    seqnames    ranges          strand    score                  GC
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr2 102 - 103               - |      2 0.11133799437035996
+    seqnames    ranges          strand    score                 GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;             &lt;list&gt;
+[0]     chr2 102 - 103               - |      2 0.9238162744131853
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -731,22 +731,22 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges after the trim operation:
 GenomicRanges with 5 ranges and 2 metadata columns
-    seqnames    ranges          strand     score                  GC
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |       0 0.21012525261023762
-[1]     chr2 102 - 123               - |       1  0.7409355393417076
-[2]     chr3 103 - 128               * |       2 0.34901697211176963
-[3]     chr2 104 - 134               + |       3  0.7807245706428476
-[4]     chr3 105 - 110               - |       4  0.5793276343027597
+    seqnames    ranges          strand     score                 GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;             &lt;list&gt;
+[0]     chr1 101 - 112               * |       0 0.6131473671158031
+[1]     chr2 102 - 123               - |       1 0.8311909228319513
+[2]     chr3 103 - 128               * |       2 0.9032664083201778
+[3]     chr2 104 - 134               + |       3 0.3349740677504667
+[4]     chr3 105 - 110               - |       4  0.445649756264617
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:405: UserWarning: &#39;seqlengths&#39; is deprecated, use &#39;get_seqlengths&#39; instead
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.11/site-packages/genomicranges/SeqInfo.py:403: UserWarning: &#39;seqlengths&#39; is deprecated, use &#39;get_seqlengths&#39; instead
   warn(
-/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/genomicranges/SeqInfo.py:467: UserWarning: &#39;is_circular&#39; is deprecated, use &#39;get_is_circular&#39; instead
+/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.11/site-packages/genomicranges/SeqInfo.py:463: UserWarning: &#39;is_circular&#39; is deprecated, use &#39;get_is_circular&#39; instead
   warn(
-/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.9/site-packages/iranges/IRanges.py:284: UserWarning: Setting property &#39;width&#39;is an in-place operation, use &#39;set_width&#39; instead
+/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.11/site-packages/iranges/IRanges.py:278: UserWarning: Setting property &#39;width&#39;is an in-place operation, use &#39;set_width&#39; instead
   warn(
 </pre></div>
 </div>
@@ -915,7 +915,7 @@ dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/fa7317dfeae2b91f0217bc549515e0c2b8c922ae0045cf9ec3948b284b37fe9f.png" src="_images/fa7317dfeae2b91f0217bc549515e0c2b8c922ae0045cf9ec3948b284b37fe9f.png" />
+<img alt="_images/9ceafe7ea53d1071bf404bec8d144534a2ccaa38f5c660b844acfe3d67e5e9e9.png" src="_images/9ceafe7ea53d1071bf404bec8d144534a2ccaa38f5c660b844acfe3d67e5e9e9.png" />
 </div>
 </div>
 <p>Not the prettiest plot but it works.</p>
@@ -1100,7 +1100,7 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;position&#39;, ylabel=&#39;coverage&#39;&gt;
 </pre></div>
 </div>
-<img alt="_images/9a502eacb194ad431c5be0a4b64df13970c21a8a9e466bdd315691b6ba912103.png" src="_images/9a502eacb194ad431c5be0a4b64df13970c21a8a9e466bdd315691b6ba912103.png" />
+<img alt="_images/53be7393e3befcd3d925fbcd7f9ac3afbe2dab4922b86d9dec81f497171c225f.png" src="_images/53be7393e3befcd3d925fbcd7f9ac3afbe2dab4922b86d9dec81f497171c225f.png" />
 </div>
 </div>
 <p>I guess that looks ok. :) but someone can help make this visualization better. (something that ports <code class="docutils literal notranslate"><span class="pre">plotRanges</span></code> from R)</p>
@@ -1217,13 +1217,13 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>matches:  [[2], [3], [4]]
 order: [0 1 3 4 2]
 sorted: GenomicRanges with 5 ranges and 2 metadata columns
-    seqnames    ranges          strand    score                  GC
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |      0  0.7362153390413677
-[1]     chr2 102 - 123               - |      1 0.15652187731823197
-[2]     chr2 104 - 134               + |      3  0.6773123093628475
-[3]     chr3 105 - 110               - |      4 0.32052240119382114
-[4]     chr3 103 - 128               * |      2  0.5558964454769089
+    seqnames    ranges          strand    score                    GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;                &lt;list&gt;
+[0]     chr1 101 - 112               * |      0   0.45607862748609995
+[1]     chr2 102 - 123               - |      1 0.0042208866635652376
+[2]     chr2 104 - 134               + |      3    0.7789570195887152
+[3]     chr3 105 - 110               - |      4   0.10905044046107015
+[4]     chr3 103 - 128               * |      2   0.48924218561468935
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 rank: [0, 1, 4, 2, 3]
@@ -1546,8 +1546,8 @@ seqinfo(3 sequences): chr2 chr4 chr5
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=d6caa86d"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+</div><script src="_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     </body>
