@@ -31,9 +31,7 @@ def access_gtf_ucsc(
     base_path = f"http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/"
 
     if type not in ["refGene", "ensGene", "knownGene", "ncbiRefSeq"]:
-        raise ValueError(
-            f"type must be one of refGene, ensGene, knownGene or ncbiRefSeq, provided {type}"
-        )
+        raise ValueError(f"type must be one of refGene, ensGene, knownGene or ncbiRefSeq, provided {type}")
 
     full_path = f"{base_path}/{genome}.{type}.gtf.gz"
 

@@ -16,12 +16,8 @@ def _validate_ranges(ranges, num_ranges):
     if ranges is None:
         raise ValueError("'ranges' cannot be None.")
 
-    if not (
-        isinstance(ranges, GenomicRanges) or ut.is_list_of_type(ranges, GenomicRanges)
-    ):
-        raise TypeError(
-            "`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`."
-        )
+    if not (isinstance(ranges, GenomicRanges) or ut.is_list_of_type(ranges, GenomicRanges)):
+        raise TypeError("`ranges` must be either a `GenomicRanges` or a list of `GenomicRanges`.")
 
     if isinstance(ranges, list) and sum([len(x) for x in ranges]) != num_ranges:
         raise ValueError(
@@ -40,15 +36,11 @@ def _validate_optional_attrs(mcols, names, num_ranges):
         raise TypeError("'mcols' is not a `BiocFrame` object.")
 
     if mcols.shape[0] != num_ranges:
-        raise ValueError(
-            "Length of 'mcols' does not match the number of genomic elements."
-        )
+        raise ValueError("Length of 'mcols' does not match the number of genomic elements.")
 
     if names is not None:
         if len(names) != num_ranges:
-            raise ValueError(
-                "Length of 'names' does not match the number of genomic elements."
-            )
+            raise ValueError("Length of 'names' does not match the number of genomic elements.")
 
         if any(x is None for x in names):
             raise ValueError("'names' cannot contain None values.")
@@ -79,11 +71,7 @@ class GenomicRangesListIter:
 
     def __next__(self):
         if self._current_index < len(self._grl):
-            iter_row_index = (
-                self._grl.names[self._current_index]
-                if self._grl.names is not None
-                else None
-            )
+            iter_row_index = self._grl.names[self._current_index] if self._grl.names is not None else None
 
             iter_slice = self._grl[self._current_index]
             self._current_index += 1
@@ -109,20 +97,84 @@ class GenomicRangesList:
     .. code-block:: python
 
         a = GenomicRanges(
-            seqnames=["chr1", "chr2", "chr1", "chr3"],
-            ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
-            strand=["-", "+", "*", "+"],
-            mcols=BiocFrame({"score": [1, 2, 3, 4]}),
+            seqnames=[
+                "chr1",
+                "chr2",
+                "chr1",
+                "chr3",
+            ],
+            ranges=IRanges(
+                [
+                    1,
+                    3,
+                    2,
+                    4,
+                ],
+                [
+                    10,
+                    30,
+                    50,
+                    60,
+                ],
+            ),
+            strand=[
+                "-",
+                "+",
+                "*",
+                "+",
+            ],
+            mcols=BiocFrame(
+                {
+                    "score": [
+                        1,
+                        2,
+                        3,
+                        4,
+                    ]
+                }
+            ),
         )
 
         b = GenomicRanges(
-            seqnames=["chr2", "chr4", "chr5"],
-            ranges=IRanges([3, 6, 4], [30, 50, 60]),
-            strand=["-", "+", "*"],
-            mcols=BiocFrame({"score": [2, 3, 4]}),
+            seqnames=[
+                "chr2",
+                "chr4",
+                "chr5",
+            ],
+            ranges=IRanges(
+                [3, 6, 4],
+                [
+                    30,
+                    50,
+                    60,
+                ],
+            ),
+            strand=[
+                "-",
+                "+",
+                "*",
+            ],
+            mcols=BiocFrame(
+                {
+                    "score": [
+                        2,
+                        3,
+                        4,
+                    ]
+                }
+            ),
         )
 
-        grl = GenomicRangesList(ranges=[gr1, gr2], names=["gene1", "gene2"])
+        grl = GenomicRangesList(
+            ranges=[
+                gr1,
+                gr2,
+            ],
+            names=[
+                "gene1",
+                "gene2",
+            ],
+        )
 
     Additionally, you may also provide metadata about the genomic elements in the dictionary
     using mcols attribute.
@@ -280,9 +332,7 @@ class GenomicRangesList:
         Returns:
             A pretty-printed string containing the contents of this ``GenomicRangesList``.
         """
-        output = (
-            f"GenomicRangesList with {len(self)} range{'s' if len(self) != 1 else ''}"
-        )
+        output = f"GenomicRangesList with {len(self)} range{'s' if len(self) != 1 else ''}"
         output += f" and {len(self._mcols.get_column_names())} metadata column{'s' if len(self._mcols.get_column_names()) != 1 else ''}\n"
 
         if isinstance(self._ranges, GenomicRanges) and len(self._ranges) == 0:
@@ -355,9 +405,7 @@ class GenomicRangesList:
 
         return self._ranges
 
-    def set_ranges(
-        self, ranges: Union[GenomicRanges, List[GenomicRanges]], in_place: bool = False
-    ) -> "GenomicRanges":
+    def set_ranges(self, ranges: Union[GenomicRanges, List[GenomicRanges]], in_place: bool = False) -> "GenomicRanges":
         """Set new genomic ranges.
 
         Args:
@@ -543,9 +591,7 @@ class GenomicRangesList:
             or as a reference to the (in-place-modified) original.
         """
         if not isinstance(metadata, dict):
-            raise TypeError(
-                f"`metadata` must be a dictionary, provided {type(metadata)}."
-            )
+            raise TypeError(f"`metadata` must be a dictionary, provided {type(metadata)}.")
 
         output = self._define_output(in_place)
         output._metadata = metadata
@@ -587,9 +633,7 @@ class GenomicRangesList:
             group = self._names.map(group)
 
         if group < 0 or group > len(self):
-            raise ValueError(
-                "'group' must be less than the number of genomic elements."
-            )
+            raise ValueError("'group' must be less than the number of genomic elements.")
 
         return self[group]
 
@@ -768,9 +812,7 @@ class GenomicRangesList:
     ######>> slicers <<#########
     ############################
 
-    def __getitem__(
-        self, args: Union[str, int, tuple, list, slice]
-    ) -> Union[GenomicRanges, "GenomicRangesList"]:
+    def __getitem__(self, args: Union[str, int, tuple, list, slice]) -> Union[GenomicRanges, "GenomicRangesList"]:
         """Subset individual genomic elements.
 
         Args:
@@ -808,9 +850,7 @@ class GenomicRangesList:
             if isinstance(idx, list):
                 if ut.is_list_of_type(idx, bool):
                     if len(idx) != len(self):
-                        raise ValueError(
-                            "`indices` is a boolean vector, length should match the size of the data."
-                        )
+                        raise ValueError("`indices` is a boolean vector, length should match the size of the data.")
 
                     idx = [i for i in range(len(idx)) if idx[i] is True]
 
@@ -825,9 +865,7 @@ class GenomicRangesList:
                 if self.mcols is not None:
                     new_mcols = self.mcols[idx, :]
 
-                return GenomicRangesList(
-                    new_ranges, new_range_lengths, new_names, new_mcols, self._metadata
-                )
+                return GenomicRangesList(new_ranges, new_range_lengths, new_names, new_mcols, self._metadata)
             elif isinstance(idx, (slice, range)):
                 if isinstance(idx, range):
                     idx = slice(idx.start, idx.stop, idx.step)
