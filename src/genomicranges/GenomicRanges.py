@@ -953,11 +953,11 @@ class GenomicRanges:
 
         current_class_const = type(self)
         return current_class_const(
-            seqnames=self._seqnames[idx],
-            ranges=self._ranges[idx],
-            strand=self._strand[idx],
-            names=self._names[idx] if self._names is not None else None,
-            mcols=self._mcols[idx, :],
+            seqnames=ut.subset_sequence(self._seqnames, idx),
+            ranges=ut.subset_sequence(self._ranges, idx),
+            strand=ut.subset_sequence(self._strand, idx),
+            names=ut.subset_sequence(self._names, idx) if self._names is not None else None,
+            mcols=ut.subset(self._mcols, idx),
             seqinfo=self._seqinfo,
             metadata=self._metadata,
         )

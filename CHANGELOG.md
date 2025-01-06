@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.5.1
+
+- Fixed an issue with numpy arrays as slice arguments. Code now uses Biocutils's subset functions to perform these operations.
+- Rename GitHub actions for consistency with the rest of the packages.
+
 ## Version 0.5.0
 
 - chore: Remove Python 3.8 (EOL)
