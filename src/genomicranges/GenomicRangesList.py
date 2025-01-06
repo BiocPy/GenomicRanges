@@ -847,38 +847,24 @@ class GenomicRangesList:
         else:
             idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
-            if isinstance(idx, list):
-                if ut.is_list_of_type(idx, bool):
-                    if len(idx) != len(self):
-                        raise ValueError("`indices` is a boolean vector, length should match the size of the data.")
+            if ut.is_list_of_type(idx, bool):
+                if len(idx) != len(self):
+                    raise ValueError("`indices` is a boolean vector, length should match the size of the data.")
 
-                    idx = [i for i in range(len(idx)) if idx[i] is True]
+                idx = [i for i in range(len(idx)) if idx[i] is True]
 
-                new_ranges = [self.ranges[i] for i in idx]
-                new_range_lengths = [self._range_lengths[i] for i in idx]
+            new_ranges = ut.subset_sequence(self._ranges, idx)
+            new_range_lengths = ut.subset_sequence(self._range_lengths, idx)
 
-                new_names = None
-                if self.names is not None:
-                    new_names = [self.names[i] for i in idx]
+            new_names = None
+            if self.names is not None:
+                new_names = ut.subset_sequence(self.names, idx)
 
-                new_mcols = None
-                if self.mcols is not None:
-                    new_mcols = self.mcols[idx, :]
+            new_mcols = None
+            if self.mcols is not None:
+                new_mcols = ut.subset(self.mcols, idx)
 
-                return GenomicRangesList(new_ranges, new_range_lengths, new_names, new_mcols, self._metadata)
-            elif isinstance(idx, (slice, range)):
-                if isinstance(idx, range):
-                    idx = slice(idx.start, idx.stop, idx.step)
-
-                return GenomicRangesList(
-                    self._ranges[idx],
-                    self._range_lengths[idx],
-                    self._names[idx] if self._names is not None else self._names,
-                    self._mcols[idx, :],
-                    self._metadata,
-                )
-
-            raise TypeError("Arguments to subset `GenomicRangesList` is not supported.")
+            return GenomicRangesList(new_ranges, new_range_lengths, new_names, new_mcols, self._metadata)
 
     #######################################
     ######>> class initializers <<#########
