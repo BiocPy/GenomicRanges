@@ -6,8 +6,8 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="GenomicRanges: Genomic analysis" href="tutorial.html" /><link rel="prev" title="GenomicRanges" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>GenomicRanges - GenomicRanges 0.5.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+        <title>GenomicRanges - GenomicRanges 0.5.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.5.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.5.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.5.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -270,7 +270,7 @@
         <article role="main" id="furo-main-content">
           <p><a class="reference external" href="https://pyscaffold.org/"><img alt="Project generated with PyScaffold" src="https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold" /></a>
 <a class="reference external" href="https://pypi.org/project/GenomicRanges/"><img alt="PyPI-Server" src="https://img.shields.io/pypi/v/GenomicRanges.svg" /></a>
-<img alt="Unit tests" src="https://github.com/BiocPy/GenomicRanges/actions/workflows/pypi-test.yml/badge.svg" /></p>
+<img alt="Unit tests" src="https://github.com/BiocPy/GenomicRanges/actions/workflows/run-tests.yml/badge.svg" /></p>
 <section class="tex2jax_ignore mathjax_ignore" id="genomicranges">
 <h1>GenomicRanges<a class="headerlink" href="#genomicranges" title="Link to this heading">¶</a></h1>
 <p>GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html">GenomicRanges</a>.</p>
@@ -291,8 +291,8 @@
 <section id="from-biobear">
 <h4>From <code class="docutils literal notranslate"><span class="pre">biobear</span></code><a class="headerlink" href="#from-biobear" title="Link to this heading">¶</a></h4>
 <p>Although the parsing capabilities in this package are limited, the <a class="reference external" href="https://github.com/wheretrue/biobear">biobear</a> library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> (or <a class="reference external" href="https://www.wheretrue.dev/docs/exon/biobear/genomicranges-integration">read more here</a>):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
-<span class="kn">import</span> <span class="nn">biobear</span> <span class="k">as</span> <span class="nn">bb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">genomicranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">biobear</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bb</span>
 
 <span class="n">session</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">new_session</span><span class="p">()</span>
 
@@ -313,7 +313,7 @@
 <section id="ucsc-or-gtf-file">
 <h4>UCSC or GTF file<a class="headerlink" href="#ucsc-or-gtf-file" title="Link to this heading">¶</a></h4>
 <p>You can easily download and parse genome annotations from UCSC or load a genome annotation from a GTF file,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomicranges</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">genomicranges</span>
 
 <span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_gtf</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
 <span class="c1"># OR</span>
@@ -332,10 +332,10 @@
 <section id="from-iranges-preferred-way">
 <h3>From <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> (Preferred way)<a class="headerlink" href="#from-iranges-preferred-way" title="Link to this heading">¶</a></h3>
 <p>If you have all relevant information to create a GenomicRanges object</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
-<span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
-<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">genomicranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">IRanges</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">biocframe</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiocFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">random</span>
 
 <span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span>
@@ -375,9 +375,9 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <section id="pandas-dataframe">
 <h3>Pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code><a class="headerlink" href="#pandas-dataframe" title="Link to this heading">¶</a></h3>
 <p>A common representation in Python is a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> for all tabular datasets. <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> must contain columns “seqnames”, “starts”, and “ends” to represent genomic intervals. Here’s an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">genomicranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">random</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
@@ -411,9 +411,9 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <section id="polars-dataframe">
 <h3>Polars <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code><a class="headerlink" href="#polars-dataframe" title="Link to this heading">¶</a></h3>
 <p>Similarly, To initialize from a polars <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
-<span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">genomicranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">polars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">random</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
@@ -474,9 +474,9 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <p>Just as it sounds, a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> is a named-list like object. If you are wondering why you need this class, a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object lets us specify multiple genomic elements, usually where the genes start and end. Genes are themselves made of many sub-regions, e.g. exons. <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> allows us to represent this nested structure.</p>
 <p><strong>Currently, this class is limited in functionality.</strong></p>
 <p>To construct a GenomicRangesList</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">GenomicRangesList</span>
-<span class="kn">from</span> <span class="nn">iranges</span> <span class="kn">import</span> <span class="n">IRanges</span>
-<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">genomicranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">GenomicRangesList</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">IRanges</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">biocframe</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiocFrame</span>
 
 <span class="n">gr1</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
@@ -619,7 +619,7 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=1dd76d02"></script>
+</div><script src="_static/documentation_options.js?v=b9afe91b"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
