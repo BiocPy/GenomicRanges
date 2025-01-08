@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.5.2
+
+- Restrict IRanges to the last compatible version before the migration.
+
 ## Version 0.5.1
 
 - Fixed an issue with numpy arrays as slice arguments. Code now uses Biocutils's subset functions to perform these operations.
