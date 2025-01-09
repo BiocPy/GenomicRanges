@@ -5,7 +5,7 @@ from warnings import warn
 import biocutils as ut
 import numpy as np
 from biocframe import BiocFrame
-from iranges import IRanges, normalize_array
+from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
@@ -1600,7 +1600,9 @@ class GenomicRanges:
         print(filtered_seqs)
         new_ends = self.get_seqlengths()[filtered_seqs]
         print(new_ends)
-        output._ranges[out_of_bounds] = output._ranges[out_of_bounds].restrict(start=1, end=new_ends, keep_all_ranges=True)
+        output._ranges[out_of_bounds] = output._ranges[out_of_bounds].restrict(
+            start=1, end=new_ends, keep_all_ranges=True
+        )
         return output
 
     def narrow(
