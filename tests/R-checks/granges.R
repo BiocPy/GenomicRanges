@@ -45,5 +45,45 @@ restrict_gr = restrict(gr, start=1200)
 paste(as.vector(start(restrict_gr)), collapse=",")
 paste(as.vector(end(restrict_gr)), collapse=",")
 
-ir <- IRanges(1:10, width=10:1)
-restrict(ir, start=4, end=8, keep.all.ranges=TRUE)
+st <- structure(c(4,5), names = c("chr1", "chr2"))
+en <-  structure(c(8,9), names = c("chr2", "chr3"))
+
+restrict_gr = restrict(gr, start=st, end=en)
+paste(as.vector(start(restrict_gr)), collapse=",")
+paste(as.vector(end(restrict_gr)), collapse=",")
+
+gr = GRanges(
+  seqnames=c(
+    "chr1",
+    "chr2",
+    "chr3",
+    "chr2",
+    "chr3"
+  ),
+  ranges=IRanges(101:105, width=c(11, 21, 25, 30, 5)),
+  strand=c("*", "-", "*", "+", "-")
+)
+
+seq_obj = Seqinfo(
+  seqnames=c("chr1", "chr2", "chr3"),
+  seqlengths=c(110, 112, 118),
+  isCircular=c(TRUE, TRUE, FALSE),
+  genome="hg19"
+)
+seq_obj
+x <- gr
+seqinfo(x) <- seq_obj
+trim(x)
+GenomicRanges:::get_out_of_bound_index(x)
+x_seqnames_id <- as.integer(seqnames(x))
+x_seqlengths <- unname(seqlengths(x))
+seqlevel_is_circ <- unname(isCircular(x)) %in% TRUE
+seqlength_is_na <- is.na(x_seqlengths)
+seqlevel_has_bounds <- !(seqlevel_is_circ | seqlength_is_na)
+which(seqlevel_has_bounds[x_seqnames_id] &
+        (start(x) < 1L | end(x) > x_seqlengths[x_seqnames_id]))
+
+idx <- GenomicRanges:::get_out_of_bound_index(x)
+
+seqnames_id <- as.integer(seqnames(x))[idx]
+new_end <- unname(seqlengths(x))[seqnames_id]

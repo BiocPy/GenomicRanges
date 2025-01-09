@@ -62,7 +62,6 @@ def test_restrict():
 
     restrict_gr = gr.restrict(start=3, end=7)
 
-    print(restrict_gr)
     assert restrict_gr is not None
     assert np.all(restrict_gr.start == [3, 3, 3, 4, 5, 6, 7, 8])
     assert np.all(restrict_gr.end == [7, 7, 7, 7, 7, 7, 7, 7])
@@ -77,6 +76,18 @@ def test_restrict():
 
     assert restrict_gr is not None
     assert len(restrict_gr) == 0
+
+    starts = {
+        "chr1": 4,
+        "chr2": 5,
+    }
+
+    ends = {"chr2": 8, "chr3": 9}
+    restrict_gr = gr.restrict(start=starts, end=ends)
+    print("final", restrict_gr)
+    assert restrict_gr is not None
+    assert np.all(restrict_gr.start == np.array([4, 5, 5, 5, 5, 6, 7, 8, 9, 10]))
+    assert np.all(restrict_gr.end == np.array([10, 8, 8, 8, 10, 10, 9, 9, 9, 9]))
 
 
 def test_narrow():

@@ -43,6 +43,14 @@ def test_gr_seqInfo():
     gr.seqinfo = seq_obj
     assert gr.seqinfo is not None
 
+def test_gr_out_of_bounds():
+    gr.seqinfo = seq_obj
+
+    obounds = gr.get_out_of_bound_index()
+
+    assert len(obounds) == 1
+    assert obounds[0] == 2
+
 
 def test_gr_method_trim():
     gr.seqinfo = seq_obj

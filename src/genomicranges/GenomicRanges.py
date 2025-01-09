@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
 from warnings import warn
 
@@ -913,6 +914,15 @@ class GenomicRanges:
         """Alias for :py:attr:`~get_width`."""
         return self.get_width()
 
+    def get_seqlengths(self) -> np.ndarray:
+        """Get sequence lengths for each genomic range.
+
+        Returns:
+            An ndarray containing the sequence lengths.
+        """
+        seqlenths = self._seqinfo.get_seqlengths()
+        return np.asarray([seqlenths[x] for x in self._seqnames])
+
     #########################
     ######>> Slicers <<######
     #########################
@@ -1450,20 +1460,12 @@ class GenomicRanges:
 
             # Get indices of kept ranges for filtering seqnames and strand
             if not keep_all_ranges:
-                keep_idx = np.ones(len(self._ranges), dtype=bool)
-                if start is not None:
-                    start_arr = normalize_array(start, len(self))
-                    far_left = (~start_arr.mask) & (self._ranges.get_end() < start_arr - 1)
-                    keep_idx &= ~far_left
-                if end is not None:
-                    end_arr = normalize_array(end, len(self))
-                    far_right = (~end_arr.mask) & (self._ranges.get_start() > end_arr + 1)
-                    keep_idx &= ~far_right
+                keep_idx = new_ranges.get_mcols().get_column("revmap")
 
                 new_seqnames = ut.subset_sequence(self._seqnames, keep_idx)
                 new_strand = ut.subset_sequence(self._strand, keep_idx)
                 new_names = ut.subset_sequence(self._names, keep_idx) if self._names is not None else None
-                new_mcols = ut.subset_sequence(self._mcols, keep_idx)
+                new_mcols = ut.subset(self._mcols, keep_idx)
 
             return GenomicRanges(
                 seqnames=new_seqnames,
@@ -1475,78 +1477,94 @@ class GenomicRanges:
                 metadata=self._metadata,
             )
 
-        # Convert start/end to dicts if they're not
         if start is None:
             start = {}
         elif not start_is_dict:
-            start = {seq: start for seq in np.unique(self.seqnames)}
+            start = {seq: start for seq in np.unique(self._seqinfo._seqnames)}
 
         if end is None:
             end = {}
         elif not end_is_dict:
-            end = {seq: end for seq in np.unique(self.seqnames)}
+            end = {seq: end for seq in np.unique(self._seqinfo._seqnames)}
 
-        # Split ranges by sequence name
         split_indices = defaultdict(list)
-        for i, seq in enumerate(self.seqnames):
+        seqnames = self._seqnames
+        for i, seq in enumerate(seqnames):
             split_indices[seq].append(i)
 
-        # Process each sequence separately
-        all_indices = []  # Track original indices
-        new_ranges_list = []
-        new_seqnames_list = []
-        new_strand_list = []
+        all_indices = []
+        new_granges_list = []
 
-        for seq in np.unique(self.seqnames):
+        for seq in np.unique(seqnames):
             idx = split_indices[seq]
-            seq_ranges = self.ranges[idx]
-            seq_seqnames = self.seqnames[idx]
-            seq_strand = self.strand[idx]
+            seq_ranges = ut.subset_sequence(self._ranges, idx)
+            seq_seqnames = ut.subset_sequence(seqnames, idx)
+            seq_strand = ut.subset_sequence(self._strand, idx)
+            seq_names = ut.subset_sequence(self._names, idx) if self._names is not None else None
+            seq_mcols = ut.subset(self._mcols, idx)
 
-            # Get sequence-specific start/end
-            seq_start = start.get(seq, None)
-            seq_end = end.get(seq, None)
+            seq_start = start.get(self._seqinfo._seqnames[seq], None)
+            seq_end = end.get(self._seqinfo._seqnames[seq], None)
 
-            # Restrict ranges for this sequence
             new_seq_ranges = seq_ranges.restrict(start=seq_start, end=seq_end, keep_all_ranges=keep_all_ranges)
 
-            # Only keep metadata for non-dropped ranges
+            # Only keep metadata for non-dropped ranges; IRanges restrict returns a revmap
             if not keep_all_ranges:
-                keep_idx = np.ones(len(seq_ranges), dtype=bool)
-                if seq_start is not None:
-                    start_arr = normalize_array(seq_start, len(seq_ranges))
-                    far_left = (~start_arr.mask) & (seq_ranges.ends < start_arr - 1)
-                    keep_idx &= ~far_left
-                if seq_end is not None:
-                    end_arr = normalize_array(seq_end, len(seq_ranges))
-                    far_right = (~end_arr.mask) & (seq_ranges.starts > end_arr + 1)
-                    keep_idx &= ~far_right
-                new_seq_seqnames = seq_seqnames[keep_idx]
-                new_seq_strand = seq_strand[keep_idx]
-                all_indices.extend([idx[i] for i, k in enumerate(keep_idx) if k])
+                keep_idx = new_seq_ranges.get_mcols().get_column("revmap")
+                new_seqnames = ut.subset_sequence(self._seqnames, keep_idx)
+                new_strand = ut.subset_sequence(self._strand, keep_idx)
+                new_names = ut.subset_sequence(self._names, keep_idx) if self._names is not None else None
+                new_mcols = ut.subset(self._mcols, keep_idx)
+                all_indices.extend([idx[i] for i, k in enumerate(keep_idx)])
             else:
-                new_seq_seqnames = seq_seqnames
-                new_seq_strand = seq_strand
+                new_seqnames = seq_seqnames
+                new_strand = seq_strand
+                new_names = seq_names
+                new_mcols = seq_mcols
                 all_indices.extend(idx)
 
-            new_ranges_list.append(new_seq_ranges)
-            new_seqnames_list.append(new_seq_seqnames)
-            new_strand_list.append(new_seq_strand)
+            new_granges_list.append(
+                GenomicRanges(
+                    seqnames=new_seqnames,
+                    ranges=new_seq_ranges,
+                    strand=new_strand,
+                    names=new_names,
+                    mcols=new_mcols,
+                    seqinfo=self._seqinfo,
+                    metadata=self._metadata,
+                )
+            )
 
-        # Combine results
-        combined_ranges = IRanges(
-            np.concatenate([r.starts for r in new_ranges_list]), np.concatenate([r.widths for r in new_ranges_list])
-        )
-        combined_seqnames = np.concatenate(new_seqnames_list)
-        combined_strand = np.concatenate(new_strand_list)
-
-        # Restore original order
+        # Combine results and restore to original order
+        combined_granges = _combine_GenomicRanges(*new_granges_list)
         order = np.argsort(all_indices)
-        combined_ranges = combined_ranges[order]
-        combined_seqnames = combined_seqnames[order]
-        combined_strand = combined_strand[order]
+        ordered_granges = combined_granges[order]
+        return ordered_granges
 
-        return GenomicRanges(combined_ranges, combined_seqnames, combined_strand)
+    def get_out_of_bound_index(self) -> Sequence[int]:
+        """Find indices of genomic ranges that are out of bounds.
+
+        Returns:
+            List of integer indices where ranges are out of bounds.
+        """
+        if len(self) == 0:
+            return []
+
+        # incase it contains NA's
+        seqlevel_is_circ = [val is True for val in self._seqinfo._is_circular]
+        seqlength_is_na = [slength is None for slength in self._seqinfo._seqlengths]
+        seqlevel_has_bounds = [not (circ or is_na) for circ, is_na in zip(seqlevel_is_circ, seqlength_is_na)]
+
+        print(seqlevel_is_circ, seqlength_is_na, seqlevel_has_bounds)
+
+        out_of_bounds = []
+        starts = self.get_start()
+        ends = self.get_end()
+        for i, seq_id in enumerate(self._seqnames):
+            if seqlevel_has_bounds[seq_id] and (starts[i] < 1 or ends[i] > self._seqinfo._seqlengths[seq_id]):
+                out_of_bounds.append(i)
+
+        return out_of_bounds
 
     def trim(self, in_place: bool = False) -> "GenomicRanges":
         """Trim sequences outside of bounds for non-circular chromosomes.
@@ -1556,16 +1574,14 @@ class GenomicRanges:
                 Whether to modify the ``GenomicRanges`` object in place.
 
         Returns:
-            A modified ``GenomicRanges`` object with the trimmed regions,
-            either as a copy of the original or as a reference to the
-            (in-place-modified) original.
+            A new ``GenomicRanges`` object with the trimmed regions.
         """
 
         if self.seqinfo is None:
             raise ValueError("Cannot trim ranges. `seqinfo` is not available.")
 
-        seqlengths = self.seqinfo.seqlengths
-        is_circular = self.seqinfo.is_circular
+        seqlengths = self.seqinfo._seqlengths
+        is_circular = self.seqinfo._is_circular
 
         if seqlengths is None:
             raise ValueError("Cannot trim ranges. `seqlengths` is not available.")
@@ -1573,21 +1589,18 @@ class GenomicRanges:
         if is_circular is None:
             warn("considering all sequences as non-circular...")
 
-        all_chrs = self._seqnames
-        all_ends = self.end
+        out_of_bounds = self.get_out_of_bound_index()
 
-        new_ends = []
-        for i in range(len(self)):
-            _t_chr = all_chrs[i]
-            _end = all_ends[i]
+        output = self._define_output(in_place=in_place)
+        if len(out_of_bounds) == 0:
+            return output.__copy__()
 
-            if is_circular is not None and is_circular[_t_chr] is False and _end > seqlengths[_t_chr]:
-                _end = seqlengths[_t_chr] + 1
-
-            new_ends.append(_end)
-
-        output = self._define_output(in_place)
-        output._ranges.width = np.asarray(new_ends) - output._ranges.start
+        print(out_of_bounds)
+        filtered_seqs = self._seqnames[out_of_bounds]
+        print(filtered_seqs)
+        new_ends = self.get_seqlengths()[filtered_seqs]
+        print(new_ends)
+        output._ranges[out_of_bounds] = output._ranges[out_of_bounds].restrict(start=1, end=new_ends, keep_all_ranges=True)
         return output
 
     def narrow(
