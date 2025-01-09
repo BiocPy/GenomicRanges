@@ -4,10 +4,11 @@ from warnings import warn
 import biocutils as ut
 import numpy as np
 from biocframe import BiocFrame
-from iranges import IRanges
+from iranges import IRanges, normalize_array
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
+    compute_up_down,
     create_np_vector,
     group_by_indices,
     sanitize_strand_vector,
@@ -144,19 +145,20 @@ class GenomicRanges:
             strand:
                 Strand information for each genomic range. This should be 0 (any strand),
                 1 (forward strand) or -1 (reverse strand). If None, all genomic ranges
-                are assumed to be 0.
+                are assumed to be 0 (any strand).
 
                 May be provided as a list of strings representing the strand;
                 "+" for forward strand, "-" for reverse strand, or "*" for any strand and will be mapped
-                accordingly to 1, -1 or 0.
+                to 1, -1 or 0 respectively.
 
             names:
-                Names for each genomic range. Defaults to None, which means the ranges are unnamed.
+                Names for each genomic range.
+                Defaults to None, which means the ranges are unnamed.
 
             mcols:
                 A ~py:class:`~biocframe.BiocFrame.BiocFrame` with the number of rows same as
-                number of genomic ranges, containing per-range annotation. Defaults to None, in which case an empty
-                BiocFrame object is created.
+                number of genomic ranges, containing per-range annotation.
+                Defaults to None, in which case an empty BiocFrame object is created.
 
             seqinfo:
                 Sequence information. Defaults to None, in which case a
@@ -164,7 +166,8 @@ class GenomicRanges:
                 chromosome names from ``seqnames``.
 
             metadata:
-                Additional metadata. Defaults to None, and is assigned to an empty dictionary.
+                Additional metadata.
+                Defaults to None, and is assigned to an empty dictionary.
 
             validate:
                 Internal use only.
@@ -434,9 +437,7 @@ class GenomicRanges:
     ######>> seqnames <<######
     ##########################
 
-    def get_seqnames(
-        self, as_type: Literal["factor", "list"] = "list"
-    ) -> Union[Tuple[np.ndarray, List[str]], List[str]]:
+    def get_seqnames(self, as_type: Literal["factor", "list"] = "list") -> Union[ut.Factor, List[str]]:
         """Access sequence names.
 
         Args:
@@ -447,11 +448,12 @@ class GenomicRanges:
                 If ``list``, then codes are mapped to levels and returned.
 
         Returns:
-            List of sequence names.
+            A :py:class:`biocutils.Factor` if `as_type="factor"`.
+            Otherwise a list of sequence names.
         """
 
         if as_type == "factor":
-            return self._seqnames, self._seqinfo.get_seqnames()
+            return ut.Factor(codes=self._seqnames, levels=self._seqinfo.get_seqnames())
         elif as_type == "list":
             return [self._seqinfo.get_seqnames()[x] for x in self._seqnames]
         else:
@@ -462,7 +464,8 @@ class GenomicRanges:
 
         Args:
             seqnames:
-                List of sequence or chromosome names. Optionally can be a numpy array with indices mapped
+                List of sequence or chromosome names.
+                Optionally can be a numpy array with indices mapped
                 to :py:attr:``~seqinfo``.
 
             in_place:
@@ -497,7 +500,7 @@ class GenomicRanges:
             "Setting property 'seqnames' is an in-place operation, use 'set_seqnames' instead",
             UserWarning,
         )
-        self.set_row_names(seqnames, in_place=True)
+        self.set_seqnames(seqnames, in_place=True)
 
     ########################
     ######>> ranges <<######
@@ -563,8 +566,8 @@ class GenomicRanges:
                 Access seqnames as factor codes, in which case, a numpy
                  vector is retuned.
 
-                If ``factor``, a tuple width levels as a dictionary and
-                  indices to ``seqinfo.get_seqnames()`` is returned.
+                If ``factor``, a tuple with codes as the strand vector
+                and levels a dictionary containing the mapping.
 
                 If ``list``, then codes are mapped to levels and returned.
 
@@ -595,21 +598,20 @@ class GenomicRanges:
             raise ValueError("Argument 'as_type' must be 'factor' or 'list'.")
 
     def set_strand(
-        self,
-        strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]],
-        in_place: bool = False,
+        self, strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]], in_place: bool = False
     ) -> "GenomicRanges":
         """Set new strand information.
 
         Args:
             strand:
                 Strand information for each genomic range. This should be 0 (any strand),
-                1 (forward strand) or -1 (reverse strand). If None, all genomic ranges
-                are assumed to be 0.
+                1 (forward strand) or -1 (reverse strand).
 
-                May be provided as a list of strings representing the strand;
-                "+" for forward strand, "-" for reverse strand, or "*" for any strand and will be mapped
-                accordingly to 1, -1 or 0.
+                Alternatively, may provide a list of strings representing the strand;
+                "+" for forward strand, "-" for reverse strand, or "*" for any strand
+                and will be automatically mapped to 1, -1 or 0 respectively.
+
+                May be set to None; in which case all genomic ranges are assumed to be 0.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -633,10 +635,7 @@ class GenomicRanges:
         return self.get_strand()
 
     @strand.setter
-    def strand(
-        self,
-        strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]],
-    ):
+    def strand(self, strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]]):
         """Alias for :py:meth:`~set_strand` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -658,16 +657,14 @@ class GenomicRanges:
         """
         return self._names
 
-    def set_names(
-        self,
-        names: Optional[Sequence[str]],
-        in_place: bool = False,
-    ) -> "GenomicRanges":
+    def set_names(self, names: Optional[Sequence[str]], in_place: bool = False) -> "GenomicRanges":
         """Set new names.
 
         Args:
             names:
                 Names for each genomic range.
+
+                May be None to remove names.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -692,10 +689,7 @@ class GenomicRanges:
         return self.get_names()
 
     @names.setter
-    def names(
-        self,
-        names: Optional[Sequence[str]],
-    ):
+    def names(self, names: Optional[Sequence[str]]):
         """Alias for :py:meth:`~set_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -717,17 +711,15 @@ class GenomicRanges:
         """
         return self._mcols
 
-    def set_mcols(
-        self,
-        mcols: Optional[BiocFrame],
-        in_place: bool = False,
-    ) -> "GenomicRanges":
+    def set_mcols(self, mcols: Optional[BiocFrame], in_place: bool = False) -> "GenomicRanges":
         """Set new range metadata.
 
         Args:
             mcols:
                 A ~py:class:`~biocframe.BiocFrame.BiocFrame` with length same as the number
                 of ranges, containing per-range annotations.
+
+                May be None to remove range metadata.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -752,10 +744,7 @@ class GenomicRanges:
         return self.get_mcols()
 
     @mcols.setter
-    def mcols(
-        self,
-        mcols: Optional[BiocFrame],
-    ):
+    def mcols(self, mcols: Optional[BiocFrame]):
         """Alias for :py:meth:`~set_mcols` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -777,17 +766,16 @@ class GenomicRanges:
         """
         return self._seqinfo
 
-    def set_seqinfo(
-        self,
-        seqinfo: Optional[SeqInfo],
-        in_place: bool = False,
-    ) -> "GenomicRanges":
+    def set_seqinfo(self, seqinfo: Optional[SeqInfo], in_place: bool = False) -> "GenomicRanges":
         """Set new sequence information.
 
         Args:
             seqinfo:
-                A ~py:class:`~genomicranges.SeqInfo.SeqInfo` object contaning information
+                A ~py:class:`~genomicranges.SeqInfo.SeqInfo` object containing information
                 about sequences in :py:attr:`~seqnames`.
+
+                May be None to remove sequence information. This would then generate a
+                new sequence information based on the current sequence names.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -972,7 +960,7 @@ class GenomicRanges:
         value: "GenomicRanges",
         in_place: bool = False,
     ) -> "GenomicRanges":
-        """Add or update positions (in-place operation).
+        """Udate positions.
 
         Args:
             args:
@@ -1034,7 +1022,7 @@ class GenomicRanges:
     ######>> pandas interop <<######
     ################################
 
-    def to_pandas(self) -> "pandas.DataFrame":
+    def to_pandas(self):
         """Convert this ``GenomicRanges`` object into a :py:class:`~pandas.DataFrame`.
 
         Returns:
@@ -1056,12 +1044,12 @@ class GenomicRanges:
         return _rdf
 
     @classmethod
-    def from_pandas(cls, input: "pandas.DataFrame") -> "GenomicRanges":
+    def from_pandas(cls, input) -> "GenomicRanges":
         """Create a ``GenomicRanges`` from a :py:class:`~pandas.DataFrame` object.
 
         Args:
             input:
-                Input data. must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                Input data. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1115,7 +1103,7 @@ class GenomicRanges:
     ######>> polars interop <<######
     ################################
 
-    def to_polars(self) -> "polars.DataFrame":
+    def to_polars(self):
         """Convert this ``GenomicRanges`` object into a :py:class:`~polars.DataFrame`.
 
         Returns:
@@ -1136,13 +1124,12 @@ class GenomicRanges:
         return _rdf
 
     @classmethod
-    def from_polars(cls, input: "polars.DataFrame") -> "GenomicRanges":
+    def from_polars(cls, input) -> "GenomicRanges":
         """Create a ``GenomicRanges`` from a :py:class:`~polars.DataFrame` object.
 
         Args:
             input:
-                Input polars DataFrame.
-                must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                Input polars DataFrame. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1197,7 +1184,7 @@ class GenomicRanges:
     def flank(
         self,
         width: int,
-        start: bool = True,
+        start: Union[bool, np.ndarray, List[bool]] = True,
         both: bool = False,
         ignore_strand: bool = False,
         in_place: bool = False,
@@ -1234,7 +1221,11 @@ class GenomicRanges:
                 Width to flank by. May be negative.
 
             start:
-                Whether to only flank starts. Defaults to True.
+                Whether to only flank starts.
+                Defaults to True.
+
+                Alternatively, you may provide a list of start values,
+                whose length is the same as the number of ranges.
 
             both:
                 Whether to flank both starts and ends. Defaults to False.
@@ -1251,42 +1242,30 @@ class GenomicRanges:
             (in-place-modified) original.
         """
 
-        all_starts = self.start
-        all_ends = self.end
-        all_strands = self.strand
-
-        # figure out which position to pin, start or end?
-        start_flags = np.repeat(start, len(all_strands))
-        if not ignore_strand:
-            start_flags = [start != (all_strands[i] == -1) for i in range(len(all_strands))]
-
-        new_starts = []
-        new_widths = []
-        # if both is true, then depending on start_flag, we extend it out
-        # I couldn't understand the scenario's with witdh <=0,
-        # so refer to the R implementation here
-        for idx in range(len(start_flags)):
-            sf = start_flags[idx]
-            tstart = 0
-            if both is True:
-                tstart = all_starts[idx] - abs(width) if sf else all_ends[idx] - abs(width)
-            else:
-                if width >= 0:
-                    tstart = all_starts[idx] - abs(width) if sf else all_ends[idx]
-                else:
-                    tstart = all_starts[idx] if sf else all_ends[idx] + width
-
-            new_starts.append(tstart)
-            new_widths.append((width * (2 if both else 1)))
+        if not isinstance(ignore_strand, bool):
+            raise TypeError("'ignore_strand' must be True or False.")
 
         output = self._define_output(in_place)
-        output._ranges = IRanges(new_starts, new_widths)
+
+        if isinstance(start, bool):
+            start_arr = np.full(len(output), start, dtype=bool)
+        else:
+            start_arr = np.asarray(start, dtype=bool)
+            if len(start_arr) != len(output):
+                start_arr = np.resize(start_arr, len(output))  # may be throw an error?
+
+        if not ignore_strand:
+            start_arr = np.asarray(start_arr != (output.get_strand() == -1))
+
+        new_ranges = output._ranges.flank(width=width, start=start_arr, both=both, in_place=False)
+
+        output._ranges = new_ranges
         return output
 
     def resize(
         self,
         width: Union[int, List[int], np.ndarray],
-        fix: Literal["start", "end", "center"] = "start",
+        fix: Union[Literal["start", "end", "center"], List[Literal["start", "end", "center"]]] = "start",
         ignore_strand: bool = False,
         in_place: bool = False,
     ) -> "GenomicRanges":
@@ -1300,6 +1279,9 @@ class GenomicRanges:
             fix:
                 Fix positions by "start", "end", or "center".
                 Defaults to "start".
+
+                Alternatively, may provide a list of fix positions
+                for each genomic range.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -1318,14 +1300,29 @@ class GenomicRanges:
             (in-place-modified) original.
         """
         _REV_FIX = {"start": "end", "end": "start", "center": "center"}
-        if ignore_strand is False:
-            fix = [fix] * len(self)
-            for i in range(len(self.strand)):
-                if self._strand[i] == -1:
-                    fix[i] = _REV_FIX[fix[i]]
+
+        if not isinstance(ignore_strand, bool):
+            raise TypeError("'ignore_strand' must be True or False.")
 
         output = self._define_output(in_place)
-        output._ranges = self._ranges.resize(width=width, fix=fix)
+
+        if isinstance(fix, str):
+            fix_arr = [fix] * len(output)
+        else:
+            fix_arr = fix
+
+        if len(output) > 0 and (len(fix_arr) > len(output) or len(output) % len(fix_arr) != 0):
+            raise ValueError("Number of ranges is not a multiple of 'fix' length")
+
+        if ignore_strand:
+            fix_arr = [fix_arr[i % len(fix_arr)] for i in range(len(output))]
+        else:
+            if len(output) == 0:
+                fix_arr = []
+            else:
+                fix_arr = [_REV_FIX[f] if strand == -1 else f for f, strand in zip(fix_arr, output.get_strand())]
+
+        output._ranges = self._ranges.resize(width=width, fix=fix_arr)
         return output
 
     def shift(self, shift: Union[int, List[int], np.ndarray] = 0, in_place: bool = False) -> "GenomicRanges":
@@ -1345,22 +1342,13 @@ class GenomicRanges:
             (in-place-modified) original.
         """
         output = self._define_output(in_place)
-
-        if shift == 0:
-            return self
-
         output._ranges = self._ranges.shift(shift=shift)
         return output
 
     def promoters(self, upstream: int = 2000, downstream: int = 200, in_place: bool = False) -> "GenomicRanges":
-        """Extend intervals to promoter regions.
+        """Extend ranges to promoter regions.
 
-        Generates promoter ranges relative to the transcription start site (TSS),
-        where TSS is start(x). The promoter range is expanded around the TSS
-        according to the upstream and downstream arguments. Upstream represents
-        the number of nucleotides in the 5' direction and downstream the number
-        in the 3' direction. The full range is defined as, (`start(x) - upstream`)
-        to (`start(x) + downstream - 1`).
+        Generates promoter ranges relative to the transcription start site (TSS).
 
         Args:
             upstream:
@@ -1379,35 +1367,51 @@ class GenomicRanges:
             either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
-        all_starts = self.start
-        all_ends = self.end
-        all_strands = self.strand
-
-        start_flags = [all_strands[i] != -1 for i in range(len(all_strands))]
-
-        new_starts = np.asarray(
-            [
-                (all_starts[idx] - upstream if start_flags[idx] else all_ends[idx] - downstream)
-                for idx in range(len(start_flags))
-            ]
-        )
-        new_ends = np.asarray(
-            [
-                (all_starts[idx] + downstream if start_flags[idx] else all_ends[idx] + upstream)
-                for idx in range(len(start_flags))
-            ]
-        )
-
         output = self._define_output(in_place)
-        output._ranges = IRanges(start=new_starts, width=(new_ends - new_starts))
+
+        new_starts, new_widths = compute_up_down(
+            output.get_start(), output.get_end(), output.get_strand(), upstream, downstream, site="TSS"
+        )
+
+        output._ranges = IRanges(start=new_starts, width=new_widths)
+        return output
+
+    def terminators(self, upstream: int = 2000, downstream: int = 200, in_place: bool = False) -> "GenomicRanges":
+        """Extend ranges to termiantor regions.
+
+        Generates terminator ranges relative to the transcription end site (TES).
+
+        Args:
+            upstream:
+                Number of positions to extend in the 5' direction.
+                Defaults to 2000.
+
+            downstream:
+                Number of positions to extend in the 3' direction.
+                Defaults to 200.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the promoter regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+        output = self._define_output(in_place)
+
+        new_starts, new_widths = compute_up_down(
+            output.get_start(), output.get_end(), output.get_strand(), upstream, downstream, site="TES"
+        )
+
+        output._ranges = IRanges(start=new_starts, width=new_widths)
         return output
 
     def restrict(
         self,
-        start: Optional[Union[int, List[int], np.ndarray]] = None,
-        end: Optional[Union[int, List[int], np.ndarray]] = None,
+        start: Optional[Union[int, Dict[str, int], np.ndarray]] = None,
+        end: Optional[Union[int, Dict[str, int], np.ndarray]] = None,
         keep_all_ranges: bool = False,
-        in_place: bool = False,
     ) -> "GenomicRanges":
         """Restrict ranges to a given start and end positions.
 
@@ -1415,33 +1419,134 @@ class GenomicRanges:
             start:
                 Start position. Defaults to None.
 
+                Alternatively may provide a dictionary
+                mapping sequence names to starts, or array of starts.
+
             end:
                 End position. Defaults to None.
+
+                Alternatively may provide a dictionary
+                mapping sequence names to starts, or array of starts.
 
             keep_all_ranges:
                 Whether to keep intervals that do not overlap with start and end.
                 Defaults to False.
 
-            in_place:
-                Whether to modify the ``GenomicRanges`` object in place.
-
         Returns:
-            A modified ``GenomicRanges`` object with the restricted regions,
-            either as a copy of the original or as a reference to the
-            (in-place-modified) original.
+            A new ``GenomicRanges`` object with the restricted regions.
         """
 
-        restricted_ir = self._ranges.restrict(start=start, end=end, keep_all_ranges=True)
-        output = self._define_output(in_place)
-        output._ranges = restricted_ir
+        start_is_dict = isinstance(start, dict)
+        end_is_dict = isinstance(end, dict)
 
-        if keep_all_ranges is True:
-            restricted_ir._width = np.clip(restricted_ir.width, 0, None)
-        else:
-            _flt_idx = list(np.where(restricted_ir.width > -1)[0])
-            output = output[_flt_idx]
+        if not (start_is_dict or end_is_dict):
+            # directly restrict ranges
+            new_ranges = self._ranges.restrict(start=start, end=end, keep_all_ranges=keep_all_ranges)
 
-        return output
+            new_seqnames = self._seqnames
+            new_strand = self.strand
+            new_names = self._names
+            new_mcols = self._mcols
+
+            # Get indices of kept ranges for filtering seqnames and strand
+            if not keep_all_ranges:
+                keep_idx = np.ones(len(self._ranges), dtype=bool)
+                if start is not None:
+                    start_arr = normalize_array(start, len(self))
+                    far_left = (~start_arr.mask) & (self._ranges.get_end() < start_arr - 1)
+                    keep_idx &= ~far_left
+                if end is not None:
+                    end_arr = normalize_array(end, len(self))
+                    far_right = (~end_arr.mask) & (self._ranges.get_start() > end_arr + 1)
+                    keep_idx &= ~far_right
+
+                new_seqnames = ut.subset_sequence(self._seqnames, keep_idx)
+                new_strand = ut.subset_sequence(self._strand, keep_idx)
+                new_names = ut.subset_sequence(self._names, keep_idx) if self._names is not None else None
+                new_mcols = ut.subset_sequence(self._mcols, keep_idx)
+
+            return GenomicRanges(
+                seqnames=new_seqnames,
+                ranges=new_ranges,
+                strand=new_strand,
+                names=new_names,
+                mcols=new_mcols,
+                seqinfo=self._seqinfo,
+                metadata=self._metadata,
+            )
+
+        # Convert start/end to dicts if they're not
+        if start is None:
+            start = {}
+        elif not start_is_dict:
+            start = {seq: start for seq in np.unique(self.seqnames)}
+
+        if end is None:
+            end = {}
+        elif not end_is_dict:
+            end = {seq: end for seq in np.unique(self.seqnames)}
+
+        # Split ranges by sequence name
+        split_indices = defaultdict(list)
+        for i, seq in enumerate(self.seqnames):
+            split_indices[seq].append(i)
+
+        # Process each sequence separately
+        all_indices = []  # Track original indices
+        new_ranges_list = []
+        new_seqnames_list = []
+        new_strand_list = []
+
+        for seq in np.unique(self.seqnames):
+            idx = split_indices[seq]
+            seq_ranges = self.ranges[idx]
+            seq_seqnames = self.seqnames[idx]
+            seq_strand = self.strand[idx]
+
+            # Get sequence-specific start/end
+            seq_start = start.get(seq, None)
+            seq_end = end.get(seq, None)
+
+            # Restrict ranges for this sequence
+            new_seq_ranges = seq_ranges.restrict(start=seq_start, end=seq_end, keep_all_ranges=keep_all_ranges)
+
+            # Only keep metadata for non-dropped ranges
+            if not keep_all_ranges:
+                keep_idx = np.ones(len(seq_ranges), dtype=bool)
+                if seq_start is not None:
+                    start_arr = normalize_array(seq_start, len(seq_ranges))
+                    far_left = (~start_arr.mask) & (seq_ranges.ends < start_arr - 1)
+                    keep_idx &= ~far_left
+                if seq_end is not None:
+                    end_arr = normalize_array(seq_end, len(seq_ranges))
+                    far_right = (~end_arr.mask) & (seq_ranges.starts > end_arr + 1)
+                    keep_idx &= ~far_right
+                new_seq_seqnames = seq_seqnames[keep_idx]
+                new_seq_strand = seq_strand[keep_idx]
+                all_indices.extend([idx[i] for i, k in enumerate(keep_idx) if k])
+            else:
+                new_seq_seqnames = seq_seqnames
+                new_seq_strand = seq_strand
+                all_indices.extend(idx)
+
+            new_ranges_list.append(new_seq_ranges)
+            new_seqnames_list.append(new_seq_seqnames)
+            new_strand_list.append(new_seq_strand)
+
+        # Combine results
+        combined_ranges = IRanges(
+            np.concatenate([r.starts for r in new_ranges_list]), np.concatenate([r.widths for r in new_ranges_list])
+        )
+        combined_seqnames = np.concatenate(new_seqnames_list)
+        combined_strand = np.concatenate(new_strand_list)
+
+        # Restore original order
+        order = np.argsort(all_indices)
+        combined_ranges = combined_ranges[order]
+        combined_seqnames = combined_seqnames[order]
+        combined_strand = combined_strand[order]
+
+        return GenomicRanges(combined_ranges, combined_seqnames, combined_strand)
 
     def trim(self, in_place: bool = False) -> "GenomicRanges":
         """Trim sequences outside of bounds for non-circular chromosomes.

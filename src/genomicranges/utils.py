@@ -207,3 +207,55 @@ def create_np_vector(
 
 def group_by_indices(groups: list) -> dict:
     return {k: [x[0] for x in v] for k, v in groupby(sorted(enumerate(groups), key=lambda x: x[1]), lambda x: x[1])}
+
+
+def compute_up_down(starts, ends, strands, upstream, downstream, site: str = "TSS"):
+    """
+    Compute promoter or terminator regions for genomic ranges.
+
+    Args:
+        x:
+            GenomicRanges object
+
+        upstream:
+            Number of bases upstream (scalar or array)
+
+        downstream:
+            Number of bases downstream (scalar or array)
+
+        site:
+            "TSS" for promoters or "TES" for terminators
+
+    Returns:
+        New starts and ends.
+    """
+    if isinstance(upstream, (int, float)):
+        upstream = np.full(len(starts), upstream, dtype=np.int32)
+    if isinstance(downstream, (int, float)):
+        downstream = np.full(len(starts), downstream, dtype=np.int32)
+
+    minus_mask = strands == -1
+
+    new_starts = np.zeros_like(starts)
+    new_ends = np.zeros_like(ends)
+
+    if site == "TSS":
+        # For "+" or "*" strand
+        plus_mask = ~minus_mask
+        new_starts[plus_mask] = starts[plus_mask] - upstream[plus_mask]
+        new_ends[plus_mask] = starts[plus_mask] + downstream[plus_mask] - 1
+
+        # For "-" strand
+        new_starts[minus_mask] = ends[minus_mask] - downstream[minus_mask] + 1
+        new_ends[minus_mask] = ends[minus_mask] + upstream[minus_mask]
+    else:  # TES
+        # For "+" or "*" strand
+        plus_mask = ~minus_mask
+        new_starts[plus_mask] = ends[plus_mask] - upstream[plus_mask]
+        new_ends[plus_mask] = ends[plus_mask] + downstream[plus_mask] - 1
+
+        # For "-" strand
+        new_starts[minus_mask] = starts[minus_mask] - downstream[minus_mask] + 1
+        new_ends[minus_mask] = starts[minus_mask] + upstream[minus_mask]
+
+    return new_starts, new_ends - new_starts + 1

@@ -1,29 +1,25 @@
-import pytest
-import pandas as pd
-from genomicranges.GenomicRanges import GenomicRanges
 from random import random
-from iranges import IRanges
-from biocframe import BiocFrame
+
 import numpy as np
+import pandas as pd
+import pytest
+from biocframe import BiocFrame
+from iranges import IRanges
+
+from genomicranges.GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 gr = GenomicRanges(
-    seqnames=[
-        "chr1",
-        "chr2",
-        "chr3",
-        "chr2",
-        "chr3",
-    ],
-    ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
-    strand=["*", "-", "*", "+", "-"],
+    seqnames=["chr1", "chr2", "chr2", "chr2", "chr1", "chr1", "chr3", "chr3", "chr3", "chr3"],
+    ranges=IRanges([x for x in range(1, 11)], [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]),
+    strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
     mcols=BiocFrame(
         {
-            "score": range(0, 5),
-            "GC": [random() for _ in range(5)],
+            "score": range(1, 11),
+            "GC": [random() for _ in range(10)],
         }
     ),
 )
@@ -34,11 +30,11 @@ def test_flank_default():
 
     flanked_gr = gr.flank(width=10)
 
-    print(flanked_gr.__repr__())
-
     assert flanked_gr is not None
-    assert (flanked_gr.start == np.array([91, 123, 93, 94, 110])).all()
-    assert (flanked_gr.width == np.array([10, 10, 10, 10, 10])).all()
+    assert isinstance(flanked_gr, GenomicRanges)
+    assert flanked_gr.get_strand(as_type="list") == ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"]
+    assert np.all(flanked_gr.start == np.array([11, -8, -7, -6, -5, -4, -3, -2, 11, 11]))
+    assert np.all(flanked_gr.end == np.array([20, 1, 2, 3, 4, 5, 6, 7, 20, 20]))
 
 
 def test_flank_start_false():
@@ -47,8 +43,9 @@ def test_flank_start_false():
     flanked_gr = gr.flank(width=10, start=False)
 
     assert flanked_gr is not None
-    assert (flanked_gr.start == np.array([112, 92, 128, 134, 95])).all()
-    assert (flanked_gr.width == np.array([10, 10, 10, 10, 10])).all()
+    assert flanked_gr.get_strand(as_type="list") == ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"]
+    assert np.all(flanked_gr.start == np.array([-9, 11, 11, 11, 11, 11, 11, 11, -1, 0]))
+    assert np.all(flanked_gr.end == np.array([0, 20, 20, 20, 20, 20, 20, 20, 8, 9]))
 
 
 def test_flank_both_true():
@@ -57,8 +54,8 @@ def test_flank_both_true():
     flanked_gr = gr.flank(width=10, both=True)
 
     assert flanked_gr is not None
-    assert (flanked_gr.start == np.array([91, 113, 93, 94, 100])).all()
-    assert (flanked_gr.width == np.array([20, 20, 20, 20, 20])).all()
+    assert np.all(flanked_gr.start == np.array([1, -8, -7, -6, -5, -4, -3, -2, 1, 1]))
+    assert np.all(flanked_gr.end == np.array([20, 11, 12, 13, 14, 15, 16, 17, 20, 20]))
 
 
 def test_flank_start_false_and_both_true():
@@ -67,5 +64,5 @@ def test_flank_start_false_and_both_true():
     flanked_gr = gr.flank(width=10, start=False, both=True)
 
     assert flanked_gr is not None
-    assert (flanked_gr.start == np.array([102, 92, 118, 124, 95])).all()
-    assert (flanked_gr.width == np.array([20, 20, 20, 20, 20])).all()
+    assert np.all(flanked_gr.start == np.array([-9, 1, 1, 1, 1, 1, 1, 1, -1, 0]))
+    assert np.all(flanked_gr.end == np.array([10, 20, 20, 20, 20, 20, 20, 20, 18, 19]))
