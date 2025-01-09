@@ -1,11 +1,7 @@
-import pytest
-import pandas as pd
-import numpy as np
 from genomicranges import GenomicRanges
 from biocframe import BiocFrame
 from iranges import IRanges
 from random import random
-import genomicranges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

@@ -1,4 +1,3 @@
-import pytest
 from genomicranges import GenomicRanges, GenomicRangesList
 from iranges import IRanges
 import numpy as np
@@ -7,9 +6,7 @@ __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-x = GenomicRanges(
-    seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"]
-)
+x = GenomicRanges(seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"])
 y = GenomicRanges(seqnames=["chr1"], ranges=IRanges([5], [6]), strand=["-"])
 
 

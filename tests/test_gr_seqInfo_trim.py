@@ -1,4 +1,3 @@
-import pandas as pd
 from genomicranges.SeqInfo import SeqInfo
 from random import random
 from genomicranges.GenomicRanges import GenomicRanges

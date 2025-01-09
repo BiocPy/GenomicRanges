@@ -1,8 +1,6 @@
 from random import random
 
 import numpy as np
-import pandas as pd
-import pytest
 from biocframe import BiocFrame
 from iranges import IRanges
 

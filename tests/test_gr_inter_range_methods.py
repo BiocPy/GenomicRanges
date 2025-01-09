@@ -1,5 +1,3 @@
-import pytest
-import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
 from random import random
 from iranges import IRanges
@@ -11,19 +9,8 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 gr = GenomicRanges(
-    seqnames=[
-        "chr1",
-        "chr2",
-        "chr2",
-        "chr2",
-        "chr1",
-        "chr1",
-        "chr3",
-        "chr3",
-        "chr3",
-        "chr3"
-    ],
-    ranges=IRanges([x for x in range(1, 11)], [10, 9, 8, 7, 6, 5, 4, 3 ,2 ,1]),
+    seqnames=["chr1", "chr2", "chr2", "chr2", "chr1", "chr1", "chr3", "chr3", "chr3", "chr3"],
+    ranges=IRanges([x for x in range(1, 11)], [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]),
     strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
     mcols=BiocFrame(
         {
@@ -199,9 +186,7 @@ def test_gaps_with_end():
         "chr3",
     ]
     assert (out.start == np.array([1, 1, 1, 112, 1, 1, 1, 1, 1, 110, 1])).all()
-    assert (
-        out.width == np.array([120, 120, 100, 9, 103, 101, 120, 120, 104, 11, 102])
-    ).all()
+    assert (out.width == np.array([120, 120, 100, 9, 103, 101, 120, 120, 104, 11, 102])).all()
 
     assert (out.strand == np.array([1, -1, 0, 0, 1, -1, 0, 1, -1, -1, 0])).all()
 
@@ -226,9 +211,7 @@ def test_gaps_with_both():
         "chr3",
     ]
     assert (out.start == np.array([5, 5, 5, 112, 5, 5, 5, 5, 5, 110, 5])).all()
-    assert (
-        out.width == np.array([116, 116, 96, 9, 99, 97, 116, 116, 100, 11, 98])
-    ).all()
+    assert (out.width == np.array([116, 116, 96, 9, 99, 97, 116, 116, 100, 11, 98])).all()
 
     assert (out.strand == np.array([1, -1, 0, 0, 1, -1, 0, 1, -1, -1, 0])).all()
 

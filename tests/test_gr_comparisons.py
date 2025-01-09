@@ -1,5 +1,3 @@
-import pytest
-import pandas as pd
 from genomicranges.GenomicRanges import GenomicRanges
 from random import random
 from iranges import IRanges
