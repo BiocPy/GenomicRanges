@@ -236,3 +236,23 @@ def test_disjoin():
     assert (out.start == np.array([1, 5, 6, 2, 3, 4, 7, 8, 9, 10])).all()
     assert (out.end == np.array([4, 5, 10, 2, 3, 10, 7, 8, 9, 10])).all()
     assert (out.strand == np.array([0] * 10)).all()
+
+
+def test_is_disjoint():
+    assert gr is not None
+
+    out = gr.is_disjoint()
+    assert out is False
+
+    out = gr.is_disjoint(ignore_strand=True)
+    assert out is False
+
+
+def test_disjoint_bins():
+    assert gr is not None
+
+    out = gr.disjoint_bins()
+    assert np.all(out == [0, 0, 1, 0, 0, 0, 0, 1, 0, 1])
+
+    out = gr.disjoint_bins(ignore_strand=True)
+    assert np.all(out == [0, 0, 1, 2, 1, 2, 0, 1, 2, 3])

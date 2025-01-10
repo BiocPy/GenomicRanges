@@ -1907,6 +1907,63 @@ class GenomicRanges:
 
         return output
 
+    def is_disjoint(self, ignore_strand: bool = False) -> bool:
+        """Calculate disjoint genomic positions for each distinct (seqname, strand) pair.
+
+        Args:
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            True if all ranges are disjoint.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        is_disjoint = None
+
+        for seq in self._seqinfo.get_seqnames():
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{seq}{_granges_delim}{strd}"
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    res_ir = _grp_subset._ranges.is_disjoint()
+
+                    if is_disjoint is None:
+                        is_disjoint = res_ir
+                    else:
+                        is_disjoint = is_disjoint and res_ir
+
+        return is_disjoint
+
+    def disjoint_bins(self, ignore_strand: bool = False) -> np.ndarray:
+        """Split ranges into a set of bins so that the ranges in each bin are disjoint.
+
+        Args:
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            An ndarray indicating the bin index for each range.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        all_results = []
+        order = []
+        for seq in self._seqinfo.get_seqnames():
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{seq}{_granges_delim}{strd}"
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    res_ir = _grp_subset._ranges.disjoint_bins()
+
+                    order.extend(chrm_grps[_key])
+                    all_results.extend(res_ir)
+
+        print(all_results)
+        merged = np.asarray(all_results).flatten()
+        return merged[np.argsort(order, stable=True)]
+
     def coverage(self, shift: int = 0, width: Optional[int] = None, weight: int = 1) -> Dict[str, np.ndarray]:
         """Calculate coverage for each chromosome, For each position, counts the number of ranges that cover it.
 
@@ -1915,8 +1972,7 @@ class GenomicRanges:
                 Shift all genomic positions. Defaults to 0.
 
             width:
-                Restrict the width of all
-                chromosomes. Defaults to None.
+                Restrict the width of all chromosomes. Defaults to None.
 
             weight:
                 Weight to use. Defaults to 1.
@@ -1927,26 +1983,11 @@ class GenomicRanges:
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=True)
 
-        shift_arr = None
-        if shift > 0:
-            shift_arr = np.zeros(shift)
-
         result = {}
         for chrm, group in chrm_grps.items():
             _grp_subset = self[group]
 
-            all_intvals = [(x[0], x[1]) for x in zip(_grp_subset._ranges._start, _grp_subset._ranges.end)]
-
-            cov, _ = create_np_vector(intervals=all_intvals, with_reverse_map=False)
-
-            if shift > 0:
-                cov = ut.combine_sequences(shift_arr, cov)
-
-            if weight > 0:
-                cov = cov * weight
-
-            if width is not None:
-                cov = cov[:width]
+            cov = _grp_subset._ranges.coverage(shift=shift)
 
             result[chrm.split(_granges_delim)[0]] = cov
 

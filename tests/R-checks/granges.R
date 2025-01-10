@@ -113,3 +113,9 @@ gaps(gr, start=5, end=10)
 
 disjoin(gr)
 disjoin(gr, ignore.strand=TRUE)
+
+isDisjoint(gr)
+isDisjoint(gr, ignore.strand=TRUE)
+
+disjointBins(gr)
+disjointBins(gr, ignore.strand=TRUE)
