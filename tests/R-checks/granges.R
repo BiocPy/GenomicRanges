@@ -22,6 +22,12 @@ resize(gr, width=10, fix="center")
 resize(gr, width=11)
 resize(gr, width=11, fix="center")
 
+narrow(gr, start=2, end=3)
+narrow(gr, start=2)
+narrow(gr, start=2, width=3)
+narrow(gr, end=2)
+narrow(gr, width=3, end=4)
+
 
 shift(gr, shift=10)
 promoters(gr)
@@ -74,16 +80,36 @@ seq_obj
 x <- gr
 seqinfo(x) <- seq_obj
 trim(x)
-GenomicRanges:::get_out_of_bound_index(x)
-x_seqnames_id <- as.integer(seqnames(x))
-x_seqlengths <- unname(seqlengths(x))
-seqlevel_is_circ <- unname(isCircular(x)) %in% TRUE
-seqlength_is_na <- is.na(x_seqlengths)
-seqlevel_has_bounds <- !(seqlevel_is_circ | seqlength_is_na)
-which(seqlevel_has_bounds[x_seqnames_id] &
-        (start(x) < 1L | end(x) > x_seqlengths[x_seqnames_id]))
 
-idx <- GenomicRanges:::get_out_of_bound_index(x)
+## reduce
+reduce(gr)
+reduce(gr, ignore.strand=TRUE)
+reduce(gr, min.gapwidth=10)
+reduce(gr, min.gapwidth=10, with.revmap=TRUE)
 
-seqnames_id <- as.integer(seqnames(x))[idx]
-new_end <- unname(seqlengths(x))[seqnames_id]
+gr2 <- GRanges(
+  seqnames=c(
+    "chr1_gl123",
+    "chr2",
+    "chr3",
+    "chr2",
+    "chr3"),
+  ranges=IRanges(101:105, width=c(11, 21, 25, 30, 5)),
+  strand=c("*", "-", "*", "+", "-")
+)
+reduce(gr2)
+reduce(gr2, ignore.strand=TRUE)
+
+
+range(gr)
+range(gr, ignore.strand=TRUE)
+
+gaps(gr)
+gaps(gr, ignore.strand=TRUE)
+gaps(gr, start=5)
+gaps(gr, start=103)
+gaps(gr, end=c(chr1= 120, chr2= 120, chr3= 120))
+gaps(gr, start=5, end=10)
+
+disjoin(gr)
+disjoin(gr, ignore.strand=TRUE)

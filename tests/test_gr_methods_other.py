@@ -5,6 +5,7 @@ from biocframe import BiocFrame
 from iranges import IRanges
 
 from genomicranges.GenomicRanges import GenomicRanges
+import pytest
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -93,32 +94,21 @@ def test_restrict():
 def test_narrow():
     assert gr is not None
 
-    narrow_gr = gr.narrow(start=2, end=3)
-
-    assert narrow_gr is not None
-    assert (narrow_gr.start == np.array([102, 103, 104, 105, 106])).all()
-    assert (narrow_gr.width == np.array([2] * 5)).all()
+    with pytest.raises(Exception):
+        narrow_gr = gr.narrow(start=2, end=3)
 
     narrow_gr = gr.narrow(start=2)
 
     assert narrow_gr is not None
-    assert (narrow_gr.start == np.array([102, 103, 104, 105, 106])).all()
-    assert (narrow_gr.width == np.array([10, 20, 24, 29, 4])).all()
+    assert np.all(narrow_gr.start == np.array([2,3,4,5,6,7,8,9,10,11]))
+    assert np.all(narrow_gr.end == np.array([10] * 10))
 
-    narrow_gr = gr.narrow(start=2, width=3)
+    with pytest.raises(Exception):
+        narrow_gr = gr.narrow(start=2, width=3)
 
-    assert narrow_gr is not None
-    assert (narrow_gr.start == np.array([102, 103, 104, 105, 106])).all()
-    assert (narrow_gr.width == np.array([3] * 5)).all()
+    with pytest.raises(Exception):
+        narrow_gr = gr.narrow(end=2)
 
-    narrow_gr = gr.narrow(end=2)
+    with pytest.raises(Exception):
+        narrow_gr = gr.narrow(end=4, width=3)
 
-    assert narrow_gr is not None
-    assert (narrow_gr.start == np.array([101, 102, 103, 104, 105])).all()
-    assert (narrow_gr.width == np.array([2] * 5)).all()
-
-    narrow_gr = gr.narrow(end=4, width=3)
-
-    assert narrow_gr is not None
-    assert (narrow_gr.start == np.array([102, 103, 104, 105, 106])).all()
-    assert (narrow_gr.width == np.array([3] * 5)).all()

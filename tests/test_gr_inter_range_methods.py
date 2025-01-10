@@ -1,8 +1,10 @@
-from genomicranges.GenomicRanges import GenomicRanges
 from random import random
-from iranges import IRanges
-from biocframe import BiocFrame
+
 import numpy as np
+from biocframe import BiocFrame
+from iranges import IRanges
+
+from genomicranges.GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -27,17 +29,17 @@ def test_reduce():
     out = gr.reduce()
 
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert (out.start == np.array([101, 104, 102, 105, 103])).all()
-    assert (out.width == np.array([11, 30, 21, 5, 25])).all()
-    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
+    assert out.seqnames == ["chr1", "chr1", "chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([6, 1, 5, 2, 4, 7, 9])).all()
+    assert (out.end == np.array([10] * 7)).all()
+    assert (out.strand == np.array([1, -1, 0, 1, 0, 1, -1])).all()
 
     out = gr.reduce(ignore_strand=True)
 
     assert out is not None
     assert out.seqnames == ["chr1", "chr2", "chr3"]
-    assert (out.start == np.array([101, 102, 103])).all()
-    assert (out.width == np.array([11, 32, 25])).all()
+    assert (out.start == np.array([1, 2, 7])).all()
+    assert (out.end == np.array([10] * 3)).all()
     assert (out.strand == np.array([0, 0, 0])).all()
 
 
@@ -85,10 +87,10 @@ def test_reduce_with_gapwidth():
     out = gr.reduce(min_gap_width=10)
 
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert (out.start == np.array([101, 104, 102, 105, 103])).all()
-    assert (out.width == np.array([11, 30, 21, 5, 25])).all()
-    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
+    assert out.seqnames == ["chr1", "chr1", "chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([6, 1, 5, 2, 4, 7, 9])).all()
+    assert (out.end == np.array([10] * 7)).all()
+    assert (out.strand == np.array([1, -1, 0, 1, 0, 1, -1])).all()
 
 
 def test_reduce_with_gapwidth_with_reverse_map():
@@ -97,11 +99,11 @@ def test_reduce_with_gapwidth_with_reverse_map():
     out = gr.reduce(min_gap_width=10, with_reverse_map=True)
 
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert (out.start == np.array([101, 104, 102, 105, 103])).all()
-    assert (out.width == np.array([11, 30, 21, 5, 25])).all()
-    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
-    assert out.mcols.column("revmap") == [[0], [3], [1], [4], [2]]
+    assert out.seqnames == ["chr1", "chr1", "chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([6, 1, 5, 2, 4, 7, 9])).all()
+    assert (out.end == np.array([10] * 7)).all()
+    assert (out.strand == np.array([1, -1, 0, 1, 0, 1, -1])).all()
+    assert out.mcols.column("revmap") == [[5], [0], [4], [1, 2], [3], [6, 7], [8, 9]]
 
 
 def test_range():
@@ -110,17 +112,17 @@ def test_range():
     out = gr.range()
 
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert (out.start == np.array([101, 104, 102, 105, 103])).all()
-    assert (out.width == np.array([11, 30, 21, 5, 25])).all()
-    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
+    assert out.seqnames == ["chr1", "chr1", "chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([6, 1, 5, 2, 4, 7, 9])).all()
+    assert (out.end == np.array([10] * 7)).all()
+    assert (out.strand == np.array([1, -1, 0, 1, 0, 1, -1])).all()
 
     out = gr.range(ignore_strand=True)
 
     assert out is not None
     assert out.seqnames == ["chr1", "chr2", "chr3"]
-    assert (out.start == np.array([101, 102, 103])).all()
-    assert (out.width == np.array([11, 32, 25])).all()
+    assert (out.start == np.array([1, 2, 7])).all()
+    assert (out.end == np.array([10] * 3)).all()
     assert (out.strand == np.array([0, 0, 0])).all()
 
 
@@ -129,17 +131,17 @@ def test_gaps():
 
     out = gr.gaps()
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert (out.start == np.array([1] * 5)).all()
-    assert (out.width == np.array([100, 103, 101, 104, 102])).all()
-    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
+    assert out.seqnames == ["chr1", "chr1", "chr2", "chr2", "chr3", "chr3"]
+    assert (out.start == np.array([1] * 6)).all()
+    assert (out.end == np.array([5, 4, 1, 3, 6, 8])).all()
+    assert (out.strand == np.array([1, 0, 1, 0, 1, -1])).all()
 
     out = gr.gaps(ignore_strand=True)
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr3"]
-    assert (out.start == np.array([1] * 3)).all()
-    assert (out.width == np.array([100, 101, 102])).all()
-    assert (out.strand == np.array([0, 0, 0])).all()
+    assert out.seqnames == ["chr2", "chr3"]
+    assert (out.start == np.array([1, 1])).all()
+    assert (out.end == np.array([1, 6])).all()
+    assert (out.strand == np.array([0, 0])).all()
 
 
 def test_gaps_with_start():
@@ -148,10 +150,10 @@ def test_gaps_with_start():
     out = gr.gaps(start=5)
 
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert (out.start == np.array([5] * 5)).all()
-    assert (out.width == np.array([96, 99, 97, 100, 98])).all()
-    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
+    assert out.seqnames == ["chr1", "chr3", "chr3"]
+    assert (out.start == np.array([5] * 3)).all()
+    assert (out.end == np.array([5, 6, 8])).all()
+    assert (out.strand == np.array([1, 1, -1])).all()
 
 
 def test_gaps_with_start_filter():
@@ -160,10 +162,7 @@ def test_gaps_with_start_filter():
     out = gr.gaps(start=103)
 
     assert out is not None
-    assert out.seqnames == ["chr2", "chr3"]
-    assert (out.start == np.array([103] * 2)).all()
-    assert (out.width == np.array([1, 2])).all()
-    assert (out.strand == np.array([1, -1])).all()
+    assert len(out) == 0
 
 
 def test_gaps_with_end():
@@ -177,18 +176,21 @@ def test_gaps_with_end():
         "chr1",
         "chr1",
         "chr1",
+        "chr1",
         "chr2",
         "chr2",
         "chr2",
+        "chr2",
+        "chr2",
+        "chr3",
         "chr3",
         "chr3",
         "chr3",
         "chr3",
     ]
-    assert (out.start == np.array([1, 1, 1, 112, 1, 1, 1, 1, 1, 110, 1])).all()
-    assert (out.width == np.array([120, 120, 100, 9, 103, 101, 120, 120, 104, 11, 102])).all()
-
-    assert (out.strand == np.array([1, -1, 0, 0, 1, -1, 0, 1, -1, -1, 0])).all()
+    assert (out.start == np.array([1, 11, 11, 1, 11, 1, 11, 1, 1, 11, 1, 11, 1, 11, 1])).all()
+    assert (out.width == np.array([5, 110, 110, 4, 110, 1, 110, 120, 3, 110, 6, 110, 8, 110, 120])).all()
+    assert (out.strand == np.array([1, 1, -1, 0, 0, 1, 1, -1, 0, 0, 1, 1, -1, -1, 0])).all()
 
 
 def test_gaps_with_both():
@@ -209,11 +211,11 @@ def test_gaps_with_both():
         "chr3",
         "chr3",
         "chr3",
+        "chr3",
     ]
-    assert (out.start == np.array([5, 5, 5, 112, 5, 5, 5, 5, 5, 110, 5])).all()
-    assert (out.width == np.array([116, 116, 96, 9, 99, 97, 116, 116, 100, 11, 98])).all()
-
-    assert (out.strand == np.array([1, -1, 0, 0, 1, -1, 0, 1, -1, -1, 0])).all()
+    assert (out.start == np.array([5, 11, 11, 11, 11, 5, 11, 5, 11, 5, 11, 5])).all()
+    assert (out.width == np.array([1, 110, 110, 110, 110, 116, 110, 2, 110, 4, 110, 116])).all()
+    assert (out.strand == np.array([1, 1, -1, 0, 1, -1, 0, 1, 1, -1, -1, 0])).all()
 
 
 def test_disjoin():
@@ -222,7 +224,15 @@ def test_disjoin():
     out = gr.disjoin()
 
     assert out is not None
-    assert out.seqnames == ["chr1", "chr2", "chr2", "chr3", "chr3"]
-    assert (out.start == np.array([101, 104, 102, 105, 103])).all()
-    assert (out.width == np.array([11, 30, 21, 5, 25])).all()
-    assert (out.strand == np.array([0, 1, -1, -1, 0])).all()
+    assert out.seqnames == ["chr1", "chr1", "chr1", "chr2", "chr2", "chr2", "chr3", "chr3", "chr3", "chr3"]
+    assert (out.start == np.array([6, 1, 5, 2, 3, 4, 7, 8, 9, 10])).all()
+    assert (out.end == np.array([10, 10, 10, 2, 10, 10, 7, 10, 9, 10])).all()
+    assert (out.strand == np.array([1, -1, 0, 1, 1, 0, 1, 1, -1, -1])).all()
+
+    out = gr.disjoin(ignore_strand=True)
+
+    assert out is not None
+    assert out.seqnames == ["chr1", "chr1", "chr1", "chr2", "chr2", "chr2", "chr3", "chr3", "chr3", "chr3"]
+    assert (out.start == np.array([1, 5, 6, 2, 3, 4, 7, 8, 9, 10])).all()
+    assert (out.end == np.array([4, 5, 10, 2, 3, 10, 7, 8, 9, 10])).all()
+    assert (out.strand == np.array([0] * 10)).all()

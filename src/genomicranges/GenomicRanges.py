@@ -1600,7 +1600,9 @@ class GenomicRanges:
         print(filtered_seqs)
         new_ends = self.get_seqlengths()[filtered_seqs]
         print(new_ends)
-        output._ranges[out_of_bounds] = output._ranges[out_of_bounds].restrict(start=1, end=new_ends, keep_all_ranges=True)
+        output._ranges[out_of_bounds] = output._ranges[out_of_bounds].restrict(
+            start=1, end=new_ends, keep_all_ranges=True
+        )
         return output
 
     def narrow(
@@ -1688,6 +1690,8 @@ class GenomicRanges:
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
+        print(chrm_grps)
+
         _new_mcols = self._ranges._mcols.set_column("reduceindices", range(len(self)))
         _new_ranges = self._ranges.set_mcols(_new_mcols)
         _new_self = self.set_ranges(_new_ranges)
@@ -1704,11 +1708,18 @@ class GenomicRanges:
                     _grp_subset = _new_self[chrm_grps[_key]]
                     _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
 
+                    print(_grp_subset)
+                    print("####")
+                    print(_oindices)
+                    print("$$$$")
+
                     res_ir = _grp_subset._ranges.reduce(
                         with_reverse_map=True,
                         drop_empty_ranges=drop_empty_ranges,
                         min_gap_width=min_gap_width,
                     )
+
+                    print(res_ir)
 
                     groups.extend([_key] * len(res_ir))
                     all_grp_ranges.append(res_ir)
@@ -1795,6 +1806,9 @@ class GenomicRanges:
                 Defaults to None. If None, extracts sequence information from
                 :py:attr:`~seqinfo` object if available.
 
+                Alternatively, you may provide a dictionary with seqnames as
+                keys and the values specifying the ends.
+
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
@@ -1872,7 +1886,7 @@ class GenomicRanges:
                     _grp_subset = self[chrm_grps[_key]]
                     res_ir = _grp_subset._ranges.disjoin(with_reverse_map=True)
 
-                    groups.append(_key)
+                    groups.extend([_key] * len(res_ir))
                     all_grp_ranges.append(res_ir)
 
                     _rev_map = []
