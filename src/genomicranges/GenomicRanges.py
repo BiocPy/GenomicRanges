@@ -1987,7 +1987,7 @@ class GenomicRanges:
         for chrm, group in chrm_grps.items():
             _grp_subset = self[group]
 
-            cov = _grp_subset._ranges.coverage(shift=shift)
+            cov = _grp_subset._ranges.coverage(shift=shift, width=width, weight=weight)
 
             result[chrm.split(_granges_delim)[0]] = cov
 

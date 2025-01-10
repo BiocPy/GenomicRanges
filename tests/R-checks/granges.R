@@ -119,3 +119,7 @@ isDisjoint(gr, ignore.strand=TRUE)
 
 disjointBins(gr)
 disjointBins(gr, ignore.strand=TRUE)
+
+coverage(gr)
+coverage(gr, shift = 10)
+coverage(gr, shift = 10, width=5)
