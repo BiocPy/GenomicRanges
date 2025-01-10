@@ -5,7 +5,7 @@ from warnings import warn
 import biocutils as ut
 import numpy as np
 from biocframe import BiocFrame
-from iranges import IRanges, normalize_array
+from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
