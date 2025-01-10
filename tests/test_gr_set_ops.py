@@ -61,6 +61,7 @@ def test_diff():
     assert (out.width == np.array([3, 9])).all()
     assert (out.strand == np.array([0, 0])).all()
 
+
 def test_intersect():
     gr0 = GenomicRanges(seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"])
 
@@ -83,6 +84,7 @@ def test_intersect():
     assert (out.start == np.array([5, 9])).all()
     assert (out.width == np.array([3, 2])).all()
     assert (out.strand == np.array([0, 0])).all()
+
 
 def test_intersect_complex():
     g_src = GenomicRanges(

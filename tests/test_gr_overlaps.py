@@ -79,7 +79,6 @@ def test_find_overlaps_rtrip():
     assert np.all(resxy.get_column("self_hits") == [0, 1])
     assert np.all(resxy.get_column("query_hits") == [0, 0])
 
-
     resyx = y.find_overlaps(x)
     assert resyx is not None
     assert np.all(resyx.get_column("self_hits") == [0, 0])

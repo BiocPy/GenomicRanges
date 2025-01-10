@@ -2274,8 +2274,12 @@ class GenomicRanges:
                 print(indices)
                 print(res_idx)
 
-                all_qhits = np.concatenate((all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32)
-                all_shits = np.concatenate((all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32)
+                all_qhits = np.concatenate(
+                    (all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
+                )
+                all_shits = np.concatenate(
+                    (all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
+                )
 
         print(all_qhits, all_shits)
         order = np.argsort(all_qhits, stable=True)
@@ -2324,11 +2328,7 @@ class GenomicRanges:
             containing number of overlapping indices.
         """
         _overlaps = self.find_overlaps(
-            query,
-            query_type=query_type,
-            max_gap=max_gap,
-            min_overlap=min_overlap,
-            ignore_strand=ignore_strand
+            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
         )
         result = np.zeros(len(query))
         _ucounts = np.unique_counts(_overlaps.get_column("query_hits"))
@@ -2378,11 +2378,7 @@ class GenomicRanges:
             A ``GenomicRanges`` object containing overlapping ranges.
         """
         _overlaps = self.find_overlaps(
-            query,
-            query_type=query_type,
-            max_gap=max_gap,
-            min_overlap=min_overlap,
-            ignore_strand=ignore_strand
+            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
         )
         _all_indices = np.unique(_overlaps.get_column("self_hits"))
         return self[_all_indices]
