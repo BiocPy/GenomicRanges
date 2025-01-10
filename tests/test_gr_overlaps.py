@@ -1,7 +1,10 @@
-from genomicranges import GenomicRanges
+from random import random
+
+import numpy as np
 from biocframe import BiocFrame
 from iranges import IRanges
-from random import random
+
+from genomicranges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -31,9 +34,9 @@ subject = GenomicRanges(
 )
 
 query = GenomicRanges(
-    seqnames=["chr2"],
-    ranges=IRanges([4], [4]),
-    strand=["+"],
+    seqnames=["chr2", "chr2"],
+    ranges=IRanges([4, 3], [3, 4]),
+    strand=["+", "+"],
 )
 
 
@@ -44,8 +47,16 @@ def test_find_overlaps():
     res = subject.find_overlaps(query)
 
     assert res is not None
-    assert isinstance(res, list)
-    assert res == [[1, 2, 3]]
+    assert isinstance(res, BiocFrame)
+    assert np.all(res.get_column("self_hits") == [1, 2, 3, 1, 2, 3])
+    assert np.all(res.get_column("query_hits") == [0, 0, 0, 1, 1, 1])
+
+    res = query.find_overlaps(subject, ignore_strand=True)
+
+    assert res is not None
+    assert isinstance(res, BiocFrame)
+    assert np.all(res.get_column("query_hits") == [1, 1, 2, 2, 3, 3])
+    assert np.all(res.get_column("self_hits") == [1, 0, 1, 0, 1, 0])
 
 
 def test_find_overlaps_query_type():
@@ -55,7 +66,8 @@ def test_find_overlaps_query_type():
     res = subject.find_overlaps(query, query_type="within")
 
     assert res is not None
-    assert res == [[1, 2, 3]]
+    assert np.all(res.get_column("self_hits") == [1, 2, 3, 1, 2])
+    assert np.all(res.get_column("query_hits") == [0, 0, 0, 1, 1])
 
 
 def test_find_overlaps_rtrip():
@@ -64,11 +76,14 @@ def test_find_overlaps_rtrip():
 
     resxy = x.find_overlaps(y)
     assert resxy is not None
-    assert resxy == [[0, 1]]
+    assert np.all(resxy.get_column("self_hits") == [0, 1])
+    assert np.all(resxy.get_column("query_hits") == [0, 0])
+
 
     resyx = y.find_overlaps(x)
     assert resyx is not None
-    assert resyx == [[0], [0]]
+    assert np.all(resyx.get_column("self_hits") == [0, 0])
+    assert np.all(resyx.get_column("query_hits") == [0, 1])
 
 
 def test_count_overlaps():
@@ -78,8 +93,8 @@ def test_count_overlaps():
     res = subject.count_overlaps(query)
 
     assert res is not None
-    assert isinstance(res, list)
-    assert res == [3]
+    assert isinstance(res, np.ndarray)
+    assert np.all(res == [3, 3])
 
 
 def test_subset_by_overlaps():

@@ -28,6 +28,14 @@ def test_union():
     assert (out.width == np.array([6, 15])).all()
     assert (out.strand == np.array([1, -1])).all()
 
+    out = gr0.union(gr1, ignore_strand=True)
+
+    assert out is not None
+    assert out.seqnames == ["chr1"]
+    assert (out.start == np.array([2])).all()
+    assert (out.width == np.array([18])).all()
+    assert (out.strand == np.array([0])).all()
+
 
 def test_diff():
     gr0 = GenomicRanges(seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"])
@@ -45,6 +53,13 @@ def test_diff():
     assert (out.width == np.array([6, 9])).all()
     assert (out.strand == np.array([1, -1])).all()
 
+    out = gr0.setdiff(gr1, ignore_strand=True)
+
+    assert out is not None
+    assert out.seqnames == ["chr1", "chr1"]
+    assert (out.start == np.array([2, 11])).all()
+    assert (out.width == np.array([3, 9])).all()
+    assert (out.strand == np.array([0, 0])).all()
 
 def test_intersect():
     gr0 = GenomicRanges(seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"])
@@ -61,6 +76,13 @@ def test_intersect():
     assert (out.width == np.array([2])).all()
     assert (out.strand == np.array([-1])).all()
 
+    out = gr0.intersect(gr1, ignore_strand=True)
+
+    assert out is not None
+    assert out.seqnames == ["chr1", "chr1"]
+    assert (out.start == np.array([5, 9])).all()
+    assert (out.width == np.array([3, 2])).all()
+    assert (out.strand == np.array([0, 0])).all()
 
 def test_intersect_complex():
     g_src = GenomicRanges(
@@ -112,7 +134,7 @@ def test_intersect_ncls():
     assert out is not None
     assert out.seqnames == ["chr1"]
     assert (out.start == np.array([9])).all()
-    assert (out.width == np.array([2])).all()
+    assert (out.width == np.array([1])).all()
     assert (out.strand == np.array([-1])).all()
 
 

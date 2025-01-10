@@ -1739,8 +1739,6 @@ class GenomicRanges:
         if with_reverse_map is True:
             output._mcols.set_column("revmap", rev_map, in_place=True)
 
-        # self._ranges._mcols.remove_column("reduceindices", in_place=True)
-
         return output
 
     def range(self, with_reverse_map: bool = False, ignore_strand: bool = False) -> "GenomicRanges":
@@ -1996,12 +1994,15 @@ class GenomicRanges:
     ######>> set operations <<######
     ################################
 
-    def union(self, other: "GenomicRanges") -> "GenomicRanges":
+    def union(self, other: "GenomicRanges", ignore_strand: bool = False) -> "GenomicRanges":
         """Find union of genomic intervals with `other`.
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
 
         Raises:
             TypeError:
@@ -2014,21 +2015,27 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _combine_GenomicRanges(self, other)
-        output = all_combined.reduce(min_gap_width=0, drop_empty_ranges=True)
+        grs = [self, other]
+        if ignore_strand is True:
+            grs = [self.set_strand(strand=None), other.set_strand(strand=None)]
+
+        all_combined = _combine_GenomicRanges(*grs)
+        output = all_combined.reduce(drop_empty_ranges=True)
         return output
 
-    def setdiff(self, other: "GenomicRanges") -> "GenomicRanges":
+    def setdiff(self, other: "GenomicRanges", ignore_strand: bool = False) -> "GenomicRanges":
         """Find set difference of genomic intervals with `other`.
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
 
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
         Raises:
             TypeError:
                 If ``other`` is not of type ``GenomicRanges``.
-
 
         Returns:
             A new ``GenomicRanges`` object with the diff ranges.
@@ -2036,24 +2043,44 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _fast_combine_GenomicRanges(self, other)
-        range_bounds = all_combined.range(ignore_strand=True)
-        rb_ends = {}
-        for _, val in range_bounds:
-            rb_ends[val.get_seqnames()[0]] = val.end[0]
+        x = self.__copy__()
+        y = other.__copy__()
+        if ignore_strand is True:
+            x = self.set_strand(strand=None)
+            y = other.set_strand(strand=None)
 
-        x_gaps = self.gaps(end=rb_ends)
-        x_gaps_u = x_gaps.union(other)
-        diff = x_gaps_u.gaps(end=rb_ends)
+        x.set_seqinfo(merge_SeqInfo((x.get_seqinfo(), y.get_seqinfo())), in_place=True)
+        y.set_seqinfo(merge_SeqInfo((y.get_seqinfo(), x.get_seqinfo())), in_place=True)
+
+        seqlengths = dict(zip(x._seqinfo.get_seqnames(), x._seqinfo.get_seqlengths()))
+        all_combs = _fast_combine_GenomicRanges(x, y).range(ignore_strand=True)
+        print(all_combs)
+        all_combs_ends = dict(zip(all_combs.get_seqnames(), all_combs.get_end()))
+
+        for seq, seqlen in seqlengths.items():
+            if seqlen is None:
+                seqlengths[seq] = int(all_combs_ends[seq])
+            print(seq, seqlen)
+
+        print("RBBBBBBBBENDDSSSS", seqlengths)
+        x_gaps = x.gaps(end=seqlengths)
+        print("x_gaps", x_gaps)
+        x_gaps_u = x_gaps.union(y)
+        print("x_gaps_u", x_gaps_u)
+        diff = x_gaps_u.gaps(end=seqlengths)
+        print("diff", diff)
 
         return diff
 
-    def intersect(self, other: "GenomicRanges") -> "GenomicRanges":
+    def intersect(self, other: "GenomicRanges", ignore_strand: bool = False) -> "GenomicRanges":
         """Find intersecting genomic intervals with `other`.
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
 
         Raises:
             TypeError:
@@ -2066,17 +2093,28 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _fast_combine_GenomicRanges(self, other)
-        range_bounds = all_combined.range(ignore_strand=True)
-        rb_ends = {}
-        for _, val in range_bounds:
-            rb_ends[val.get_seqnames()[0]] = val.end[0]
+        x = self.__copy__()
+        y = other.__copy__()
+        if ignore_strand is True:
+            x = self.set_strand(strand=None)
+            y = other.set_strand(strand=None)
 
-        _gaps = other.gaps(end=rb_ends)
-        # _inter = self.setdiff(_gaps)
-        x_gaps = self.gaps(end=rb_ends)
-        x_gaps_u = x_gaps.union(_gaps)
-        diff = x_gaps_u.gaps(end=rb_ends)
+        x.set_seqinfo(merge_SeqInfo((x.get_seqinfo(), y.get_seqinfo())), in_place=True)
+        y.set_seqinfo(merge_SeqInfo((y.get_seqinfo(), x.get_seqinfo())), in_place=True)
+
+        seqlengths = dict(zip(x._seqinfo.get_seqnames(), x._seqinfo.get_seqlengths()))
+        all_combs = _fast_combine_GenomicRanges(x, y).range(ignore_strand=True)
+        print(all_combs)
+        all_combs_ends = dict(zip(all_combs.get_seqnames(), all_combs.get_end()))
+
+        for seq, seqlen in seqlengths.items():
+            if seqlen is None:
+                seqlengths[seq] = int(all_combs_ends[seq])
+            print(seq, seqlen)
+
+        print("RBBBBBBBBENDDSSSS", seqlengths)
+        y_gaps = y.gaps(end=seqlengths)
+        diff = x.setdiff(y_gaps)
         return diff
 
     def intersect_ncls(self, other: "GenomicRanges") -> "GenomicRanges":
@@ -2146,9 +2184,9 @@ class GenomicRanges:
         query_type: Literal["any", "start", "end", "within"] = "any",
         select: Literal["all", "first", "last", "arbitrary"] = "all",
         max_gap: int = -1,
-        min_overlap: int = 1,
+        min_overlap: int = 0,
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> BiocFrame:
         """Find overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
         Args:
@@ -2174,7 +2212,7 @@ class GenomicRanges:
                 Defaults to -1 (no gap allowed).
 
             min_overlap:
-                Minimum overlap with query. Defaults to 1.
+                Minimum overlap with query. Defaults to 0.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -2183,8 +2221,9 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A list with the same length as ``query``,
-            containing hits to overlapping indices.
+            A `BiocFrame` with two columns,
+            ``query_hits`` for each genomic range in query and ``self_hits`` for
+            indices in ``self`` that overlap with the query range.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
@@ -2193,9 +2232,11 @@ class GenomicRanges:
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        all_qhits = np.array([], dtype=np.int32)
+        all_shits = np.array([], dtype=np.int32)
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2229,18 +2270,24 @@ class GenomicRanges:
                     delete_index=False,
                 )
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                print(_subset)
+                print(indices)
+                print(res_idx)
 
-        return rev_map
+                all_qhits = np.concatenate((all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32)
+                all_shits = np.concatenate((all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32)
+
+        print(all_qhits, all_shits)
+        order = np.argsort(all_qhits, stable=True)
+        print(order)
+        return BiocFrame({"query_hits": all_qhits, "self_hits": all_shits})[order, :]
 
     def count_overlaps(
         self,
         query: "GenomicRanges",
         query_type: Literal["any", "start", "end", "within"] = "any",
         max_gap: int = -1,
-        min_overlap: int = 1,
+        min_overlap: int = 0,
         ignore_strand: bool = False,
     ) -> List[int]:
         """Count overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
@@ -2264,7 +2311,7 @@ class GenomicRanges:
                 Defaults to -1 (no gap allowed).
 
             min_overlap:
-                Minimum overlap with query. Defaults to 1.
+                Minimum overlap with query. Defaults to 0.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -2276,61 +2323,25 @@ class GenomicRanges:
             A list with the same length as ``query``,
             containing number of overlapping indices.
         """
-        OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
-        if not isinstance(query, GenomicRanges):
-            raise TypeError("'query' is not a `GenomicRanges` object.")
+        _overlaps = self.find_overlaps(
+            query,
+            query_type=query_type,
+            max_gap=max_gap,
+            min_overlap=min_overlap,
+            ignore_strand=ignore_strand
+        )
+        result = np.zeros(len(query))
+        _ucounts = np.unique_counts(_overlaps.get_column("query_hits"))
+        result[_ucounts.values] = _ucounts.counts
 
-        if query_type not in OVERLAP_QUERY_TYPES:
-            raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
-
-        rev_map = [0 for _ in range(len(query))]
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
-
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
-
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.find_overlaps(
-                    query=_query_subset._ranges,
-                    query_type=query_type,
-                    select="all",
-                    max_gap=max_gap,
-                    min_overlap=min_overlap,
-                    delete_index=False,
-                )
-
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = len(_rev_map)
-
-        return rev_map
+        return result
 
     def subset_by_overlaps(
         self,
         query: "GenomicRanges",
         query_type: Literal["any", "start", "end", "within"] = "any",
         max_gap: int = -1,
-        min_overlap: int = 1,
+        min_overlap: int = 0,
         ignore_strand: bool = False,
     ) -> "GenomicRanges":
         """Subset ``subject`` (self) with overlaps in ``query`` `GenomicRanges` object.
@@ -2354,7 +2365,7 @@ class GenomicRanges:
                 Defaults to -1 (no gap allowed).
 
             min_overlap:
-                Minimum overlap with query. Defaults to 1.
+                Minimum overlap with query. Defaults to 0.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -2366,54 +2377,15 @@ class GenomicRanges:
         Returns:
             A ``GenomicRanges`` object containing overlapping ranges.
         """
-        OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
-        if not isinstance(query, GenomicRanges):
-            raise TypeError("'query' is not a `GenomicRanges` object.")
-
-        if query_type not in OVERLAP_QUERY_TYPES:
-            raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
-
-        rev_map = []
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
-
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
-
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.find_overlaps(
-                    query=_query_subset._ranges,
-                    query_type=query_type,
-                    select="all",
-                    max_gap=max_gap,
-                    min_overlap=min_overlap,
-                    delete_index=False,
-                )
-
-                for _, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map.extend(_rev_map)
-
-        return self[list(set(rev_map))]
+        _overlaps = self.find_overlaps(
+            query,
+            query_type=query_type,
+            max_gap=max_gap,
+            min_overlap=min_overlap,
+            ignore_strand=ignore_strand
+        )
+        _all_indices = np.unique(_overlaps.get_column("self_hits"))
+        return self[_all_indices]
 
     #################################
     ######>> nearest methods <<######
