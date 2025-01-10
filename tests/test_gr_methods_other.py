@@ -100,7 +100,7 @@ def test_narrow():
     narrow_gr = gr.narrow(start=2)
 
     assert narrow_gr is not None
-    assert np.all(narrow_gr.start == np.array([2,3,4,5,6,7,8,9,10,11]))
+    assert np.all(narrow_gr.start == np.array([2, 3, 4, 5, 6, 7, 8, 9, 10, 11]))
     assert np.all(narrow_gr.end == np.array([10] * 10))
 
     with pytest.raises(Exception):
@@ -111,4 +111,3 @@ def test_narrow():
 
     with pytest.raises(Exception):
         narrow_gr = gr.narrow(end=4, width=3)
-
