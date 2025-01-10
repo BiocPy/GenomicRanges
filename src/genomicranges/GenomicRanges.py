@@ -10,7 +10,6 @@ from iranges import IRanges
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
     compute_up_down,
-    create_np_vector,
     group_by_indices,
     sanitize_strand_vector,
     slide_intervals,
