@@ -29,12 +29,11 @@ def test_coverage_default():
     assert res is not None
     assert len(res.keys()) == 3
     assert len(res["chr1"]) == 10
-    assert np.all(res["chr1"] == [1,1,1,1,2,3,3,3,3,3])
+    assert np.all(res["chr1"] == [1, 1, 1, 1, 2, 3, 3, 3, 3, 3])
     assert len(res["chr2"]) == 10
-    assert np.all(res["chr2"] == [0,1,2,3,3,3,3,3,3,3])
+    assert np.all(res["chr2"] == [0, 1, 2, 3, 3, 3, 3, 3, 3, 3])
     assert len(res["chr3"]) == 10
-    assert np.all(res["chr3"] == [0,0,0,0,0,0,1,2,3,4])
-
+    assert np.all(res["chr3"] == [0, 0, 0, 0, 0, 0, 1, 2, 3, 4])
 
 
 def test_coverage_shift():
