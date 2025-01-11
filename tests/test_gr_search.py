@@ -69,6 +69,7 @@ def test_precede():
     assert np.all(query_hits.get_column("query_hits") == [])
     assert np.all(query_hits.get_column("self_hits") == [])
 
+
 def test_follow():
     assert gr is not None
 
