@@ -13,16 +13,16 @@ gr1 <- GRanges(seqnames="chr2", ranges=IRanges(4:3, 6),
                strand="+", score=5:4, GC=0.45)
 gr1
 
-findOverlaps(gr1, gr)
-findOverlaps(gr, gr1, ignore.strand=TRUE)
+nearest(gr1, gr)
+nearest(gr, gr1)
+nearest(gr1, gr, select="all")
+nearest(gr1, gr, ignore.strand=TRUE)
+nearest(gr1, gr, select="all", ignore.strand=TRUE)
 
-findOverlaps(gr1, gr, type = "within")
+precede(gr1, gr)
+precede(gr, gr1)
+precede(gr1, gr, select="all")
 
-x = GRanges("chr1", IRanges(c(2, 9), width=c(7, 19)), strand=c("+", "-"))
-y = GRanges("chr1", IRanges(5, width=10), strand=c("*"))
-
-findOverlaps(x, y)
-findOverlaps(y, x)
-
-countOverlaps(gr1, gr)
-
+follow(gr1, gr)
+follow(gr, gr1)
+follow(gr1, gr, select="all")

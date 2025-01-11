@@ -2390,9 +2390,9 @@ class GenomicRanges:
     def nearest(
         self,
         query: "GenomicRanges",
-        select: Literal["all", "arbitrary"] = "all",
+        select: Literal["all", "arbitrary"] = "arbitrary",
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
         Args:
@@ -2407,15 +2407,22 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A list with the same length as ``query``,
-            containing hits to nearest indices.
+            if select="all", return `BiocFrame` with two columns,
+            ``query_hits`` for each genomic range in query and ``self_hits`` for
+            indices in ``self`` that overlap with the query range.
+
+            if `select="arbitrary"`, returns a numpy array of length same as query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        if select == "arbitrary":
+            result = np.full(len(query), None)
+        else:
+            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2440,20 +2447,34 @@ class GenomicRanges:
                 _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
+                print("#### ", _subset, indices)
+
                 res_idx = _sub_subset._ranges.nearest(query=_query_subset._ranges, select=select, delete_index=False)
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                print("result of nearest", res_idx)
+                if select == "arbitrary":
+                    for i, x in enumerate(res_idx):
+                        result[indices[i]] = _subset[x]
 
-        return rev_map
+                else:
+                    result["all_qhits"] = np.concatenate(
+                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
+                    )
+                    result["all_shits"] = np.concatenate(
+                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
+                    )
+
+        if select == "all":
+            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
+
+        return result
 
     def precede(
         self,
         query: "GenomicRanges",
-        select: Literal["all", "arbitrary"] = "all",
+        select: Literal["all", "first"] = "first",
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only downstream that overlap with each range in ``query``.
 
         Args:
@@ -2461,22 +2482,29 @@ class GenomicRanges:
                 Query ``GenomicRanges`` to find nearest positions.
 
             select:
-                Determine what hit to choose when there are
-                multiple hits for an interval in ``query``.
+                Whether to return "all" hits or just "first".
+                Defaults to "first".
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A List with the same length as ``query``,
-            containing hits to nearest indices.
+            if select="all", return `BiocFrame` with two columns,
+            ``query_hits`` for each genomic range in query and ``self_hits`` for
+            indices in ``self`` that overlap with the query range.
+
+            if `select="first"`, returns a numpy array of length same as query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        if select == "first":
+            result = np.full(len(query), None)
+        else:
+            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2501,20 +2529,37 @@ class GenomicRanges:
                 _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
-                res_idx = _sub_subset._ranges.precede(query=_query_subset._ranges, select=select, delete_index=False)
+                res_idx = _sub_subset._ranges.precede(query=_query_subset._ranges, select=select)
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                print(res_idx)
 
-        return rev_map
+                if select == "first":
+                    matches = res_idx != None
+                    not_none = res_idx[matches]
+
+                    if len(not_none) > 0:
+                        for i, x in enumerate(not_none):
+                            result[indices[i]] = _subset[x]
+
+                else:
+                    result["all_qhits"] = np.concatenate(
+                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")])
+                    )
+                    result["all_shits"] = np.concatenate(
+                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")])
+                    )
+
+        if select == "all":
+            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
+
+        return result
 
     def follow(
         self,
         query: "GenomicRanges",
-        select: Literal["all", "arbitrary"] = "all",
+        select: Literal["all", "last"] = "last",
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only upstream that overlap with each range in ``query``.
 
         Args:
@@ -2522,8 +2567,8 @@ class GenomicRanges:
                 Query ``GenomicRanges`` to find nearest positions.
 
             select:
-                Determine what hit to choose when there are
-                multiple hits for an interval in ``query``.
+                Whether to return "all" hits or just "last".
+                Defaults to "last".
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
@@ -2535,9 +2580,13 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        if select == "last":
+            result = np.full(len(query), None)
+        else:
+            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2562,13 +2611,30 @@ class GenomicRanges:
                 _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
-                res_idx = _sub_subset._ranges.follow(query=_query_subset._ranges, select=select, delete_index=False)
+                res_idx = _sub_subset._ranges.follow(query=_query_subset._ranges, select=select)
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                print("res_idx", res_idx)
 
-        return rev_map
+                if select == "last":
+                    matches = res_idx != None
+                    not_none = res_idx[matches]
+
+                    if len(not_none) > 0:
+                        for i, x in enumerate(not_none):
+                            result[indices[i]] = _subset[x]
+
+                else:
+                    result["all_qhits"] = np.concatenate(
+                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")])
+                    )
+                    result["all_shits"] = np.concatenate(
+                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")])
+                    )
+
+        if select == "all":
+            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
+
+        return result
 
     def distance(self, query: Union["GenomicRanges", IRanges]) -> np.ndarray:
         """Compute the pair-wise distance with intervals in query.
@@ -2581,10 +2647,10 @@ class GenomicRanges:
             Numpy vector containing distances for each interval in query.
         """
         if not isinstance(query, (IRanges, GenomicRanges)):
-            raise TypeError("'query' is not a `GenomicRanges` or `IRanges` object.")
+            raise TypeError("'query' is neither a `GenomicRanges` nor `IRanges` object.")
 
         if len(self) != len(query):
-            raise ValueError("'query' does not contain the same number of intervals.")
+            raise ValueError("'query' does not contain the same number of ranges.")
 
         _qranges = query
         if isinstance(query, GenomicRanges):
@@ -2598,10 +2664,6 @@ class GenomicRanges:
         Args:
             query:
                 Query ``GenomicRanges`` to search for matches.
-
-        Raises:
-            TypeError:
-                If ``query`` is not of type ``GenomicRanges``.
 
         Returns:
             A List with the same length as ``query``,

@@ -9,23 +9,16 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 gr = GenomicRanges(
-    seqnames=[
-        "chr1",
-        "chr2",
-        "chr3",
-        "chr2",
-        "chr3",
-    ],
-    ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
-    strand=["*", "-", "*", "+", "-"],
+    seqnames=["chr1", "chr2", "chr2", "chr2", "chr1", "chr1", "chr3", "chr3", "chr3", "chr3"],
+    ranges=IRanges([x for x in range(1, 11)], [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]),
+    strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
     mcols=BiocFrame(
         {
-            "score": range(0, 5),
-            "GC": [random() for _ in range(5)],
+            "score": range(1, 11),
+            "GC": [random() for _ in range(10)],
         }
     ),
 )
-
 
 def test_matches():
     assert gr is not None
