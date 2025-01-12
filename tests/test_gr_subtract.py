@@ -21,8 +21,8 @@ def test_subtract():
     assert len(out) == 3
 
     assert out[0].get_seqnames() == ["chr1", "chr1"]
-    assert np.all(out[0]._ranges._start == [1,26])
-    assert np.all(out[0]._ranges.get_end() == [20,37])
+    assert np.all(out[0]._ranges._start == [1, 26])
+    assert np.all(out[0]._ranges.get_end() == [20, 37])
     assert np.all(out[2].get_strand() == [0, 0])
 
     assert len(out[1]) == 0

@@ -1,6 +1,3 @@
-from random import random
-
-from biocframe import BiocFrame
 from iranges import IRanges
 
 from genomicranges import GenomicRanges

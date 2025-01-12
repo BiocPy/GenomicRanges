@@ -1,4 +1,3 @@
-import itertools
 from collections import defaultdict
 from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
 from warnings import warn
