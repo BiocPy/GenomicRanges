@@ -197,12 +197,17 @@ query = genomicranges.from_pandas(
     )
 )
 
-hits = subject.nearest(query, ignore_strand=True)
+hits = subject.nearest(query, ignore_strand=True, select="all")
 print(hits)
 ```
 
     ## output
-    [[0, 1], [1677082, 1677083, 1677084], [1003411, 1003412]]
+    BiocFrame with 3 rows and 2 columns
+            query_hits        self_hits
+        <ndarray[int32]> <ndarray[int32]>
+    [0]                0                0
+    [1]                1          1677082
+    [2]                2          1003411
 
 ## `GenomicRangesList`
 
@@ -241,10 +246,10 @@ print(grl)
     GenomicRanges with 4 ranges and 4 metadata columns
         seqnames    ranges           strand    score
            <str> <IRanges> <ndarray[int64]>   <list>
-    [0]     chr1    1 - 11                - |      1
-    [1]     chr2    3 - 33                + |      2
-    [2]     chr1    2 - 52                * |      3
-    [3]     chr3    4 - 64                + |      4
+    [0]     chr1    1 - 10                - |      1
+    [1]     chr2    3 - 32                + |      2
+    [2]     chr1    2 - 51                * |      3
+    [3]     chr3    4 - 63                + |      4
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
 
@@ -252,9 +257,9 @@ print(grl)
     GenomicRanges with 3 ranges and 3 metadata columns
         seqnames    ranges           strand    score
            <str> <IRanges> <ndarray[int64]>   <list>
-    [0]     chr2    3 - 33                - |      2
-    [1]     chr4    6 - 56                + |      3
-    [2]     chr5    4 - 64                * |      4
+    [0]     chr2    3 - 32                - |      2
+    [1]     chr4    6 - 55                + |      3
+    [2]     chr5    4 - 63                * |      4
     ------
     seqinfo(3 sequences): chr2 chr4 chr5
 
