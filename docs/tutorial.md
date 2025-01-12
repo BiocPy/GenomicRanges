@@ -8,7 +8,7 @@ kernelspec:
 
 `GenomicRanges` is a Python package designed to handle genomic locations and facilitate genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html) and uses the [IRanges](https://github.com/BiocPy/IRanges) package under the hood to manage and provide interval-based arithmetic operations.
 
-An `IRanges` holds a **start** position and a **width**, and is typically used to represent coordinates along a genomic sequence. The interpretation of the **start** position depends on the application; for sequences, the **start** is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. `IRanges` uses [nested containment lists](https://github.com/pyranges/ncls) under the hood to perform fast overlap and search-based operations.
+An `IRanges` holds a **start** position and a **width**, and is typically used to represent coordinates along a genomic sequence. The interpretation of the **start** position depends on the application; for sequences, the **start** is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. Ends are considered inclusive. `IRanges` uses [nested containment lists](https://github.com/pyranges/ncls) under the hood to perform fast overlap and search-based operations.
 
 The package provides a `GenomicRanges` class to specify multiple genomic elements, typically where genes start and end. Genes are themselves made of many subregions, such as exons, and a `GenomicRangesList` enables the representation of this nested structure.
 

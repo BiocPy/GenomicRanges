@@ -1,9 +1,11 @@
-import pandas as pd
-from genomicranges import GenomicRanges
-from biocframe import BiocFrame
-import biocutils as ut
-from iranges import IRanges
 from random import random
+
+import biocutils as ut
+import pandas as pd
+from biocframe import BiocFrame
+from iranges import IRanges
+
+from genomicranges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -80,6 +82,8 @@ def test_gr_empty_subset():
     assert len(gre) == 0
 
     subset = gre[0:10]
+    assert subset is not None
+    assert len(subset) == 0
 
 
 def test_export():

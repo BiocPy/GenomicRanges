@@ -6,8 +6,6 @@
 
 GenomicRanges provides container classes designed to represent genomic locations and support genomic analysis. It is similar to Bioconductor's [GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html).
 
-**Note: V0.4.0 is a complete overhaul of the package, as such the constructor to GenomicRanges has changed. Please refer the documentation for updated usage of the classes and the methods.**
-
 To get started, install the package from [PyPI](https://pypi.org/project/genomicranges/)
 
 ```shell
@@ -102,11 +100,11 @@ print(gr)
     GenomicRanges with 5 ranges and 5 metadata columns
         seqnames    ranges           strand     score                  GC
            <str> <IRanges> <ndarray[int64]>   <range>              <list>
-    [0]     chr1 101 - 112                * |       0  0.2593301003406461
-    [1]     chr2 102 - 123                - |       1  0.7207993213776644
-    [2]     chr3 103 - 128                * |       2 0.23391468067222065
-    [3]     chr2 104 - 134                + |       3  0.7671026589720187
-    [4]     chr3 105 - 110                - |       4 0.03355777784472458
+    [0]     chr1 101 - 111                * |       0  0.2593301003406461
+    [1]     chr2 102 - 122                - |       1  0.7207993213776644
+    [2]     chr3 103 - 127                * |       2 0.23391468067222065
+    [3]     chr2 104 - 133                + |       3  0.7671026589720187
+    [4]     chr3 105 - 109                - |       4 0.03355777784472458
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
 
@@ -138,11 +136,11 @@ print(gr)
     GenomicRanges with 5 ranges and 5 metadata columns
       seqnames    ranges           strand    score                  GC
          <str> <IRanges> <ndarray[int64]>   <list>              <list>
-    0     chr1 101 - 112                * |      0  0.4862658925128007
-    1     chr2 102 - 103                - |      1 0.27948386889389953
-    2     chr1 103 - 128                * |      2  0.5162697718607901
-    3     chr3 104 - 134                + |      3  0.5979843806415466
-    4     chr2 109 - 111                - |      4 0.04740781186083798
+    0     chr1 101 - 111                * |      0  0.4862658925128007
+    1     chr2 102 - 102                - |      1 0.27948386889389953
+    2     chr1 103 - 127                * |      2  0.5162697718607901
+    3     chr3 104 - 133                + |      3  0.5979843806415466
+    4     chr2 109 - 110                - |      4 0.04740781186083798
     ------
     seqinfo(3 sequences): chr1 chr2 chr3
 

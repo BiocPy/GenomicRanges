@@ -1078,7 +1078,7 @@ class GenomicRanges:
             width = input["widths"].tolist()
         else:
             drops.append("ends")
-            width = input["ends"] - input["starts"]
+            width = input["ends"] - input["starts"] + 1
 
         if "seqnames" not in input.columns:
             raise ValueError("'input' must contain column 'seqnames'.")
@@ -1158,7 +1158,7 @@ class GenomicRanges:
             width = input["widths"].to_list()
         else:
             drops.append("ends")
-            width = input["ends"] - input["starts"]
+            width = input["ends"] - input["starts"] + 1
 
         if "seqnames" not in input.columns:
             raise ValueError("'input' must contain column 'seqnames'.")
@@ -2491,7 +2491,7 @@ class GenomicRanges:
                 res_idx = _sub_subset._ranges.precede(query=_query_subset._ranges, select=select)
 
                 if select == "first":
-                    matches = res_idx != None
+                    matches = res_idx != None  # noqa: E711
                     not_none = res_idx[matches]
 
                     if len(not_none) > 0:
@@ -2578,7 +2578,7 @@ class GenomicRanges:
                 res_idx = _sub_subset._ranges.follow(query=_query_subset._ranges, select=select)
 
                 if select == "last":
-                    matches = res_idx != None
+                    matches = res_idx != None  # noqa: E711
                     not_none = res_idx[matches]
 
                     if len(not_none) > 0:
