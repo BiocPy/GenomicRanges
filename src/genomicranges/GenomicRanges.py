@@ -661,8 +661,7 @@ class GenomicRanges:
         Args:
             names:
                 Names for each genomic range.
-
-                May be None to remove names.
+                May be `None` to remove names.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -1030,7 +1029,7 @@ class GenomicRanges:
     ################################
 
     def to_pandas(self):
-        """Convert this ``GenomicRanges`` object into a :py:class:`~pandas.DataFrame`.
+        """Convert this ``GenomicRanges`` to a :py:class:`~pandas.DataFrame` object.
 
         Returns:
             A :py:class:`~pandas.DataFrame` object.
@@ -1052,7 +1051,7 @@ class GenomicRanges:
 
     @classmethod
     def from_pandas(cls, input) -> "GenomicRanges":
-        """Create a ``GenomicRanges`` from a :py:class:`~pandas.DataFrame` object.
+        """Create an ``GenomicRanges`` object from a :py:class:`~pandas.DataFrame`.
 
         Args:
             input:
@@ -1111,7 +1110,7 @@ class GenomicRanges:
     ################################
 
     def to_polars(self):
-        """Convert this ``GenomicRanges`` object into a :py:class:`~polars.DataFrame`.
+        """Convert this ``GenomicRanges`` to a :py:class:`~polars.DataFrame` object.
 
         Returns:
             A :py:class:`~polars.DataFrame` object.
@@ -1132,7 +1131,7 @@ class GenomicRanges:
 
     @classmethod
     def from_polars(cls, input) -> "GenomicRanges":
-        """Create a ``GenomicRanges`` from a :py:class:`~polars.DataFrame` object.
+        """Create an ``GenomicRanges`` object from a :py:class:`~polars.DataFrame`.
 
         Args:
             input:
@@ -1537,11 +1536,11 @@ class GenomicRanges:
         ordered_granges = combined_granges[order]
         return ordered_granges
 
-    def get_out_of_bound_index(self) -> Sequence[int]:
+    def get_out_of_bound_index(self) -> np.ndarray:
         """Find indices of genomic ranges that are out of bounds.
 
         Returns:
-            List of integer indices where ranges are out of bounds.
+            A numpy array of integer indices where ranges are out of bounds.
         """
         if len(self) == 0:
             return []
@@ -1558,7 +1557,7 @@ class GenomicRanges:
             if seqlevel_has_bounds[seq_id] and (starts[i] < 1 or ends[i] > self._seqinfo._seqlengths[seq_id]):
                 out_of_bounds.append(i)
 
-        return out_of_bounds
+        return np.asarray(out_of_bounds, dtype=np.int32)
 
     def trim(self, in_place: bool = False) -> "GenomicRanges":
         """Trim sequences outside of bounds for non-circular chromosomes.
@@ -1899,7 +1898,7 @@ class GenomicRanges:
                 Whether to ignore strands. Defaults to False.
 
         Returns:
-            True if all ranges are disjoint.
+            True if all ranges are disjoint, otherwise False.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         is_disjoint = None
@@ -1962,16 +1961,14 @@ class GenomicRanges:
 
         Returns:
             A dictionary with chromosome names as keys and the
-            coverage vector as value.
+            coverage vector.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=True)
 
         result = {}
         for chrm, group in chrm_grps.items():
             _grp_subset = self[group]
-
             cov = _grp_subset._ranges.coverage(shift=shift, width=width, weight=weight)
-
             result[chrm.split(_granges_delim)[0]] = cov
 
         return result
@@ -1989,10 +1986,6 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
-
-        Raises:
-            TypeError:
-                If ``other`` is not a ``GenomicRanges``.
 
         Returns:
             A new ``GenomicRanges`` object with all ranges.
@@ -2018,10 +2011,6 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
-
-        Raises:
-            TypeError:
-                If ``other`` is not of type ``GenomicRanges``.
 
         Returns:
             A new ``GenomicRanges`` object with the diff ranges.
@@ -2063,10 +2052,6 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
-        Raises:
-            TypeError:
-                If ``other`` is not a ``GenomicRanges``.
-
         Returns:
             A new ``GenomicRanges`` object with intersecting ranges.
         """
@@ -2101,10 +2086,6 @@ class GenomicRanges:
         Args:
             other:
                 The other ``GenomicRanges`` object.
-
-        Raises:
-            TypeError:
-                If ``other`` is not a ``GenomicRanges``.
 
         Returns:
             A new ``GenomicRanges`` object with intersecting ranges.
@@ -2199,9 +2180,10 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A `BiocFrame` with two columns,
-            ``query_hits`` for each genomic range in query and ``self_hits`` for
-            indices in ``self`` that overlap with the query range.
+            A BiocFrame with two columns:
+            - query_hits: Indices into query ranges
+            - self_hits: Corresponding indices into self ranges that are upstream
+            Each row represents a query-self pair where self overlaps query.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
@@ -2265,7 +2247,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 0,
         ignore_strand: bool = False,
-    ) -> List[int]:
+    ) -> np.ndarray:
         """Count overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
         Args:
@@ -2296,8 +2278,8 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A list with the same length as ``query``,
-            containing number of overlapping indices.
+            NumPy vector with length matching query,
+            value represents the number of overlaps in `self` for each query.
         """
         _overlaps = self.find_overlaps(
             query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
@@ -2379,11 +2361,15 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            if select="all", return `BiocFrame` with two columns,
-            ``query_hits`` for each genomic range in query and ``self_hits`` for
-            indices in ``self`` that overlap with the query range.
-
-            if `select="arbitrary"`, returns a numpy array of length same as query.
+            If select="arbitrary":
+                A numpy array of integers with length matching query, containing indices
+                into self for the closest for each query range. Value may be None if there
+                are no matches.
+            If select="all":
+                A BiocFrame with two columns:
+                - query_hits: Indices into query ranges
+                - self_hits: Corresponding indices into self ranges that are upstream
+                Each row represents a query-self pair where subject is nearest to query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2458,11 +2444,15 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            if select="all", return `BiocFrame` with two columns,
-            ``query_hits`` for each genomic range in query and ``self_hits`` for
-            indices in ``self`` that overlap with the query range.
-
-            if `select="first"`, returns a numpy array of length same as query.
+            If select="first":
+                A numpy array of integers with length matching query, containing indices
+                into self for the closest upstream position of each query range. Value may be
+                None if there are no matches.
+            If select="all":
+                A BiocFrame with two columns:
+                - query_hits: Indices into query ranges
+                - self_hits: Corresponding indices into self ranges that are upstream
+                Each row represents a query-self pair where self precedes query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2541,8 +2531,15 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A List with the same length as ``query``,
-            containing hits to nearest indices.
+            If select="last":
+                A numpy array of integers with length matching query, containing indices
+                into self for the closest downstream position of each query range. Value may be
+                None if there are no matches.
+            If select="all":
+                A BiocFrame with two columns:
+                - query_hits: Indices into query ranges
+                - self_hits: Corresponding indices into self ranges that are upstream
+                Each row represents a query-self pair where self follows query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2638,7 +2635,8 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A NumPy array of length same as query containing the matched indices.
+            A NumPy array with length matching query
+            containing the matched indices.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
@@ -2872,6 +2870,7 @@ class GenomicRanges:
 
         return result
 
+    # TODO: should really be a genomicrangeslist
     @classmethod
     def tile_genome(
         cls,
@@ -3133,7 +3132,7 @@ class GenomicRanges:
                 Defaults to False.
 
         Returns:
-            `GenomicRangesList` with the same size as ``self`` containing
+            A `GenomicRangesList` with the same size as ``self`` containing
             the subtracted regions.
         """
 
