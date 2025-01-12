@@ -1645,6 +1645,10 @@ class GenomicRanges:
         output._ranges = narrow_ir
         return output
 
+    #####################################
+    ######>> inter-range methods <<######
+    #####################################
+
     def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
         __strand = self._strand.copy()
         if ignore_strand:
@@ -2658,63 +2662,49 @@ class GenomicRanges:
 
         return self._ranges.distance(_qranges)
 
-    def match(self, query: "GenomicRanges") -> List[List[int]]:
+    #############################
+    ######>> comparisons <<######
+    #############################
+
+    def match(self, query: "GenomicRanges", ignore_strand: bool = False) -> np.ndarray:
         """Element wise comparison to find exact match ranges.
 
         Args:
             query:
                 Query ``GenomicRanges`` to search for matches.
 
+            ignore_strand:
+                Whether to ignore strand. Defaults to False.
+
         Returns:
-            A List with the same length as ``query``,
-            containing hits to matching indices.
+            A NumPy array of length same as query containing the matched indices.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        ignore_strand = False
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        result = np.full(len(query), None)
+        all_overlaps = self.find_overlaps(query, ignore_strand=ignore_strand)
 
-        rev_map = []
-        groups = []
+        ol_query = all_overlaps.get_column("query_hits")
+        ol_subject = all_overlaps.get_column("self_hits")
 
-        for i in range(len(query)):
-            try:
-                _seqname = query.get_seqnames()[i]
-            except Exception as _:
-                warn(f"'{query.get_seqnames()[i]}' is not present in subject.")
+        unique_queries = np.unique(ol_query)
 
-            _strand = query._strand[i]
+        for q in unique_queries:
+            q_ctx = query[q]
+            matches = np.where(ol_query == q)[0]
+            self_indices = ol_subject[matches]
+            self_matches = self[ol_subject[matches]]
 
-            if ignore_strand is True:
-                _strand = 0
+            tgt = self_indices[
+                (np.array(self_matches.get_start()) == q_ctx.get_start()[0])
+                & (np.array(self_matches.get_end()) == q_ctx.get_end()[0])
+            ]
 
-            _key = f"{_seqname}{_granges_delim}{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
+            if result[q] is None:
+                result[q] = tgt[0]
 
-                res_idx = _grp_subset._ranges.find_overlaps(
-                    query=query._ranges[i],
-                    query_type="any",
-                    select="all",
-                    delete_index=False,
-                )
-
-                groups.append(i)
-
-                _rev_map = []
-                for j in res_idx:
-                    for x in j:
-                        _mrange = self[subject_chrm_grps[_key][x]]._ranges
-
-                        if (
-                            _mrange.start[0] == query._ranges[i].start[0]
-                            and _mrange.width[0] == query._ranges[i].width[0]
-                        ):
-                            _rev_map.append(subject_chrm_grps[_key][x])
-                rev_map.append(_rev_map)
-
-        return rev_map
+        return result
 
     def _get_ranges_as_list(self) -> List[Tuple[int, int, int]]:
         """Internal method to get ranges as a list of tuples.
@@ -2723,11 +2713,16 @@ class GenomicRanges:
             List of tuples containing the start, end and the index.
         """
         ranges = []
+        strands = self._strand.copy()
+        strands[strands == 1] = 6
+        strands[strands == -1] = 7
+        strands[strands == 0] = 8
+
         for i in range(len(self)):
             ranges.append(
                 (
                     self._seqnames[i],
-                    self._strand[i],
+                    strands[i],
                     self._ranges._start[i],
                     self._ranges.end[i],
                     i,
