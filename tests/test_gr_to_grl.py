@@ -1,11 +1,9 @@
-import pytest
-import pandas as pd
-import numpy as np
-from genomicranges import GenomicRanges, GenomicRangesList
+from random import random
+
 from biocframe import BiocFrame
 from iranges import IRanges
-from random import random
-import genomicranges
+
+from genomicranges import GenomicRanges, GenomicRangesList
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -56,7 +54,6 @@ def test_split():
     assert splits is not None
     assert isinstance(splits, GenomicRangesList)
     assert len(splits) == 3
-    print(splits.element_nrows())
     assert sum(splits.get_range_lengths()) == len(subject)
 
 

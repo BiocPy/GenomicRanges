@@ -1,5 +1,5 @@
 from itertools import groupby
-from typing import List, Optional, Sequence, Tuple, Union
+from typing import List, Sequence, Union
 
 import biocutils as ut
 import numpy as np
@@ -150,60 +150,56 @@ def slide_intervals(start: int, end: int, width: int, step: int) -> List:
     return bins
 
 
-def create_np_vector(
-    intervals: List[Tuple[int, int]],
-    with_reverse_map: bool = False,
-    force_size: Optional[int] = None,
-    dont_sum: bool = False,
-    value: int = 1,
-) -> Tuple[np.ndarray, Optional[List]]:
-    """Represent intervals and calculate coverage.
-
-    Args:
-        intervals:
-            Input interval vector.
-
-        with_reverse_map:
-            Return map of indices? Defaults to False.
-
-        force_size:
-            Force size of the array.
-
-        dont_sum:
-            Do not sum. Defaults to False.
-
-        value:
-            Default value to increment. Defaults to 1.
-
-    Returns:
-        A numpy array representing coverage from the
-        intervals and optionally a reverse index map.
-    """
-    if len(intervals) < 1:
-        return intervals
-
-    max_end = force_size
-    if max_end is None:
-        max_end = max([x[1] for x in intervals])
-    cov = np.zeros(max_end)
-
-    revmap = None
-    if with_reverse_map:
-        revmap = [[] for _ in range(max_end)]
-
-    for idx in range(len(intervals)):
-        i = intervals[idx]
-
-        if dont_sum:
-            cov[i[0] - 1 : i[1]] = value
-        else:
-            cov[i[0] - 1 : i[1]] += value
-
-        if with_reverse_map:
-            _ = [revmap[x].append(idx + 1) for x in range(i[0] - 1, i[1])]
-
-    return cov, revmap
-
-
 def group_by_indices(groups: list) -> dict:
     return {k: [x[0] for x in v] for k, v in groupby(sorted(enumerate(groups), key=lambda x: x[1]), lambda x: x[1])}
+
+
+def compute_up_down(starts, ends, strands, upstream, downstream, site: str = "TSS"):
+    """Compute promoter or terminator regions for genomic ranges.
+
+    Args:
+        x:
+            GenomicRanges object
+
+        upstream:
+            Number of bases upstream (scalar or array)
+
+        downstream:
+            Number of bases downstream (scalar or array)
+
+        site:
+            "TSS" for promoters or "TES" for terminators
+
+    Returns:
+        New starts and ends.
+    """
+    if isinstance(upstream, (int, float)):
+        upstream = np.full(len(starts), upstream, dtype=np.int32)
+    if isinstance(downstream, (int, float)):
+        downstream = np.full(len(starts), downstream, dtype=np.int32)
+
+    minus_mask = strands == -1
+
+    new_starts = np.zeros_like(starts)
+    new_ends = np.zeros_like(ends)
+
+    if site == "TSS":
+        # For "+" or "*" strand
+        plus_mask = ~minus_mask
+        new_starts[plus_mask] = starts[plus_mask] - upstream[plus_mask]
+        new_ends[plus_mask] = starts[plus_mask] + downstream[plus_mask] - 1
+
+        # For "-" strand
+        new_starts[minus_mask] = ends[minus_mask] - downstream[minus_mask] + 1
+        new_ends[minus_mask] = ends[minus_mask] + upstream[minus_mask]
+    else:  # TES
+        # For "+" or "*" strand
+        plus_mask = ~minus_mask
+        new_starts[plus_mask] = ends[plus_mask] - upstream[plus_mask]
+        new_ends[plus_mask] = ends[plus_mask] + downstream[plus_mask] - 1
+
+        # For "-" strand
+        new_starts[minus_mask] = starts[minus_mask] - downstream[minus_mask] + 1
+        new_ends[minus_mask] = starts[minus_mask] + upstream[minus_mask]
+
+    return new_starts, new_ends - new_starts + 1

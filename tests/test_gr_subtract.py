@@ -1,16 +1,14 @@
-import pytest
-from genomicranges import GenomicRanges, GenomicRangesList
-from iranges import IRanges
 import numpy as np
+from iranges import IRanges
+
+from genomicranges import GenomicRanges, GenomicRangesList
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-x = GenomicRanges(
-    seqnames=["chr1", "chr1"], ranges=IRanges([2, 9], [6, 11]), strand=["+", "-"]
-)
-y = GenomicRanges(seqnames=["chr1"], ranges=IRanges([5], [6]), strand=["-"])
+x = GenomicRanges(seqnames=["chr1", "chr1", "chrX"], ranges=IRanges([1, 40, 1], [50, 71, 500]), strand=["*", "*", "*"])
+y = GenomicRanges(seqnames=["chr1", "chr1"], ranges=IRanges([21, 38], [5, 113]), strand=["*", "*"])
 
 
 def test_subtract():
@@ -18,10 +16,18 @@ def test_subtract():
 
     assert out is not None
     assert isinstance(out, GenomicRangesList)
-    assert (out[0].start == np.array([2])).all()
-    assert (out[1].start == np.array([11])).all()
+    assert len(out) == 3
 
-    assert (out[0].width == np.array([6])).all()
-    assert (out[1].width == np.array([9])).all()
+    assert out[0].get_seqnames() == ["chr1", "chr1"]
+    assert np.all(out[0]._ranges._start == [1, 26])
+    assert np.all(out[0]._ranges.get_end() == [20, 37])
+    assert np.all(out[2].get_strand() == [0, 0])
+
+    assert len(out[1]) == 0
+
+    assert out[2].get_seqnames() == ["chrX"]
+    assert np.all(out[2]._ranges._start == [1])
+    assert np.all(out[2]._ranges.get_end() == [500])
+    assert np.all(out[2].get_strand() == [0])
 
     assert len(out) == len(x)

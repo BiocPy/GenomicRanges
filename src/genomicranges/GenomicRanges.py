@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
 from warnings import warn
 
@@ -8,11 +9,9 @@ from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
-    create_np_vector,
+    compute_up_down,
     group_by_indices,
     sanitize_strand_vector,
-    slide_intervals,
-    split_intervals,
 )
 
 __author__ = "jkanche"
@@ -144,19 +143,20 @@ class GenomicRanges:
             strand:
                 Strand information for each genomic range. This should be 0 (any strand),
                 1 (forward strand) or -1 (reverse strand). If None, all genomic ranges
-                are assumed to be 0.
+                are assumed to be 0 (any strand).
 
                 May be provided as a list of strings representing the strand;
                 "+" for forward strand, "-" for reverse strand, or "*" for any strand and will be mapped
-                accordingly to 1, -1 or 0.
+                to 1, -1 or 0 respectively.
 
             names:
-                Names for each genomic range. Defaults to None, which means the ranges are unnamed.
+                Names for each genomic range.
+                Defaults to None, which means the ranges are unnamed.
 
             mcols:
                 A ~py:class:`~biocframe.BiocFrame.BiocFrame` with the number of rows same as
-                number of genomic ranges, containing per-range annotation. Defaults to None, in which case an empty
-                BiocFrame object is created.
+                number of genomic ranges, containing per-range annotation.
+                Defaults to None, in which case an empty BiocFrame object is created.
 
             seqinfo:
                 Sequence information. Defaults to None, in which case a
@@ -164,7 +164,8 @@ class GenomicRanges:
                 chromosome names from ``seqnames``.
 
             metadata:
-                Additional metadata. Defaults to None, and is assigned to an empty dictionary.
+                Additional metadata.
+                Defaults to None, and is assigned to an empty dictionary.
 
             validate:
                 Internal use only.
@@ -434,9 +435,7 @@ class GenomicRanges:
     ######>> seqnames <<######
     ##########################
 
-    def get_seqnames(
-        self, as_type: Literal["factor", "list"] = "list"
-    ) -> Union[Tuple[np.ndarray, List[str]], List[str]]:
+    def get_seqnames(self, as_type: Literal["factor", "list"] = "list") -> Union[ut.Factor, List[str]]:
         """Access sequence names.
 
         Args:
@@ -447,11 +446,12 @@ class GenomicRanges:
                 If ``list``, then codes are mapped to levels and returned.
 
         Returns:
-            List of sequence names.
+            A :py:class:`biocutils.Factor` if `as_type="factor"`.
+            Otherwise a list of sequence names.
         """
 
         if as_type == "factor":
-            return self._seqnames, self._seqinfo.get_seqnames()
+            return ut.Factor(codes=self._seqnames, levels=self._seqinfo.get_seqnames())
         elif as_type == "list":
             return [self._seqinfo.get_seqnames()[x] for x in self._seqnames]
         else:
@@ -462,7 +462,8 @@ class GenomicRanges:
 
         Args:
             seqnames:
-                List of sequence or chromosome names. Optionally can be a numpy array with indices mapped
+                List of sequence or chromosome names.
+                Optionally can be a numpy array with indices mapped
                 to :py:attr:``~seqinfo``.
 
             in_place:
@@ -497,7 +498,7 @@ class GenomicRanges:
             "Setting property 'seqnames' is an in-place operation, use 'set_seqnames' instead",
             UserWarning,
         )
-        self.set_row_names(seqnames, in_place=True)
+        self.set_seqnames(seqnames, in_place=True)
 
     ########################
     ######>> ranges <<######
@@ -563,8 +564,8 @@ class GenomicRanges:
                 Access seqnames as factor codes, in which case, a numpy
                  vector is retuned.
 
-                If ``factor``, a tuple width levels as a dictionary and
-                  indices to ``seqinfo.get_seqnames()`` is returned.
+                If ``factor``, a tuple with codes as the strand vector
+                and levels a dictionary containing the mapping.
 
                 If ``list``, then codes are mapped to levels and returned.
 
@@ -595,21 +596,20 @@ class GenomicRanges:
             raise ValueError("Argument 'as_type' must be 'factor' or 'list'.")
 
     def set_strand(
-        self,
-        strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]],
-        in_place: bool = False,
+        self, strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]], in_place: bool = False
     ) -> "GenomicRanges":
         """Set new strand information.
 
         Args:
             strand:
                 Strand information for each genomic range. This should be 0 (any strand),
-                1 (forward strand) or -1 (reverse strand). If None, all genomic ranges
-                are assumed to be 0.
+                1 (forward strand) or -1 (reverse strand).
 
-                May be provided as a list of strings representing the strand;
-                "+" for forward strand, "-" for reverse strand, or "*" for any strand and will be mapped
-                accordingly to 1, -1 or 0.
+                Alternatively, may provide a list of strings representing the strand;
+                "+" for forward strand, "-" for reverse strand, or "*" for any strand
+                and will be automatically mapped to 1, -1 or 0 respectively.
+
+                May be set to None; in which case all genomic ranges are assumed to be 0.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -633,10 +633,7 @@ class GenomicRanges:
         return self.get_strand()
 
     @strand.setter
-    def strand(
-        self,
-        strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]],
-    ):
+    def strand(self, strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]]):
         """Alias for :py:meth:`~set_strand` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -658,16 +655,13 @@ class GenomicRanges:
         """
         return self._names
 
-    def set_names(
-        self,
-        names: Optional[Sequence[str]],
-        in_place: bool = False,
-    ) -> "GenomicRanges":
+    def set_names(self, names: Optional[Sequence[str]], in_place: bool = False) -> "GenomicRanges":
         """Set new names.
 
         Args:
             names:
                 Names for each genomic range.
+                May be `None` to remove names.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -692,10 +686,7 @@ class GenomicRanges:
         return self.get_names()
 
     @names.setter
-    def names(
-        self,
-        names: Optional[Sequence[str]],
-    ):
+    def names(self, names: Optional[Sequence[str]]):
         """Alias for :py:meth:`~set_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -717,17 +708,15 @@ class GenomicRanges:
         """
         return self._mcols
 
-    def set_mcols(
-        self,
-        mcols: Optional[BiocFrame],
-        in_place: bool = False,
-    ) -> "GenomicRanges":
+    def set_mcols(self, mcols: Optional[BiocFrame], in_place: bool = False) -> "GenomicRanges":
         """Set new range metadata.
 
         Args:
             mcols:
                 A ~py:class:`~biocframe.BiocFrame.BiocFrame` with length same as the number
                 of ranges, containing per-range annotations.
+
+                May be None to remove range metadata.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -752,10 +741,7 @@ class GenomicRanges:
         return self.get_mcols()
 
     @mcols.setter
-    def mcols(
-        self,
-        mcols: Optional[BiocFrame],
-    ):
+    def mcols(self, mcols: Optional[BiocFrame]):
         """Alias for :py:meth:`~set_mcols` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -777,17 +763,16 @@ class GenomicRanges:
         """
         return self._seqinfo
 
-    def set_seqinfo(
-        self,
-        seqinfo: Optional[SeqInfo],
-        in_place: bool = False,
-    ) -> "GenomicRanges":
+    def set_seqinfo(self, seqinfo: Optional[SeqInfo], in_place: bool = False) -> "GenomicRanges":
         """Set new sequence information.
 
         Args:
             seqinfo:
-                A ~py:class:`~genomicranges.SeqInfo.SeqInfo` object contaning information
+                A ~py:class:`~genomicranges.SeqInfo.SeqInfo` object containing information
                 about sequences in :py:attr:`~seqnames`.
+
+                May be None to remove sequence information. This would then generate a
+                new sequence information based on the current sequence names.
 
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
@@ -925,6 +910,15 @@ class GenomicRanges:
         """Alias for :py:attr:`~get_width`."""
         return self.get_width()
 
+    def get_seqlengths(self) -> np.ndarray:
+        """Get sequence lengths for each genomic range.
+
+        Returns:
+            An ndarray containing the sequence lengths.
+        """
+        seqlenths = self._seqinfo.get_seqlengths()
+        return np.asarray([seqlenths[x] for x in self._seqnames])
+
     #########################
     ######>> Slicers <<######
     #########################
@@ -972,7 +966,7 @@ class GenomicRanges:
         value: "GenomicRanges",
         in_place: bool = False,
     ) -> "GenomicRanges":
-        """Add or update positions (in-place operation).
+        """Udate positions.
 
         Args:
             args:
@@ -1034,8 +1028,8 @@ class GenomicRanges:
     ######>> pandas interop <<######
     ################################
 
-    def to_pandas(self) -> "pandas.DataFrame":
-        """Convert this ``GenomicRanges`` object into a :py:class:`~pandas.DataFrame`.
+    def to_pandas(self):
+        """Convert this ``GenomicRanges`` to a :py:class:`~pandas.DataFrame` object.
 
         Returns:
             A :py:class:`~pandas.DataFrame` object.
@@ -1056,12 +1050,12 @@ class GenomicRanges:
         return _rdf
 
     @classmethod
-    def from_pandas(cls, input: "pandas.DataFrame") -> "GenomicRanges":
-        """Create a ``GenomicRanges`` from a :py:class:`~pandas.DataFrame` object.
+    def from_pandas(cls, input) -> "GenomicRanges":
+        """Create an ``GenomicRanges`` object from a :py:class:`~pandas.DataFrame`.
 
         Args:
             input:
-                Input data. must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                Input data. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1084,7 +1078,7 @@ class GenomicRanges:
             width = input["widths"].tolist()
         else:
             drops.append("ends")
-            width = input["ends"] - input["starts"]
+            width = input["ends"] - input["starts"] + 1
 
         if "seqnames" not in input.columns:
             raise ValueError("'input' must contain column 'seqnames'.")
@@ -1115,8 +1109,8 @@ class GenomicRanges:
     ######>> polars interop <<######
     ################################
 
-    def to_polars(self) -> "polars.DataFrame":
-        """Convert this ``GenomicRanges`` object into a :py:class:`~polars.DataFrame`.
+    def to_polars(self):
+        """Convert this ``GenomicRanges`` to a :py:class:`~polars.DataFrame` object.
 
         Returns:
             A :py:class:`~polars.DataFrame` object.
@@ -1136,13 +1130,12 @@ class GenomicRanges:
         return _rdf
 
     @classmethod
-    def from_polars(cls, input: "polars.DataFrame") -> "GenomicRanges":
-        """Create a ``GenomicRanges`` from a :py:class:`~polars.DataFrame` object.
+    def from_polars(cls, input) -> "GenomicRanges":
+        """Create an ``GenomicRanges`` object from a :py:class:`~polars.DataFrame`.
 
         Args:
             input:
-                Input polars DataFrame.
-                must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                Input polars DataFrame. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1165,7 +1158,7 @@ class GenomicRanges:
             width = input["widths"].to_list()
         else:
             drops.append("ends")
-            width = input["ends"] - input["starts"]
+            width = input["ends"] - input["starts"] + 1
 
         if "seqnames" not in input.columns:
             raise ValueError("'input' must contain column 'seqnames'.")
@@ -1197,7 +1190,7 @@ class GenomicRanges:
     def flank(
         self,
         width: int,
-        start: bool = True,
+        start: Union[bool, np.ndarray, List[bool]] = True,
         both: bool = False,
         ignore_strand: bool = False,
         in_place: bool = False,
@@ -1234,7 +1227,11 @@ class GenomicRanges:
                 Width to flank by. May be negative.
 
             start:
-                Whether to only flank starts. Defaults to True.
+                Whether to only flank starts.
+                Defaults to True.
+
+                Alternatively, you may provide a list of start values,
+                whose length is the same as the number of ranges.
 
             both:
                 Whether to flank both starts and ends. Defaults to False.
@@ -1251,42 +1248,30 @@ class GenomicRanges:
             (in-place-modified) original.
         """
 
-        all_starts = self.start
-        all_ends = self.end
-        all_strands = self.strand
-
-        # figure out which position to pin, start or end?
-        start_flags = np.repeat(start, len(all_strands))
-        if not ignore_strand:
-            start_flags = [start != (all_strands[i] == -1) for i in range(len(all_strands))]
-
-        new_starts = []
-        new_widths = []
-        # if both is true, then depending on start_flag, we extend it out
-        # I couldn't understand the scenario's with witdh <=0,
-        # so refer to the R implementation here
-        for idx in range(len(start_flags)):
-            sf = start_flags[idx]
-            tstart = 0
-            if both is True:
-                tstart = all_starts[idx] - abs(width) if sf else all_ends[idx] - abs(width)
-            else:
-                if width >= 0:
-                    tstart = all_starts[idx] - abs(width) if sf else all_ends[idx]
-                else:
-                    tstart = all_starts[idx] if sf else all_ends[idx] + width
-
-            new_starts.append(tstart)
-            new_widths.append((width * (2 if both else 1)))
+        if not isinstance(ignore_strand, bool):
+            raise TypeError("'ignore_strand' must be True or False.")
 
         output = self._define_output(in_place)
-        output._ranges = IRanges(new_starts, new_widths)
+
+        if isinstance(start, bool):
+            start_arr = np.full(len(output), start, dtype=bool)
+        else:
+            start_arr = np.asarray(start, dtype=bool)
+            if len(start_arr) != len(output):
+                start_arr = np.resize(start_arr, len(output))  # may be throw an error?
+
+        if not ignore_strand:
+            start_arr = np.asarray(start_arr != (output.get_strand() == -1))
+
+        new_ranges = output._ranges.flank(width=width, start=start_arr, both=both, in_place=False)
+
+        output._ranges = new_ranges
         return output
 
     def resize(
         self,
         width: Union[int, List[int], np.ndarray],
-        fix: Literal["start", "end", "center"] = "start",
+        fix: Union[Literal["start", "end", "center"], List[Literal["start", "end", "center"]]] = "start",
         ignore_strand: bool = False,
         in_place: bool = False,
     ) -> "GenomicRanges":
@@ -1300,6 +1285,9 @@ class GenomicRanges:
             fix:
                 Fix positions by "start", "end", or "center".
                 Defaults to "start".
+
+                Alternatively, may provide a list of fix positions
+                for each genomic range.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -1318,14 +1306,29 @@ class GenomicRanges:
             (in-place-modified) original.
         """
         _REV_FIX = {"start": "end", "end": "start", "center": "center"}
-        if ignore_strand is False:
-            fix = [fix] * len(self)
-            for i in range(len(self.strand)):
-                if self._strand[i] == -1:
-                    fix[i] = _REV_FIX[fix[i]]
+
+        if not isinstance(ignore_strand, bool):
+            raise TypeError("'ignore_strand' must be True or False.")
 
         output = self._define_output(in_place)
-        output._ranges = self._ranges.resize(width=width, fix=fix)
+
+        if isinstance(fix, str):
+            fix_arr = [fix] * len(output)
+        else:
+            fix_arr = fix
+
+        if len(output) > 0 and (len(fix_arr) > len(output) or len(output) % len(fix_arr) != 0):
+            raise ValueError("Number of ranges is not a multiple of 'fix' length")
+
+        if ignore_strand:
+            fix_arr = [fix_arr[i % len(fix_arr)] for i in range(len(output))]
+        else:
+            if len(output) == 0:
+                fix_arr = []
+            else:
+                fix_arr = [_REV_FIX[f] if strand == -1 else f for f, strand in zip(fix_arr, output.get_strand())]
+
+        output._ranges = self._ranges.resize(width=width, fix=fix_arr)
         return output
 
     def shift(self, shift: Union[int, List[int], np.ndarray] = 0, in_place: bool = False) -> "GenomicRanges":
@@ -1345,22 +1348,13 @@ class GenomicRanges:
             (in-place-modified) original.
         """
         output = self._define_output(in_place)
-
-        if shift == 0:
-            return self
-
         output._ranges = self._ranges.shift(shift=shift)
         return output
 
     def promoters(self, upstream: int = 2000, downstream: int = 200, in_place: bool = False) -> "GenomicRanges":
-        """Extend intervals to promoter regions.
+        """Extend ranges to promoter regions.
 
-        Generates promoter ranges relative to the transcription start site (TSS),
-        where TSS is start(x). The promoter range is expanded around the TSS
-        according to the upstream and downstream arguments. Upstream represents
-        the number of nucleotides in the 5' direction and downstream the number
-        in the 3' direction. The full range is defined as, (`start(x) - upstream`)
-        to (`start(x) + downstream - 1`).
+        Generates promoter ranges relative to the transcription start site (TSS).
 
         Args:
             upstream:
@@ -1379,35 +1373,51 @@ class GenomicRanges:
             either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
-        all_starts = self.start
-        all_ends = self.end
-        all_strands = self.strand
-
-        start_flags = [all_strands[i] != -1 for i in range(len(all_strands))]
-
-        new_starts = np.asarray(
-            [
-                (all_starts[idx] - upstream if start_flags[idx] else all_ends[idx] - downstream)
-                for idx in range(len(start_flags))
-            ]
-        )
-        new_ends = np.asarray(
-            [
-                (all_starts[idx] + downstream if start_flags[idx] else all_ends[idx] + upstream)
-                for idx in range(len(start_flags))
-            ]
-        )
-
         output = self._define_output(in_place)
-        output._ranges = IRanges(start=new_starts, width=(new_ends - new_starts))
+
+        new_starts, new_widths = compute_up_down(
+            output.get_start(), output.get_end(), output.get_strand(), upstream, downstream, site="TSS"
+        )
+
+        output._ranges = IRanges(start=new_starts, width=new_widths)
+        return output
+
+    def terminators(self, upstream: int = 2000, downstream: int = 200, in_place: bool = False) -> "GenomicRanges":
+        """Extend ranges to termiantor regions.
+
+        Generates terminator ranges relative to the transcription end site (TES).
+
+        Args:
+            upstream:
+                Number of positions to extend in the 5' direction.
+                Defaults to 2000.
+
+            downstream:
+                Number of positions to extend in the 3' direction.
+                Defaults to 200.
+
+            in_place:
+                Whether to modify the ``GenomicRanges`` object in place.
+
+        Returns:
+            A modified ``GenomicRanges`` object with the promoter regions,
+            either as a copy of the original or as a reference to the
+            (in-place-modified) original.
+        """
+        output = self._define_output(in_place)
+
+        new_starts, new_widths = compute_up_down(
+            output.get_start(), output.get_end(), output.get_strand(), upstream, downstream, site="TES"
+        )
+
+        output._ranges = IRanges(start=new_starts, width=new_widths)
         return output
 
     def restrict(
         self,
-        start: Optional[Union[int, List[int], np.ndarray]] = None,
-        end: Optional[Union[int, List[int], np.ndarray]] = None,
+        start: Optional[Union[int, Dict[str, int], np.ndarray]] = None,
+        end: Optional[Union[int, Dict[str, int], np.ndarray]] = None,
         keep_all_ranges: bool = False,
-        in_place: bool = False,
     ) -> "GenomicRanges":
         """Restrict ranges to a given start and end positions.
 
@@ -1415,33 +1425,139 @@ class GenomicRanges:
             start:
                 Start position. Defaults to None.
 
+                Alternatively may provide a dictionary
+                mapping sequence names to starts, or array of starts.
+
             end:
                 End position. Defaults to None.
+
+                Alternatively may provide a dictionary
+                mapping sequence names to starts, or array of starts.
 
             keep_all_ranges:
                 Whether to keep intervals that do not overlap with start and end.
                 Defaults to False.
 
-            in_place:
-                Whether to modify the ``GenomicRanges`` object in place.
-
         Returns:
-            A modified ``GenomicRanges`` object with the restricted regions,
-            either as a copy of the original or as a reference to the
-            (in-place-modified) original.
+            A new ``GenomicRanges`` object with the restricted regions.
         """
 
-        restricted_ir = self._ranges.restrict(start=start, end=end, keep_all_ranges=True)
-        output = self._define_output(in_place)
-        output._ranges = restricted_ir
+        start_is_dict = isinstance(start, dict)
+        end_is_dict = isinstance(end, dict)
 
-        if keep_all_ranges is True:
-            restricted_ir._width = np.clip(restricted_ir.width, 0, None)
-        else:
-            _flt_idx = list(np.where(restricted_ir.width > -1)[0])
-            output = output[_flt_idx]
+        if not (start_is_dict or end_is_dict):
+            # directly restrict ranges
+            new_ranges = self._ranges.restrict(start=start, end=end, keep_all_ranges=keep_all_ranges)
 
-        return output
+            new_seqnames = self._seqnames
+            new_strand = self.strand
+            new_names = self._names
+            new_mcols = self._mcols
+
+            # Get indices of kept ranges for filtering seqnames and strand
+            if not keep_all_ranges:
+                keep_idx = new_ranges.get_mcols().get_column("revmap")
+
+                new_seqnames = ut.subset_sequence(self._seqnames, keep_idx)
+                new_strand = ut.subset_sequence(self._strand, keep_idx)
+                new_names = ut.subset_sequence(self._names, keep_idx) if self._names is not None else None
+                new_mcols = ut.subset(self._mcols, keep_idx)
+
+            return GenomicRanges(
+                seqnames=new_seqnames,
+                ranges=new_ranges,
+                strand=new_strand,
+                names=new_names,
+                mcols=new_mcols,
+                seqinfo=self._seqinfo,
+                metadata=self._metadata,
+            )
+
+        if start is None:
+            start = {}
+        elif not start_is_dict:
+            start = {seq: start for seq in np.unique(self._seqinfo._seqnames)}
+
+        if end is None:
+            end = {}
+        elif not end_is_dict:
+            end = {seq: end for seq in np.unique(self._seqinfo._seqnames)}
+
+        split_indices = defaultdict(list)
+        seqnames = self._seqnames
+        for i, seq in enumerate(seqnames):
+            split_indices[seq].append(i)
+
+        all_indices = []
+        new_granges_list = []
+
+        for seq in np.unique(seqnames):
+            idx = split_indices[seq]
+            seq_ranges = ut.subset_sequence(self._ranges, idx)
+            seq_seqnames = ut.subset_sequence(seqnames, idx)
+            seq_strand = ut.subset_sequence(self._strand, idx)
+            seq_names = ut.subset_sequence(self._names, idx) if self._names is not None else None
+            seq_mcols = ut.subset(self._mcols, idx)
+
+            seq_start = start.get(self._seqinfo._seqnames[seq], None)
+            seq_end = end.get(self._seqinfo._seqnames[seq], None)
+
+            new_seq_ranges = seq_ranges.restrict(start=seq_start, end=seq_end, keep_all_ranges=keep_all_ranges)
+
+            # Only keep metadata for non-dropped ranges; IRanges restrict returns a revmap
+            if not keep_all_ranges:
+                keep_idx = new_seq_ranges.get_mcols().get_column("revmap")
+                new_seqnames = ut.subset_sequence(self._seqnames, keep_idx)
+                new_strand = ut.subset_sequence(self._strand, keep_idx)
+                new_names = ut.subset_sequence(self._names, keep_idx) if self._names is not None else None
+                new_mcols = ut.subset(self._mcols, keep_idx)
+                all_indices.extend([idx[i] for i, k in enumerate(keep_idx)])
+            else:
+                new_seqnames = seq_seqnames
+                new_strand = seq_strand
+                new_names = seq_names
+                new_mcols = seq_mcols
+                all_indices.extend(idx)
+
+            new_granges_list.append(
+                GenomicRanges(
+                    seqnames=new_seqnames,
+                    ranges=new_seq_ranges,
+                    strand=new_strand,
+                    names=new_names,
+                    mcols=new_mcols,
+                    seqinfo=self._seqinfo,
+                    metadata=self._metadata,
+                )
+            )
+
+        combined_granges = _combine_GenomicRanges(*new_granges_list)
+        order = np.argsort(all_indices)
+        ordered_granges = combined_granges[order]
+        return ordered_granges
+
+    def get_out_of_bound_index(self) -> np.ndarray:
+        """Find indices of genomic ranges that are out of bounds.
+
+        Returns:
+            A numpy array of integer indices where ranges are out of bounds.
+        """
+        if len(self) == 0:
+            return []
+
+        # incase it contains NA's
+        seqlevel_is_circ = [val is True for val in self._seqinfo._is_circular]
+        seqlength_is_na = [slength is None for slength in self._seqinfo._seqlengths]
+        seqlevel_has_bounds = [not (circ or is_na) for circ, is_na in zip(seqlevel_is_circ, seqlength_is_na)]
+
+        out_of_bounds = []
+        starts = self.get_start()
+        ends = self.get_end()
+        for i, seq_id in enumerate(self._seqnames):
+            if seqlevel_has_bounds[seq_id] and (starts[i] < 1 or ends[i] > self._seqinfo._seqlengths[seq_id]):
+                out_of_bounds.append(i)
+
+        return np.asarray(out_of_bounds, dtype=np.int32)
 
     def trim(self, in_place: bool = False) -> "GenomicRanges":
         """Trim sequences outside of bounds for non-circular chromosomes.
@@ -1451,16 +1567,14 @@ class GenomicRanges:
                 Whether to modify the ``GenomicRanges`` object in place.
 
         Returns:
-            A modified ``GenomicRanges`` object with the trimmed regions,
-            either as a copy of the original or as a reference to the
-            (in-place-modified) original.
+            A new ``GenomicRanges`` object with the trimmed regions.
         """
 
         if self.seqinfo is None:
             raise ValueError("Cannot trim ranges. `seqinfo` is not available.")
 
-        seqlengths = self.seqinfo.seqlengths
-        is_circular = self.seqinfo.is_circular
+        seqlengths = self.seqinfo._seqlengths
+        is_circular = self.seqinfo._is_circular
 
         if seqlengths is None:
             raise ValueError("Cannot trim ranges. `seqlengths` is not available.")
@@ -1468,21 +1582,17 @@ class GenomicRanges:
         if is_circular is None:
             warn("considering all sequences as non-circular...")
 
-        all_chrs = self._seqnames
-        all_ends = self.end
+        out_of_bounds = self.get_out_of_bound_index()
 
-        new_ends = []
-        for i in range(len(self)):
-            _t_chr = all_chrs[i]
-            _end = all_ends[i]
+        output = self._define_output(in_place=in_place)
+        if len(out_of_bounds) == 0:
+            return output.__copy__()
 
-            if is_circular is not None and is_circular[_t_chr] is False and _end > seqlengths[_t_chr]:
-                _end = seqlengths[_t_chr] + 1
-
-            new_ends.append(_end)
-
-        output = self._define_output(in_place)
-        output._ranges.width = np.asarray(new_ends) - output._ranges.start
+        filtered_seqs = self._seqnames[out_of_bounds]
+        new_ends = self.get_seqlengths()[filtered_seqs]
+        output._ranges[out_of_bounds] = output._ranges[out_of_bounds].restrict(
+            start=1, end=new_ends, keep_all_ranges=True
+        )
         return output
 
     def narrow(
@@ -1525,6 +1635,10 @@ class GenomicRanges:
         output = self._define_output(in_place)
         output._ranges = narrow_ir
         return output
+
+    #####################################
+    ######>> inter-range methods <<######
+    #####################################
 
     def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
         __strand = self._strand.copy()
@@ -1611,8 +1725,6 @@ class GenomicRanges:
         if with_reverse_map is True:
             output._mcols.set_column("revmap", rev_map, in_place=True)
 
-        # self._ranges._mcols.remove_column("reduceindices", in_place=True)
-
         return output
 
     def range(self, with_reverse_map: bool = False, ignore_strand: bool = False) -> "GenomicRanges":
@@ -1676,6 +1788,9 @@ class GenomicRanges:
                 Restrict end position for each chromosome.
                 Defaults to None. If None, extracts sequence information from
                 :py:attr:`~seqinfo` object if available.
+
+                Alternatively, you may provide a dictionary with seqnames as
+                keys and the values specifying the ends.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -1754,7 +1869,7 @@ class GenomicRanges:
                     _grp_subset = self[chrm_grps[_key]]
                     res_ir = _grp_subset._ranges.disjoin(with_reverse_map=True)
 
-                    groups.append(_key)
+                    groups.extend([_key] * len(res_ir))
                     all_grp_ranges.append(res_ir)
 
                     _rev_map = []
@@ -1775,6 +1890,62 @@ class GenomicRanges:
 
         return output
 
+    def is_disjoint(self, ignore_strand: bool = False) -> bool:
+        """Calculate disjoint genomic positions for each distinct (seqname, strand) pair.
+
+        Args:
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            True if all ranges are disjoint, otherwise False.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        is_disjoint = None
+
+        for seq in self._seqinfo.get_seqnames():
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{seq}{_granges_delim}{strd}"
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    res_ir = _grp_subset._ranges.is_disjoint()
+
+                    if is_disjoint is None:
+                        is_disjoint = res_ir
+                    else:
+                        is_disjoint = is_disjoint and res_ir
+
+        return is_disjoint
+
+    def disjoint_bins(self, ignore_strand: bool = False) -> np.ndarray:
+        """Split ranges into a set of bins so that the ranges in each bin are disjoint.
+
+        Args:
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            An ndarray indicating the bin index for each range.
+        """
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        all_results = []
+        order = []
+        for seq in self._seqinfo.get_seqnames():
+            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
+            for strd in _iter_strands:
+                _key = f"{seq}{_granges_delim}{strd}"
+                if _key in chrm_grps:
+                    _grp_subset = self[chrm_grps[_key]]
+                    res_ir = _grp_subset._ranges.disjoint_bins()
+
+                    order.extend(chrm_grps[_key])
+                    all_results.extend(res_ir)
+
+        merged = np.asarray(all_results).flatten()
+        return merged[np.argsort(order, stable=True)]
+
     def coverage(self, shift: int = 0, width: Optional[int] = None, weight: int = 1) -> Dict[str, np.ndarray]:
         """Calculate coverage for each chromosome, For each position, counts the number of ranges that cover it.
 
@@ -1783,39 +1954,21 @@ class GenomicRanges:
                 Shift all genomic positions. Defaults to 0.
 
             width:
-                Restrict the width of all
-                chromosomes. Defaults to None.
+                Restrict the width of all chromosomes. Defaults to None.
 
             weight:
                 Weight to use. Defaults to 1.
 
         Returns:
             A dictionary with chromosome names as keys and the
-            coverage vector as value.
+            coverage vector.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=True)
-
-        shift_arr = None
-        if shift > 0:
-            shift_arr = np.zeros(shift)
 
         result = {}
         for chrm, group in chrm_grps.items():
             _grp_subset = self[group]
-
-            all_intvals = [(x[0], x[1]) for x in zip(_grp_subset._ranges._start, _grp_subset._ranges.end)]
-
-            cov, _ = create_np_vector(intervals=all_intvals, with_reverse_map=False)
-
-            if shift > 0:
-                cov = ut.combine_sequences(shift_arr, cov)
-
-            if weight > 0:
-                cov = cov * weight
-
-            if width is not None:
-                cov = cov[:width]
-
+            cov = _grp_subset._ranges.coverage(shift=shift, width=width, weight=weight)
             result[chrm.split(_granges_delim)[0]] = cov
 
         return result
@@ -1824,16 +1977,15 @@ class GenomicRanges:
     ######>> set operations <<######
     ################################
 
-    def union(self, other: "GenomicRanges") -> "GenomicRanges":
+    def union(self, other: "GenomicRanges", ignore_strand: bool = False) -> "GenomicRanges":
         """Find union of genomic intervals with `other`.
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
 
-        Raises:
-            TypeError:
-                If ``other`` is not a ``GenomicRanges``.
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
 
         Returns:
             A new ``GenomicRanges`` object with all ranges.
@@ -1842,21 +1994,23 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _combine_GenomicRanges(self, other)
-        output = all_combined.reduce(min_gap_width=0, drop_empty_ranges=True)
+        grs = [self, other]
+        if ignore_strand is True:
+            grs = [self.set_strand(strand=None), other.set_strand(strand=None)]
+
+        all_combined = _combine_GenomicRanges(*grs)
+        output = all_combined.reduce(drop_empty_ranges=True)
         return output
 
-    def setdiff(self, other: "GenomicRanges") -> "GenomicRanges":
+    def setdiff(self, other: "GenomicRanges", ignore_strand: bool = False) -> "GenomicRanges":
         """Find set difference of genomic intervals with `other`.
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
 
-        Raises:
-            TypeError:
-                If ``other`` is not of type ``GenomicRanges``.
-
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
 
         Returns:
             A new ``GenomicRanges`` object with the diff ranges.
@@ -1864,28 +2018,39 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _fast_combine_GenomicRanges(self, other)
-        range_bounds = all_combined.range(ignore_strand=True)
-        rb_ends = {}
-        for _, val in range_bounds:
-            rb_ends[val.get_seqnames()[0]] = val.end[0]
+        x = self.__copy__()
+        y = other.__copy__()
+        if ignore_strand is True:
+            x = self.set_strand(strand=None)
+            y = other.set_strand(strand=None)
 
-        x_gaps = self.gaps(end=rb_ends)
-        x_gaps_u = x_gaps.union(other)
-        diff = x_gaps_u.gaps(end=rb_ends)
+        x.set_seqinfo(merge_SeqInfo((x.get_seqinfo(), y.get_seqinfo())), in_place=True)
+        y.set_seqinfo(merge_SeqInfo((y.get_seqinfo(), x.get_seqinfo())), in_place=True)
+
+        seqlengths = dict(zip(x._seqinfo.get_seqnames(), x._seqinfo.get_seqlengths()))
+        all_combs = _fast_combine_GenomicRanges(x, y).range(ignore_strand=True)
+        all_combs_ends = dict(zip(all_combs.get_seqnames(), all_combs.get_end()))
+
+        for seq, seqlen in seqlengths.items():
+            if seqlen is None:
+                _val = all_combs_ends.get(seq, None)
+                seqlengths[seq] = int(_val) if _val is not None else None
+
+        x_gaps = x.gaps(end=seqlengths)
+        x_gaps_u = x_gaps.union(y)
+        diff = x_gaps_u.gaps(end=seqlengths)
 
         return diff
 
-    def intersect(self, other: "GenomicRanges") -> "GenomicRanges":
+    def intersect(self, other: "GenomicRanges", ignore_strand: bool = False) -> "GenomicRanges":
         """Find intersecting genomic intervals with `other`.
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
 
-        Raises:
-            TypeError:
-                If ``other`` is not a ``GenomicRanges``.
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
 
         Returns:
             A new ``GenomicRanges`` object with intersecting ranges.
@@ -1894,17 +2059,25 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        all_combined = _fast_combine_GenomicRanges(self, other)
-        range_bounds = all_combined.range(ignore_strand=True)
-        rb_ends = {}
-        for _, val in range_bounds:
-            rb_ends[val.get_seqnames()[0]] = val.end[0]
+        x = self.__copy__()
+        y = other.__copy__()
+        if ignore_strand is True:
+            x = self.set_strand(strand=None)
+            y = other.set_strand(strand=None)
 
-        _gaps = other.gaps(end=rb_ends)
-        # _inter = self.setdiff(_gaps)
-        x_gaps = self.gaps(end=rb_ends)
-        x_gaps_u = x_gaps.union(_gaps)
-        diff = x_gaps_u.gaps(end=rb_ends)
+        x.set_seqinfo(merge_SeqInfo((x.get_seqinfo(), y.get_seqinfo())), in_place=True)
+        y.set_seqinfo(merge_SeqInfo((y.get_seqinfo(), x.get_seqinfo())), in_place=True)
+
+        seqlengths = dict(zip(x._seqinfo.get_seqnames(), x._seqinfo.get_seqlengths()))
+        all_combs = _fast_combine_GenomicRanges(x, y).range(ignore_strand=True)
+        all_combs_ends = dict(zip(all_combs.get_seqnames(), all_combs.get_end()))
+
+        for seq, seqlen in seqlengths.items():
+            if seqlen is None:
+                seqlengths[seq] = int(all_combs_ends[seq])
+
+        y_gaps = y.gaps(end=seqlengths)
+        diff = x.setdiff(y_gaps)
         return diff
 
     def intersect_ncls(self, other: "GenomicRanges") -> "GenomicRanges":
@@ -1913,10 +2086,6 @@ class GenomicRanges:
         Args:
             other:
                 The other ``GenomicRanges`` object.
-
-        Raises:
-            TypeError:
-                If ``other`` is not a ``GenomicRanges``.
 
         Returns:
             A new ``GenomicRanges`` object with intersecting ranges.
@@ -1974,9 +2143,9 @@ class GenomicRanges:
         query_type: Literal["any", "start", "end", "within"] = "any",
         select: Literal["all", "first", "last", "arbitrary"] = "all",
         max_gap: int = -1,
-        min_overlap: int = 1,
+        min_overlap: int = 0,
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> BiocFrame:
         """Find overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
         Args:
@@ -2002,7 +2171,7 @@ class GenomicRanges:
                 Defaults to -1 (no gap allowed).
 
             min_overlap:
-                Minimum overlap with query. Defaults to 1.
+                Minimum overlap with query. Defaults to 0.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -2011,8 +2180,10 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A list with the same length as ``query``,
-            containing hits to overlapping indices.
+            A BiocFrame with two columns:
+            - query_hits: Indices into query ranges
+            - self_hits: Corresponding indices into self ranges that are upstream
+            Each row represents a query-self pair where self overlaps query.
         """
         OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
         if not isinstance(query, GenomicRanges):
@@ -2021,9 +2192,11 @@ class GenomicRanges:
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        all_qhits = np.array([], dtype=np.int32)
+        all_shits = np.array([], dtype=np.int32)
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2057,20 +2230,24 @@ class GenomicRanges:
                     delete_index=False,
                 )
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                all_qhits = np.concatenate(
+                    (all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
+                )
+                all_shits = np.concatenate(
+                    (all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
+                )
 
-        return rev_map
+        order = np.argsort(all_qhits, stable=True)
+        return BiocFrame({"query_hits": all_qhits, "self_hits": all_shits})[order, :]
 
     def count_overlaps(
         self,
         query: "GenomicRanges",
         query_type: Literal["any", "start", "end", "within"] = "any",
         max_gap: int = -1,
-        min_overlap: int = 1,
+        min_overlap: int = 0,
         ignore_strand: bool = False,
-    ) -> List[int]:
+    ) -> np.ndarray:
         """Count overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
         Args:
@@ -2092,7 +2269,7 @@ class GenomicRanges:
                 Defaults to -1 (no gap allowed).
 
             min_overlap:
-                Minimum overlap with query. Defaults to 1.
+                Minimum overlap with query. Defaults to 0.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -2101,64 +2278,24 @@ class GenomicRanges:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
         Returns:
-            A list with the same length as ``query``,
-            containing number of overlapping indices.
+            NumPy vector with length matching query,
+            value represents the number of overlaps in `self` for each query.
         """
-        OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
-        if not isinstance(query, GenomicRanges):
-            raise TypeError("'query' is not a `GenomicRanges` object.")
+        _overlaps = self.find_overlaps(
+            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
+        )
+        result = np.zeros(len(query))
+        _ucounts = np.unique_counts(_overlaps.get_column("query_hits"))
+        result[_ucounts.values] = _ucounts.counts
 
-        if query_type not in OVERLAP_QUERY_TYPES:
-            raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
-
-        rev_map = [0 for _ in range(len(query))]
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
-
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
-
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.find_overlaps(
-                    query=_query_subset._ranges,
-                    query_type=query_type,
-                    select="all",
-                    max_gap=max_gap,
-                    min_overlap=min_overlap,
-                    delete_index=False,
-                )
-
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = len(_rev_map)
-
-        return rev_map
+        return result
 
     def subset_by_overlaps(
         self,
         query: "GenomicRanges",
         query_type: Literal["any", "start", "end", "within"] = "any",
         max_gap: int = -1,
-        min_overlap: int = 1,
+        min_overlap: int = 0,
         ignore_strand: bool = False,
     ) -> "GenomicRanges":
         """Subset ``subject`` (self) with overlaps in ``query`` `GenomicRanges` object.
@@ -2182,7 +2319,7 @@ class GenomicRanges:
                 Defaults to -1 (no gap allowed).
 
             min_overlap:
-                Minimum overlap with query. Defaults to 1.
+                Minimum overlap with query. Defaults to 0.
 
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
@@ -2194,54 +2331,11 @@ class GenomicRanges:
         Returns:
             A ``GenomicRanges`` object containing overlapping ranges.
         """
-        OVERLAP_QUERY_TYPES = ["any", "start", "end", "within"]
-        if not isinstance(query, GenomicRanges):
-            raise TypeError("'query' is not a `GenomicRanges` object.")
-
-        if query_type not in OVERLAP_QUERY_TYPES:
-            raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
-
-        rev_map = []
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
-
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
-
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.find_overlaps(
-                    query=_query_subset._ranges,
-                    query_type=query_type,
-                    select="all",
-                    max_gap=max_gap,
-                    min_overlap=min_overlap,
-                    delete_index=False,
-                )
-
-                for _, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map.extend(_rev_map)
-
-        return self[list(set(rev_map))]
+        _overlaps = self.find_overlaps(
+            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
+        )
+        _all_indices = np.unique(_overlaps.get_column("self_hits"))
+        return self[_all_indices]
 
     #################################
     ######>> nearest methods <<######
@@ -2250,9 +2344,9 @@ class GenomicRanges:
     def nearest(
         self,
         query: "GenomicRanges",
-        select: Literal["all", "arbitrary"] = "all",
+        select: Literal["all", "arbitrary"] = "arbitrary",
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
         Args:
@@ -2267,15 +2361,26 @@ class GenomicRanges:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A list with the same length as ``query``,
-            containing hits to nearest indices.
+            If select="arbitrary":
+                A numpy array of integers with length matching query, containing indices
+                into self for the closest for each query range. Value may be None if there
+                are no matches.
+            If select="all":
+                A BiocFrame with two columns:
+                - query_hits: Indices into query ranges
+                - self_hits: Corresponding indices into self ranges that are upstream
+                Each row represents a query-self pair where subject is nearest to query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        if select == "arbitrary":
+            result = np.full(len(query), None)
+        else:
+            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2302,18 +2407,29 @@ class GenomicRanges:
 
                 res_idx = _sub_subset._ranges.nearest(query=_query_subset._ranges, select=select, delete_index=False)
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                if select == "arbitrary":
+                    for i, x in enumerate(res_idx):
+                        result[indices[i]] = _subset[x]
 
-        return rev_map
+                else:
+                    result["all_qhits"] = np.concatenate(
+                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
+                    )
+                    result["all_shits"] = np.concatenate(
+                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
+                    )
+
+        if select == "all":
+            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
+
+        return result
 
     def precede(
         self,
         query: "GenomicRanges",
-        select: Literal["all", "arbitrary"] = "all",
+        select: Literal["all", "first"] = "first",
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only downstream that overlap with each range in ``query``.
 
         Args:
@@ -2321,22 +2437,33 @@ class GenomicRanges:
                 Query ``GenomicRanges`` to find nearest positions.
 
             select:
-                Determine what hit to choose when there are
-                multiple hits for an interval in ``query``.
+                Whether to return "all" hits or just "first".
+                Defaults to "first".
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A List with the same length as ``query``,
-            containing hits to nearest indices.
+            If select="first":
+                A numpy array of integers with length matching query, containing indices
+                into self for the closest upstream position of each query range. Value may be
+                None if there are no matches.
+            If select="all":
+                A BiocFrame with two columns:
+                - query_hits: Indices into query ranges
+                - self_hits: Corresponding indices into self ranges that are upstream
+                Each row represents a query-self pair where self precedes query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        if select == "first":
+            result = np.full(len(query), None)
+        else:
+            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2361,20 +2488,35 @@ class GenomicRanges:
                 _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
-                res_idx = _sub_subset._ranges.precede(query=_query_subset._ranges, select=select, delete_index=False)
+                res_idx = _sub_subset._ranges.precede(query=_query_subset._ranges, select=select)
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                if select == "first":
+                    matches = res_idx != None  # noqa: E711
+                    not_none = res_idx[matches]
 
-        return rev_map
+                    if len(not_none) > 0:
+                        for i, x in enumerate(not_none):
+                            result[indices[i]] = _subset[x]
+
+                else:
+                    result["all_qhits"] = np.concatenate(
+                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")])
+                    )
+                    result["all_shits"] = np.concatenate(
+                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")])
+                    )
+
+        if select == "all":
+            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
+
+        return result
 
     def follow(
         self,
         query: "GenomicRanges",
-        select: Literal["all", "arbitrary"] = "all",
+        select: Literal["all", "last"] = "last",
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only upstream that overlap with each range in ``query``.
 
         Args:
@@ -2382,22 +2524,33 @@ class GenomicRanges:
                 Query ``GenomicRanges`` to find nearest positions.
 
             select:
-                Determine what hit to choose when there are
-                multiple hits for an interval in ``query``.
+                Whether to return "all" hits or just "last".
+                Defaults to "last".
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
 
         Returns:
-            A List with the same length as ``query``,
-            containing hits to nearest indices.
+            If select="last":
+                A numpy array of integers with length matching query, containing indices
+                into self for the closest downstream position of each query range. Value may be
+                None if there are no matches.
+            If select="all":
+                A BiocFrame with two columns:
+                - query_hits: Indices into query ranges
+                - self_hits: Corresponding indices into self ranges that are upstream
+                Each row represents a query-self pair where self follows query.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        rev_map = [[] for _ in range(len(query))]
         subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+
+        if select == "last":
+            result = np.full(len(query), None)
+        else:
+            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for group, indices in query_chrm_grps.items():
             _subset = []
@@ -2422,13 +2575,28 @@ class GenomicRanges:
                 _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
-                res_idx = _sub_subset._ranges.follow(query=_query_subset._ranges, select=select, delete_index=False)
+                res_idx = _sub_subset._ranges.follow(query=_query_subset._ranges, select=select)
 
-                for j, val in enumerate(res_idx):
-                    _rev_map = [_subset[x] for x in val]
-                    rev_map[indices[j]] = _rev_map
+                if select == "last":
+                    matches = res_idx != None  # noqa: E711
+                    not_none = res_idx[matches]
 
-        return rev_map
+                    if len(not_none) > 0:
+                        for i, x in enumerate(not_none):
+                            result[indices[i]] = _subset[x]
+
+                else:
+                    result["all_qhits"] = np.concatenate(
+                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")])
+                    )
+                    result["all_shits"] = np.concatenate(
+                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")])
+                    )
+
+        if select == "all":
+            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
+
+        return result
 
     def distance(self, query: Union["GenomicRanges", IRanges]) -> np.ndarray:
         """Compute the pair-wise distance with intervals in query.
@@ -2441,10 +2609,10 @@ class GenomicRanges:
             Numpy vector containing distances for each interval in query.
         """
         if not isinstance(query, (IRanges, GenomicRanges)):
-            raise TypeError("'query' is not a `GenomicRanges` or `IRanges` object.")
+            raise TypeError("'query' is neither a `GenomicRanges` nor `IRanges` object.")
 
         if len(self) != len(query):
-            raise ValueError("'query' does not contain the same number of intervals.")
+            raise ValueError("'query' does not contain the same number of ranges.")
 
         _qranges = query
         if isinstance(query, GenomicRanges):
@@ -2452,67 +2620,50 @@ class GenomicRanges:
 
         return self._ranges.distance(_qranges)
 
-    def match(self, query: "GenomicRanges") -> List[List[int]]:
+    #############################
+    ######>> comparisons <<######
+    #############################
+
+    def match(self, query: "GenomicRanges", ignore_strand: bool = False) -> np.ndarray:
         """Element wise comparison to find exact match ranges.
 
         Args:
             query:
                 Query ``GenomicRanges`` to search for matches.
 
-        Raises:
-            TypeError:
-                If ``query`` is not of type ``GenomicRanges``.
+            ignore_strand:
+                Whether to ignore strand. Defaults to False.
 
         Returns:
-            A List with the same length as ``query``,
-            containing hits to matching indices.
+            A NumPy array with length matching query
+            containing the matched indices.
         """
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        ignore_strand = False
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        result = np.full(len(query), None)
+        all_overlaps = self.find_overlaps(query, ignore_strand=ignore_strand)
 
-        rev_map = []
-        groups = []
+        ol_query = all_overlaps.get_column("query_hits")
+        ol_subject = all_overlaps.get_column("self_hits")
 
-        for i in range(len(query)):
-            try:
-                _seqname = query.get_seqnames()[i]
-            except Exception as _:
-                warn(f"'{query.get_seqnames()[i]}' is not present in subject.")
+        unique_queries = np.unique(ol_query)
 
-            _strand = query._strand[i]
+        for q in unique_queries:
+            q_ctx = query[q]
+            matches = np.where(ol_query == q)[0]
+            self_indices = ol_subject[matches]
+            self_matches = self[ol_subject[matches]]
 
-            if ignore_strand is True:
-                _strand = 0
+            tgt = self_indices[
+                (np.array(self_matches.get_start()) == q_ctx.get_start()[0])
+                & (np.array(self_matches.get_end()) == q_ctx.get_end()[0])
+            ]
 
-            _key = f"{_seqname}{_granges_delim}{_strand}"
-            if _key in subject_chrm_grps:
-                _grp_subset = self[subject_chrm_grps[_key]]
+            if result[q] is None:
+                result[q] = tgt[0]
 
-                res_idx = _grp_subset._ranges.find_overlaps(
-                    query=query._ranges[i],
-                    query_type="any",
-                    select="all",
-                    delete_index=False,
-                )
-
-                groups.append(i)
-
-                _rev_map = []
-                for j in res_idx:
-                    for x in j:
-                        _mrange = self[subject_chrm_grps[_key][x]]._ranges
-
-                        if (
-                            _mrange.start[0] == query._ranges[i].start[0]
-                            and _mrange.width[0] == query._ranges[i].width[0]
-                        ):
-                            _rev_map.append(subject_chrm_grps[_key][x])
-                rev_map.append(_rev_map)
-
-        return rev_map
+        return result
 
     def _get_ranges_as_list(self) -> List[Tuple[int, int, int]]:
         """Internal method to get ranges as a list of tuples.
@@ -2521,11 +2672,16 @@ class GenomicRanges:
             List of tuples containing the start, end and the index.
         """
         ranges = []
+        strands = self._strand.copy()
+        strands[strands == 1] = 6
+        strands[strands == -1] = 7
+        strands[strands == 0] = 8
+
         for i in range(len(self)):
             ranges.append(
                 (
                     self._seqnames[i],
-                    self._strand[i],
+                    strands[i],
                     self._ranges._start[i],
                     self._ranges.end[i],
                     i,
@@ -2632,64 +2788,13 @@ class GenomicRanges:
     ######>> window methods <<######
     ################################
 
-    def tile_by_range(self, n: Optional[int] = None, width: Optional[int] = None) -> "GenomicRanges":
-        """Split each sequence length into chunks by ``n`` (number of intervals) or ``width`` (intervals with equal
-        width).
-
-        Note: Either ``n`` or ``width`` must be provided, but not both.
-
-        Also, checkout :py:meth:`~genomicranges.io.tiling.tile_genome` for splitting
-        the genome into chunks.
-
-        Args:
-            n:
-                Number of intervals to split into.
-                Defaults to None.
-
-            width:
-                Width of each interval. Defaults to None.
-
-        Raises:
-            ValueError:
-                If both ``n`` or ``width`` are provided.
-
-        Returns:
-            A new ``GenomicRanges`` with the split ranges.
-        """
-        if n is not None and width is not None:
-            raise ValueError("Either `n` or `width` must be provided but not both.")
-
-        ranges = self.range()
-
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
-
-        for _, val in ranges:
-            twidth = None
-            if n is not None:
-                twidth = int((val._ranges.width[0]) / n)
-            elif width is not None:
-                twidth = width
-
-            all_intervals = split_intervals(val._ranges._start[0], val._ranges.end[0] - 1, twidth)
-
-            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
-            strand.extend([int(val.strand[0])] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
-
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
-
-    def tile(self, n: Optional[int] = None, width: Optional[int] = None) -> "GenomicRanges":
+    def tile(self, n: Optional[int] = None, width: Optional[int] = None) -> List["GenomicRanges"]:
         """Split each interval by ``n`` (number of sub intervals) or ``width`` (intervals with equal width).
 
         Note: Either ``n`` or ``width`` must be provided but not both.
 
         Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
-        a genome into chunks, or
-        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
+        a genome into chunks.
 
         Args:
             n:
@@ -2704,41 +2809,31 @@ class GenomicRanges:
                 If both ``n`` and ``width`` are provided.
 
         Returns:
-            A new ``GenomicRanges`` with the split ranges.
+            List of ``GenomicRanges`` with the split ranges.
         """
         if n is not None and width is not None:
             raise ValueError("either `n` or `width` must be provided but not both")
 
-        import math
+        range_tiles = self._ranges.tile(n=n, width=width)
+        seqnames = self.get_seqnames("list")
 
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
+        result = []
+        for i in range(len(self)):
+            num_tiles = len(range_tiles[i])
 
-        counter = 0
-        for _, val in self:
-            twidth = None
-            if n is not None:
-                twidth = math.ceil((val._ranges._width + 1) / (n))
+            result.append(
+                GenomicRanges(
+                    seqnames=[seqnames[i]] * num_tiles,
+                    ranges=range_tiles[i],
+                    strand=np.repeat(self._strand[i], num_tiles),
+                    names=self._names[i] * num_tiles if self._names is not None else None,
+                    seqinfo=self._seqinfo,
+                )
+            )
 
-                if twidth < 1:
-                    raise RuntimeError(f"'width' of region is less than 'n' for range in: {counter}.")
-            elif width is not None:
-                twidth = width
+        return result
 
-            all_intervals = split_intervals(val._ranges._start[0], val._ranges.end[0] - 1, twidth)
-
-            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
-            strand.extend([int(val.strand[0])] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
-
-            counter += 1
-
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
-
-    def sliding_windows(self, width: int, step: int = 1) -> "GenomicRanges":
+    def sliding_windows(self, width: int, step: int = 1) -> List["GenomicRanges"]:
         """Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.
 
         Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
@@ -2756,95 +2851,158 @@ class GenomicRanges:
         Returns:
             A new ``GenomicRanges`` with the sliding ranges.
         """
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
+        range_windows = self._ranges.sliding_windows(width=width, step=step)
+        seqnames = self.get_seqnames("list")
 
-        for _, val in self:
-            all_intervals = slide_intervals(
-                val._ranges._start[0],
-                val._ranges.end[0] - 1,
-                width=width,
-                step=step,
+        result = []
+        for i in range(len(self)):
+            num_tiles = len(range_windows[i])
+
+            result.append(
+                GenomicRanges(
+                    seqnames=[seqnames[i]] * num_tiles,
+                    ranges=range_windows[i],
+                    strand=np.repeat(self._strand[i], num_tiles),
+                    names=self._names[i] * num_tiles if self._names is not None else None,
+                    seqinfo=self._seqinfo,
+                )
             )
 
-            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
-            strand.extend([int(val.strand[0])] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
+        return result
 
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
-
+    # TODO: should really be a genomicrangeslist
     @classmethod
     def tile_genome(
         cls,
-        seqlengths: Union[Dict, SeqInfo],
-        n: Optional[int] = None,
-        width: Optional[int] = None,
+        seqlengths: Dict[str, int],
+        ntile: Optional[int] = None,
+        tilewidth: Optional[int] = None,
+        cut_last_tile_in_chrom: bool = False,
     ) -> "GenomicRanges":
-        """Create a new ``GenomicRanges`` by partitioning a specified genome.
-
-        If ``n`` is provided, the region is split into ``n`` intervals. The last interval may
-        not contain the same 'width' as the other regions.
-
-        Alternatively, ``width`` may be provided for each interval. Similarly, the last region
-        may be less than ``width``.
-
-        Either ``n`` or ``width`` must be provided but not both.
+        """Tile genome into approximately equal-sized regions.
 
         Args:
             seqlengths:
-                Sequence lengths of each chromosome.
+                Dictionary of sequence lengths by chromosome.
 
-                ``seqlengths`` may be a dictionary, where keys specify the chromosome
-                and the value is the length of each chromosome in the genome.
+            ntile:
+                Number of tiles (exclusive with tilewidth).
 
-                Alternatively, ``seqlengths`` may be an instance of
-                :py:class:`~genomicranges.SeqInfo.SeqInfo`.
+            tilewidth:
+                Width of tiles (exclusive with ntile).
 
-            n:
-                Number of intervals to split into.
-                Defaults to None, then 'width' of each interval is computed from ``seqlengths``.
-
-            width:
-                Width of each interval. Defaults to None.
-
-        Raises:
-            ValueError:
-                If both ``n`` and ``width`` are provided.
+            cut_last_tile_in_chrom:
+                Whether to cut the last tile in each chromosome.
 
         Returns:
-            A new ``GenomicRanges`` with the tiled regions.
+            `GenomicRanges` object with ranges and bin numbers in mcols.
         """
-        import math
 
-        if n is not None and width is not None:
-            raise ValueError("Both `n` or `width` are provided!")
+        if ntile is not None and tilewidth is not None:
+            raise ValueError("only one of 'ntile' and 'tilewidth' can be specified")
 
         seqlen_ = seqlengths
         if isinstance(seqlengths, SeqInfo):
             seqlen_ = dict(zip(seqlengths.get_seqnames(), seqlengths.seqlengths))
 
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
-        for chrm, chrlen in seqlen_.items():
-            twidth = None
-            if n is not None:
-                twidth = math.ceil(chrlen / n)
-            elif width is not None:
-                twidth = width
+        if not seqlen_:
+            raise ValueError("seqlengths must be non-empty")
 
-            all_intervals = split_intervals(1, chrlen, twidth)
+        if any(length <= 0 for length in seqlen_.values()):
+            raise ValueError("seqlengths contains zero or negative values")
 
-            seqnames.extend([chrm] * len(all_intervals))
-            strand.extend(["*"] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
+        chroms = list(seqlen_.keys())
+        lengths = np.array([seqlen_[c] for c in chroms], dtype=np.int32)
+        chrom_ends = np.cumsum(lengths)
+        # chrom_starts = np.r_[0, chrom_ends[:-1]]
+        genome_size = chrom_ends[-1]
 
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
+        if ntile is not None:
+            if cut_last_tile_in_chrom:
+                raise ValueError("cut_last_tile_in_chrom must be FALSE when ntile is supplied")
+
+            if not isinstance(ntile, (int, np.integer)) or ntile < 1 or ntile > genome_size:
+                raise ValueError("ntile must be an integer >= 1 and <= genome size")
+
+            tilewidth = genome_size / ntile
+            genome_breaks = np.floor(tilewidth * np.arange(1, ntile + 1)).astype(np.int32)
+
+            all_chroms = []
+            all_starts = []
+            all_widths = []
+            all_abs_starts = []  # track absolute starts
+            all_abs_ends = []  # track absolute ends
+
+            prev_end = 0
+            for i, length in enumerate(lengths):
+                curr_end = prev_end + length
+
+                chr_mask = (genome_breaks > prev_end) & (genome_breaks <= curr_end)
+                chr_breaks = genome_breaks[chr_mask]
+
+                if len(chr_breaks) > 0:
+                    # Handle first tile in chromosome
+                    if not all_starts or genome_breaks[chr_mask][0] > prev_end + 1:
+                        all_chroms.append(chroms[i])
+                        start = 1
+                        end = chr_breaks[0] - prev_end
+                        all_starts.append(start)
+                        all_widths.append(end)
+                        all_abs_starts.append(prev_end + 1)
+                        all_abs_ends.append(chr_breaks[0])
+
+                    # Handle remaining tiles in chromosome
+                    for j in range(1, len(chr_breaks)):
+                        all_chroms.append(chroms[i])
+                        start = chr_breaks[j - 1] - prev_end + 1
+                        end = chr_breaks[j] - prev_end
+                        all_starts.append(start)
+                        all_widths.append(end - start + 1)
+                        all_abs_starts.append(chr_breaks[j - 1] + 1)
+                        all_abs_ends.append(chr_breaks[j])
+
+                prev_end = curr_end
+
+                if i < len(lengths) - 1 and (len(chr_breaks) == 0 or chr_breaks[-1] < curr_end):
+                    all_chroms.append(chroms[i])
+                    if len(chr_breaks) > 0:
+                        start = chr_breaks[-1] - prev_end + length + 1
+                    else:
+                        start = 1
+                    all_starts.append(start)
+                    width = length - start + 1
+                    all_widths.append(width)
+                    if len(chr_breaks) > 0:
+                        all_abs_starts.append(chr_breaks[-1] + 1)
+                    else:
+                        all_abs_starts.append(prev_end + 1)
+                    all_abs_ends.append(curr_end)
+
+            all_abs_starts = np.array(all_abs_starts)
+            all_abs_ends = np.array(all_abs_ends)
+
+            bin_width = genome_size / ntile
+            bin_starts = np.arange(0, genome_size, bin_width)
+            bin_ends = np.append(bin_starts[1:], genome_size)
+
+            all_bins = np.zeros(len(all_abs_starts), dtype=np.int32)
+
+            for i in range(len(all_abs_starts)):
+                range_start = all_abs_starts[i]
+                range_end = all_abs_ends[i]
+                overlaps = np.minimum(bin_ends, range_end) - np.maximum(bin_starts, range_start)
+                overlaps = np.maximum(overlaps, 0)
+                all_bins[i] = np.argmax(overlaps) + 1
+        else:
+            if not isinstance(tilewidth, (int, np.integer)) or tilewidth < 1 or tilewidth > genome_size:
+                raise ValueError("tilewidth must be an integer >= 1 and <= genome size")
+
+            ntile = int(np.ceil(genome_size / tilewidth))
+            return GenomicRanges.tile_genome(seqlen_, ntile=ntile, cut_last_tile_in_chrom=False)
+
+        ranges = IRanges(start=np.array(all_starts, dtype=np.int32), width=np.array(all_widths, dtype=np.int32))
+        mcols = BiocFrame({"bin": np.array(all_bins, dtype=np.int32)})
+        return GenomicRanges(seqnames=all_chroms, ranges=ranges, strand=["*"] * len(all_starts), mcols=mcols)
 
     def binned_average(
         self,
@@ -2955,12 +3113,14 @@ class GenomicRanges:
     ######>> subtract <<######
     ##########################
 
-    def subtract(self, x: "GenomicRanges", min_overlap: int = 1, ignore_strand: bool = False) -> "GenomicRangesList":
+    def subtract(
+        self, other: "GenomicRanges", min_overlap: int = 1, ignore_strand: bool = False
+    ) -> "GenomicRangesList":
         """Subtract searches for features in ``x`` that overlap ``self`` by at least the number of base pairs given by
         ``min_overlap``.
 
         Args:
-            x:
+            other:
                 Object to subtract.
 
             min_overlap:
@@ -2972,31 +3132,37 @@ class GenomicRanges:
                 Defaults to False.
 
         Returns:
-            `GenomicRangesList` with the same size as ``self`` containing
+            A `GenomicRangesList` with the same size as ``self`` containing
             the subtracted regions.
         """
-        _x_reduce = x.reduce(ignore_strand=ignore_strand)
-        hits = self.find_overlaps(_x_reduce, min_overlap=min_overlap, ignore_strand=ignore_strand)
 
-        gr_idxs = [[] for _ in range(len(self))]
-        for ii, ix in enumerate(hits):
-            for hix in ix:
-                gr_idxs[hix].append(ii)
+        _other_reduce = other.reduce(ignore_strand=ignore_strand)
+        hits = _other_reduce.find_overlaps(self, min_overlap=min_overlap, ignore_strand=ignore_strand)
 
-        gresults = {}
-        for idx, iids in enumerate(gr_idxs):
-            _name = str(idx)
-            if self._names is not None:
-                _name = self._names[idx]
+        mapper = {}
+        for i in range(len(self)):
+            mapper[i] = []
 
-            if len(iids) > 0:
-                gresults[_name] = self[idx].setdiff(x[iids])
+        for i in range(len(hits)):
+            s_hit = int(hits.get_column("self_hits")[i])
+            q_hit = int(hits.get_column("query_hits")[i])
+
+            mapper[q_hit].append(s_hit)
+
+        mapper_with_y = {}
+        for idx, val in mapper.items():
+            mapper_with_y[idx] = other[val]
+
+        psetdiff = {}
+        for idx, val in mapper_with_y.items():
+            if len(val) == 0:
+                psetdiff[idx] = self[idx]
             else:
-                gresults[_name] = self[idx]
+                psetdiff[idx] = self[idx].setdiff(val)
 
         from .GenomicRangesList import GenomicRangesList
 
-        return GenomicRangesList.from_dict(gresults)
+        return GenomicRangesList.from_dict(psetdiff)
 
 
 def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:

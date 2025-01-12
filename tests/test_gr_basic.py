@@ -1,12 +1,11 @@
-import pytest
-import pandas as pd
-import numpy as np
-from genomicranges import GenomicRanges
-from biocframe import BiocFrame
-import biocutils as ut
-from iranges import IRanges
 from random import random
-import genomicranges
+
+import biocutils as ut
+import pandas as pd
+from biocframe import BiocFrame
+from iranges import IRanges
+
+from genomicranges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -83,6 +82,8 @@ def test_gr_empty_subset():
     assert len(gre) == 0
 
     subset = gre[0:10]
+    assert subset is not None
+    assert len(subset) == 0
 
 
 def test_export():
@@ -106,11 +107,7 @@ def test_export():
 
 
 def test_export_pandas_with_mcols():
-    df = (
-        GenomicRanges(seqnames=["A"], ranges=IRanges(start=[0], width=[10]))
-        .reduce()
-        .to_pandas()
-    )
+    df = GenomicRanges(seqnames=["A"], ranges=IRanges(start=[0], width=[10])).reduce().to_pandas()
 
     assert df is not None
     assert isinstance(df, pd.DataFrame)
@@ -119,9 +116,7 @@ def test_export_pandas_with_mcols():
 def test_combine():
     g_src = GenomicRanges(
         seqnames=["chr1", "chr2", "chr1", "chr3", "chr2"],
-        ranges=IRanges(
-            start=[101, 102, 103, 104, 109], width=[112, 103, 128, 134, 111]
-        ),
+        ranges=IRanges(start=[101, 102, 103, 104, 109], width=[112, 103, 128, 134, 111]),
         strand=["*", "-", "*", "+", "-"],
     )
 

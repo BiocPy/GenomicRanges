@@ -1,10 +1,6 @@
-import pytest
-import pandas as pd
-from genomicranges import GenomicRanges
-from random import random
 from iranges import IRanges
-from biocframe import BiocFrame
-import numpy as np
+
+from genomicranges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -20,12 +16,6 @@ gr = GenomicRanges(
     ],
     ranges=IRanges([x for x in range(101, 106)], [11, 21, 25, 30, 5]),
     strand=["*", "-", "*", "+", "-"],
-    mcols=BiocFrame(
-        {
-            "score": range(0, 5),
-            "GC": [random() for _ in range(5)],
-        }
-    ),
 )
 
 
@@ -34,8 +24,11 @@ def test_tile():
 
     tiles = gr.tile(n=2)
     assert tiles is not None
-    assert isinstance(tiles, GenomicRanges)
-    assert len(tiles) == 10
+    assert isinstance(tiles, list)
+    assert len(tiles) == 5
+    assert sum(len(x) for x in tiles) == 10
+
+    assert tiles[0].get_seqnames() == ["chr1", "chr1"]
 
 
 def test_slide():
@@ -44,15 +37,15 @@ def test_slide():
     tiles = gr.sliding_windows(width=3)
 
     assert tiles is not None
-    assert isinstance(tiles, GenomicRanges)
-    assert len(tiles) == 82
+    assert isinstance(tiles, list)
+    assert sum(len(x) for x in tiles) == 82
 
 
 def test_tile_genome():
-    seqlengths = {"chr1": 100, "chr2": 75, "chr3": 200}
+    seqlengths = {"chr1": 60, "chr2": 20, "chr3": 25}
 
-    tiles = GenomicRanges.tile_genome(seqlengths=seqlengths, n=10)
+    tiles = GenomicRanges.tile_genome(seqlengths=seqlengths, ntile=5)
 
     assert tiles is not None
     assert isinstance(tiles, GenomicRanges)
-    assert len(tiles) == 30
+    assert len(tiles) == 7

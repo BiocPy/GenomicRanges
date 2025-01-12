@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.6.0
+
+An rewrite of the package to use the new and improve IRanges packages (>= 0.4.2)
+
+- More consistent results across all methods compared to R/Bioconductor implementations.
+- Similar to IRanges, search and overlap operations may return a hits like object.
+- Nearest returns slightly different matches but since the select="arbitrary", its probably ok.
+- More robust testing of the combination of inputs and parameter choices.
+- Updated the tests, docstrings
+
 ## Version 0.5.2
 
 - Restrict IRanges to the last compatible version before the migration.

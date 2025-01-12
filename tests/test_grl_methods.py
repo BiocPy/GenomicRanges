@@ -1,11 +1,9 @@
 import pytest
-import pandas as pd
-from genomicranges import GenomicRanges, GenomicRangesList
-from biocutils import combine_sequences
 from biocframe import BiocFrame
+from biocutils import combine_sequences
 from iranges import IRanges
-from random import random
-import genomicranges
+
+from genomicranges import GenomicRanges, GenomicRangesList
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -29,13 +27,13 @@ b = GenomicRanges(
 def test_is_empty_False():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
-    assert grl.is_empty() == False
+    assert grl.is_empty() is False
 
 
 def test_is_empty_slice():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
-    assert grl.is_empty() == False
+    assert grl.is_empty() is False
 
     sgrl = grl[0:1]
     assert sgrl is not None
@@ -46,7 +44,7 @@ def test_is_empty_slice():
 def test_slice_by_name():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
-    assert grl.is_empty() == False
+    assert grl.is_empty() is False
 
     sgrl = grl[["a"]]
     assert sgrl is not None
@@ -57,7 +55,7 @@ def test_slice_by_name():
 def test_slice_by_bool():
     grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
-    assert grl.is_empty() == False
+    assert grl.is_empty() is False
 
     sgrl = grl[[True, False]]
     assert sgrl is not None
@@ -71,7 +69,7 @@ def test_slice_by_bool():
 def test_is_empty_True():
     grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0])
 
-    assert grl.is_empty() == True
+    assert grl.is_empty() is True
     assert len(grl) == 1
 
 

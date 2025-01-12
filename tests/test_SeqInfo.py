@@ -1,7 +1,9 @@
-from genomicranges.SeqInfo import SeqInfo, merge_SeqInfo
 from random import random
-import pytest
+
 import numpy as np
+import pytest
+
+from genomicranges.SeqInfo import SeqInfo, merge_SeqInfo
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -78,7 +80,7 @@ def test_create_seqInfo_numpy_masked():
 def test_create_empty():
     si = SeqInfo.empty()
 
-    with pytest.raises(ValueError) as ex:
+    with pytest.raises(ValueError):
         si.set_seqnames([None, "chrB", "chrC"])
 
 
