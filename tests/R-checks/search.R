@@ -26,3 +26,34 @@ precede(gr1, gr, select="all")
 follow(gr1, gr)
 follow(gr, gr1)
 follow(gr1, gr, select="all")
+
+
+gr = GRanges(
+  seqnames=c("chr1","chr2","chr3","chr2","chr3"),
+  ranges=IRanges(c(101, 102, 103, 104, 105), width=c(11, 21, 25, 30, 5)),
+  strand=c("*", "-", "*", "+", "-")
+)
+
+
+x = IRanges(c(1, 5, -2, 0, 14), width=c(10, 5, 6, 12, 4))
+
+seqlengths <- c(chr1=60, chr2=20, chr3=25)
+
+## Create 5 tiles:
+tiles <- tileGenome(seqlengths, ntile=5)
+tiles
+
+x <- GRanges(c(A="chr1:1-50", B="chr1:40-110", C="chrX:1-500"))
+y <- GRanges(c("chr1:21-25", "chr1:38-150"))
+z <- subtract(x, y)
+z
+
+ignore.strand <- FALSE
+minoverlap <- 1
+y_red <- reduce(y, ignore.strand=ignore.strand)
+hits <- findOverlaps(x, y_red, minoverlap=minoverlap,
+                            ignore.strand=ignore.strand)
+hits_obj <- extractList(y, as(hits, "IntegerList"))
+ans <- psetdiff(x, extractList(y, as(hits, "IntegerList")))
+mcols(ans) <- mcols(x)
+setNames(ans, names(x))

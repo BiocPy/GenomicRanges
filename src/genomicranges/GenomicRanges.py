@@ -1,3 +1,4 @@
+import itertools
 from collections import defaultdict
 from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
 from warnings import warn
@@ -12,8 +13,6 @@ from .utils import (
     compute_up_down,
     group_by_indices,
     sanitize_strand_vector,
-    slide_intervals,
-    split_intervals,
 )
 
 __author__ = "jkanche"
@@ -2063,7 +2062,8 @@ class GenomicRanges:
 
         for seq, seqlen in seqlengths.items():
             if seqlen is None:
-                seqlengths[seq] = int(all_combs_ends[seq])
+                _val = all_combs_ends.get(seq, None)
+                seqlengths[seq] = int(_val) if _val is not None else None
             print(seq, seqlen)
 
         print("RBBBBBBBBENDDSSSS", seqlengths)
@@ -2829,64 +2829,13 @@ class GenomicRanges:
     ######>> window methods <<######
     ################################
 
-    def tile_by_range(self, n: Optional[int] = None, width: Optional[int] = None) -> "GenomicRanges":
-        """Split each sequence length into chunks by ``n`` (number of intervals) or ``width`` (intervals with equal
-        width).
-
-        Note: Either ``n`` or ``width`` must be provided, but not both.
-
-        Also, checkout :py:meth:`~genomicranges.io.tiling.tile_genome` for splitting
-        the genome into chunks.
-
-        Args:
-            n:
-                Number of intervals to split into.
-                Defaults to None.
-
-            width:
-                Width of each interval. Defaults to None.
-
-        Raises:
-            ValueError:
-                If both ``n`` or ``width`` are provided.
-
-        Returns:
-            A new ``GenomicRanges`` with the split ranges.
-        """
-        if n is not None and width is not None:
-            raise ValueError("Either `n` or `width` must be provided but not both.")
-
-        ranges = self.range()
-
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
-
-        for _, val in ranges:
-            twidth = None
-            if n is not None:
-                twidth = int((val._ranges.width[0]) / n)
-            elif width is not None:
-                twidth = width
-
-            all_intervals = split_intervals(val._ranges._start[0], val._ranges.end[0] - 1, twidth)
-
-            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
-            strand.extend([int(val.strand[0])] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
-
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
-
-    def tile(self, n: Optional[int] = None, width: Optional[int] = None) -> "GenomicRanges":
+    def tile(self, n: Optional[int] = None, width: Optional[int] = None) -> List["GenomicRanges"]:
         """Split each interval by ``n`` (number of sub intervals) or ``width`` (intervals with equal width).
 
         Note: Either ``n`` or ``width`` must be provided but not both.
 
         Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
-        a genome into chunks, or
-        :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.tile_by_range`.
+        a genome into chunks.
 
         Args:
             n:
@@ -2901,41 +2850,31 @@ class GenomicRanges:
                 If both ``n`` and ``width`` are provided.
 
         Returns:
-            A new ``GenomicRanges`` with the split ranges.
+            List of ``GenomicRanges`` with the split ranges.
         """
         if n is not None and width is not None:
             raise ValueError("either `n` or `width` must be provided but not both")
 
-        import math
+        range_tiles = self._ranges.tile(n=n, width=width)
+        seqnames = self.get_seqnames("list")
 
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
+        result = []
+        for i in range(len(self)):
+            num_tiles = len(range_tiles[i])
 
-        counter = 0
-        for _, val in self:
-            twidth = None
-            if n is not None:
-                twidth = math.ceil((val._ranges._width + 1) / (n))
+            result.append(
+                GenomicRanges(
+                    seqnames=[seqnames[i]] * num_tiles,
+                    ranges=range_tiles[i],
+                    strand=np.repeat(self._strand[i], num_tiles),
+                    names=self._names[i] * num_tiles if self._names is not None else None,
+                    seqinfo=self._seqinfo,
+                )
+            )
 
-                if twidth < 1:
-                    raise RuntimeError(f"'width' of region is less than 'n' for range in: {counter}.")
-            elif width is not None:
-                twidth = width
+        return result
 
-            all_intervals = split_intervals(val._ranges._start[0], val._ranges.end[0] - 1, twidth)
-
-            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
-            strand.extend([int(val.strand[0])] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
-
-            counter += 1
-
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
-
-    def sliding_windows(self, width: int, step: int = 1) -> "GenomicRanges":
+    def sliding_windows(self, width: int, step: int = 1) -> List["GenomicRanges"]:
         """Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.
 
         Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
@@ -2953,95 +2892,157 @@ class GenomicRanges:
         Returns:
             A new ``GenomicRanges`` with the sliding ranges.
         """
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
+        range_windows = self._ranges.sliding_windows(width=width, step=step)
+        seqnames = self.get_seqnames("list")
 
-        for _, val in self:
-            all_intervals = slide_intervals(
-                val._ranges._start[0],
-                val._ranges.end[0] - 1,
-                width=width,
-                step=step,
+        result = []
+        for i in range(len(self)):
+            num_tiles = len(range_windows[i])
+
+            result.append(
+                GenomicRanges(
+                    seqnames=[seqnames[i]] * num_tiles,
+                    ranges=range_windows[i],
+                    strand=np.repeat(self._strand[i], num_tiles),
+                    names=self._names[i] * num_tiles if self._names is not None else None,
+                    seqinfo=self._seqinfo,
+                )
             )
 
-            seqnames.extend([val.get_seqnames()[0]] * len(all_intervals))
-            strand.extend([int(val.strand[0])] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
-
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
+        return result
 
     @classmethod
     def tile_genome(
         cls,
-        seqlengths: Union[Dict, SeqInfo],
-        n: Optional[int] = None,
-        width: Optional[int] = None,
+        seqlengths: Dict[str, int],
+        ntile: Optional[int] = None,
+        tilewidth: Optional[int] = None,
+        cut_last_tile_in_chrom: bool = False,
     ) -> "GenomicRanges":
-        """Create a new ``GenomicRanges`` by partitioning a specified genome.
-
-        If ``n`` is provided, the region is split into ``n`` intervals. The last interval may
-        not contain the same 'width' as the other regions.
-
-        Alternatively, ``width`` may be provided for each interval. Similarly, the last region
-        may be less than ``width``.
-
-        Either ``n`` or ``width`` must be provided but not both.
+        """Tile genome into approximately equal-sized regions.
 
         Args:
             seqlengths:
-                Sequence lengths of each chromosome.
+                Dictionary of sequence lengths by chromosome.
 
-                ``seqlengths`` may be a dictionary, where keys specify the chromosome
-                and the value is the length of each chromosome in the genome.
+            ntile:
+                Number of tiles (exclusive with tilewidth).
 
-                Alternatively, ``seqlengths`` may be an instance of
-                :py:class:`~genomicranges.SeqInfo.SeqInfo`.
+            tilewidth:
+                Width of tiles (exclusive with ntile).
 
-            n:
-                Number of intervals to split into.
-                Defaults to None, then 'width' of each interval is computed from ``seqlengths``.
-
-            width:
-                Width of each interval. Defaults to None.
-
-        Raises:
-            ValueError:
-                If both ``n`` and ``width`` are provided.
+            cut_last_tile_in_chrom:
+                Whether to cut the last tile in each chromosome.
 
         Returns:
-            A new ``GenomicRanges`` with the tiled regions.
+            `GenomicRanges` object with ranges and bin numbers in mcols.
         """
-        import math
 
-        if n is not None and width is not None:
-            raise ValueError("Both `n` or `width` are provided!")
+        if ntile is not None and tilewidth is not None:
+            raise ValueError("only one of 'ntile' and 'tilewidth' can be specified")
 
         seqlen_ = seqlengths
         if isinstance(seqlengths, SeqInfo):
             seqlen_ = dict(zip(seqlengths.get_seqnames(), seqlengths.seqlengths))
 
-        seqnames = []
-        strand = []
-        starts = []
-        widths = []
-        for chrm, chrlen in seqlen_.items():
-            twidth = None
-            if n is not None:
-                twidth = math.ceil(chrlen / n)
-            elif width is not None:
-                twidth = width
+        if not seqlen_:
+            raise ValueError("seqlengths must be non-empty")
 
-            all_intervals = split_intervals(1, chrlen, twidth)
+        if any(length <= 0 for length in seqlen_.values()):
+            raise ValueError("seqlengths contains zero or negative values")
 
-            seqnames.extend([chrm] * len(all_intervals))
-            strand.extend(["*"] * len(all_intervals))
-            starts.extend([x[0] for x in all_intervals])
-            widths.extend(x[1] for x in all_intervals)
+        chroms = list(seqlen_.keys())
+        lengths = np.array([seqlen_[c] for c in chroms], dtype=np.int32)
+        chrom_ends = np.cumsum(lengths)
+        # chrom_starts = np.r_[0, chrom_ends[:-1]]
+        genome_size = chrom_ends[-1]
 
-        return GenomicRanges(seqnames=seqnames, strand=strand, ranges=IRanges(start=starts, width=widths))
+        if ntile is not None:
+            if cut_last_tile_in_chrom:
+                raise ValueError("cut_last_tile_in_chrom must be FALSE when ntile is supplied")
+
+            if not isinstance(ntile, (int, np.integer)) or ntile < 1 or ntile > genome_size:
+                raise ValueError("ntile must be an integer >= 1 and <= genome size")
+
+            tilewidth = genome_size / ntile
+            genome_breaks = np.floor(tilewidth * np.arange(1, ntile + 1)).astype(np.int32)
+
+            all_chroms = []
+            all_starts = []
+            all_widths = []
+            all_abs_starts = []  # track absolute starts
+            all_abs_ends = []  # track absolute ends
+
+            prev_end = 0
+            for i, length in enumerate(lengths):
+                curr_end = prev_end + length
+
+                chr_mask = (genome_breaks > prev_end) & (genome_breaks <= curr_end)
+                chr_breaks = genome_breaks[chr_mask]
+
+                if len(chr_breaks) > 0:
+                    # Handle first tile in chromosome
+                    if not all_starts or genome_breaks[chr_mask][0] > prev_end + 1:
+                        all_chroms.append(chroms[i])
+                        start = 1
+                        end = chr_breaks[0] - prev_end
+                        all_starts.append(start)
+                        all_widths.append(end)
+                        all_abs_starts.append(prev_end + 1)
+                        all_abs_ends.append(chr_breaks[0])
+
+                    # Handle remaining tiles in chromosome
+                    for j in range(1, len(chr_breaks)):
+                        all_chroms.append(chroms[i])
+                        start = chr_breaks[j - 1] - prev_end + 1
+                        end = chr_breaks[j] - prev_end
+                        all_starts.append(start)
+                        all_widths.append(end - start + 1)
+                        all_abs_starts.append(chr_breaks[j - 1] + 1)
+                        all_abs_ends.append(chr_breaks[j])
+
+                prev_end = curr_end
+
+                if i < len(lengths) - 1 and (len(chr_breaks) == 0 or chr_breaks[-1] < curr_end):
+                    all_chroms.append(chroms[i])
+                    if len(chr_breaks) > 0:
+                        start = chr_breaks[-1] - prev_end + length + 1
+                    else:
+                        start = 1
+                    all_starts.append(start)
+                    width = length - start + 1
+                    all_widths.append(width)
+                    if len(chr_breaks) > 0:
+                        all_abs_starts.append(chr_breaks[-1] + 1)
+                    else:
+                        all_abs_starts.append(prev_end + 1)
+                    all_abs_ends.append(curr_end)
+
+            all_abs_starts = np.array(all_abs_starts)
+            all_abs_ends = np.array(all_abs_ends)
+
+            bin_width = genome_size / ntile
+            bin_starts = np.arange(0, genome_size, bin_width)
+            bin_ends = np.append(bin_starts[1:], genome_size)
+
+            all_bins = np.zeros(len(all_abs_starts), dtype=np.int32)
+
+            for i in range(len(all_abs_starts)):
+                range_start = all_abs_starts[i]
+                range_end = all_abs_ends[i]
+                overlaps = np.minimum(bin_ends, range_end) - np.maximum(bin_starts, range_start)
+                overlaps = np.maximum(overlaps, 0)
+                all_bins[i] = np.argmax(overlaps) + 1
+        else:
+            if not isinstance(tilewidth, (int, np.integer)) or tilewidth < 1 or tilewidth > genome_size:
+                raise ValueError("tilewidth must be an integer >= 1 and <= genome size")
+
+            ntile = int(np.ceil(genome_size / tilewidth))
+            return GenomicRanges.tile_genome(seqlen_, ntile=ntile, cut_last_tile_in_chrom=False)
+
+        ranges = IRanges(start=np.array(all_starts, dtype=np.int32), width=np.array(all_widths, dtype=np.int32))
+        mcols = BiocFrame({"bin": np.array(all_bins, dtype=np.int32)})
+        return GenomicRanges(seqnames=all_chroms, ranges=ranges, strand=["*"] * len(all_starts), mcols=mcols)
 
     def binned_average(
         self,
@@ -3152,12 +3153,14 @@ class GenomicRanges:
     ######>> subtract <<######
     ##########################
 
-    def subtract(self, x: "GenomicRanges", min_overlap: int = 1, ignore_strand: bool = False) -> "GenomicRangesList":
+    def subtract(
+        self, other: "GenomicRanges", min_overlap: int = 1, ignore_strand: bool = False
+    ) -> "GenomicRangesList":
         """Subtract searches for features in ``x`` that overlap ``self`` by at least the number of base pairs given by
         ``min_overlap``.
 
         Args:
-            x:
+            other:
                 Object to subtract.
 
             min_overlap:
@@ -3172,28 +3175,50 @@ class GenomicRanges:
             `GenomicRangesList` with the same size as ``self`` containing
             the subtracted regions.
         """
-        _x_reduce = x.reduce(ignore_strand=ignore_strand)
-        hits = self.find_overlaps(_x_reduce, min_overlap=min_overlap, ignore_strand=ignore_strand)
 
-        gr_idxs = [[] for _ in range(len(self))]
-        for ii, ix in enumerate(hits):
-            for hix in ix:
-                gr_idxs[hix].append(ii)
+        _other_reduce = other.reduce(ignore_strand=ignore_strand)
+        print("other_reduce", _other_reduce)
+        hits = _other_reduce.find_overlaps(self, min_overlap=min_overlap, ignore_strand=ignore_strand)
 
-        gresults = {}
-        for idx, iids in enumerate(gr_idxs):
-            _name = str(idx)
-            if self._names is not None:
-                _name = self._names[idx]
+        print("back here: @#$#@$@$@$@$@#$@#$@$@#$")
+        print(hits)
+        mapper = {}
+        for i in range(len(self)):
+            mapper[i] = []
+        for i in range(len(hits)):
+            s_hit = int(hits.get_column("self_hits")[i])
+            q_hit = int(hits.get_column("query_hits")[i])
 
-            if len(iids) > 0:
-                gresults[_name] = self[idx].setdiff(x[iids])
+            mapper[q_hit].append(s_hit)
+
+        print(mapper)
+
+        mapper_with_y = {}
+
+        for idx, val in mapper.items():
+            mapper_with_y[idx] = other[val]
+
+        print(mapper_with_y)
+
+        psetdiff = {}
+        print("computing setdiffs again")
+        for idx, val in mapper_with_y.items():
+            print(idx, val)
+
+            print("self is ", self[idx])
+
+            if len(val) == 0:
+                psetdiff[idx] = self[idx]
             else:
-                gresults[_name] = self[idx]
+                psetdiff[idx] = self[idx].setdiff(val)
 
+            print("done pset iter")
+
+        print("done with the looper")
+        print(psetdiff)
         from .GenomicRangesList import GenomicRangesList
 
-        return GenomicRangesList.from_dict(gresults)
+        return GenomicRangesList.from_dict(psetdiff)
 
 
 def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
