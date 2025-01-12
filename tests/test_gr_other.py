@@ -85,7 +85,6 @@ def test_restrict():
 
     ends = {"chr2": 8, "chr3": 9}
     restrict_gr = gr.restrict(start=starts, end=ends)
-    print("final", restrict_gr)
     assert restrict_gr is not None
     assert np.all(restrict_gr.start == np.array([4, 5, 5, 5, 5, 6, 7, 8, 9, 10]))
     assert np.all(restrict_gr.end == np.array([10, 8, 8, 8, 10, 10, 9, 9, 9, 9]))

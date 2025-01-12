@@ -14,8 +14,6 @@ y = GenomicRanges(seqnames=["chr1", "chr1"], ranges=IRanges([21, 38], [5, 113]),
 def test_subtract():
     out = x.subtract(y)
 
-    print(out)
-
     assert out is not None
     assert isinstance(out, GenomicRangesList)
     assert len(out) == 3

@@ -48,5 +48,4 @@ def test_tile_genome():
 
     assert tiles is not None
     assert isinstance(tiles, GenomicRanges)
-    print(tiles)
     assert len(tiles) == 7

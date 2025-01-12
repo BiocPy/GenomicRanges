@@ -1532,7 +1532,6 @@ class GenomicRanges:
                 )
             )
 
-        # Combine results and restore to original order
         combined_granges = _combine_GenomicRanges(*new_granges_list)
         order = np.argsort(all_indices)
         ordered_granges = combined_granges[order]
@@ -1551,8 +1550,6 @@ class GenomicRanges:
         seqlevel_is_circ = [val is True for val in self._seqinfo._is_circular]
         seqlength_is_na = [slength is None for slength in self._seqinfo._seqlengths]
         seqlevel_has_bounds = [not (circ or is_na) for circ, is_na in zip(seqlevel_is_circ, seqlength_is_na)]
-
-        print(seqlevel_is_circ, seqlength_is_na, seqlevel_has_bounds)
 
         out_of_bounds = []
         starts = self.get_start()
@@ -1592,11 +1589,8 @@ class GenomicRanges:
         if len(out_of_bounds) == 0:
             return output.__copy__()
 
-        print(out_of_bounds)
         filtered_seqs = self._seqnames[out_of_bounds]
-        print(filtered_seqs)
         new_ends = self.get_seqlengths()[filtered_seqs]
-        print(new_ends)
         output._ranges[out_of_bounds] = output._ranges[out_of_bounds].restrict(
             start=1, end=new_ends, keep_all_ranges=True
         )
@@ -1691,8 +1685,6 @@ class GenomicRanges:
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        print(chrm_grps)
-
         _new_mcols = self._ranges._mcols.set_column("reduceindices", range(len(self)))
         _new_ranges = self._ranges.set_mcols(_new_mcols)
         _new_self = self.set_ranges(_new_ranges)
@@ -1709,18 +1701,11 @@ class GenomicRanges:
                     _grp_subset = _new_self[chrm_grps[_key]]
                     _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
 
-                    print(_grp_subset)
-                    print("####")
-                    print(_oindices)
-                    print("$$$$")
-
                     res_ir = _grp_subset._ranges.reduce(
                         with_reverse_map=True,
                         drop_empty_ranges=drop_empty_ranges,
                         min_gap_width=min_gap_width,
                     )
-
-                    print(res_ir)
 
                     groups.extend([_key] * len(res_ir))
                     all_grp_ranges.append(res_ir)
@@ -1959,7 +1944,6 @@ class GenomicRanges:
                     order.extend(chrm_grps[_key])
                     all_results.extend(res_ir)
 
-        print(all_results)
         merged = np.asarray(all_results).flatten()
         return merged[np.argsort(order, stable=True)]
 
@@ -2056,22 +2040,16 @@ class GenomicRanges:
 
         seqlengths = dict(zip(x._seqinfo.get_seqnames(), x._seqinfo.get_seqlengths()))
         all_combs = _fast_combine_GenomicRanges(x, y).range(ignore_strand=True)
-        print(all_combs)
         all_combs_ends = dict(zip(all_combs.get_seqnames(), all_combs.get_end()))
 
         for seq, seqlen in seqlengths.items():
             if seqlen is None:
                 _val = all_combs_ends.get(seq, None)
                 seqlengths[seq] = int(_val) if _val is not None else None
-            print(seq, seqlen)
 
-        print("RBBBBBBBBENDDSSSS", seqlengths)
         x_gaps = x.gaps(end=seqlengths)
-        print("x_gaps", x_gaps)
         x_gaps_u = x_gaps.union(y)
-        print("x_gaps_u", x_gaps_u)
         diff = x_gaps_u.gaps(end=seqlengths)
-        print("diff", diff)
 
         return diff
 
@@ -2107,15 +2085,12 @@ class GenomicRanges:
 
         seqlengths = dict(zip(x._seqinfo.get_seqnames(), x._seqinfo.get_seqlengths()))
         all_combs = _fast_combine_GenomicRanges(x, y).range(ignore_strand=True)
-        print(all_combs)
         all_combs_ends = dict(zip(all_combs.get_seqnames(), all_combs.get_end()))
 
         for seq, seqlen in seqlengths.items():
             if seqlen is None:
                 seqlengths[seq] = int(all_combs_ends[seq])
-            print(seq, seqlen)
 
-        print("RBBBBBBBBENDDSSSS", seqlengths)
         y_gaps = y.gaps(end=seqlengths)
         diff = x.setdiff(y_gaps)
         return diff
@@ -2273,10 +2248,6 @@ class GenomicRanges:
                     delete_index=False,
                 )
 
-                print(_subset)
-                print(indices)
-                print(res_idx)
-
                 all_qhits = np.concatenate(
                     (all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
                 )
@@ -2284,9 +2255,7 @@ class GenomicRanges:
                     (all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
                 )
 
-        print(all_qhits, all_shits)
         order = np.argsort(all_qhits, stable=True)
-        print(order)
         return BiocFrame({"query_hits": all_qhits, "self_hits": all_shits})[order, :]
 
     def count_overlaps(
@@ -2450,11 +2419,8 @@ class GenomicRanges:
                 _sub_subset = self[_subset]
                 _query_subset = query[indices]
 
-                print("#### ", _subset, indices)
-
                 res_idx = _sub_subset._ranges.nearest(query=_query_subset._ranges, select=select, delete_index=False)
 
-                print("result of nearest", res_idx)
                 if select == "arbitrary":
                     for i, x in enumerate(res_idx):
                         result[indices[i]] = _subset[x]
@@ -2533,8 +2499,6 @@ class GenomicRanges:
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.precede(query=_query_subset._ranges, select=select)
-
-                print(res_idx)
 
                 if select == "first":
                     matches = res_idx != None
@@ -2615,8 +2579,6 @@ class GenomicRanges:
                 _query_subset = query[indices]
 
                 res_idx = _sub_subset._ranges.follow(query=_query_subset._ranges, select=select)
-
-                print("res_idx", res_idx)
 
                 if select == "last":
                     matches = res_idx != None
@@ -3176,45 +3138,29 @@ class GenomicRanges:
         """
 
         _other_reduce = other.reduce(ignore_strand=ignore_strand)
-        print("other_reduce", _other_reduce)
         hits = _other_reduce.find_overlaps(self, min_overlap=min_overlap, ignore_strand=ignore_strand)
 
-        print("back here: @#$#@$@$@$@$@#$@#$@$@#$")
-        print(hits)
         mapper = {}
         for i in range(len(self)):
             mapper[i] = []
+
         for i in range(len(hits)):
             s_hit = int(hits.get_column("self_hits")[i])
             q_hit = int(hits.get_column("query_hits")[i])
 
             mapper[q_hit].append(s_hit)
 
-        print(mapper)
-
         mapper_with_y = {}
-
         for idx, val in mapper.items():
             mapper_with_y[idx] = other[val]
 
-        print(mapper_with_y)
-
         psetdiff = {}
-        print("computing setdiffs again")
         for idx, val in mapper_with_y.items():
-            print(idx, val)
-
-            print("self is ", self[idx])
-
             if len(val) == 0:
                 psetdiff[idx] = self[idx]
             else:
                 psetdiff[idx] = self[idx].setdiff(val)
 
-            print("done pset iter")
-
-        print("done with the looper")
-        print(psetdiff)
         from .GenomicRangesList import GenomicRangesList
 
         return GenomicRangesList.from_dict(psetdiff)
