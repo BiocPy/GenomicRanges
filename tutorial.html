@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="genomicranges" href="api/modules.html" /><link rel="prev" title="GenomicRanges" href="readme.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>GenomicRanges: Genomic analysis - GenomicRanges 0.5.2 documentation</title>
+        <title>GenomicRanges: Genomic analysis - GenomicRanges 0.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.5.2 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.6.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.5.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.6.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -271,7 +271,7 @@
           <section class="tex2jax_ignore mathjax_ignore" id="genomicranges-genomic-analysis">
 <h1><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>: Genomic analysis<a class="headerlink" href="#genomicranges-genomic-analysis" title="Link to this heading">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> is a Python package designed to handle genomic locations and facilitate genomic analysis. It is similar to Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html">GenomicRanges</a> and uses the <a class="reference external" href="https://github.com/BiocPy/IRanges">IRanges</a> package under the hood to manage and provide interval-based arithmetic operations.</p>
-<p>An <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> holds a <strong>start</strong> position and a <strong>width</strong>, and is typically used to represent coordinates along a genomic sequence. The interpretation of the <strong>start</strong> position depends on the application; for sequences, the <strong>start</strong> is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> uses <a class="reference external" href="https://github.com/pyranges/ncls">nested containment lists</a> under the hood to perform fast overlap and search-based operations.</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> holds a <strong>start</strong> position and a <strong>width</strong>, and is typically used to represent coordinates along a genomic sequence. The interpretation of the <strong>start</strong> position depends on the application; for sequences, the <strong>start</strong> is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. Ends are considered inclusive. <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> uses <a class="reference external" href="https://github.com/pyranges/ncls">nested containment lists</a> under the hood to perform fast overlap and search-based operations.</p>
 <p>The package provides a <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> class to specify multiple genomic elements, typically where genes start and end. Genes are themselves made of many subregions, such as exons, and a <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> enables the representation of this nested structure.</p>
 <p>Moreover, the package also provides a <code class="docutils literal notranslate"><span class="pre">SeqInfo</span></code> class to update or modify sequence information stored in the object. Learn more about this in the <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html">GenomeInfoDb package</a>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> class is designed to seamlessly operate with upstream packages like <code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> or <code class="docutils literal notranslate"><span class="pre">SingleCellExperiment</span></code> representations, providing consistent and stable functionality.</p>
@@ -361,11 +361,11 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand     score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |       0  0.8454364380632164
-[1]     chr2 102 - 123               - |       1  0.1207355458233833
-[2]     chr3 103 - 128               * |       2 0.26065914287338576
-[3]     chr2 104 - 134               + |       3   0.684632037898069
-[4]     chr3 105 - 110               - |       4  0.9116056813945266
+[0]     chr1 101 - 111               * |       0 0.21920977470076775
+[1]     chr2 102 - 122               - |       1 0.05683403432788392
+[2]     chr3 103 - 127               * |       2 0.04672857189341739
+[3]     chr2 104 - 133               + |       3 0.41026302455936803
+[4]     chr3 105 - 109               - |       4   0.678687151894571
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -409,11 +409,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
   seqnames    ranges          strand    score                  GC
      &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-0     chr1 101 - 112               * |      0 0.34432041144226067
-1     chr2 102 - 103               - |      1 0.15031922541014064
-2     chr1 103 - 128               * |      2  0.8571087699565081
-3     chr3 104 - 134               + |      3 0.49739283130001744
-4     chr2 109 - 111               - |      4  0.9770227357162785
+0     chr1 101 - 112               * |      0  0.9671061970005269
+1     chr2 102 - 103               - |      1  0.5842699849898076
+2     chr1 103 - 128               * |      2  0.8220650305914015
+3     chr3 104 - 134               + |      3 0.25429595378797776
+4     chr2 109 - 111               - |      4 0.12667744123975988
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -450,11 +450,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand    score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |      0 0.16371390503716976
-[1]     chr2 102 - 103               - |      1  0.9256300784420419
-[2]     chr1 103 - 128               * |      2  0.2314628409819024
-[3]     chr3 104 - 134               + |      3  0.8086050322755909
-[4]     chr2 109 - 111               - |      4  0.5970589778177627
+[0]     chr1 101 - 112               * |      0   0.554370514555635
+[1]     chr2 102 - 103               - |      1  0.5680752348680044
+[2]     chr1 103 - 128               * |      2  0.5737756430517421
+[3]     chr3 104 - 134               + |      3  0.1476945486339093
+[4]     chr2 109 - 111               - |      4 0.16016636658258265
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -485,11 +485,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand    score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |      0 0.16371390503716976
-[1]     chr2 102 - 103               - |      1  0.9256300784420419
-[2]     chr1 103 - 128               * |      2  0.2314628409819024
-[3]     chr3 104 - 134               + |      3  0.8086050322755909
-[4]     chr2 109 - 111               - |      4  0.5970589778177627
+[0]     chr1 101 - 112               * |      0   0.554370514555635
+[1]     chr2 102 - 103               - |      1  0.5680752348680044
+[2]     chr1 103 - 128               * |      2  0.5737756430517421
+[3]     chr3 104 - 134               + |      3  0.1476945486339093
+[4]     chr2 109 - 111               - |      4 0.16016636658258265
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -524,15 +524,15 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>seqnames (as property):  [&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr1&#39;, &#39;chr3&#39;, &#39;chr2&#39;]
 seqnames (functional style):  [&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr1&#39;, &#39;chr3&#39;, &#39;chr2&#39;]
 start positions:  [101 102 103 104 109]
-width of each region:  [11  1 25 30  2]
+width of each region:  [12  2 26 31  3]
 BiocFrame with 5 rows and 2 columns
      score                  GC
     &lt;list&gt;              &lt;list&gt;
-[0]      0 0.16371390503716976
-[1]      1  0.9256300784420419
-[2]      2  0.2314628409819024
-[3]      3  0.8086050322755909
-[4]      4  0.5970589778177627
+[0]      0   0.554370514555635
+[1]      1  0.5680752348680044
+[2]      2  0.5737756430517421
+[3]      3  0.1476945486339093
+[4]      4 0.16016636658258265
 </pre></div>
 </div>
 </div>
@@ -555,11 +555,11 @@ BiocFrame with 5 rows and 2 columns
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 5 ranges and 2 metadata columns
     seqnames    ranges          strand     score                  GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |       1 0.16371390503716976
-[1]     chr2 102 - 103               - |       2  0.9256300784420419
-[2]     chr1 103 - 128               * |       3  0.2314628409819024
-[3]     chr3 104 - 134               + |       4  0.8086050322755909
-[4]     chr2 109 - 111               - |       5  0.5970589778177627
+[0]     chr1 101 - 112               * |       1   0.554370514555635
+[1]     chr2 102 - 103               - |       2  0.5680752348680044
+[2]     chr1 103 - 128               * |       3  0.5737756430517421
+[3]     chr3 104 - 134               + |       4  0.1476945486339093
+[4]     chr2 109 - 111               - |       5 0.16016636658258265
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -578,11 +578,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BiocFrame with 5 rows and 2 columns
       score                  GC
     &lt;range&gt;              &lt;list&gt;
-[0]       1 0.16371390503716976
-[1]       2  0.9256300784420419
-[2]       3  0.2314628409819024
-[3]       4  0.8086050322755909
-[4]       5  0.5970589778177627
+[0]       1   0.554370514555635
+[1]       2  0.5680752348680044
+[2]       3  0.5737756430517421
+[3]       4  0.1476945486339093
+[4]       5 0.16016636658258265
 </pre></div>
 </div>
 </div>
@@ -602,11 +602,11 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>IRanges object with 5 ranges and 0 metadata columns
                start              end            width
     &lt;ndarray[int32]&gt; &lt;ndarray[int32]&gt; &lt;ndarray[int32]&gt;
-[0]              101              112               11
-[1]              102              103                1
-[2]              103              128               25
-[3]              104              134               30
-[4]              109              111                2
+[0]              101              112               12
+[1]              102              103                2
+[2]              103              128               26
+[3]              104              134               31
+[4]              109              111                3
 </pre></div>
 </div>
 </div>
@@ -632,9 +632,9 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 3 ranges and 2 metadata columns
     seqnames    ranges          strand    score                 GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;             &lt;list&gt;
-[0]     chr2 102 - 103               - |      2 0.9256300784420419
-[1]     chr3 104 - 134               + |      4 0.8086050322755909
-[2]     chr1 103 - 128               * |      3 0.2314628409819024
+[0]     chr2 102 - 103               - |      2 0.5680752348680044
+[1]     chr3 104 - 134               + |      4 0.1476945486339093
+[2]     chr1 103 - 128               * |      3 0.5737756430517421
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -653,15 +653,15 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>None GenomicRanges with 1 range and 2 metadata columns
-    seqnames    ranges          strand    score                  GC
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |      1 0.16371390503716976
+    seqnames    ranges          strand    score                GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;            &lt;list&gt;
+[0]     chr1 101 - 112               * |      1 0.554370514555635
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 None GenomicRanges with 1 range and 2 metadata columns
     seqnames    ranges          strand    score                 GC
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;             &lt;list&gt;
-[0]     chr2 102 - 103               - |      2 0.9256300784420419
+[0]     chr2 102 - 103               - |      2 0.5680752348680044
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -731,23 +731,15 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges after the trim operation:
 GenomicRanges with 5 ranges and 2 metadata columns
-    seqnames    ranges          strand     score                  GC
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |       0  0.9718480275042597
-[1]     chr2 102 - 123               - |       1  0.7915660513147461
-[2]     chr3 103 - 128               * |       2 0.29608872310708756
-[3]     chr2 104 - 134               + |       3  0.7437404729693734
-[4]     chr3 105 - 110               - |       4 0.29393609667398635
+    seqnames    ranges          strand     score                 GC
+       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;range&gt;             &lt;list&gt;
+[0]     chr1 101 - 111               * |       0 0.6570777445092754
+[1]     chr2 102 - 122               - |       1 0.7381432486033813
+[2]     chr3 103 - 127               * |       2 0.6118967642743744
+[3]     chr2 104 - 133               + |       3 0.9985876646606947
+[4]     chr3 105 - 109               - |       4 0.7571456418538555
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.11/site-packages/genomicranges/SeqInfo.py:403: UserWarning: &#39;seqlengths&#39; is deprecated, use &#39;get_seqlengths&#39; instead
-  warn(
-/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.11/site-packages/genomicranges/SeqInfo.py:463: UserWarning: &#39;is_circular&#39; is deprecated, use &#39;get_is_circular&#39; instead
-  warn(
-/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.11/site-packages/iranges/IRanges.py:278: UserWarning: Setting property &#39;width&#39;is an in-place operation, use &#39;set_width&#39; instead
-  warn(
 </pre></div>
 </div>
 </div>
@@ -804,13 +796,17 @@ seqinfo(3 sequences): chr1 chr2 chr3
 GenomicRanges with 5 ranges and 0 metadata columns
     seqnames    ranges          strand
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
-[0]     chr1 101 - 112               *
-[1]     chr2 104 - 134               +
-[2]     chr2 102 - 123               -
-[3]     chr3 105 - 110               -
-[4]     chr3 103 - 128               *
+[0]     chr1 101 - 111               *
+[1]     chr2 104 - 133               +
+[2]     chr2 102 - 122               -
+[3]     chr3 105 - 109               -
+[4]     chr3 103 - 127               *
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/GenomicRanges/GenomicRanges/.tox/docs/lib/python3.11/site-packages/genomicranges/SeqInfo.py:403: UserWarning: &#39;seqlengths&#39; is deprecated, use &#39;get_seqlengths&#39; instead
+  warn(
 </pre></div>
 </div>
 </div>
@@ -864,12 +860,12 @@ seqinfo(3 sequences): chr1 chr2 chr3
 GenomicRanges with 6 ranges and 0 metadata columns
     seqnames    ranges          strand
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
-[0]     chr1 106 - 232               +
-[1]     chr1 101 - 231               *
-[2]     chr2 102 - 226               -
-[3]     chr2 104 - 228               *
-[4]     chr3 104 - 238               +
-[5]     chr3 109 - 240               -
+[0]     chr1 106 - 231               +
+[1]     chr1 101 - 230               *
+[2]     chr2 102 - 225               -
+[3]     chr2 104 - 227               *
+[4]     chr3 104 - 237               +
+[5]     chr3 109 - 239               -
 ------
 seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
@@ -947,7 +943,7 @@ dtype: float64
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 1 range and 1 metadata column
     seqnames    ranges          strand   binned_score
        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;         &lt;list&gt;
-[0]     chr1 101 - 210               * |            3
+[0]     chr1 101 - 209               * |            3
 ------
 seqinfo(1 sequences): chr1
 </pre></div>
@@ -996,18 +992,12 @@ seqinfo(1 sequences): chr1
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 52 ranges and 0 metadata columns
-     seqnames    ranges          strand
-        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
- [0]     chr1 101 - 110               *
- [1]     chr1 102 - 111               *
- [2]     chr2 102 - 111               -
-          ...       ...             ...
-[49]     chr2 123 - 132               +
-[50]     chr2 124 - 133               +
-[51]     chr3 105 - 109               -
-------
-seqinfo(3 sequences): chr1 chr2 chr3
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[GenomicRanges(number_of_ranges=2, seqnames=[np.uint8(0), np.uint8(0)], ranges=IRanges(start=array([101, 102], dtype=int32), width=array([10, 10], dtype=int32)), strand=[np.int8(0), np.int8(0)], mcols=BiocFrame(data={}, number_of_rows=2, column_names=[]), seqinfoSeqInfo(number_of_seqnames=3, seqnames=[&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr3&#39;], seqlengths=[None, None, None], is_circular=[None, None, None], genome=[None, None, None])), GenomicRanges(number_of_ranges=12, seqnames=[np.uint8(1), np.uint8(1), np.uint8(1), ..., np.uint8(1), np.uint8(1), np.uint8(1)], ranges=IRanges(start=array([102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113],
+      dtype=int32), width=array([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], dtype=int32)), strand=[np.int8(-1), np.int8(-1), np.int8(-1), ..., np.int8(-1), np.int8(-1), np.int8(-1)], mcols=BiocFrame(data={}, number_of_rows=12, column_names=[]), seqinfoSeqInfo(number_of_seqnames=3, seqnames=[&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr3&#39;], seqlengths=[None, None, None], is_circular=[None, None, None], genome=[None, None, None])), GenomicRanges(number_of_ranges=16, seqnames=[np.uint8(2), np.uint8(2), np.uint8(2), ..., np.uint8(2), np.uint8(2), np.uint8(2)], ranges=IRanges(start=array([103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
+       116, 117, 118], dtype=int32), width=array([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+      dtype=int32)), strand=[np.int8(0), np.int8(0), np.int8(0), ..., np.int8(0), np.int8(0), np.int8(0)], mcols=BiocFrame(data={}, number_of_rows=16, column_names=[]), seqinfoSeqInfo(number_of_seqnames=3, seqnames=[&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr3&#39;], seqlengths=[None, None, None], is_circular=[None, None, None], genome=[None, None, None])), GenomicRanges(number_of_ranges=21, seqnames=[np.uint8(1), np.uint8(1), np.uint8(1), ..., np.uint8(1), np.uint8(1), np.uint8(1)], ranges=IRanges(start=array([104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116,
+       117, 118, 119, 120, 121, 122, 123, 124], dtype=int32), width=array([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+       10, 10, 10, 10], dtype=int32)), strand=[np.int8(1), np.int8(1), np.int8(1), ..., np.int8(1), np.int8(1), np.int8(1)], mcols=BiocFrame(data={}, number_of_rows=21, column_names=[]), seqinfoSeqInfo(number_of_seqnames=3, seqnames=[&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr3&#39;], seqlengths=[None, None, None], is_circular=[None, None, None], genome=[None, None, None])), GenomicRanges(number_of_ranges=0, seqnames=[], ranges=IRanges(start=array([], dtype=int32), width=array([], dtype=int32)), strand=[], mcols=BiocFrame(data={}, number_of_rows=0, column_names=[]), seqinfoSeqInfo(number_of_seqnames=3, seqnames=[&#39;chr1&#39;, &#39;chr2&#39;, &#39;chr3&#39;], seqlengths=[None, None, None], is_circular=[None, None, None], genome=[None, None, None]))]
 </pre></div>
 </div>
 </div>
@@ -1025,18 +1015,14 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 30 ranges and 0 metadata columns
-     seqnames    ranges          strand
-        &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;
- [0]     chr1    1 - 10               *
- [1]     chr1   11 - 20               *
- [2]     chr1   21 - 30               *
-          ...       ...             ...
-[27]     chr3 141 - 160               *
-[28]     chr3 161 - 180               *
-[29]     chr3 181 - 200               *
-------
-seqinfo(3 sequences): chr1 chr2 chr3
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">19</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">seqlengths</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+<span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">tiles</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">tile_genome</span><span class="p">(</span><span class="n">seqlengths</span><span class="o">=</span><span class="n">seqlengths</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="nb">print</span><span class="p">(</span><span class="n">tiles</span><span class="p">)</span>
+
+<span class="ne">TypeError</span>: GenomicRanges.tile_genome() got an unexpected keyword argument &#39;n&#39;
 </pre></div>
 </div>
 </div>
@@ -1055,34 +1041,6 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">{</span>
-    <span style="color: #008000; text-decoration-color: #008000">'chr1'</span>: <span style="color: #800080; text-decoration-color: #800080; font-weight: bold">array</span><span style="font-weight: bold">([</span><span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.<span style="font-weight: bold">])</span>,
-    <span style="color: #008000; text-decoration-color: #008000">'chr2'</span>: <span style="color: #800080; text-decoration-color: #800080; font-weight: bold">array</span><span style="font-weight: bold">([</span><span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.<span style="font-weight: bold">])</span>,
-    <span style="color: #008000; text-decoration-color: #008000">'chr3'</span>: <span style="color: #800080; text-decoration-color: #800080; font-weight: bold">array</span><span style="font-weight: bold">([</span><span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">0</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">2</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.,
-       <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>., <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">1</span>.<span style="font-weight: bold">])</span>
-<span style="font-weight: bold">}</span>
-</pre>
-</div></div>
 </div>
 <p>Lets see what the coverage looks like, now with <strong>seaborn</strong>:</p>
 <div class="cell docutils container">
@@ -1095,12 +1053,6 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <span class="p">}),</span> <span class="n">x</span> <span class="o">=</span><span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;coverage&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;position&#39;, ylabel=&#39;coverage&#39;&gt;
-</pre></div>
-</div>
-<img alt="_images/53be7393e3befcd3d925fbcd7f9ac3afbe2dab4922b86d9dec81f497171c225f.png" src="_images/53be7393e3befcd3d925fbcd7f9ac3afbe2dab4922b86d9dec81f497171c225f.png" />
 </div>
 </div>
 <p>I guess that looks ok. :) but someone can help make this visualization better. (something that ports <code class="docutils literal notranslate"><span class="pre">plotRanges</span></code> from R)</p>
@@ -1142,12 +1094,6 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 0 ranges and 1 metadata column
-seqinfo(3 sequences): chr1 chr2 chr3
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="search-operations">
@@ -1171,11 +1117,6 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <span class="n">query_hits</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span><span class="n">find_regions</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">query_hits</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0], [], [2]]
 </pre></div>
 </div>
 </div>
@@ -1213,23 +1154,6 @@ seqinfo(3 sequences): chr1 chr2 chr3
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>matches:  [[2], [3], [4]]
-order: [0 1 3 4 2]
-sorted: GenomicRanges with 5 ranges and 2 metadata columns
-    seqnames    ranges          strand    score                  GC
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;              &lt;list&gt;
-[0]     chr1 101 - 112               * |      0  0.5761656677094679
-[1]     chr2 102 - 123               - |      1 0.23075933328746634
-[2]     chr2 104 - 134               + |      3 0.03871604466532175
-[3]     chr3 105 - 110               - |      4  0.5497357909006259
-[4]     chr3 103 - 128               * |      2  0.6237119015981916
-------
-seqinfo(3 sequences): chr1 chr2 chr3
-rank: [0, 1, 4, 2, 3]
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="combine-genomicranges-objects-by-rows">
@@ -1254,22 +1178,6 @@ rank: [0, 1, 4, 2, 3]
 
 <span class="n">combined</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">combined</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 7 ranges and 1 metadata column
-    seqnames    ranges          strand    score
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;
-[0]     chr1    1 - 11               - |      1
-[1]     chr2    3 - 33               + |      2
-[2]     chr1    2 - 52               * |      3
-[3]     chr3    4 - 64               + |      4
-[4]     chr2    3 - 33               - |      2
-[5]     chr4    6 - 56               + |      3
-[6]     chr5    4 - 64               * |      4
-------
-seqinfo(5 sequences): chr1 chr2 chr3 chr4 chr5
 </pre></div>
 </div>
 </div>
@@ -1323,33 +1231,6 @@ The <code class="docutils literal notranslate"><span class="pre">GenomicRangesLi
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRangesList with 2 ranges and 0 metadata columns
- 
-Name: gene1 
-GenomicRanges with 4 ranges and 1 metadata column
-    seqnames    ranges          strand    score
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;
-[0]     chr1    1 - 11               - |      1
-[1]     chr2    3 - 33               + |      2
-[2]     chr1    2 - 52               * |      3
-[3]     chr3    4 - 64               + |      4
-------
-seqinfo(3 sequences): chr1 chr2 chr3
- 
-Name: gene2 
-GenomicRanges with 3 ranges and 1 metadata column
-    seqnames    ranges          strand    score
-       &lt;str&gt; &lt;IRanges&gt; &lt;ndarray[int8]&gt;   &lt;list&gt;
-[0]     chr2    3 - 33               - |      2
-[1]     chr4    6 - 56               + |      3
-[2]     chr5    4 - 64               * |      4
-------
-seqinfo(3 sequences): chr2 chr4 chr5
- 
-</pre></div>
-</div>
-</div>
 </div>
 <section id="properties">
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
@@ -1357,12 +1238,6 @@ seqinfo(3 sequences): chr2 chr4 chr5
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grl</span><span class="o">.</span><span class="n">start</span>
 <span class="n">grl</span><span class="o">.</span><span class="n">width</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;gene1&#39;: array([10, 30, 50, 60], dtype=int32),
- &#39;gene2&#39;: array([30, 50, 60], dtype=int32)}
 </pre></div>
 </div>
 </div>
@@ -1397,11 +1272,6 @@ seqinfo(3 sequences): chr2 chr4 chr5
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRanges with 0 ranges and 0 metadata columns
-</pre></div>
-</div>
-</div>
 </div>
 <p>Similarly, an empty <code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> can be created:</p>
 <div class="cell docutils container">
@@ -1409,12 +1279,6 @@ seqinfo(3 sequences): chr2 chr4 chr5
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">empty_grl</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">empty_grl</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GenomicRangesList with 100 ranges and 0 metadata columns
---- empty genomic ranges list ---
 </pre></div>
 </div>
 </div>
@@ -1546,7 +1410,7 @@ seqinfo(3 sequences): chr2 chr4 chr5
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=8e576371"></script>
+</div><script src="_static/documentation_options.js?v=8fa8b3e9"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
