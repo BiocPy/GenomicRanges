@@ -54,6 +54,7 @@ y_red <- reduce(y, ignore.strand=ignore.strand)
 hits <- findOverlaps(x, y_red, minoverlap=minoverlap,
                             ignore.strand=ignore.strand)
 hits_obj <- extractList(y, as(hits, "IntegerList"))
+setdiff(x[1], hits_obj[[1]])
 ans <- psetdiff(x, extractList(y, as(hits, "IntegerList")))
 mcols(ans) <- mcols(x)
 setNames(ans, names(x))
