@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      repository-projects: write
 
     steps:
       - uses: actions/checkout@v4
