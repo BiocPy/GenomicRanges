@@ -847,12 +847,6 @@ class GenomicRangesList:
         else:
             idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
-            if ut.is_list_of_type(idx, bool):
-                if len(idx) != len(self):
-                    raise ValueError("`indices` is a boolean vector, length should match the size of the data.")
-
-                idx = [i for i in range(len(idx)) if idx[i] is True]
-
             new_ranges = ut.subset_sequence(self._ranges, idx)
             new_range_lengths = ut.subset_sequence(self._range_lengths, idx)
 
@@ -864,7 +858,8 @@ class GenomicRangesList:
             if self.mcols is not None:
                 new_mcols = ut.subset(self.mcols, idx)
 
-            return GenomicRangesList(new_ranges, new_range_lengths, new_names, new_mcols, self._metadata)
+            current_class_const = type(self)
+            return current_class_const(new_ranges, new_range_lengths, new_names, new_mcols, self._metadata)
 
     #######################################
     ######>> class initializers <<#########

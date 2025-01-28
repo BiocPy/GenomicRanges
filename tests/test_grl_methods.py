@@ -1,4 +1,3 @@
-import pytest
 from biocframe import BiocFrame
 from biocutils import combine_sequences
 from iranges import IRanges
@@ -62,8 +61,9 @@ def test_slice_by_bool():
     assert isinstance(sgrl, GenomicRangesList)
     assert len(sgrl) == 1
 
-    with pytest.raises(Exception):
-        grl[[False]]
+    empty = grl[[False]]
+    assert isinstance(empty, GenomicRangesList)
+    assert len(empty) == 0
 
 
 def test_is_empty_True():
