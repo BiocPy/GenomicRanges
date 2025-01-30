@@ -1625,7 +1625,7 @@ class GenomicRanges:
             (in-place-modified) original.
         """
         if start is not None and end is not None and width is not None:
-            raise ValueError("Only provide two of the three parameters - `start`, " "`end` and `width` but not all!")
+            raise ValueError("Only provide two of the three parameters - `start`, `end` and `width` but not all!")
 
         if width is not None:
             if start is None and end is None:
