@@ -1,5 +1,6 @@
 from random import random
 
+import biocutils as ut
 import numpy as np
 from biocframe import BiocFrame
 from iranges import IRanges
@@ -33,10 +34,13 @@ def test_create_gr():
                 "GC": [random() for _ in range(10)],
             }
         ),
+        names=["a", "b"] * 5,
     )
 
     assert gr is not None
     assert len(gr) == 10
+
+    assert list(ut.extract_row_names(gr)) == ["a", "b"] * 5
 
 
 def test_gr_empty():

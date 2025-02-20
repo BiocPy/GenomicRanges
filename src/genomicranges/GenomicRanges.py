@@ -3178,7 +3178,7 @@ def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
     )
 
 
-@ut.combine_sequences.register
+@ut.combine_sequences.register(GenomicRanges)
 def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
     has_names = False
     for y in x:
@@ -3205,3 +3205,7 @@ def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
         metadata=x[0]._metadata,
         validate=False,
     )
+
+@ut.extract_row_names.register(GenomicRanges)
+def _rownames_gr(x: GenomicRanges):
+    return x.get_names()
