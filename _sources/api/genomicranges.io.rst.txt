@@ -9,21 +9,21 @@ genomicranges.io.gtf module
 
 .. automodule:: genomicranges.io.gtf
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 genomicranges.io.ucsc module
 ----------------------------
 
 .. automodule:: genomicranges.io.ucsc
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: genomicranges.io
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

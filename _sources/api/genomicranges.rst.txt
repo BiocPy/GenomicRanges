@@ -17,37 +17,37 @@ genomicranges.GenomicRanges module
 
 .. automodule:: genomicranges.GenomicRanges
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 genomicranges.GenomicRangesList module
 --------------------------------------
 
 .. automodule:: genomicranges.GenomicRangesList
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 genomicranges.SeqInfo module
 ----------------------------
 
 .. automodule:: genomicranges.SeqInfo
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 genomicranges.utils module
 --------------------------
 
 .. automodule:: genomicranges.utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: genomicranges
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
