@@ -949,3 +949,8 @@ def _combine_grl(*x: GenomicRangesList):
         metadata=x[0]._metadata,
         validate=False,
     )
+
+
+@ut.extract_row_names.register(GenomicRangesList)
+def _rownames_grl(x: GenomicRangesList):
+    return x.get_names()

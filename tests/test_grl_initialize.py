@@ -1,7 +1,9 @@
+import biocutils as ut
 import pytest
-from genomicranges import GenomicRanges, GenomicRangesList
 from biocframe import BiocFrame
 from iranges import IRanges
+
+from genomicranges import GenomicRanges, GenomicRangesList
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -49,3 +51,6 @@ def test_grl_set_names():
     assert grl_replace_names is not None
     assert isinstance(grl_replace_names, GenomicRangesList)
     assert list(grl.get_names()) == ["a", "b"]
+
+    assert list(ut.extract_row_names(grl)) == ["a", "b"]
+    assert list(ut.extract_row_names(grl_replace_names)) == ["aa", "bb"]
