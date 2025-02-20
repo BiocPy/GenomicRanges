@@ -1,6 +1,10 @@
 # Changelog
 
-## Version 0.6.0
+## Version 0.6.2
+
+- Implement biocutil's `extract_row_names` generic.
+
+## Version 0.6.0 - 0.6.1
 
 An rewrite of the package to use the new and improve IRanges packages (>= 0.4.2)
 
