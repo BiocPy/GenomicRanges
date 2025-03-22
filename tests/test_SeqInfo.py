@@ -167,3 +167,6 @@ def test_seqlength_types():
 
     assert isinstance(s, SeqInfo)
     assert list(s._seqlengths) == [100]
+
+    s = SeqInfo(seqnames=["A"], seqlengths=[100], is_circular=[None], genome=[None])
+    assert isinstance(s, SeqInfo)
