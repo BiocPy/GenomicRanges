@@ -113,7 +113,7 @@ def test_subset_seqinfo():
 
     assert isinstance(subset, SeqInfo)
     assert subset.seqnames == ["chr2", "chr3"]
-    assert subset.seqlengths == [101, 102]
+    assert list(subset.seqlengths) == [101, 102]
 
 
 def test_merge_SeqInfo():
@@ -160,3 +160,13 @@ def test_copy_SeqInfo():
 
     deepcopy_seq = deepcopy(seq)
     assert seq.seqnames == deepcopy_seq.seqnames
+
+
+def test_seqlength_types():
+    s = SeqInfo(["A"], seqlengths=[np.uint64(100)])
+
+    assert isinstance(s, SeqInfo)
+    assert list(s._seqlengths) == [100]
+
+    s = SeqInfo(seqnames=["A"], seqlengths=[100], is_circular=[None], genome=[None])
+    assert isinstance(s, SeqInfo)

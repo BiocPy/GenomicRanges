@@ -20,7 +20,7 @@ def _validate_seqnames(seqnames):
 
 
 def _validate_seqlengths(seqlengths, num_seqs):
-    if not ut.is_list_of_type(seqlengths, int, ignore_none=True):
+    if not (isinstance(seqlengths, ut.IntegerList) or ut.is_list_of_type(seqlengths, int, ignore_none=True)):
         raise ValueError("'seqlengths' should be a list of integers.")
 
     if num_seqs != len(seqlengths):
@@ -32,7 +32,7 @@ def _validate_seqlengths(seqlengths, num_seqs):
 
 
 def _validate_is_circular(is_circular, num_seqs):
-    if not ut.is_list_of_type(is_circular, bool, ignore_none=True):
+    if not (isinstance(is_circular, ut.BooleanList) or ut.is_list_of_type(is_circular, bool, ignore_none=True)):
         raise ValueError("'is_circular' should be a list of booleans.")
 
     if num_seqs != len(is_circular):
@@ -141,8 +141,8 @@ class SeqInfo:
         """
         self._seqnames = list(seqnames)
         self._reverse_seqnames = None
-        self._seqlengths = self._flatten_incoming(seqlengths, int)
-        self._is_circular = self._flatten_incoming(is_circular, bool)
+        self._seqlengths = list(ut.IntegerList(self._flatten_incoming(seqlengths, int)))
+        self._is_circular = list(ut.BooleanList(self._flatten_incoming(is_circular, bool)))
         self._genome = self._flatten_incoming(genome, str)
 
         if validate:
