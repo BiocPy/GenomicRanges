@@ -1,8 +1,9 @@
 # Changelog
 
-## Version 0.6.2
+## Version 0.6.2 - 0.6.3
 
 - Implement biocutil's `extract_row_names` generic.
+- Fix when SeqInfo's attributes contain lists with numpy elements.
 
 ## Version 0.6.0 - 0.6.1
 
