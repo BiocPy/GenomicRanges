@@ -20,13 +20,13 @@ def test_create_SeqInfo():
     )
 
     assert len(seq) == 3
-    assert list(seq.get_is_circular()) == circ
+    assert seq.get_is_circular() == circ
     assert seq.get_genome() == ["hg19"] * 3
-    assert list(seq.get_seqlengths()) == [100, 101, 102]
+    assert seq.get_seqlengths() == [100, 101, 102]
 
     assert seq.get_seqnames() == ["chr1", "chr2", "chr3"]
     seq2 = seq.set_seqlengths({"chr2": 500, "chr1": 123, "chr3": 99})
-    assert list(seq2.get_seqlengths()) == [123, 500, 99]
+    assert seq2.get_seqlengths() == [123, 500, 99]
 
     seq2 = seq.set_is_circular(False)
     assert seq2.get_is_circular() == [False] * 3
@@ -139,8 +139,8 @@ def test_merge_SeqInfo():
 
     combined = merge_SeqInfo([seq, seq2])
     assert combined.get_seqnames() == ["chr1", "chr2", "chr3", "chr4", "chr5"]
-    assert list(combined.get_seqlengths()) == [100, 101, None, 101, 102]
-    assert list(combined.get_is_circular()) == [False, True, False, True, False]
+    assert combined.get_seqlengths() == [100, 101, None, 101, 102]
+    assert combined.get_is_circular() == [False, True, False, True, False]
     assert combined.get_genome() == ["hg19", "hg19", None, "hg38", "hg38"]
 
 
