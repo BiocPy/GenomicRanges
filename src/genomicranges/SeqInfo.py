@@ -20,7 +20,7 @@ def _validate_seqnames(seqnames):
 
 
 def _validate_seqlengths(seqlengths, num_seqs):
-    if not ut.is_list_of_type(seqlengths, int, ignore_none=True):
+    if not (isinstance(seqlengths, ut.IntegerList) or ut.is_list_of_type(seqlengths, int, ignore_none=True)):
         raise ValueError("'seqlengths' should be a list of integers.")
 
     if num_seqs != len(seqlengths):
@@ -32,7 +32,7 @@ def _validate_seqlengths(seqlengths, num_seqs):
 
 
 def _validate_is_circular(is_circular, num_seqs):
-    if not ut.is_list_of_type(is_circular, bool, ignore_none=True):
+    if not (isinstance(is_circular, ut.BooleanList) or ut.is_list_of_type(is_circular, bool, ignore_none=True)):
         raise ValueError("'is_circular' should be a list of booleans.")
 
     if num_seqs != len(is_circular):
@@ -141,8 +141,8 @@ class SeqInfo:
         """
         self._seqnames = list(seqnames)
         self._reverse_seqnames = None
-        self._seqlengths = self._flatten_incoming(seqlengths, int)
-        self._is_circular = self._flatten_incoming(is_circular, bool)
+        self._seqlengths = ut.IntegerList(self._flatten_incoming(seqlengths, int))
+        self._is_circular = ut.BooleanList(self._flatten_incoming(is_circular, bool))
         self._genome = self._flatten_incoming(genome, str)
 
         if validate:
@@ -359,7 +359,7 @@ class SeqInfo:
     ######>> seqlengths <<######
     ############################
 
-    def get_seqlengths(self) -> List[int]:
+    def get_seqlengths(self) -> ut.IntegerList:
         """
         Returns:
             A list of integers is returned containing the lengths of all
@@ -399,7 +399,7 @@ class SeqInfo:
         return output
 
     @property
-    def seqlengths(self) -> List[int]:
+    def seqlengths(self) -> ut.IntegerList:
         warn(
             "'seqlengths' is deprecated, use 'get_seqlengths' instead",
             UserWarning,
@@ -419,7 +419,7 @@ class SeqInfo:
     ######>> is-circular <<######
     #############################
 
-    def get_is_circular(self) -> List[bool]:
+    def get_is_circular(self) -> ut.BooleanList:
         """
         Returns:
             A list of booleans is returned specifying whether each sequence
@@ -459,7 +459,7 @@ class SeqInfo:
         return output
 
     @property
-    def is_circular(self) -> List[bool]:
+    def is_circular(self) -> ut.BooleanList:
         warn(
             "'is_circular' is deprecated, use 'get_is_circular' instead",
             UserWarning,
