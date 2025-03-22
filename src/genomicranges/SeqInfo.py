@@ -141,8 +141,8 @@ class SeqInfo:
         """
         self._seqnames = list(seqnames)
         self._reverse_seqnames = None
-        self._seqlengths = ut.IntegerList(self._flatten_incoming(seqlengths, int))
-        self._is_circular = ut.BooleanList(self._flatten_incoming(is_circular, bool))
+        self._seqlengths = list(ut.IntegerList(self._flatten_incoming(seqlengths, int)))
+        self._is_circular = list(ut.BooleanList(self._flatten_incoming(is_circular, bool)))
         self._genome = self._flatten_incoming(genome, str)
 
         if validate:
@@ -359,7 +359,7 @@ class SeqInfo:
     ######>> seqlengths <<######
     ############################
 
-    def get_seqlengths(self) -> ut.IntegerList:
+    def get_seqlengths(self) -> List[int]:
         """
         Returns:
             A list of integers is returned containing the lengths of all
@@ -399,7 +399,7 @@ class SeqInfo:
         return output
 
     @property
-    def seqlengths(self) -> ut.IntegerList:
+    def seqlengths(self) -> List[int]:
         warn(
             "'seqlengths' is deprecated, use 'get_seqlengths' instead",
             UserWarning,
@@ -419,7 +419,7 @@ class SeqInfo:
     ######>> is-circular <<######
     #############################
 
-    def get_is_circular(self) -> ut.BooleanList:
+    def get_is_circular(self) -> List[bool]:
         """
         Returns:
             A list of booleans is returned specifying whether each sequence
@@ -459,7 +459,7 @@ class SeqInfo:
         return output
 
     @property
-    def is_circular(self) -> ut.BooleanList:
+    def is_circular(self) -> List[bool]:
         warn(
             "'is_circular' is deprecated, use 'get_is_circular' instead",
             UserWarning,
