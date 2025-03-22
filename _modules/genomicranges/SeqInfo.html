@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 8.2.0 and Furo 2024.08.06 -->
-        <title>genomicranges.SeqInfo - GenomicRanges 0.6.2 documentation</title>
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>genomicranges.SeqInfo - GenomicRanges 0.6.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.6.2 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.6.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.6.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.6.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -284,7 +284,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_seqlengths</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="n">num_seqs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ut</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">IntegerList</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ut</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;seqlengths&#39; should be a list of integers.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">num_seqs</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">):</span>
@@ -296,7 +296,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_is_circular</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="n">num_seqs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ut</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">BooleanList</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ut</span><span class="o">.</span><span class="n">is_list_of_type</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;is_circular&#39; should be a list of booleans.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">num_seqs</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">is_circular</span><span class="p">):</span>
@@ -421,8 +421,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_seqnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqnames</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_seqnames</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_circular</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seqlengths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">IntegerList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">seqlengths</span><span class="p">,</span> <span class="nb">int</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_circular</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">BooleanList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">is_circular</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_genome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_incoming</span><span class="p">(</span><span class="n">genome</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
@@ -1005,7 +1005,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=1c28bd9a"></script>
+</div><script src="../../_static/documentation_options.js?v=b8503983"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

@@ -25,12 +25,12 @@ print(tiles)
 ------------------
 
 
-[0;31m---------------------------------------------------------------------------[0m
-[0;31mTypeError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[19], line 3[0m
-[1;32m      1[0m seqlengths [38;5;241m=[39m {[38;5;124m"[39m[38;5;124mchr1[39m[38;5;124m"[39m: [38;5;241m100[39m, [38;5;124m"[39m[38;5;124mchr2[39m[38;5;124m"[39m: [38;5;241m75[39m, [38;5;124m"[39m[38;5;124mchr3[39m[38;5;124m"[39m: [38;5;241m200[39m}
-[0;32m----> 3[0m tiles [38;5;241m=[39m [43mGenomicRanges[49m[38;5;241;43m.[39;49m[43mtile_genome[49m[43m([49m[43mseqlengths[49m[38;5;241;43m=[39;49m[43mseqlengths[49m[43m,[49m[43m [49m[43mn[49m[38;5;241;43m=[39;49m[38;5;241;43m10[39;49m[43m)[49m
-[1;32m      4[0m [38;5;28mprint[39m(tiles)
+[31m---------------------------------------------------------------------------[39m
+[31mTypeError[39m                                 Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[19][39m[32m, line 3[39m
+[32m      1[39m seqlengths = {[33m"[39m[33mchr1[39m[33m"[39m: [32m100[39m, [33m"[39m[33mchr2[39m[33m"[39m: [32m75[39m, [33m"[39m[33mchr3[39m[33m"[39m: [32m200[39m}
+[32m----> [39m[32m3[39m tiles = [43mGenomicRanges[49m[43m.[49m[43mtile_genome[49m[43m([49m[43mseqlengths[49m[43m=[49m[43mseqlengths[49m[43m,[49m[43m [49m[43mn[49m[43m=[49m[32;43m10[39;49m[43m)[49m
+[32m      4[39m [38;5;28mprint[39m(tiles)
 
-[0;31mTypeError[0m: GenomicRanges.tile_genome() got an unexpected keyword argument 'n'
+[31mTypeError[39m: GenomicRanges.tile_genome() got an unexpected keyword argument 'n'
 
