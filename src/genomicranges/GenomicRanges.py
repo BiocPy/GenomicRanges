@@ -2192,50 +2192,26 @@ class GenomicRanges:
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
 
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+        res_idx = self._ranges.find_overlaps(
+            query=query._ranges,
+            query_type=query_type,
+            select=select,
+            max_gap=max_gap,
+            min_overlap=min_overlap,
+            delete_index=False,
+        )
 
-        all_qhits = np.array([], dtype=np.int32)
-        all_shits = np.array([], dtype=np.int32)
+        self_seqnames = np.array(self._seqinfo._seqnames)[self._seqnames[res_idx["self_hits"]]]
+        self_grp_keys = np.char.add(np.char.add(self_seqnames, "___"), self._strand[res_idx["self_hits"]].astype(str))
 
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
+        query_seqnames = np.array(query._seqinfo._seqnames)[query._seqnames[res_idx["query_hits"]]]
+        query_grp_keys = np.char.add(
+            np.char.add(query_seqnames, "___"), query._strand[res_idx["query_hits"]].astype(str)
+        )
 
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.find_overlaps(
-                    query=_query_subset._ranges,
-                    query_type=query_type,
-                    select=select,
-                    max_gap=max_gap,
-                    min_overlap=min_overlap,
-                    delete_index=False,
-                )
-
-                all_qhits = np.concatenate(
-                    (all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
-                )
-                all_shits = np.concatenate(
-                    (all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
-                )
+        matched = self_grp_keys == query_grp_keys
+        all_shits = res_idx["self_hits"][matched]
+        all_qhits = res_idx["query_hits"][matched]
 
         order = np.argsort(all_qhits, stable=True)
         return BiocFrame({"query_hits": all_qhits, "self_hits": all_shits})[order, :]
