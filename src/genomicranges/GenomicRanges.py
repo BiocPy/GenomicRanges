@@ -2137,6 +2137,27 @@ class GenomicRanges:
     ######>> search operations <<######
     ###################################
 
+    def extract_groups_by_seqnames(self):
+        groups = []
+        for idx, _ in enumerate(self._seqinfo._seqnames):
+            idx = np.where(self._seqnames == idx)[0]
+            groups.append(idx)
+        return groups
+
+    def _get_query_common_groups(self, query: "GenomicRanges") -> Tuple[np.ndarray, np.ndarray]:
+        # smerged = merge_SeqInfo([self._seqinfo, query._seqinfo])
+        common_seqlevels = set(self._seqinfo._seqnames).intersection(query._seqinfo._seqnames)
+        q_group_idx = [self._seqinfo._seqnames.index(i) for i in common_seqlevels]
+        s_group_idx = [query._seqinfo._seqnames.index(i) for i in common_seqlevels]
+
+        s_grps = self.extract_groups_by_seqnames()
+        self_groups = [s_grps[i] for i in q_group_idx]
+
+        q_grps = query.extract_groups_by_seqnames()
+        query_groups = [q_grps[i] for i in s_group_idx]
+
+        return (self_groups, query_groups)
+
     def find_overlaps(
         self,
         query: "GenomicRanges",
@@ -2145,6 +2166,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 0,
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> BiocFrame:
         """Find overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
@@ -2176,6 +2198,10 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
+
         Raises:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
@@ -2192,53 +2218,71 @@ class GenomicRanges:
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
 
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+        from iranges.lib_iranges import find_overlaps_groups
 
-        all_qhits = np.array([], dtype=np.int32)
-        all_shits = np.array([], dtype=np.int32)
+        if len(self) >= len(query):
+            self_groups, query_groups = self._get_query_common_groups(query)
 
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
+            all_s_hits, all_q_hits = find_overlaps_groups(
+                self._ranges.get_start().astype(np.int32),
+                self._ranges.get_end().astype(np.int32) + 1,
+                [s.astype(np.int32) for s in self_groups],
+                query._ranges.get_start().astype(np.int32),
+                query._ranges.get_end().astype(np.int32) + 1,
+                [q.astype(np.int32) for q in query_groups],
+                query_type,
+                select,
+                max_gap,
+                min_overlap,
+                num_threads,
+            )
 
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+            print(all_s_hits, all_q_hits)
+            if ignore_strand is False:
+                print(self._strand, query._strand)
+                s_strands = self._strand[all_s_hits]
+                q_strands = query._strand[all_q_hits]
 
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
+                print(s_strands, q_strands)
 
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
+                mask = s_strands == q_strands
+                # to allow '*' with any strand from query
+                mask[s_strands == 0] = True
+                mask[q_strands == 0] = True
+                all_q_hits = all_q_hits[mask]
+                all_s_hits = all_s_hits[mask]
 
-                res_idx = _sub_subset._ranges.find_overlaps(
-                    query=_query_subset._ranges,
-                    query_type=query_type,
-                    select=select,
-                    max_gap=max_gap,
-                    min_overlap=min_overlap,
-                    delete_index=False,
-                )
+            order = np.argsort(all_q_hits, stable=True)
+            return BiocFrame({"query_hits": all_q_hits[order], "self_hits": all_s_hits[order]})
+        else:
+            query_groups, self_groups = query._get_query_common_groups(self)
 
-                all_qhits = np.concatenate(
-                    (all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
-                )
-                all_shits = np.concatenate(
-                    (all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
-                )
+            all_q_hits, all_s_hits = find_overlaps_groups(
+                query._ranges.get_start().astype(np.int32),
+                query._ranges.get_end().astype(np.int32) + 1,
+                [q.astype(np.int32) for q in query_groups],
+                self._ranges.get_start().astype(np.int32),
+                self._ranges.get_end().astype(np.int32) + 1,
+                [s.astype(np.int32) for s in self_groups],
+                query_type,
+                select,
+                max_gap,
+                min_overlap,
+                num_threads,
+            )
 
-        order = np.argsort(all_qhits, stable=True)
-        return BiocFrame({"query_hits": all_qhits, "self_hits": all_shits})[order, :]
+            if ignore_strand is False:
+                q_strands = query._strand[all_q_hits]
+                s_strands = self._strand[all_s_hits]
+
+                mask = s_strands == q_strands
+                mask[q_strands == 0] = True
+                mask[s_strands == 0] = True
+                all_q_hits = all_q_hits[mask]
+                all_s_hits = all_s_hits[mask]
+
+            order = np.argsort(all_q_hits, stable=True)
+            return BiocFrame({"query_hits": all_q_hits[order], "self_hits": all_s_hits[order]})
 
     def count_overlaps(
         self,
@@ -2247,6 +2291,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 0,
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> np.ndarray:
         """Count overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
@@ -2274,6 +2319,10 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
+
         Raises:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
@@ -2282,7 +2331,12 @@ class GenomicRanges:
             value represents the number of overlaps in `self` for each query.
         """
         _overlaps = self.find_overlaps(
-            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
+            query,
+            query_type=query_type,
+            max_gap=max_gap,
+            min_overlap=min_overlap,
+            ignore_strand=ignore_strand,
+            num_threads=num_threads,
         )
         result = np.zeros(len(query))
         _ucounts = np.unique_counts(_overlaps.get_column("query_hits"))
@@ -2297,6 +2351,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 0,
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> "GenomicRanges":
         """Subset ``subject`` (self) with overlaps in ``query`` `GenomicRanges` object.
 
@@ -2324,6 +2379,10 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
+
         Raises:
             TypeError:
                 If ``query`` is not of type `GenomicRanges`.
@@ -2332,7 +2391,12 @@ class GenomicRanges:
             A ``GenomicRanges`` object containing overlapping ranges.
         """
         _overlaps = self.find_overlaps(
-            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
+            query,
+            query_type=query_type,
+            max_gap=max_gap,
+            min_overlap=min_overlap,
+            ignore_strand=ignore_strand,
+            num_threads=num_threads,
         )
         _all_indices = np.unique(_overlaps.get_column("self_hits"))
         return self[_all_indices]
