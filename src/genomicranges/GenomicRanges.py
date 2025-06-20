@@ -2237,13 +2237,9 @@ class GenomicRanges:
                 num_threads,
             )
 
-            print(all_s_hits, all_q_hits)
             if ignore_strand is False:
-                print(self._strand, query._strand)
                 s_strands = self._strand[all_s_hits]
                 q_strands = query._strand[all_q_hits]
-
-                print(s_strands, q_strands)
 
                 mask = s_strands == q_strands
                 # to allow '*' with any strand from query
@@ -2446,8 +2442,6 @@ class GenomicRanges:
             self_subset = self[s_group]
             query_subset = query[q_group]
             res_idx = self_subset._ranges.nearest(query=query_subset._ranges, select="all", delete_index=False)
-            print(s_group, q_group)
-            print(res_idx)
 
             _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
             _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
@@ -2515,8 +2509,6 @@ class GenomicRanges:
             self_subset = self[s_group]
             query_subset = query[q_group]
             res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
-            print(s_group, q_group)
-            print(res_idx)
 
             _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
             _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
@@ -2585,8 +2577,6 @@ class GenomicRanges:
             self_subset = self[s_group]
             query_subset = query[q_group]
             res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
-            print(s_group, q_group)
-            print(res_idx)
 
             _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
             _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
