@@ -24,7 +24,7 @@ pip install genomicranges[optional]
 
 ### From Bioinformatic file formats
 
-> [!NOTE]  
+> [!NOTE]
 > When reading genomic formats, `ends` are expected to be inclusive to be consistent with Bioconductor representations (& gff). If they are not, we recommend subtracting 1 from the `ends`.
 
 #### From `biobear`
@@ -47,7 +47,7 @@ print(len(gg), len(df))
 ```
 
     ## output
-    ## 77 77> [!NOTE]  
+    ## 77 77> [!NOTE]
 > `ends` are expected to be inclusive to be consistent with Bioconductor representations. If they are not, we recommend subtracting 1 from the `ends`.
 
 #### UCSC or GTF file
