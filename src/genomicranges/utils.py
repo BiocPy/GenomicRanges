@@ -204,6 +204,7 @@ def compute_up_down(starts, ends, strands, upstream, downstream, site: str = "TS
 
     return new_starts, new_ends - new_starts + 1
 
+
 def extract_groups_from_granges(x, ignore_strand=False):
     groups = []
     if ignore_strand:
@@ -217,5 +218,5 @@ def extract_groups_from_granges(x, ignore_strand=False):
         for idx, seq in enumerate(unique_groups):
             matches = np.where(inverse_indices == idx)[0]
             groups.append(((x._seqinfo._seqnames[seq[0]], seq[1]), matches))
-    
+
     return groups
