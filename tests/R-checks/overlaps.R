@@ -14,6 +14,7 @@ gr1 <- GRanges(seqnames="chr2", ranges=IRanges(4:3, 6),
 gr1
 
 findOverlaps(gr1, gr)
+findOverlaps(gr1, gr, ignore.strand=TRUE)
 findOverlaps(gr, gr1, ignore.strand=TRUE)
 
 findOverlaps(gr1, gr, type = "within")
