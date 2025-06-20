@@ -1056,6 +1056,7 @@ class GenomicRanges:
         Args:
             input:
                 Input data. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                'ends' are expected to be inclusive.
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1136,6 +1137,7 @@ class GenomicRanges:
         Args:
             input:
                 Input polars DataFrame. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                'ends' are expected to be inclusive.
 
         Returns:
             A ``GenomicRanges`` object.
@@ -2080,12 +2082,22 @@ class GenomicRanges:
         diff = x.setdiff(y_gaps)
         return diff
 
-    def intersect_ncls(self, other: "GenomicRanges") -> "GenomicRanges":
+    def intersect_ncls(
+        self, other: "GenomicRanges", delete_index: bool = True, num_threads: int = 1
+    ) -> "GenomicRanges":
         """Find intersecting genomic intervals with `other` (uses NCLS index).
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
+
+            delete_index:
+                Defaults to True, to delete the cached ncls index.
+                Set to False, to reuse the index across multiple queries.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             A new ``GenomicRanges`` object with intersecting ranges.
@@ -2093,17 +2105,17 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        if not ut.package_utils.is_package_installed("ncls"):
-            raise ImportError("package: 'ncls' is not installed.")
+        self_end = self.get_end()
+        other_end = other.get_end()
 
-        from ncls import NCLS
+        other._ranges._build_ncls_index()
+        res = other._ranges.find_overlaps(self._ranges, num_threads=num_threads)
 
-        self_end = self.end
-        other_end = other.end
+        if delete_index:
+            other._ranges._delete_ncls_index()
 
-        other_ncls = NCLS(other.start, other_end, np.arange(len(other)))
-        _self_indexes, _other_indexes = other_ncls.all_overlaps_both(self.start, self_end, np.arange(len(self)))
-
+        _other_indexes = res["self_hits"]
+        _self_indexes = res["query_hits"]
         other_chrms = np.array([other._seqinfo._seqnames[other._seqnames[i]] for i in _other_indexes])
         self_chrms = np.array([self._seqinfo._seqnames[self._seqnames[i]] for i in _self_indexes])
 
