@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.0
+
+- Changes to switch to LTLA/nclist-cpp in the iranges package for overlap and search operations.
+
 ## Version 0.6.2 - 0.6.3
 
 - Implement biocutil's `extract_row_names` generic.
