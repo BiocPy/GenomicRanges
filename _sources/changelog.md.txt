@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.0
+
+- Changes to switch to LTLA/nclist-cpp in the iranges package for overlap and search operations.
+
 ## Version 0.6.2 - 0.6.3
 
 - Implement biocutil's `extract_row_names` generic.
@@ -92,7 +96,7 @@ This is a complete rewrite of both these classes following the functional paradi
 
 The package does not rely on pandas anymore. While we try to provide backwards compatibility to construct a GenomicRanges object from a pandas dataframe using the `from_pandas` method, please note that the default constructor to genomic ranges does not accept a pandas data frame anymore!
 
-Most range based methods have been reimplemented and the heavy lifting is done in the [IRanges package](https://github.com/BiocPy/IRanges) for interval operations. The package indirectly depends on [NCLS](https://github.com/pyranges/ncls) interval tree data structure to perform search and overlap operations.
+Most range based methods have been reimplemented and the heavy lifting is done in the [IRanges package](https://github.com/BiocPy/IRanges) for interval operations. The package depends on [nclist-cpp](https://github.com/LTLA/nclist-cpp) data structure to perform search and overlap operations.
 
 Tests, documentation and readme has been updated to reflect these changes.
 

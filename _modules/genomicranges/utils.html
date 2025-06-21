@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>genomicranges.utils - GenomicRanges 0.6.3 documentation</title>
+        <title>genomicranges.utils - GenomicRanges 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.6.3 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.6.3 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -482,6 +482,26 @@
 
     <span class="k">return</span> <span class="n">new_starts</span><span class="p">,</span> <span class="n">new_ends</span> <span class="o">-</span> <span class="n">new_starts</span> <span class="o">+</span> <span class="mi">1</span></div>
 
+
+
+<div class="viewcode-block" id="extract_groups_from_granges">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.extract_groups_from_granges">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_groups_from_granges</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">ignore_strand</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">):</span>
+            <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">_seqnames</span> <span class="o">==</span> <span class="n">idx</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">seq</span><span class="p">,</span> <span class="n">matches</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">## TODO: needs some rethinking to speed this up</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">_strand</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">unique_groups</span><span class="p">,</span> <span class="n">inverse_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">combined</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">):</span>
+            <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">inverse_indices</span> <span class="o">==</span> <span class="n">idx</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">x</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="n">seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">seq</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">matches</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">groups</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -514,7 +534,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=b8503983"></script>
+</div><script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
