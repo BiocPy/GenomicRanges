@@ -1056,6 +1056,7 @@ class GenomicRanges:
         Args:
             input:
                 Input data. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                'ends' are expected to be inclusive.
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1136,6 +1137,7 @@ class GenomicRanges:
         Args:
             input:
                 Input polars DataFrame. Must contain columns 'seqnames', 'starts' and 'widths' or "ends".
+                'ends' are expected to be inclusive.
 
         Returns:
             A ``GenomicRanges`` object.
@@ -1640,6 +1642,8 @@ class GenomicRanges:
     ######>> inter-range methods <<######
     #####################################
 
+    # TODO: a better way groups = seqnames * 3 + strand
+    # then split indices by this group.
     def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
         __strand = self._strand.copy()
         if ignore_strand:
@@ -2080,12 +2084,22 @@ class GenomicRanges:
         diff = x.setdiff(y_gaps)
         return diff
 
-    def intersect_ncls(self, other: "GenomicRanges") -> "GenomicRanges":
+    def intersect_ncls(
+        self, other: "GenomicRanges", delete_index: bool = True, num_threads: int = 1
+    ) -> "GenomicRanges":
         """Find intersecting genomic intervals with `other` (uses NCLS index).
 
         Args:
             other:
                 The other ``GenomicRanges`` object.
+
+            delete_index:
+                Defaults to True, to delete the cached ncls index.
+                Set to False, to reuse the index across multiple queries.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             A new ``GenomicRanges`` object with intersecting ranges.
@@ -2093,17 +2107,17 @@ class GenomicRanges:
         if not isinstance(other, GenomicRanges):
             raise TypeError("'other' is not a `GenomicRanges` object.")
 
-        if not ut.package_utils.is_package_installed("ncls"):
-            raise ImportError("package: 'ncls' is not installed.")
+        self_end = self.get_end()
+        other_end = other.get_end()
 
-        from ncls import NCLS
+        other._ranges._build_ncls_index()
+        res = other._ranges.find_overlaps(self._ranges, num_threads=num_threads)
 
-        self_end = self.end
-        other_end = other.end
+        if delete_index:
+            other._ranges._delete_ncls_index()
 
-        other_ncls = NCLS(other.start, other_end, np.arange(len(other)))
-        _self_indexes, _other_indexes = other_ncls.all_overlaps_both(self.start, self_end, np.arange(len(self)))
-
+        _other_indexes = res["self_hits"]
+        _self_indexes = res["query_hits"]
         other_chrms = np.array([other._seqinfo._seqnames[other._seqnames[i]] for i in _other_indexes])
         self_chrms = np.array([self._seqinfo._seqnames[self._seqnames[i]] for i in _self_indexes])
 
@@ -2137,6 +2151,27 @@ class GenomicRanges:
     ######>> search operations <<######
     ###################################
 
+    def extract_groups_by_seqnames(self):
+        groups = []
+        for idx, _ in enumerate(self._seqinfo._seqnames):
+            idx = np.where(self._seqnames == idx)[0]
+            groups.append(idx)
+        return groups
+
+    def _get_query_common_groups(self, query: "GenomicRanges") -> Tuple[np.ndarray, np.ndarray]:
+        # smerged = merge_SeqInfo([self._seqinfo, query._seqinfo])
+        common_seqlevels = set(self._seqinfo._seqnames).intersection(query._seqinfo._seqnames)
+        q_group_idx = [self._seqinfo._seqnames.index(i) for i in common_seqlevels]
+        s_group_idx = [query._seqinfo._seqnames.index(i) for i in common_seqlevels]
+
+        s_grps = self.extract_groups_by_seqnames()
+        self_groups = [s_grps[i] for i in q_group_idx]
+
+        q_grps = query.extract_groups_by_seqnames()
+        query_groups = [q_grps[i] for i in s_group_idx]
+
+        return (self_groups, query_groups)
+
     def find_overlaps(
         self,
         query: "GenomicRanges",
@@ -2145,6 +2180,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 0,
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> BiocFrame:
         """Find overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
@@ -2176,6 +2212,10 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
+
         Raises:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
@@ -2192,53 +2232,67 @@ class GenomicRanges:
         if query_type not in OVERLAP_QUERY_TYPES:
             raise ValueError(f"'{query_type}' must be one of {', '.join(OVERLAP_QUERY_TYPES)}.")
 
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+        from iranges.lib_iranges import find_overlaps_groups
 
-        all_qhits = np.array([], dtype=np.int32)
-        all_shits = np.array([], dtype=np.int32)
+        if len(self) >= len(query):
+            self_groups, query_groups = self._get_query_common_groups(query)
 
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
+            all_s_hits, all_q_hits = find_overlaps_groups(
+                self._ranges.get_start().astype(np.int32),
+                self._ranges.get_end().astype(np.int32) + 1,
+                [s.astype(np.int32) for s in self_groups],
+                query._ranges.get_start().astype(np.int32),
+                query._ranges.get_end().astype(np.int32) + 1,
+                [q.astype(np.int32) for q in query_groups],
+                query_type,
+                select,
+                max_gap,
+                min_overlap,
+                num_threads,
+            )
 
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
+            if ignore_strand is False:
+                s_strands = self._strand[all_s_hits]
+                q_strands = query._strand[all_q_hits]
 
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
+                mask = s_strands == q_strands
+                # to allow '*' with any strand from query
+                mask[s_strands == 0] = True
+                mask[q_strands == 0] = True
+                all_q_hits = all_q_hits[mask]
+                all_s_hits = all_s_hits[mask]
 
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
+            order = np.argsort(all_q_hits, stable=True)
+            return BiocFrame({"query_hits": all_q_hits[order], "self_hits": all_s_hits[order]})
+        else:
+            query_groups, self_groups = query._get_query_common_groups(self)
 
-                res_idx = _sub_subset._ranges.find_overlaps(
-                    query=_query_subset._ranges,
-                    query_type=query_type,
-                    select=select,
-                    max_gap=max_gap,
-                    min_overlap=min_overlap,
-                    delete_index=False,
-                )
+            all_q_hits, all_s_hits = find_overlaps_groups(
+                query._ranges.get_start().astype(np.int32),
+                query._ranges.get_end().astype(np.int32) + 1,
+                [q.astype(np.int32) for q in query_groups],
+                self._ranges.get_start().astype(np.int32),
+                self._ranges.get_end().astype(np.int32) + 1,
+                [s.astype(np.int32) for s in self_groups],
+                query_type,
+                select,
+                max_gap,
+                min_overlap,
+                num_threads,
+            )
 
-                all_qhits = np.concatenate(
-                    (all_qhits, [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
-                )
-                all_shits = np.concatenate(
-                    (all_shits, [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
-                )
+            if ignore_strand is False:
+                q_strands = query._strand[all_q_hits]
+                s_strands = self._strand[all_s_hits]
 
-        order = np.argsort(all_qhits, stable=True)
-        return BiocFrame({"query_hits": all_qhits, "self_hits": all_shits})[order, :]
+                mask = s_strands == q_strands
+                mask[q_strands == 0] = True
+                mask[s_strands == 0] = True
+                all_q_hits = all_q_hits[mask]
+                all_s_hits = all_s_hits[mask]
+
+            order = np.argsort(all_q_hits, stable=True)
+            return BiocFrame({"query_hits": all_q_hits[order], "self_hits": all_s_hits[order]})
 
     def count_overlaps(
         self,
@@ -2247,6 +2301,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 0,
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> np.ndarray:
         """Count overlaps between subject (self) and a ``query`` ``GenomicRanges`` object.
 
@@ -2274,6 +2329,10 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
+
         Raises:
             TypeError: If ``query`` is not of type `GenomicRanges`.
 
@@ -2282,7 +2341,12 @@ class GenomicRanges:
             value represents the number of overlaps in `self` for each query.
         """
         _overlaps = self.find_overlaps(
-            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
+            query,
+            query_type=query_type,
+            max_gap=max_gap,
+            min_overlap=min_overlap,
+            ignore_strand=ignore_strand,
+            num_threads=num_threads,
         )
         result = np.zeros(len(query))
         _ucounts = np.unique_counts(_overlaps.get_column("query_hits"))
@@ -2297,6 +2361,7 @@ class GenomicRanges:
         max_gap: int = -1,
         min_overlap: int = 0,
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> "GenomicRanges":
         """Subset ``subject`` (self) with overlaps in ``query`` `GenomicRanges` object.
 
@@ -2324,6 +2389,10 @@ class GenomicRanges:
             ignore_strand:
                 Whether to ignore strands. Defaults to False.
 
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
+
         Raises:
             TypeError:
                 If ``query`` is not of type `GenomicRanges`.
@@ -2332,7 +2401,12 @@ class GenomicRanges:
             A ``GenomicRanges`` object containing overlapping ranges.
         """
         _overlaps = self.find_overlaps(
-            query, query_type=query_type, max_gap=max_gap, min_overlap=min_overlap, ignore_strand=ignore_strand
+            query,
+            query_type=query_type,
+            max_gap=max_gap,
+            min_overlap=min_overlap,
+            ignore_strand=ignore_strand,
+            num_threads=num_threads,
         )
         _all_indices = np.unique(_overlaps.get_column("self_hits"))
         return self[_all_indices]
@@ -2374,55 +2448,40 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+        self_groups, query_groups = self._get_query_common_groups(query)
+
+        result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
+
+        for s_group, q_group in zip(self_groups, query_groups):
+            self_subset = self[s_group]
+            query_subset = query[q_group]
+            res_idx = self_subset._ranges.nearest(query=query_subset._ranges, select="all", delete_index=False)
+
+            _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
+            _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
+            if ignore_strand is False:
+                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
+                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+
+                mask = s_strands == q_strands
+                # to allow '*' with any strand from query
+                mask[s_strands == 0] = True
+                mask[q_strands == 0] = True
+                _q_hits = _q_hits[mask]
+                _s_hits = _s_hits[mask]
+
+            result["all_qhits"] = np.concatenate((result["all_qhits"], _q_hits))
+            result["all_shits"] = np.concatenate((result["all_shits"], _s_hits))
 
         if select == "arbitrary":
-            result = np.full(len(query), None)
+            ret_result = np.full(len(query), None)
+            for s, q in zip(result["all_shits"], result["all_qhits"]):
+                ret_result[q] = s
+
+            return ret_result
         else:
-            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
-
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
-
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.nearest(query=_query_subset._ranges, select=select, delete_index=False)
-
-                if select == "arbitrary":
-                    for i, x in enumerate(res_idx):
-                        result[indices[i]] = _subset[x]
-
-                else:
-                    result["all_qhits"] = np.concatenate(
-                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")]), dtype=np.int32
-                    )
-                    result["all_shits"] = np.concatenate(
-                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")]), dtype=np.int32
-                    )
-
-        if select == "all":
             result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
-
-        return result
+            return result
 
     def precede(
         self,
@@ -2457,59 +2516,40 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+        self_groups, query_groups = self._get_query_common_groups(query)
+        result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
+
+        for s_group, q_group in zip(self_groups, query_groups):
+            self_subset = self[s_group]
+            query_subset = query[q_group]
+            res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
+
+            _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
+            _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
+            if ignore_strand is False:
+                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
+                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+
+                mask = s_strands == q_strands
+                # to allow '*' with any strand from query
+                mask[s_strands == 0] = True
+                mask[q_strands == 0] = True
+                _q_hits = _q_hits[mask]
+                _s_hits = _s_hits[mask]
+
+            result["all_qhits"] = np.concatenate((result["all_qhits"], _q_hits))
+            result["all_shits"] = np.concatenate((result["all_shits"], _s_hits))
 
         if select == "first":
-            result = np.full(len(query), None)
+            ret_result = np.full(len(query), None)
+            for s, q in zip(result["all_shits"], result["all_qhits"]):
+                if ret_result[q] is None:
+                    ret_result[q] = s
+
+            return ret_result
         else:
-            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
-
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
-
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.precede(query=_query_subset._ranges, select=select)
-
-                if select == "first":
-                    matches = res_idx != None  # noqa: E711
-                    not_none = res_idx[matches]
-
-                    if len(not_none) > 0:
-                        for i, x in enumerate(not_none):
-                            result[indices[i]] = _subset[x]
-
-                else:
-                    result["all_qhits"] = np.concatenate(
-                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")])
-                    )
-                    result["all_shits"] = np.concatenate(
-                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")])
-                    )
-
-        if select == "all":
             result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
-
-        return result
+            return result
 
     def follow(
         self,
@@ -2544,59 +2584,39 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        subject_chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        query_chrm_grps = query._group_indices_by_chrm(ignore_strand=ignore_strand)
+        self_groups, query_groups = self._get_query_common_groups(query)
+        result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
+
+        for s_group, q_group in zip(self_groups, query_groups):
+            self_subset = self[s_group]
+            query_subset = query[q_group]
+            res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
+
+            _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
+            _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
+            if ignore_strand is False:
+                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
+                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+
+                mask = s_strands == q_strands
+                # to allow '*' with any strand from query
+                mask[s_strands == 0] = True
+                mask[q_strands == 0] = True
+                _q_hits = _q_hits[mask]
+                _s_hits = _s_hits[mask]
+
+            result["all_qhits"] = np.concatenate((result["all_qhits"], _q_hits))
+            result["all_shits"] = np.concatenate((result["all_shits"], _s_hits))
 
         if select == "last":
-            result = np.full(len(query), None)
+            ret_result = np.full(len(query), None)
+            for s, q in zip(result["all_shits"], result["all_qhits"]):
+                ret_result[q] = s
+
+            return ret_result
         else:
-            result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
-
-        for group, indices in query_chrm_grps.items():
-            _subset = []
-            if group in subject_chrm_grps:
-                _subset.extend(subject_chrm_grps[group])
-
-            _grp_split = group.split(_granges_delim)
-            if _grp_split[1] != "0":
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}0"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-            else:
-                _any_grp_fwd = f"{_grp_split[0]}{_granges_delim}1"
-                if _any_grp_fwd in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_fwd])
-
-                _any_grp_rev = f"{_grp_split[0]}{_granges_delim}-1"
-                if _any_grp_rev in subject_chrm_grps:
-                    _subset.extend(subject_chrm_grps[_any_grp_rev])
-
-            if len(_subset) > 0:
-                _sub_subset = self[_subset]
-                _query_subset = query[indices]
-
-                res_idx = _sub_subset._ranges.follow(query=_query_subset._ranges, select=select)
-
-                if select == "last":
-                    matches = res_idx != None  # noqa: E711
-                    not_none = res_idx[matches]
-
-                    if len(not_none) > 0:
-                        for i, x in enumerate(not_none):
-                            result[indices[i]] = _subset[x]
-
-                else:
-                    result["all_qhits"] = np.concatenate(
-                        (result["all_qhits"], [indices[j] for j in res_idx.get_column("query_hits")])
-                    )
-                    result["all_shits"] = np.concatenate(
-                        (result["all_shits"], [_subset[x] for x in res_idx.get_column("self_hits")])
-                    )
-
-        if select == "all":
             result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
-
-        return result
+            return result
 
     def distance(self, query: Union["GenomicRanges", IRanges]) -> np.ndarray:
         """Compute the pair-wise distance with intervals in query.

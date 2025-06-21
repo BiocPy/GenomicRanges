@@ -203,3 +203,20 @@ def compute_up_down(starts, ends, strands, upstream, downstream, site: str = "TS
         new_ends[minus_mask] = starts[minus_mask] + upstream[minus_mask]
 
     return new_starts, new_ends - new_starts + 1
+
+
+def extract_groups_from_granges(x, ignore_strand=False):
+    groups = []
+    if ignore_strand:
+        for idx, seq in enumerate(x._seqinfo._seqnames):
+            matches = np.where(x._seqnames == idx)[0]
+            groups.append((seq, matches))
+    else:
+        ## TODO: needs some rethinking to speed this up
+        combined = np.stack((x._seqnames, x._strand), axis=-1)
+        unique_groups, inverse_indices = np.unique(combined, return_inverse=True, return_counts=False, axis=0)
+        for idx, seq in enumerate(unique_groups):
+            matches = np.where(inverse_indices == idx)[0]
+            groups.append(((x._seqinfo._seqnames[seq[0]], seq[1]), matches))
+
+    return groups

@@ -24,6 +24,9 @@ pip install genomicranges[optional]
 
 ### From Bioinformatic file formats
 
+> [!NOTE]
+> When reading genomic formats, `ends` are expected to be inclusive to be consistent with Bioconductor representations (& gff). If they are not, we recommend subtracting 1 from the `ends`.
+
 #### From `biobear`
 
 Although the parsing capabilities in this package are limited, the [biobear](https://github.com/wheretrue/biobear) library is designed for reading and searching various bioinformatics file formats, including FASTA, FASTQ, VCF, BAM, and GFF, or from an object store like S3. Users can esily convert these representations to `GenomicRanges` (or [read more here](https://www.wheretrue.dev/docs/exon/biobear/genomicranges-integration)):
@@ -44,8 +47,8 @@ print(len(gg), len(df))
 ```
 
     ## output
-    ## 77 77
-
+    ## 77 77> [!NOTE]
+> `ends` are expected to be inclusive to be consistent with Bioconductor representations. If they are not, we recommend subtracting 1 from the `ends`.
 
 #### UCSC or GTF file
 

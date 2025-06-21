@@ -39,8 +39,8 @@ def test_nearest():
 
     query_hits = q_gr.nearest(gr)
     assert np.all(
-        query_hits == [None, 0, 0, 0, None, None, None, None, None, None]
-    )  # R has 1,1,1 but both are fine since they are near
+        query_hits == [None, 1, 1, 1, None, None, None, None, None, None]
+    )  # R has 1,1,1 or 0,0,0 but both are fine since they are near
 
     query_hits = gr.nearest(q_gr, select="all")
     assert np.all(query_hits.get_column("query_hits") == [0, 0, 0, 1, 1, 1])

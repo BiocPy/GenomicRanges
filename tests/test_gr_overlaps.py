@@ -56,7 +56,7 @@ def test_find_overlaps():
     assert res is not None
     assert isinstance(res, BiocFrame)
     assert np.all(res.get_column("query_hits") == [1, 1, 2, 2, 3, 3])
-    assert np.all(res.get_column("self_hits") == [1, 0, 1, 0, 1, 0])
+    assert np.all(res.get_column("self_hits") == [0, 1, 0, 1, 0, 1])
 
 
 def test_find_overlaps_query_type():
@@ -64,6 +64,17 @@ def test_find_overlaps_query_type():
     assert query is not None
 
     res = subject.find_overlaps(query, query_type="within")
+
+    assert res is not None
+    assert np.all(res.get_column("self_hits") == [1, 2, 3, 1, 2])
+    assert np.all(res.get_column("query_hits") == [0, 0, 0, 1, 1])
+
+
+def test_find_overlaps_threads():
+    assert subject is not None
+    assert query is not None
+
+    res = subject.find_overlaps(query, query_type="within", num_threads=3)
 
     assert res is not None
     assert np.all(res.get_column("self_hits") == [1, 2, 3, 1, 2])
