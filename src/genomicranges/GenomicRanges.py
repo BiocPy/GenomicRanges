@@ -1642,6 +1642,8 @@ class GenomicRanges:
     ######>> inter-range methods <<######
     #####################################
 
+    # TODO: a better way groups = seqnames * 3 + strand
+    # then split indices by this group.
     def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
         __strand = self._strand.copy()
         if ignore_strand:
