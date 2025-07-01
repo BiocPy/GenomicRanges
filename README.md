@@ -276,7 +276,7 @@ Performance comparison between Python and R GenomicRanges implementations. The q
 | Overlap (single chromosome) | 6.98s | 5.36s | 10.06s |
 
 > [!NOTE]
-> The single chromosome benchmark ignores chromosome/sequence information and performs overlap operations solely on genomic ranges.
+> The single chromosome benchmark ignores chromosome/sequence information and performs overlap operations solely on intervals.
 
 For details, see the scripts in the [benchmark directory](./perf).
 
