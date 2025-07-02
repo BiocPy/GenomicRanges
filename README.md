@@ -274,6 +274,8 @@ Performance comparison between Python and R GenomicRanges implementations. The q
 |-----------|---------------------|-----------------------------------|-----------------|
 | Overlap | 3.02s | 2.13s | 4.40s |
 | Overlap (single chromosome) | 6.98s | 5.36s | 10.06s |
+| Nearest | 50.1s | 48.9s | 42.16s |
+| Nearest (single chromosome) | 15.5s | 11.4s | 11.01s |
 
 > [!NOTE]
 > The single chromosome benchmark ignores chromosome/sequence information and performs overlap operations solely on intervals.

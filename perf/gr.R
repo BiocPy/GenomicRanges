@@ -2,23 +2,25 @@ library(rtracklayer)
 library(GenomicRanges)
 library(microbenchmark)
 
-bed_gr <- rtracklayer::import("consensus_peaks_bicnn.bed")
-bigwig_gr <- rtracklayer::import("Astro.bw")
-
-overlaps <- function(query, subject) {
-  findOverlaps(query, subject)
-}
+query <- rtracklayer::import("consensus_peaks_bicnn.bed")
+subject <- rtracklayer::import("Astro.bw")
 
 results_overlaps <- microbenchmark(
-  overlaps(bigwig_gr, bed_gr), times = 3
+  findOverlaps(query, subject), times = 3
 )
 print(results_overlaps)
 
-pretend_single_chrom_overlaps <- function(query, subject) {
-  findOverlaps(ranges(query), ranges(subject))
-}
-
 results_pretend_single_chrom <- microbenchmark(
-  pretend_single_chrom_overlaps(bigwig_gr, bed_gr), times = 3
+  findOverlaps(ranges(query), ranges(subject)), times = 3
 )
 print(results_pretend_single_chrom)
+
+results_nearest <- microbenchmark(
+  nearest(query, subject), times = 3
+)
+print(results_nearest)
+
+results_nearest_pretend_single_chrom <- microbenchmark(
+  nearest(ranges(query), ranges(subject)), times = 3
+)
+print(results_nearest_pretend_single_chrom)
