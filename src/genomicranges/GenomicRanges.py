@@ -1971,8 +1971,7 @@ class GenomicRanges:
 
         result = {}
         for chrm, group in chrm_grps.items():
-            _grp_subset = self[group]
-            cov = _grp_subset._ranges.coverage(shift=shift, width=width, weight=weight)
+            cov = self._ranges[group].coverage(shift=shift, width=width, weight=weight)
             result[chrm.split(_granges_delim)[0]] = cov
 
         return result
@@ -2420,6 +2419,7 @@ class GenomicRanges:
         query: "GenomicRanges",
         select: Literal["all", "arbitrary"] = "arbitrary",
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
@@ -2433,6 +2433,10 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             If select="arbitrary":
@@ -2453,15 +2457,13 @@ class GenomicRanges:
         result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for s_group, q_group in zip(self_groups, query_groups):
-            self_subset = self[s_group]
-            query_subset = query[q_group]
-            res_idx = self_subset._ranges.nearest(query=query_subset._ranges, select="all", delete_index=False)
+            res_idx = self._ranges[s_group].nearest(query=query._ranges[q_group], select="all", num_threads=num_threads)
 
             _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
             _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
             if ignore_strand is False:
-                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
-                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+                s_strands = self._strand[s_group][res_idx.get_column("self_hits")]
+                q_strands = query._strand[q_group][res_idx.get_column("query_hits")]
 
                 mask = s_strands == q_strands
                 # to allow '*' with any strand from query
@@ -2488,6 +2490,7 @@ class GenomicRanges:
         query: "GenomicRanges",
         select: Literal["all", "first"] = "first",
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only downstream that overlap with each range in ``query``.
 
@@ -2501,6 +2504,10 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             If select="first":
@@ -2520,15 +2527,13 @@ class GenomicRanges:
         result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for s_group, q_group in zip(self_groups, query_groups):
-            self_subset = self[s_group]
-            query_subset = query[q_group]
-            res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
+            res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all", num_threads=num_threads)
 
             _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
             _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
             if ignore_strand is False:
-                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
-                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+                s_strands = self._strand[s_group][res_idx.get_column("self_hits")]
+                q_strands = query._strand[q_group][res_idx.get_column("query_hits")]
 
                 mask = s_strands == q_strands
                 # to allow '*' with any strand from query
@@ -2556,6 +2561,7 @@ class GenomicRanges:
         query: "GenomicRanges",
         select: Literal["all", "last"] = "last",
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only upstream that overlap with each range in ``query``.
 
@@ -2569,6 +2575,10 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             If select="last":
@@ -2588,15 +2598,13 @@ class GenomicRanges:
         result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
         for s_group, q_group in zip(self_groups, query_groups):
-            self_subset = self[s_group]
-            query_subset = query[q_group]
-            res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
+            res_idx = self[s_group]._ranges.follow(query=query[q_group]._ranges, select="all", num_threads=num_threads)
 
             _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
             _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
             if ignore_strand is False:
-                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
-                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+                s_strands = self._strand[s_group][res_idx.get_column("self_hits")]
+                q_strands = query._strand[q_group][res_idx.get_column("query_hits")]
 
                 mask = s_strands == q_strands
                 # to allow '*' with any strand from query

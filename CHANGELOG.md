@@ -1,8 +1,9 @@
 # Changelog
 
-## Version 0.7.0
+## Version 0.7.0 - 0.7.1
 
 - Changes to switch to LTLA/nclist-cpp in the iranges package for overlap and search operations.
+- Improve performance of search operations.
 
 ## Version 0.6.2 - 0.6.3
 
