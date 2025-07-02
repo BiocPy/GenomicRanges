@@ -206,17 +206,87 @@ def compute_up_down(starts, ends, strands, upstream, downstream, site: str = "TS
 
 
 def extract_groups_from_granges(x, ignore_strand=False):
-    groups = []
     if ignore_strand:
+        groups = []
         for idx, seq in enumerate(x._seqinfo._seqnames):
             matches = np.where(x._seqnames == idx)[0]
             groups.append((seq, matches))
+        return groups
     else:
         ## TODO: needs some rethinking to speed this up
         combined = np.stack((x._seqnames, x._strand), axis=-1)
-        unique_groups, inverse_indices = np.unique(combined, return_inverse=True, return_counts=False, axis=0)
-        for idx, seq in enumerate(unique_groups):
-            matches = np.where(inverse_indices == idx)[0]
-            groups.append(((x._seqinfo._seqnames[seq[0]], seq[1]), matches))
+        unique_groups, inverse_indices = np.unique(combined, return_inverse=True, axis=0)
 
-    return groups
+        groups = []
+        for i, grp_array in enumerate(unique_groups):
+            seq_idx, strand_val = grp_array[0], grp_array[1]
+            seq_name = x._seqinfo._seqnames[seq_idx]
+
+            matches = np.where(inverse_indices == i)[0]
+            groups.append(((seq_name, strand_val), matches))
+
+        return groups
+
+
+def wrapper_nearest(args):
+    """Processes a single pair of self and query groups to find the nearest ranges.
+    This function is designed to be called by a multiprocessing pool.
+    """
+    (
+        s_group,
+        q_group,
+        self_ranges,
+        query_ranges,
+        self_strand,
+        query_strand,
+        ignore_strand,
+    ) = args
+
+    res_idx = self_ranges[s_group].nearest(query=query_ranges[q_group], select="all")
+
+    _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
+    _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
+
+    if not ignore_strand:
+        s_strands = self_strand[s_group][res_idx.get_column("self_hits")]
+        q_strands = query_strand[q_group][res_idx.get_column("query_hits")]
+
+        mask = (s_strands == q_strands) | (s_strands == 0) | (q_strands == 0)
+
+        _q_hits = _q_hits[mask]
+        _s_hits = _s_hits[mask]
+
+    return _q_hits, _s_hits
+
+
+def wrapper_follow_precede(args):
+    """Processes a single group for precede/follow operations.
+    This function is designed to be called by a multiprocessing pool.
+    """
+    (
+        method_name,
+        s_group,
+        q_group,
+        self_ranges,
+        query_ranges,
+        self_strand,
+        query_strand,
+        ignore_strand,
+    ) = args
+
+    method_to_call = getattr(self_ranges[s_group], method_name)
+    res_idx = method_to_call(query=query_ranges[q_group], select="all")
+
+    _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
+    _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
+
+    if not ignore_strand:
+        s_strands = self_strand[s_group][res_idx.get_column("self_hits")]
+        q_strands = query_strand[q_group][res_idx.get_column("query_hits")]
+
+        mask = (s_strands == q_strands) | (s_strands == 0) | (q_strands == 0)
+
+        _q_hits = _q_hits[mask]
+        _s_hits = _s_hits[mask]
+
+    return _q_hits, _s_hits

@@ -53,6 +53,9 @@ def test_nearest():
     assert np.all(query_hits.get_column("query_hits") == [0, 0, 0, 1, 1, 1])
     assert np.all(query_hits.get_column("self_hits") == [1, 2, 3, 1, 2, 3])
 
+    query_hits = gr.nearest(q_gr, select="all", ignore_strand=True, num_threads=3)
+    assert np.all(query_hits.get_column("query_hits") == [0, 0, 0, 1, 1, 1])
+    assert np.all(query_hits.get_column("self_hits") == [1, 2, 3, 1, 2, 3])
 
 def test_precede():
     assert gr is not None
@@ -69,6 +72,9 @@ def test_precede():
     assert np.all(query_hits.get_column("query_hits") == [])
     assert np.all(query_hits.get_column("self_hits") == [])
 
+    query_hits = gr.precede(q_gr, select="all", num_threads=3)
+    assert np.all(query_hits.get_column("query_hits") == [])
+    assert np.all(query_hits.get_column("self_hits") == [])
 
 def test_follow():
     assert gr is not None
@@ -82,6 +88,10 @@ def test_follow():
     assert np.all(query_hits == [None] * len(gr))
 
     query_hits = gr.follow(q_gr, select="all")
+    assert np.all(query_hits.get_column("query_hits") == [])
+    assert np.all(query_hits.get_column("self_hits") == [])
+
+    query_hits = gr.follow(q_gr, select="all", num_threads=3)
     assert np.all(query_hits.get_column("query_hits") == [])
     assert np.all(query_hits.get_column("self_hits") == [])
 
