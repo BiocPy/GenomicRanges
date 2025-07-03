@@ -1,4 +1,5 @@
 from collections import defaultdict
+from multiprocessing import Pool, cpu_count
 from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
 from warnings import warn
 
@@ -9,9 +10,12 @@ from iranges import IRanges
 
 from .SeqInfo import SeqInfo, merge_SeqInfo
 from .utils import (
+    STRAND_MAP,
     compute_up_down,
     group_by_indices,
     sanitize_strand_vector,
+    wrapper_follow_precede,
+    wrapper_nearest,
 )
 
 __author__ = "jkanche"
@@ -1642,22 +1646,19 @@ class GenomicRanges:
     ######>> inter-range methods <<######
     #####################################
 
-    # TODO: a better way groups = seqnames * 3 + strand
-    # then split indices by this group.
     def _group_indices_by_chrm(self, ignore_strand: bool = False) -> dict:
-        __strand = self._strand.copy()
+        grouped_indices = defaultdict(list)
+        seqnames_list = self.get_seqnames(as_type="list")
+
         if ignore_strand:
-            __strand = np.zeros(len(self), dtype=np.int8)
-        # else:
-        #     __strand[__strand == 0] = 1
+            strands_list = ["*"] * len(self)
+        else:
+            strands_list = self.get_strand(as_type="list")
 
-        _seqnames = [self._seqinfo._seqnames[i] for i in self._seqnames]
-        grp_keys = np.char.add(np.char.add(_seqnames, f"{_granges_delim}"), __strand.astype(str))
-        unique_grps, inverse_indices = np.unique(grp_keys, return_inverse=True)
+        for i, (seq, strand) in enumerate(zip(seqnames_list, strands_list)):
+            grouped_indices[(seq, strand)].append(i)
 
-        chrm_grps = {str(grp): np.where(inverse_indices == i)[0].tolist() for i, grp in enumerate(unique_grps)}
-
-        return chrm_grps
+        return dict(grouped_indices)
 
     def reduce(
         self,
@@ -1688,48 +1689,47 @@ class GenomicRanges:
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        _new_mcols = self._ranges._mcols.set_column("reduceindices", range(len(self)))
-        _new_ranges = self._ranges.set_mcols(_new_mcols)
-        _new_self = self.set_ranges(_new_ranges)
+        _new_mcols = self._mcols.set_column("reduceindices", range(len(self)))
+        _new_self = self.set_mcols(_new_mcols, in_place=False)
 
         all_grp_ranges = []
-        rev_map = []
-        groups = []
+        rev_map_list = []
+        group_keys = []
 
-        for seq in _new_self._seqinfo._seqnames:
-            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
-            for strd in _iter_strands:
-                _key = f"{seq}{_granges_delim}{strd}"
-                if _key in chrm_grps:
-                    _grp_subset = _new_self[chrm_grps[_key]]
-                    _oindices = _grp_subset._ranges._mcols.get_column("reduceindices")
+        for grp_key, grp_indices in chrm_grps.items():
+            _grp_subset = _new_self[grp_indices]
+            _original_indices = _grp_subset.mcols.get_column("reduceindices")
 
-                    res_ir = _grp_subset._ranges.reduce(
-                        with_reverse_map=True,
-                        drop_empty_ranges=drop_empty_ranges,
-                        min_gap_width=min_gap_width,
-                    )
+            res_ir = _grp_subset.ranges.reduce(
+                with_reverse_map=True,
+                drop_empty_ranges=drop_empty_ranges,
+                min_gap_width=min_gap_width,
+            )
 
-                    groups.extend([_key] * len(res_ir))
-                    all_grp_ranges.append(res_ir)
-                    _rev_map = []
-                    for j in res_ir._mcols.get_column("revmap"):
-                        _rev_map.append([_oindices[x] for x in j])
-                    rev_map.extend(_rev_map)
+            if len(res_ir) > 0:
+                group_keys.extend([grp_key] * len(res_ir))
+                all_grp_ranges.append(res_ir)
+
+                if with_reverse_map:
+                    for j in res_ir.mcols.get_column("revmap"):
+                        rev_map_list.append([_original_indices[x] for x in j])
+
+        if not all_grp_ranges:
+            return GenomicRanges.empty()
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
-        all_merged_ranges._mcols.remove_column("revmap", in_place=True)
+        all_merged_ranges.mcols.remove_column("revmap", in_place=True)
 
-        splits = [x.split(_granges_delim) for x in groups]
-        new_seqnames = [x[0] for x in splits]
-        new_strand = np.asarray([int(x[1]) for x in splits])
+        new_seqnames = [k[0] for k in group_keys]
+        new_strand = np.asarray([STRAND_MAP[k[1]] for k in group_keys])
 
-        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges)
+        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges, seqinfo=self.seqinfo)
 
-        if with_reverse_map is True:
-            output._mcols.set_column("revmap", rev_map, in_place=True)
+        if with_reverse_map:
+            output.mcols.set_column("revmap", rev_map_list, in_place=True)
 
-        return output
+        order = output._order_for_interranges()
+        return output[order]
 
     def range(self, with_reverse_map: bool = False, ignore_strand: bool = False) -> "GenomicRanges":
         """Calculate range bounds for each distinct (seqname, strand) pair.
@@ -1748,33 +1748,34 @@ class GenomicRanges:
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         all_grp_ranges = []
-        rev_map = []
-        groups = []
+        rev_map_list = []
+        group_keys = []
 
-        for seq in self._seqinfo.get_seqnames():
-            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
-            for strd in _iter_strands:
-                _key = f"{seq}{_granges_delim}{strd}"
-                if _key in chrm_grps:
-                    _grp_subset = self[chrm_grps[_key]]
-                    res_ir = _grp_subset._ranges.range()
+        for grp_key, grp_indices in chrm_grps.items():
+            _grp_subset = self[grp_indices]
+            res_ir = _grp_subset.ranges.range()
 
-                    groups.extend([_key] * len(res_ir))
-                    all_grp_ranges.append(res_ir)
-                    rev_map.extend(chrm_grps[_key] * len(res_ir))
+            if len(res_ir) > 0:
+                group_keys.extend([grp_key] * len(res_ir))
+                all_grp_ranges.append(res_ir)
+                if with_reverse_map:
+                    rev_map_list.extend(grp_indices * len(res_ir))
+
+        if not all_grp_ranges:
+            return GenomicRanges.empty()
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
-        splits = [x.split(_granges_delim) for x in groups]
-        new_seqnames = [x[0] for x in splits]
-        new_strand = np.asarray([int(x[1]) for x in splits])
+        new_seqnames = [k[0] for k in group_keys]
+        new_strand = np.asarray([STRAND_MAP[k[1]] for k in group_keys])
 
-        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges)
+        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges, seqinfo=self.seqinfo)
 
-        if with_reverse_map is True:
-            output._mcols.set_column("revmap", rev_map, in_place=True)
+        if with_reverse_map:
+            output.mcols.set_column("revmap", rev_map_list, in_place=True)
 
-        return output
+        order = output._order_for_interranges()
+        return output[order]
 
     def gaps(
         self,
@@ -1804,46 +1805,47 @@ class GenomicRanges:
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
         all_grp_ranges = []
-        groups = []
+        group_keys = []
 
-        for i, chrm in enumerate(self._seqinfo.get_seqnames()):
-            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
-            for strd in _iter_strands:
-                _key = f"{chrm}{_granges_delim}{strd}"
+        all_seqs = self.seqinfo.get_seqnames()
+        all_strands = ["*"] if ignore_strand else ["+", "-", "*"]
 
-                _end = None
+        for seq_name in all_seqs:
+            for strand_str in all_strands:
+                grp_key = (seq_name, strand_str)
+
+                _end_val = None
                 if isinstance(end, dict):
-                    _end = end[chrm]
+                    _end_val = end.get(seq_name)
                 elif isinstance(end, int):
-                    _end = end
+                    _end_val = end
+                else:  # end is None
+                    seq_idx = self.seqinfo._seqnames.index(seq_name)
+                    _end_val = self.seqinfo.seqlengths[seq_idx]
 
-                gaps = None
-                if _key in chrm_grps:
-                    _grp_subset = self[chrm_grps[_key]]
-                    gaps = _grp_subset._ranges.gaps(
-                        start=start,
-                        end=_end,  # - 1 if _end is not None else _end
-                    )
-                else:
-                    if _end is None:
-                        _end = self._seqinfo.seqlengths[i]
+                gaps_ir = None
+                if grp_key in chrm_grps:
+                    _grp_subset = self[chrm_grps[grp_key]]
+                    gaps_ir = _grp_subset.ranges.gaps(start=start, end=_end_val)
+                elif _end_val is not None:
+                    # If group doesn't exist, the gap is the whole region
+                    gaps_ir = IRanges([start], [_end_val - start + 1])
 
-                    if _end is not None:
-                        gaps = IRanges(start=[start], width=[_end - start + 1])
+                if gaps_ir and len(gaps_ir) > 0:
+                    all_grp_ranges.append(gaps_ir)
+                    group_keys.extend([grp_key] * len(gaps_ir))
 
-                if gaps is not None:
-                    all_grp_ranges.append(gaps)
-                    groups.extend([_key] * len(gaps))
+        if not all_grp_ranges:
+            return GenomicRanges.empty()
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
 
-        splits = [x.split(_granges_delim) for x in groups]
-        new_seqnames = [x[0] for x in splits]
-        new_strand = np.asarray([int(x[1]) for x in splits])
+        new_seqnames = [k[0] for k in group_keys]
+        new_strand = np.asarray([STRAND_MAP[k[1]] for k in group_keys])
 
-        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges)
-
-        return output
+        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges, seqinfo=self.seqinfo)
+        order = output._order_for_interranges()
+        return output[order]
 
     def disjoin(self, with_reverse_map: bool = False, ignore_strand: bool = False) -> "GenomicRanges":
         """Calculate disjoint genomic positions for each distinct (seqname, strand) pair.
@@ -1862,37 +1864,37 @@ class GenomicRanges:
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
         all_grp_ranges = []
-        rev_map = []
-        groups = []
+        rev_map_list = []
+        group_keys = []
 
-        for seq in self._seqinfo.get_seqnames():
-            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
-            for strd in _iter_strands:
-                _key = f"{seq}{_granges_delim}{strd}"
-                if _key in chrm_grps:
-                    _grp_subset = self[chrm_grps[_key]]
-                    res_ir = _grp_subset._ranges.disjoin(with_reverse_map=True)
+        for grp_key, grp_indices in chrm_grps.items():
+            _grp_subset = self[grp_indices]
+            res_ir = _grp_subset.ranges.disjoin(with_reverse_map=True)
 
-                    groups.extend([_key] * len(res_ir))
-                    all_grp_ranges.append(res_ir)
+            if len(res_ir) > 0:
+                group_keys.extend([grp_key] * len(res_ir))
+                all_grp_ranges.append(res_ir)
 
-                    _rev_map = []
-                    for j in res_ir._mcols.get_column("revmap"):
-                        _rev_map.append([chrm_grps[_key][x] for x in j])
-                    rev_map.append(_rev_map[0])
+                if with_reverse_map:
+                    for j in res_ir.mcols.get_column("revmap"):
+                        rev_map_list.append([grp_indices[x] for x in j])
+
+        if not all_grp_ranges:
+            return GenomicRanges.empty()
 
         all_merged_ranges = ut.combine_sequences(*all_grp_ranges)
+        all_merged_ranges.mcols.remove_column("revmap", in_place=True)
 
-        splits = [x.split(_granges_delim) for x in groups]
-        new_seqnames = [x[0] for x in splits]
-        new_strand = np.asarray([int(x[1]) for x in splits])
+        new_seqnames = [k[0] for k in group_keys]
+        new_strand = np.asarray([STRAND_MAP[k[1]] for k in group_keys])
 
-        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges)
+        output = GenomicRanges(seqnames=new_seqnames, strand=new_strand, ranges=all_merged_ranges, seqinfo=self.seqinfo)
 
-        if with_reverse_map is True:
-            output._mcols.set_column("revmap", rev_map, in_place=True)
+        if with_reverse_map:
+            output.mcols.set_column("revmap", rev_map_list, in_place=True)
 
-        return output
+        order = output._order_for_interranges()
+        return output[order]
 
     def is_disjoint(self, ignore_strand: bool = False) -> bool:
         """Calculate disjoint genomic positions for each distinct (seqname, strand) pair.
@@ -1905,22 +1907,13 @@ class GenomicRanges:
             True if all ranges are disjoint, otherwise False.
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
-        is_disjoint = None
 
-        for seq in self._seqinfo.get_seqnames():
-            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
-            for strd in _iter_strands:
-                _key = f"{seq}{_granges_delim}{strd}"
-                if _key in chrm_grps:
-                    _grp_subset = self[chrm_grps[_key]]
-                    res_ir = _grp_subset._ranges.is_disjoint()
+        for grp_indices in chrm_grps.values():
+            _grp_subset = self[grp_indices]
+            if not _grp_subset.ranges.is_disjoint():
+                return False
 
-                    if is_disjoint is None:
-                        is_disjoint = res_ir
-                    else:
-                        is_disjoint = is_disjoint and res_ir
-
-        return is_disjoint
+        return True
 
     def disjoint_bins(self, ignore_strand: bool = False) -> np.ndarray:
         """Split ranges into a set of bins so that the ranges in each bin are disjoint.
@@ -1934,24 +1927,21 @@ class GenomicRanges:
         """
         chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
 
-        all_results = []
-        order = []
-        for seq in self._seqinfo.get_seqnames():
-            _iter_strands = [0] if ignore_strand is True else [1, -1, 0]
-            for strd in _iter_strands:
-                _key = f"{seq}{_granges_delim}{strd}"
-                if _key in chrm_grps:
-                    _grp_subset = self[chrm_grps[_key]]
-                    res_ir = _grp_subset._ranges.disjoint_bins()
+        binned_results = np.zeros(len(self), dtype=int)
 
-                    order.extend(chrm_grps[_key])
-                    all_results.extend(res_ir)
+        for grp_indices in chrm_grps.values():
+            _grp_subset = self[grp_indices]
+            res_ir_bins = _grp_subset.ranges.disjoint_bins()
+            binned_results[grp_indices] = res_ir_bins
 
-        merged = np.asarray(all_results).flatten()
-        return merged[np.argsort(order, stable=True)]
+        return binned_results
 
-    def coverage(self, shift: int = 0, width: Optional[int] = None, weight: int = 1) -> Dict[str, np.ndarray]:
-        """Calculate coverage for each chromosome, For each position, counts the number of ranges that cover it.
+    def coverage(
+        self, shift: int = 0, width: Optional[int] = None, weight: int = 1, ignore_strand: bool = True
+    ) -> Dict[str, np.ndarray]:
+        """
+        Calculate coverage for each chromosome. For each position, this method
+        counts the number of ranges that cover it.
 
         Args:
             shift:
@@ -1959,23 +1949,66 @@ class GenomicRanges:
 
             width:
                 Restrict the width of all chromosomes. Defaults to None.
-
             weight:
-                Weight to use. Defaults to 1.
+                Weight to use for each range. Defaults to 1.
+
+            ignore_strand:
+                Whether to ignore strand, effectively combining
+                all strands for coverage calculation. Defaults to True.
 
         Returns:
             A dictionary with chromosome names as keys and the
-            coverage vector.
+            coverage vector as values. The dictionary is sorted
+            by chromosome name.
         """
-        chrm_grps = self._group_indices_by_chrm(ignore_strand=True)
+        chrm_grps = self._group_indices_by_chrm(ignore_strand=ignore_strand)
+        sorted_keys = sorted(chrm_grps.keys())
 
         result = {}
-        for chrm, group in chrm_grps.items():
-            _grp_subset = self[group]
-            cov = _grp_subset._ranges.coverage(shift=shift, width=width, weight=weight)
-            result[chrm.split(_granges_delim)[0]] = cov
+        for grp_key in sorted_keys:
+            grp_indices = chrm_grps[grp_key]
+
+            cov = self._ranges[grp_indices].coverage(shift=shift, width=width, weight=weight)
+            seq_name = grp_key[0]
+            if seq_name in result:
+                if len(result[seq_name]) < len(cov):
+                    result[seq_name] = np.pad(result[seq_name], (0, len(cov) - len(result[seq_name])), "constant")
+                elif len(cov) < len(result[seq_name]):
+                    cov = np.pad(cov, (0, len(result[seq_name]) - len(cov)), "constant")
+
+                result[seq_name] += cov
+            else:
+                result[seq_name] = cov
 
         return result
+
+    def _order_for_interranges(self, decreasing: bool = False) -> np.ndarray:
+        """Get the order of indices for sorting.
+
+        Order is determined by:
+        1. Chromosome name (alphabetical).
+        2. Strand, in the user-specified order: '+', '-', '*'.
+        3. Start position.
+
+        Args:
+            decreasing:
+                Whether to sort in descending order.
+
+        Returns:
+            A NumPy vector containing index positions in the sorted order.
+        """
+        if len(self) == 0:
+            return np.array([], dtype=int)
+
+        strand_map = {1: 0, -1: 1, 0: 2}
+        sorted_strands = np.array([strand_map[s] for s in self._strand])
+        sort_keys = np.column_stack([self.start, sorted_strands, self._seqnames])
+        order_indices = np.lexsort(sort_keys.T)
+
+        if decreasing:
+            return order_indices[::-1]
+
+        return order_indices
 
     ################################
     ######>> set operations <<######
@@ -2420,6 +2453,7 @@ class GenomicRanges:
         query: "GenomicRanges",
         select: Literal["all", "arbitrary"] = "arbitrary",
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
@@ -2433,6 +2467,10 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             If select="arbitrary":
@@ -2448,46 +2486,53 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
+        effective_threads = min(num_threads, cpu_count()) if num_threads > 0 else cpu_count()
+
         self_groups, query_groups = self._get_query_common_groups(query)
 
-        result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
+        tasks = [
+            (
+                s_group,
+                q_group,
+                self._ranges,
+                query._ranges,
+                self._strand,
+                query._strand,
+                ignore_strand,
+            )
+            for s_group, q_group in zip(self_groups, query_groups)
+        ]
 
-        for s_group, q_group in zip(self_groups, query_groups):
-            self_subset = self[s_group]
-            query_subset = query[q_group]
-            res_idx = self_subset._ranges.nearest(query=query_subset._ranges, select="all", delete_index=False)
+        if effective_threads == 1 or len(self_groups) <= 1:
+            results = [wrapper_nearest(task) for task in tasks]
+        else:
+            with Pool(processes=effective_threads) as pool:
+                results = pool.map(wrapper_nearest, tasks)
 
-            _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
-            _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
-            if ignore_strand is False:
-                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
-                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+        if results:
+            all_qhits_list, all_shits_list = zip(*results)
+        else:
+            all_qhits_list, all_shits_list = [], []
 
-                mask = s_strands == q_strands
-                # to allow '*' with any strand from query
-                mask[s_strands == 0] = True
-                mask[q_strands == 0] = True
-                _q_hits = _q_hits[mask]
-                _s_hits = _s_hits[mask]
-
-            result["all_qhits"] = np.concatenate((result["all_qhits"], _q_hits))
-            result["all_shits"] = np.concatenate((result["all_shits"], _s_hits))
+        final_qhits = np.concatenate(all_qhits_list) if all_qhits_list else np.array([], dtype=np.int32)
+        final_shits = np.concatenate(all_shits_list) if all_shits_list else np.array([], dtype=np.int32)
 
         if select == "arbitrary":
             ret_result = np.full(len(query), None)
-            for s, q in zip(result["all_shits"], result["all_qhits"]):
+            for s, q in zip(final_shits, final_qhits):
                 ret_result[q] = s
-
+            # unique_q, indices = np.unique(final_qhits, return_index=True)
+            # ret_result[unique_q] = final_shits[indices]
             return ret_result
         else:
-            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
-            return result
+            return BiocFrame({"query_hits": final_qhits, "self_hits": final_shits})
 
     def precede(
         self,
         query: "GenomicRanges",
         select: Literal["all", "first"] = "first",
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only downstream that overlap with each range in ``query``.
 
@@ -2501,6 +2546,10 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             If select="first":
@@ -2516,46 +2565,54 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
+        effective_threads = min(num_threads, cpu_count()) if num_threads > 0 else cpu_count()
         self_groups, query_groups = self._get_query_common_groups(query)
-        result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
-        for s_group, q_group in zip(self_groups, query_groups):
-            self_subset = self[s_group]
-            query_subset = query[q_group]
-            res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
+        tasks = [
+            (
+                "precede",
+                s_group,
+                q_group,
+                self._ranges,
+                query._ranges,
+                self._strand,
+                query._strand,
+                ignore_strand,
+            )
+            for s_group, q_group in zip(self_groups, query_groups)
+        ]
 
-            _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
-            _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
-            if ignore_strand is False:
-                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
-                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+        if effective_threads > 1 and len(tasks) > 1:
+            with Pool(processes=effective_threads) as pool:
+                results = pool.map(wrapper_follow_precede, tasks)
+        else:
+            results = [wrapper_follow_precede(task) for task in tasks]
 
-                mask = s_strands == q_strands
-                # to allow '*' with any strand from query
-                mask[s_strands == 0] = True
-                mask[q_strands == 0] = True
-                _q_hits = _q_hits[mask]
-                _s_hits = _s_hits[mask]
+        if results:
+            all_qhits_list, all_shits_list = zip(*results)
+        else:
+            all_qhits_list, all_shits_list = [], []
 
-            result["all_qhits"] = np.concatenate((result["all_qhits"], _q_hits))
-            result["all_shits"] = np.concatenate((result["all_shits"], _s_hits))
+        final_qhits = np.concatenate(all_qhits_list) if all_qhits_list else np.array([], dtype=np.int32)
+        final_shits = np.concatenate(all_shits_list) if all_shits_list else np.array([], dtype=np.int32)
 
         if select == "first":
             ret_result = np.full(len(query), None)
-            for s, q in zip(result["all_shits"], result["all_qhits"]):
+            for s, q in zip(final_shits, final_qhits):
                 if ret_result[q] is None:
                     ret_result[q] = s
-
+            # unique_q, indices = np.unique(final_qhits, return_index=True)
+            # ret_result[unique_q] = final_shits[indices]
             return ret_result
         else:
-            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
-            return result
+            return BiocFrame({"query_hits": final_qhits, "self_hits": final_shits})
 
     def follow(
         self,
         query: "GenomicRanges",
         select: Literal["all", "last"] = "last",
         ignore_strand: bool = False,
+        num_threads: int = 1,
     ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions only upstream that overlap with each range in ``query``.
 
@@ -2569,6 +2626,10 @@ class GenomicRanges:
 
             ignore_strand:
                 Whether to ignore strand. Defaults to False.
+
+            num_threads:
+                Number of threads to use.
+                Defaults to 1.
 
         Returns:
             If select="last":
@@ -2584,39 +2645,44 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
+        effective_threads = min(num_threads, cpu_count()) if num_threads > 0 else cpu_count()
         self_groups, query_groups = self._get_query_common_groups(query)
-        result = {"all_qhits": np.array([], dtype=np.int32), "all_shits": np.array([], dtype=np.int32)}
 
-        for s_group, q_group in zip(self_groups, query_groups):
-            self_subset = self[s_group]
-            query_subset = query[q_group]
-            res_idx = self[s_group]._ranges.precede(query=query[q_group]._ranges, select="all")
+        tasks = [
+            (
+                "follow",
+                s_group,
+                q_group,
+                self._ranges,
+                query._ranges,
+                self._strand,
+                query._strand,
+                ignore_strand,
+            )
+            for s_group, q_group in zip(self_groups, query_groups)
+        ]
 
-            _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
-            _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
-            if ignore_strand is False:
-                s_strands = self_subset._strand[res_idx.get_column("self_hits")]
-                q_strands = query_subset._strand[res_idx.get_column("query_hits")]
+        if effective_threads > 1 and len(tasks) > 1:
+            with Pool(processes=effective_threads) as pool:
+                results = pool.map(wrapper_follow_precede, tasks)
+        else:
+            results = [wrapper_follow_precede(task) for task in tasks]
 
-                mask = s_strands == q_strands
-                # to allow '*' with any strand from query
-                mask[s_strands == 0] = True
-                mask[q_strands == 0] = True
-                _q_hits = _q_hits[mask]
-                _s_hits = _s_hits[mask]
+        if results:
+            all_qhits_list, all_shits_list = zip(*results)
+        else:
+            all_qhits_list, all_shits_list = [], []
 
-            result["all_qhits"] = np.concatenate((result["all_qhits"], _q_hits))
-            result["all_shits"] = np.concatenate((result["all_shits"], _s_hits))
+        final_qhits = np.concatenate(all_qhits_list) if all_qhits_list else np.array([], dtype=np.int32)
+        final_shits = np.concatenate(all_shits_list) if all_shits_list else np.array([], dtype=np.int32)
 
         if select == "last":
             ret_result = np.full(len(query), None)
-            for s, q in zip(result["all_shits"], result["all_qhits"]):
+            for q, s in zip(final_qhits, final_shits):
                 ret_result[q] = s
-
             return ret_result
         else:
-            result = BiocFrame({"query_hits": result["all_qhits"], "self_hits": result["all_shits"]})
-            return result
+            return BiocFrame({"query_hits": final_qhits, "self_hits": final_shits})
 
     def distance(self, query: Union["GenomicRanges", IRanges]) -> np.ndarray:
         """Compute the pair-wise distance with intervals in query.

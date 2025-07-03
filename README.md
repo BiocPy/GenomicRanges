@@ -266,6 +266,22 @@ print(grl)
     ------
     seqinfo(3 sequences): chr2 chr4 chr5
 
+## Performance
+
+Performance comparison between Python and R GenomicRanges implementations. The query dataset contains approximately 564,000 intervals, while the subject dataset contains approximately 71 million intervals.
+
+| Operation | Python/GenomicRanges | Python/GenomicRanges (5 threads) | R/GenomicRanges |
+|-----------|---------------------|-----------------------------------|-----------------|
+| Overlap | 3.02s | 2.13s | 4.40s |
+| Overlap (single chromosome) | 6.98s | 5.36s | 10.06s |
+| Nearest | 50.1s | 32.3s | 42.16s |
+| Nearest (single chromosome) | 15.5s | 11.4s | 11.01s |
+
+> [!NOTE]
+> The single chromosome benchmark ignores chromosome/sequence information and performs overlap operations solely on intervals.
+
+For details, see the scripts in the [benchmark directory](./perf).
+
 ## Further information
 
 - [Tutorial](https://biocpy.github.io/GenomicRanges/tutorial.html)

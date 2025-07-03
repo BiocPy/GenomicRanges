@@ -97,9 +97,10 @@ def parse_gtf(
             comment=comment,
         )
 
-    rows = Parallel(n_jobs=-2)(delayed(_parse_all_attribute)(row) for _, row in df.iterrows())
+    records = df.to_dict("records")
+    rows = Parallel(n_jobs=-2)(delayed(_parse_all_attribute)(row) for row in records)
     gtf = DataFrame.from_records(rows)
-    gtf.drop(["group"], axis=1)
+    gtf.drop(["group"], axis=1, inplace=True)
     gtf["ends"] = gtf["ends"] - 1
     return gtf
 
