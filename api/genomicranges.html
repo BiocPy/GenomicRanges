@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="genomicranges.io package" href="genomicranges.io.html" /><link rel="prev" title="genomicranges" href="modules.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>genomicranges package - GenomicRanges 0.7.0 documentation</title>
+        <title>genomicranges package - GenomicRanges 0.7.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.7.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">GenomicRanges 0.7.0 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.7.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -343,7 +343,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>seqnames</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – List of sequence or chromosome names.</p></li>
-<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – Genomic positions and widths of each position. Must have the same length as <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>.</p></li>
+<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – Genomic positions and widths of each position. Must have the same length as <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>.</p></li>
 <li><p><strong>strand</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span>) – <p>Strand information for each genomic range. This should be 0 (any strand),
 1 (forward strand) or -1 (reverse strand). If None, all genomic ranges
 are assumed to be 0 (any strand).</p>
@@ -494,14 +494,17 @@ value represents the number of overlaps in <cite>self</cite> for each query.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.coverage">
-<span class="sig-name descname"><span class="pre">coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.coverage" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate coverage for each chromosome, For each position, counts the number of ranges that cover it.</p>
+<span class="sig-name descname"><span class="pre">coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.coverage" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate coverage for each chromosome. For each position, this method
+counts the number of ranges that cover it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shift</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Shift all genomic positions. Defaults to 0.</p></li>
 <li><p><strong>width</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Restrict the width of all chromosomes. Defaults to None.</p></li>
-<li><p><strong>weight</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Weight to use. Defaults to 1.</p></li>
+<li><p><strong>weight</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Weight to use for each range. Defaults to 1.</p></li>
+<li><p><strong>ignore_strand</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to ignore strand, effectively combining
+all strands for coverage calculation. Defaults to True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -509,7 +512,8 @@ value represents the number of overlaps in <cite>self</cite> for each query.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A dictionary with chromosome names as keys and the
-coverage vector.</p>
+coverage vector as values. The dictionary is sorted
+by chromosome name.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -558,7 +562,7 @@ Defaults to False.</p></li>
 <dd><p>Compute the pair-wise distance with intervals in query.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>query</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRanges</span></code></a>, <a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a>]</span>) – Query <cite>GenomicRanges</cite> or <cite>IRanges</cite>.</p>
+<dd class="field-odd"><p><strong>query</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRanges</span></code></a>, <a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a>]</span>) – Query <cite>GenomicRanges</cite> or <cite>IRanges</cite>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
@@ -696,7 +700,7 @@ either as a copy of the original or as a reference to the
 
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.follow">
-<span class="sig-name descname"><span class="pre">follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'last'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.follow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.follow" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'last'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.follow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.follow" title="Link to this definition">¶</a></dt>
 <dd><p>Search nearest positions only upstream that overlap with each range in <code class="docutils literal notranslate"><span class="pre">query</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -705,6 +709,8 @@ either as a copy of the original or as a reference to the
 <li><p><strong>select</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Literal" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'all'</span></code>, <code class="docutils literal notranslate"><span class="pre">'last'</span></code>]</span>) – Whether to return “all” hits or just “last”.
 Defaults to “last”.</p></li>
 <li><p><strong>ignore_strand</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to ignore strand. Defaults to False.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads to use.
+Defaults to 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -861,7 +867,7 @@ positions for all ranges.</p>
 <span class="sig-name descname"><span class="pre">get_ranges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.get_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.get_ranges" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>An <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> object containing the positions.</p>
@@ -1153,7 +1159,7 @@ either as a copy of the original or as a reference to the
 
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.nearest">
-<span class="sig-name descname"><span class="pre">nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arbitrary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.nearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.nearest" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arbitrary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.nearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.nearest" title="Link to this definition">¶</a></dt>
 <dd><p>Search nearest positions both upstream and downstream that overlap with each range in <code class="docutils literal notranslate"><span class="pre">query</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1162,6 +1168,8 @@ either as a copy of the original or as a reference to the
 <li><p><strong>select</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Literal" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'all'</span></code>, <code class="docutils literal notranslate"><span class="pre">'arbitrary'</span></code>]</span>) – Determine what hit to choose when there are
 multiple hits for an interval in <code class="docutils literal notranslate"><span class="pre">query</span></code>.</p></li>
 <li><p><strong>ignore_strand</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to ignore strand. Defaults to False.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads to use.
+Defaults to 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1206,7 +1214,7 @@ two regions have the same start.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.precede">
-<span class="sig-name descname"><span class="pre">precede</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.precede"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.precede" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">precede</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_strand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.precede"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.precede" title="Link to this definition">¶</a></dt>
 <dd><p>Search nearest positions only downstream that overlap with each range in <code class="docutils literal notranslate"><span class="pre">query</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1215,6 +1223,8 @@ two regions have the same start.</p>
 <li><p><strong>select</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Literal" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'all'</span></code>, <code class="docutils literal notranslate"><span class="pre">'first'</span></code>]</span>) – Whether to return “all” hits or just “first”.
 Defaults to “first”.</p></li>
 <li><p><strong>ignore_strand</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to ignore strand. Defaults to False.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads to use.
+Defaults to 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1285,7 +1295,7 @@ original object. Defaults to False.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.ranges">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ranges</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.1)"><span class="pre">IRanges</span></a></em><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.ranges" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ranges</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><span class="pre">IRanges</span></a></em><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.ranges" title="Link to this definition">¶</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.get_ranges" title="genomicranges.GenomicRanges.GenomicRanges.get_ranges"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ranges()</span></code></a>.</p>
 </dd></dl>
 
@@ -1492,7 +1502,7 @@ or as a reference to the (in-place-modified) original.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – IRanges containing the genomic positions and widths.
+<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – IRanges containing the genomic positions and widths.
 Must have the same length as <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>.</p></li>
 <li><p><strong>in_place</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to modify the <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object in place.</p></li>
 </ul>
@@ -3090,6 +3100,20 @@ if details are contradictory, they are replaced with None.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="genomicranges.utils.wrapper_follow_precede">
+<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">wrapper_follow_precede</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/utils.html#wrapper_follow_precede"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.wrapper_follow_precede" title="Link to this definition">¶</a></dt>
+<dd><p>Processes a single group for precede/follow operations.
+This function is designed to be called by a multiprocessing pool.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="genomicranges.utils.wrapper_nearest">
+<span class="sig-prename descclassname"><span class="pre">genomicranges.utils.</span></span><span class="sig-name descname"><span class="pre">wrapper_nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/utils.html#wrapper_nearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.utils.wrapper_nearest" title="Link to this definition">¶</a></dt>
+<dd><p>Processes a single pair of self and query groups to find the nearest ranges.
+This function is designed to be called by a multiprocessing pool.</p>
+</dd></dl>
+
 </section>
 <section id="module-genomicranges">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genomicranges" title="Link to this heading">¶</a></h2>
@@ -3343,6 +3367,8 @@ if details are contradictory, they are replaced with None.</p>
 <li><a class="reference internal" href="#genomicranges.utils.sanitize_strand_vector"><code class="docutils literal notranslate"><span class="pre">sanitize_strand_vector()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.utils.slide_intervals"><code class="docutils literal notranslate"><span class="pre">slide_intervals()</span></code></a></li>
 <li><a class="reference internal" href="#genomicranges.utils.split_intervals"><code class="docutils literal notranslate"><span class="pre">split_intervals()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.utils.wrapper_follow_precede"><code class="docutils literal notranslate"><span class="pre">wrapper_follow_precede()</span></code></a></li>
+<li><a class="reference internal" href="#genomicranges.utils.wrapper_nearest"><code class="docutils literal notranslate"><span class="pre">wrapper_nearest()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-genomicranges">Module contents</a></li>
@@ -3357,7 +3383,7 @@ if details are contradictory, they are replaced with None.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+</div><script src="../_static/documentation_options.js?v=5a057da9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
