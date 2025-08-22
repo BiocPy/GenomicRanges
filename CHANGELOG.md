@@ -1,10 +1,11 @@
 # Changelog
 
-## Version 0.7.0 - 0.7.1
+## Version 0.7.0 - 0.7.2
 
 - Changes to switch to LTLA/nclist-cpp in the iranges package for overlap and search operations.
 - Improve performance of search operations, bump version of iranges to 0.5.2.
 - Optimize group by operations that `GenomicRanges` uses internally for the inter-range operations.
+- Reset cached indexes when ranges were modified.
 
 ## Version 0.6.2 - 0.6.3
 

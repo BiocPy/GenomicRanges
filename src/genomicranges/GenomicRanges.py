@@ -989,6 +989,10 @@ class GenomicRanges:
             A modified ``GenomicRanges`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
+
+        if not isinstance(value, GenomicRanges):
+            raise TypeError("'value' to assign must be a `GenomicRanges` object.")
+
         idx, _ = ut.normalize_subscript(args, len(self), self._names)
 
         output = self._define_output(in_place)
@@ -1008,6 +1012,9 @@ class GenomicRanges:
 
         if value._mcols is not None:
             output._mcols[idx, :] = value._mcols
+
+        if in_place is True:
+            output._ranges.delete_nclist_index()
 
         return output
 
@@ -2147,7 +2154,7 @@ class GenomicRanges:
         res = other._ranges.find_overlaps(self._ranges, num_threads=num_threads)
 
         if delete_index:
-            other._ranges._delete_ncls_index()
+            other._ranges.delete_nclist_index()
 
         _other_indexes = res["self_hits"]
         _self_indexes = res["query_hits"]
