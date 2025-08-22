@@ -5,12 +5,12 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="genomicranges.io package" href="genomicranges.io.html" /><link rel="prev" title="genomicranges" href="modules.html" />
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>genomicranges package - GenomicRanges 0.7.1 documentation</title>
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>genomicranges package - GenomicRanges 0.7.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
 
@@ -23,14 +23,14 @@
   }
   @media not print {
     body[data-theme="dark"] {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
   
     }
     @media (prefers-color-scheme: dark) {
       body:not([data-theme="light"]) {
-        --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
   
       }
     }
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">GenomicRanges 0.7.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">GenomicRanges 0.7.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,8 +190,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  
-  <span class="sidebar-brand-text">GenomicRanges 0.7.1 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.7.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -343,7 +342,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>seqnames</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – List of sequence or chromosome names.</p></li>
-<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – Genomic positions and widths of each position. Must have the same length as <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>.</p></li>
+<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – Genomic positions and widths of each position. Must have the same length as <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>.</p></li>
 <li><p><strong>strand</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span>) – <p>Strand information for each genomic range. This should be 0 (any strand),
 1 (forward strand) or -1 (reverse strand). If None, all genomic ranges
 are assumed to be 0 (any strand).</p>
@@ -562,7 +561,7 @@ Defaults to False.</p></li>
 <dd><p>Compute the pair-wise distance with intervals in query.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>query</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRanges</span></code></a>, <a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a>]</span>) – Query <cite>GenomicRanges</cite> or <cite>IRanges</cite>.</p>
+<dd class="field-odd"><p><strong>query</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges" title="genomicranges.GenomicRanges.GenomicRanges"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRanges</span></code></a>, <a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a>]</span>) – Query <cite>GenomicRanges</cite> or <cite>IRanges</cite>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
@@ -735,7 +734,7 @@ Each row represents a query-self pair where self follows query.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.from_pandas">
 <em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.from_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.from_pandas" title="Link to this definition">¶</a></dt>
-<dd><p>Create an <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object from a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+<dd><p>Create an <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object from a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>input</strong> – Input data. Must contain columns ‘seqnames’, ‘starts’ and ‘widths’ or “ends”.
@@ -867,7 +866,7 @@ positions for all ranges.</p>
 <span class="sig-name descname"><span class="pre">get_ranges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.get_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.get_ranges" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>An <code class="docutils literal notranslate"><span class="pre">IRanges</span></code> object containing the positions.</p>
@@ -1295,7 +1294,7 @@ original object. Defaults to False.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.ranges">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ranges</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><span class="pre">IRanges</span></a></em><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.ranges" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ranges</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.3)"><span class="pre">IRanges</span></a></em><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.ranges" title="Link to this definition">¶</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#genomicranges.GenomicRanges.GenomicRanges.get_ranges" title="genomicranges.GenomicRanges.GenomicRanges.get_ranges"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ranges()</span></code></a>.</p>
 </dd></dl>
 
@@ -1502,7 +1501,7 @@ or as a reference to the (in-place-modified) original.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – IRanges containing the genomic positions and widths.
+<li><p><strong>ranges</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/IRanges/api/iranges.html#iranges.IRanges.IRanges" title="(in IRanges v0.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IRanges</span></code></a></span>) – IRanges containing the genomic positions and widths.
 Must have the same length as <code class="docutils literal notranslate"><span class="pre">seqnames</span></code>.</p></li>
 <li><p><strong>in_place</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to modify the <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> object in place.</p></li>
 </ul>
@@ -1879,10 +1878,10 @@ Defaults to None.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRanges.GenomicRanges.to_pandas">
 <span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRanges.html#GenomicRanges.to_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRanges.GenomicRanges.to_pandas" title="Link to this definition">¶</a></dt>
-<dd><p>Convert this <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
+<dd><p>Convert this <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
+<dd class="field-odd"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2561,13 +2560,13 @@ each element in the list contains another list values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="genomicranges.GenomicRangesList.GenomicRangesList.to_pandas">
 <span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genomicranges/GenomicRangesList.html#GenomicRangesList.to_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#genomicranges.GenomicRangesList.GenomicRangesList.to_pandas" title="Link to this definition">¶</a></dt>
-<dd><p>Coerce object to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+<dd><p>Coerce object to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">pandas.DataFrame</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
+<dd class="field-even"><p>A <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> object.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3383,9 +3382,9 @@ This function is designed to be called by a multiprocessing pool.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5a057da9"></script>
+</div><script src="../_static/documentation_options.js?v=6dfdf7c3"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>
