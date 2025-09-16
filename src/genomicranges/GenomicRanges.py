@@ -15,7 +15,6 @@ from .utils import (
     group_by_indices,
     sanitize_strand_vector,
     wrapper_follow_precede,
-    wrapper_nearest,
 )
 
 __author__ = "jkanche"
