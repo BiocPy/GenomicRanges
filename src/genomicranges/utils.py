@@ -228,37 +228,6 @@ def extract_groups_from_granges(x, ignore_strand=False):
         return groups
 
 
-def wrapper_nearest(args):
-    """Processes a single pair of self and query groups to find the nearest ranges.
-    This function is designed to be called by a multiprocessing pool.
-    """
-    (
-        s_group,
-        q_group,
-        self_ranges,
-        query_ranges,
-        self_strand,
-        query_strand,
-        ignore_strand,
-    ) = args
-
-    res_idx = self_ranges[s_group].nearest(query=query_ranges[q_group], select="all")
-
-    _q_hits = np.asarray([q_group[j] for j in res_idx.get_column("query_hits")])
-    _s_hits = np.asarray([s_group[x] for x in res_idx.get_column("self_hits")])
-
-    if not ignore_strand:
-        s_strands = self_strand[s_group][res_idx.get_column("self_hits")]
-        q_strands = query_strand[q_group][res_idx.get_column("query_hits")]
-
-        mask = (s_strands == q_strands) | (s_strands == 0) | (q_strands == 0)
-
-        _q_hits = _q_hits[mask]
-        _s_hits = _s_hits[mask]
-
-    return _q_hits, _s_hits
-
-
 def wrapper_follow_precede(args):
     """Processes a single group for precede/follow operations.
     This function is designed to be called by a multiprocessing pool.
