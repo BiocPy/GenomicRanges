@@ -15,7 +15,6 @@ from .utils import (
     group_by_indices,
     sanitize_strand_vector,
     wrapper_follow_precede,
-    wrapper_nearest,
 )
 
 __author__ = "jkanche"
@@ -2279,10 +2278,10 @@ class GenomicRanges:
 
             all_s_hits, all_q_hits = find_overlaps_groups(
                 self._ranges.get_start().astype(np.int32),
-                self._ranges.get_end().astype(np.int32) + 1,
+                self._ranges.get_end_exclusive().astype(np.int32),
                 [s.astype(np.int32) for s in self_groups],
                 query._ranges.get_start().astype(np.int32),
-                query._ranges.get_end().astype(np.int32) + 1,
+                query._ranges.get_end_exclusive().astype(np.int32),
                 [q.astype(np.int32) for q in query_groups],
                 query_type,
                 select,
@@ -2309,10 +2308,10 @@ class GenomicRanges:
 
             all_q_hits, all_s_hits = find_overlaps_groups(
                 query._ranges.get_start().astype(np.int32),
-                query._ranges.get_end().astype(np.int32) + 1,
+                query._ranges.get_end_exclusive().astype(np.int32),
                 [q.astype(np.int32) for q in query_groups],
                 self._ranges.get_start().astype(np.int32),
-                self._ranges.get_end().astype(np.int32) + 1,
+                self._ranges.get_end_exclusive().astype(np.int32),
                 [s.astype(np.int32) for s in self_groups],
                 query_type,
                 select,
@@ -2461,6 +2460,7 @@ class GenomicRanges:
         select: Literal["all", "arbitrary"] = "arbitrary",
         ignore_strand: bool = False,
         num_threads: int = 1,
+        adjacent_equals_overlap: bool = True,
     ) -> Union[np.ndarray, BiocFrame]:
         """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
@@ -2479,6 +2479,16 @@ class GenomicRanges:
                 Number of threads to use.
                 Defaults to 1.
 
+            adjacent_equals_overlap:
+                Whether to consider immediately-adjacent subject intervals to be
+                equally "nearest" to the query as an overlapping subject interval.
+
+                If true, both overlapping and immediately-adjacent subject intervals
+                (i.e., a gap of zero) will be reported in matches.
+
+                Otherwise, immediately-adjacent subjects will only be reported if
+                overlapping subjects are not present.
+
         Returns:
             If select="arbitrary":
                 A numpy array of integers with length matching query, containing indices
@@ -2493,36 +2503,37 @@ class GenomicRanges:
         if not isinstance(query, GenomicRanges):
             raise TypeError("'query' is not a `GenomicRanges` object.")
 
-        effective_threads = min(num_threads, cpu_count()) if num_threads > 0 else cpu_count()
+        from iranges.lib_iranges import nearest_groups
 
         self_groups, query_groups = self._get_query_common_groups(query)
 
-        tasks = [
-            (
-                s_group,
-                q_group,
-                self._ranges,
-                query._ranges,
-                self._strand,
-                query._strand,
-                ignore_strand,
-            )
-            for s_group, q_group in zip(self_groups, query_groups)
-        ]
+        all_q_hits, all_s_hits = nearest_groups(
+            self._ranges.get_start().astype(np.int32),
+            self._ranges.get_end_exclusive().astype(np.int32),
+            [s.astype(np.int32) for s in self_groups],
+            query._ranges.get_start().astype(np.int32),
+            query._ranges.get_end_exclusive().astype(np.int32),
+            [q.astype(np.int32) for q in query_groups],
+            select,
+            num_threads,
+            adjacent_equals_overlap,
+        )
 
-        if effective_threads == 1 or len(self_groups) <= 1:
-            results = [wrapper_nearest(task) for task in tasks]
-        else:
-            with Pool(processes=effective_threads) as pool:
-                results = pool.map(wrapper_nearest, tasks)
+        if ignore_strand is False:
+            s_strands = self._strand[all_s_hits]
+            q_strands = query._strand[all_q_hits]
 
-        if results:
-            all_qhits_list, all_shits_list = zip(*results)
-        else:
-            all_qhits_list, all_shits_list = [], []
+            mask = s_strands == q_strands
+            # to allow '*' with any strand from query
+            mask[s_strands == 0] = True
+            mask[q_strands == 0] = True
+            all_q_hits = all_q_hits[mask]
+            all_s_hits = all_s_hits[mask]
 
-        final_qhits = np.concatenate(all_qhits_list) if all_qhits_list else np.array([], dtype=np.int32)
-        final_shits = np.concatenate(all_shits_list) if all_shits_list else np.array([], dtype=np.int32)
+        order = np.argsort(all_q_hits, stable=True)
+
+        final_qhits = all_q_hits[order]
+        final_shits = all_s_hits[order]
 
         if select == "arbitrary":
             ret_result = np.full(len(query), None)
