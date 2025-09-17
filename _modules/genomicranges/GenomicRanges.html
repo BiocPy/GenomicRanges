@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>genomicranges.GenomicRanges - GenomicRanges 0.7.2 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.7.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.7.2 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.7.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -189,7 +189,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.7.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.7.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -278,7 +278,6 @@
     <span class="n">group_by_indices</span><span class="p">,</span>
     <span class="n">sanitize_strand_vector</span><span class="p">,</span>
     <span class="n">wrapper_follow_precede</span><span class="p">,</span>
-    <span class="n">wrapper_nearest</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
@@ -2720,10 +2719,10 @@
 
             <span class="n">all_s_hits</span><span class="p">,</span> <span class="n">all_q_hits</span> <span class="o">=</span> <span class="n">find_overlaps_groups</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_start</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end_exclusive</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
                 <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">self_groups</span><span class="p">],</span>
                 <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_start</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end_exclusive</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
                 <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">query_groups</span><span class="p">],</span>
                 <span class="n">query_type</span><span class="p">,</span>
                 <span class="n">select</span><span class="p">,</span>
@@ -2750,10 +2749,10 @@
 
             <span class="n">all_q_hits</span><span class="p">,</span> <span class="n">all_s_hits</span> <span class="o">=</span> <span class="n">find_overlaps_groups</span><span class="p">(</span>
                 <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_start</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end_exclusive</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
                 <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">query_groups</span><span class="p">],</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_start</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end_exclusive</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
                 <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">self_groups</span><span class="p">],</span>
                 <span class="n">query_type</span><span class="p">,</span>
                 <span class="n">select</span><span class="p">,</span>
@@ -2911,6 +2910,7 @@
         <span class="n">select</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;arbitrary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;arbitrary&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">adjacent_equals_overlap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions both upstream and downstream that overlap with each range in ``query``.</span>
 
@@ -2929,6 +2929,16 @@
 <span class="sd">                Number of threads to use.</span>
 <span class="sd">                Defaults to 1.</span>
 
+<span class="sd">            adjacent_equals_overlap:</span>
+<span class="sd">                Whether to consider immediately-adjacent subject intervals to be</span>
+<span class="sd">                equally &quot;nearest&quot; to the query as an overlapping subject interval.</span>
+
+<span class="sd">                If true, both overlapping and immediately-adjacent subject intervals</span>
+<span class="sd">                (i.e., a gap of zero) will be reported in matches.</span>
+
+<span class="sd">                Otherwise, immediately-adjacent subjects will only be reported if</span>
+<span class="sd">                overlapping subjects are not present.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            If select=&quot;arbitrary&quot;:</span>
 <span class="sd">                A numpy array of integers with length matching query, containing indices</span>
@@ -2943,36 +2953,37 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;query&#39; is not a `GenomicRanges` object.&quot;</span><span class="p">)</span>
 
-        <span class="n">effective_threads</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_threads</span><span class="p">,</span> <span class="n">cpu_count</span><span class="p">())</span> <span class="k">if</span> <span class="n">num_threads</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">cpu_count</span><span class="p">()</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">iranges.lib_iranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">nearest_groups</span>
 
         <span class="n">self_groups</span><span class="p">,</span> <span class="n">query_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_query_common_groups</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
-        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span>
-                <span class="n">s_group</span><span class="p">,</span>
-                <span class="n">q_group</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">,</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">,</span>
-                <span class="n">ignore_strand</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">s_group</span><span class="p">,</span> <span class="n">q_group</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">self_groups</span><span class="p">,</span> <span class="n">query_groups</span><span class="p">)</span>
-        <span class="p">]</span>
+        <span class="n">all_q_hits</span><span class="p">,</span> <span class="n">all_s_hits</span> <span class="o">=</span> <span class="n">nearest_groups</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_start</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end_exclusive</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+            <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">self_groups</span><span class="p">],</span>
+            <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_start</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+            <span class="n">query</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">get_end_exclusive</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+            <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">query_groups</span><span class="p">],</span>
+            <span class="n">select</span><span class="p">,</span>
+            <span class="n">num_threads</span><span class="p">,</span>
+            <span class="n">adjacent_equals_overlap</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">effective_threads</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">self_groups</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">wrapper_nearest</span><span class="p">(</span><span class="n">task</span><span class="p">)</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">effective_threads</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
-                <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">wrapper_nearest</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ignore_strand</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">s_strands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">all_s_hits</span><span class="p">]</span>
+            <span class="n">q_strands</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">_strand</span><span class="p">[</span><span class="n">all_q_hits</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
-            <span class="n">all_qhits_list</span><span class="p">,</span> <span class="n">all_shits_list</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">results</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">all_qhits_list</span><span class="p">,</span> <span class="n">all_shits_list</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">s_strands</span> <span class="o">==</span> <span class="n">q_strands</span>
+            <span class="c1"># to allow &#39;*&#39; with any strand from query</span>
+            <span class="n">mask</span><span class="p">[</span><span class="n">s_strands</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">mask</span><span class="p">[</span><span class="n">q_strands</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">all_q_hits</span> <span class="o">=</span> <span class="n">all_q_hits</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+            <span class="n">all_s_hits</span> <span class="o">=</span> <span class="n">all_s_hits</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
-        <span class="n">final_qhits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_qhits_list</span><span class="p">)</span> <span class="k">if</span> <span class="n">all_qhits_list</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-        <span class="n">final_shits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_shits_list</span><span class="p">)</span> <span class="k">if</span> <span class="n">all_shits_list</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">all_q_hits</span><span class="p">,</span> <span class="n">stable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">final_qhits</span> <span class="o">=</span> <span class="n">all_q_hits</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">final_shits</span> <span class="o">=</span> <span class="n">all_s_hits</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">select</span> <span class="o">==</span> <span class="s2">&quot;arbitrary&quot;</span><span class="p">:</span>
             <span class="n">ret_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
@@ -3835,7 +3846,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=6dfdf7c3"></script>
+</div><script src="../../_static/documentation_options.js?v=c98573da"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

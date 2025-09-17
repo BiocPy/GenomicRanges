@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>genomicranges.utils - GenomicRanges 0.7.2 documentation</title>
+        <title>genomicranges.utils - GenomicRanges 0.7.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.7.2 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.7.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -189,7 +189,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.7.2 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.7.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -509,40 +509,6 @@
 
 
 
-<div class="viewcode-block" id="wrapper_nearest">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.wrapper_nearest">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">wrapper_nearest</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Processes a single pair of self and query groups to find the nearest ranges.</span>
-<span class="sd">    This function is designed to be called by a multiprocessing pool.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="p">(</span>
-        <span class="n">s_group</span><span class="p">,</span>
-        <span class="n">q_group</span><span class="p">,</span>
-        <span class="n">self_ranges</span><span class="p">,</span>
-        <span class="n">query_ranges</span><span class="p">,</span>
-        <span class="n">self_strand</span><span class="p">,</span>
-        <span class="n">query_strand</span><span class="p">,</span>
-        <span class="n">ignore_strand</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">=</span> <span class="n">args</span>
-
-    <span class="n">res_idx</span> <span class="o">=</span> <span class="n">self_ranges</span><span class="p">[</span><span class="n">s_group</span><span class="p">]</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query_ranges</span><span class="p">[</span><span class="n">q_group</span><span class="p">],</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
-
-    <span class="n">_q_hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">q_group</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;query_hits&quot;</span><span class="p">)])</span>
-    <span class="n">_s_hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">s_group</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;self_hits&quot;</span><span class="p">)])</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_strand</span><span class="p">:</span>
-        <span class="n">s_strands</span> <span class="o">=</span> <span class="n">self_strand</span><span class="p">[</span><span class="n">s_group</span><span class="p">][</span><span class="n">res_idx</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;self_hits&quot;</span><span class="p">)]</span>
-        <span class="n">q_strands</span> <span class="o">=</span> <span class="n">query_strand</span><span class="p">[</span><span class="n">q_group</span><span class="p">][</span><span class="n">res_idx</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;query_hits&quot;</span><span class="p">)]</span>
-
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_strands</span> <span class="o">==</span> <span class="n">q_strands</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">s_strands</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">q_strands</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">_q_hits</span> <span class="o">=</span> <span class="n">_q_hits</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-        <span class="n">_s_hits</span> <span class="o">=</span> <span class="n">_s_hits</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">_q_hits</span><span class="p">,</span> <span class="n">_s_hits</span></div>
-
-
-
 <div class="viewcode-block" id="wrapper_follow_precede">
 <a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.utils.wrapper_follow_precede">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">wrapper_follow_precede</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -609,7 +575,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=6dfdf7c3"></script>
+</div><script src="../../_static/documentation_options.js?v=c98573da"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
