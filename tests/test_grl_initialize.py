@@ -1,4 +1,3 @@
-import biocutils as ut
 import pytest
 from biocframe import BiocFrame
 from iranges import IRanges

@@ -1,5 +1,4 @@
 from biocframe import BiocFrame
-from biocutils import combine_sequences
 from iranges import IRanges
 
 from genomicranges import CompressedGenomicRangesList, GenomicRanges
