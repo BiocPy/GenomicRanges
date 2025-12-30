@@ -1,4 +1,4 @@
-from genomicranges.GenomicRanges import GenomicRanges
+from genomicranges.granges import GenomicRanges
 from iranges import IRanges
 from biocframe import BiocFrame
 from random import random

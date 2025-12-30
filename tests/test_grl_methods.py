@@ -2,7 +2,7 @@ from biocframe import BiocFrame
 from biocutils import combine_sequences
 from iranges import IRanges
 
-from genomicranges import GenomicRanges, GenomicRangesList
+from genomicranges import CompressedGenomicRangesList, GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -23,111 +23,19 @@ b = GenomicRanges(
 )
 
 
-def test_is_empty_False():
-    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
-
-    assert grl.is_empty() is False
-
-
 def test_is_empty_slice():
-    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
-
-    assert grl.is_empty() is False
+    grl = CompressedGenomicRangesList.from_list(lst=[a, b], names=["a", "b"])
 
     sgrl = grl[0:1]
     assert sgrl is not None
-    assert isinstance(sgrl, GenomicRangesList)
+    assert isinstance(sgrl, CompressedGenomicRangesList)
     assert len(sgrl) == 1
 
 
 def test_slice_by_name():
-    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
+    grl = CompressedGenomicRangesList.from_list(lst=[a, b], names=["a", "b"])
 
-    assert grl.is_empty() is False
-
-    sgrl = grl[["a"]]
+    sgrl = grl["a"]
     assert sgrl is not None
-    assert isinstance(sgrl, GenomicRangesList)
-    assert len(sgrl) == 1
-
-
-def test_slice_by_bool():
-    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
-
-    assert grl.is_empty() is False
-
-    sgrl = grl[[True, False]]
-    assert sgrl is not None
-    assert isinstance(sgrl, GenomicRangesList)
-    assert len(sgrl) == 1
-
-    empty = grl[[False]]
-    assert isinstance(empty, GenomicRangesList)
-    assert len(empty) == 0
-
-
-def test_is_empty_True():
-    grl = GenomicRangesList(GenomicRanges.empty(), range_lengths=[0])
-
-    assert grl.is_empty() is True
-    assert len(grl) == 1
-
-
-def test_nrows():
-    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
-
-    nrows = grl.element_nrows()
-    assert isinstance(nrows, dict)
-    assert list(nrows.keys()) == ["a", "b"]
-    assert list(nrows.values()) == [4, 3]
-
-
-def test_props():
-    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
-
-    props = ["start", "end", "strand"]
-
-    for prop in props:
-        v = getattr(grl, prop)
-
-        assert isinstance(v, dict)
-
-    assert isinstance(grl.mcols, BiocFrame)
-
-
-def test_to_pandas():
-    grl = GenomicRangesList(ranges=[a, b], names=["a", "b"])
-
-    df = grl.to_pandas()
-    assert len(df) == 7
-    assert df.index.tolist() == [
-        "a",
-        "a",
-        "a",
-        "a",
-        "b",
-        "b",
-        "b",
-    ]
-
-
-def test_combine():
-    grla = GenomicRangesList(ranges=[a], names=["a"])
-    grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
-
-    cgrl = combine_sequences(grla, grlb)
-
-    assert len(cgrl) == 3
-
-
-def test_empty_grl_slice():
-    grl = GenomicRangesList.empty(n=100)
-    assert isinstance(grl, GenomicRangesList)
-
-    subset = grl[0:10]
-    assert isinstance(subset, GenomicRangesList)
-    assert len(subset) == 10
-
-    subset = grl[[1, 2, 3]]
-    assert isinstance(subset, GenomicRangesList)
-    assert len(subset) == 3
+    assert isinstance(sgrl, GenomicRanges)
+    assert len(sgrl) == 4

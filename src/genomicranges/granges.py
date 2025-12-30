@@ -3121,7 +3121,7 @@ class GenomicRanges(ut.BiocObject):
     ######>> split <<######
     #######################
 
-    def split(self, groups: list) -> "GenomicRangesList":
+    def split(self, groups: list) -> "CompressedGenomicRangesList":
         """Split the `GenomicRanges` object into a :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList`.
 
         Args:
@@ -3148,9 +3148,9 @@ class GenomicRanges(ut.BiocObject):
             _names.append(k)
             _grs.append(self[v])
 
-        from .GenomicRangesList import GenomicRangesList
+        from .grangeslist import CompressedGenomicRangesList
 
-        return GenomicRangesList(ranges=_grs, names=_names)
+        return CompressedGenomicRangesList.from_list(lst=_grs, names=_names)
 
     #######################
     ######>> empty <<######
@@ -3169,7 +3169,9 @@ class GenomicRanges(ut.BiocObject):
     ######>> subtract <<######
     ##########################
 
-    def subtract(self, other: GenomicRanges, min_overlap: int = 1, ignore_strand: bool = False) -> "GenomicRangesList":
+    def subtract(
+        self, other: GenomicRanges, min_overlap: int = 1, ignore_strand: bool = False
+    ) -> "CompressedGenomicRangesList":
         """Subtract searches for features in ``x`` that overlap ``self`` by at least the number of base pairs given by
         ``min_overlap``.
 
@@ -3214,9 +3216,9 @@ class GenomicRanges(ut.BiocObject):
             else:
                 psetdiff[idx] = self[idx].setdiff(val)
 
-        from .GenomicRangesList import GenomicRangesList
+        from .grangeslist import CompressedGenomicRangesList
 
-        return GenomicRangesList.from_dict(psetdiff)
+        return CompressedGenomicRangesList.from_list(lst=psetdiff.values(), names=list(psetdiff.keys()))
 
 
 def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:

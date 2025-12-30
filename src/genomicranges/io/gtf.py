@@ -128,6 +128,6 @@ def read_gtf(
     """
     compressed = True if file.endswith("gz") else False
     data = parse_gtf(file, compressed=compressed, skiprows=skiprows, comment=comment)
-    from ..GenomicRanges import GenomicRanges
+    from ..granges import GenomicRanges
 
     return GenomicRanges.from_pandas(data)

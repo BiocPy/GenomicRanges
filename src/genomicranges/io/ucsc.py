@@ -58,6 +58,6 @@ def read_ucsc(
     compressed = True
     data = parse_gtf(path, compressed=compressed)
 
-    from ..GenomicRanges import GenomicRanges
+    from ..granges import GenomicRanges
 
     return GenomicRanges.from_pandas(data)

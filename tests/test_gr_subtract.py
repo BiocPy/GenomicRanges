@@ -1,7 +1,7 @@
 import numpy as np
 from iranges import IRanges
 
-from genomicranges import GenomicRanges, GenomicRangesList
+from genomicranges import GenomicRanges, CompressedGenomicRangesList
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -15,7 +15,7 @@ def test_subtract():
     out = x.subtract(y)
 
     assert out is not None
-    assert isinstance(out, GenomicRangesList)
+    assert isinstance(out, CompressedGenomicRangesList)
     assert len(out) == 3
 
     assert out[0].get_seqnames() == ["chr1", "chr1"]
