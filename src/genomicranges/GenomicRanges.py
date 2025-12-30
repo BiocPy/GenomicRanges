@@ -175,6 +175,9 @@ class GenomicRanges(ut.BiocObject):
             validate:
                 Internal use only.
         """
+
+        super().__init__(metadata=metadata, _validate=_validate)
+
         if seqinfo is None:
             seqinfo = SeqInfo(seqnames=sorted(list(set(seqnames))))
         self._seqinfo = seqinfo
@@ -3225,7 +3228,7 @@ def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
         mcols=None,
         seqinfo=merge_SeqInfo([y._seqinfo for y in x]),
         metadata=None,
-        validate=False,
+        _validate=False,
     )
 
 
@@ -3254,7 +3257,7 @@ def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
         mcols=ut.relaxed_combine_rows(*[y._mcols for y in x]),
         seqinfo=merge_SeqInfo([y._seqinfo for y in x]),
         metadata=x[0]._metadata,
-        validate=False,
+        _validate=False,
     )
 
 
