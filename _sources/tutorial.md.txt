@@ -10,7 +10,7 @@ kernelspec:
 
 An `IRanges` holds a **start** position and a **width**, and is typically used to represent coordinates along a genomic sequence. The interpretation of the **start** position depends on the application; for sequences, the **start** is usually a 1-based position, but other use cases may allow zero or even negative values, e.g., circular genomes. Ends are considered inclusive. `IRanges` uses [LTLa/nclist-cpp](https://github.com/LTLA/nclist-cpp) under the hood to perform fast overlap and search-based operations.
 
-The package provides a `GenomicRanges` class to specify multiple genomic elements, typically where genes start and end. Genes are themselves made of many subregions, such as exons, and a `GenomicRangesList` enables the representation of this nested structure.
+The package provides a `GenomicRanges` class to specify multiple genomic elements, typically where genes start and end. Genes are themselves made of many subregions, such as exons, and a `CompressedGenomicRangesList` enables the representation of this nested structure.
 
 Moreover, the package also provides a `SeqInfo` class to update or modify sequence information stored in the object. Learn more about this in the [GenomeInfoDb package](https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html).
 
@@ -68,10 +68,9 @@ human_gr = genomicranges.read_ucsc(genome="hg19")
 print(human_gr)
 ```
 
-
 ## Preferred way
 
-To construct a `GenomicRanges` object, we need to provide sequence information and genomic coordinates. This is achieved through the combination of the `seqnames` and `ranges` parameters. Additionally, you have the option to specify the `strand`, represented as a list of "+" (or 1) for the forward strand, "-" (or -1) for the reverse strand, or "*" (or 0) if the strand is unknown. You can also provide a NumPy vector that utilizes either the string or numeric representation to specify the `strand`. Optionally, you can use the `mcols` parameter to provide additional metadata about each genomic region.
+To construct a `GenomicRanges` object, we need to provide sequence information and genomic coordinates. This is achieved through the combination of the `seqnames` and `ranges` parameters. Additionally, you have the option to specify the `strand`, represented as a list of "+" (or 1) for the forward strand, "-" (or -1) for the reverse strand, or "\*" (or 0) if the strand is unknown. You can also provide a NumPy vector that utilizes either the string or numeric representation to specify the `strand`. Optionally, you can use the `mcols` parameter to provide additional metadata about each genomic region.
 
 ```{code-cell}
 from genomicranges import GenomicRanges
@@ -427,7 +426,7 @@ print(binned_avg_gr)
 ```
 
 ::: {tip}
-Now you might wonder how can I generate these ***bins***?
+Now you might wonder how can I generate these **_bins_**?
 :::
 
 # Generate tiles or bins
@@ -469,7 +468,7 @@ print(tiles)
 ```{code-cell}
 seqlengths = {"chr1": 100, "chr2": 75, "chr3": 200}
 
-tiles = GenomicRanges.tile_genome(seqlengths=seqlengths, n=10)
+tiles = GenomicRanges.tile_genome(seqlengths=seqlengths, ntile=10)
 print(tiles)
 ```
 
@@ -547,8 +546,6 @@ query_hits = gr.nearest(find_regions)
 
 query_hits = gr.precede(find_regions)
 
-query_hits = gr.follow(find_regions)
-
 print(query_hits)
 ```
 
@@ -609,7 +606,7 @@ print(combined)
 # Misc operations
 
 - **invert_strand**: flip the strand for each interval
-- **sample**: randomly choose ***k*** intervals
+- **sample**: randomly choose **_k_** intervals
 
 ```{code-cell}
 # invert strand
@@ -619,20 +616,22 @@ inv_gr = gr.invert_strand()
 samp_gr = gr.sample(k=4)
 ```
 
-# `GenomicRangesList` class
+# `CompressedGenomicRangesList` class
 
-Just as it sounds, a `GenomicRangesList` is a named-list like object.
+Just as it sounds, a `CompressedGenomicRangesList` is a named-list like object.
 
 If you are wondering why you need this class, a `GenomicRanges` object enables the
 specification of multiple genomic elements, usually where genes start and end.
 Genes, in turn, consist of various subregions, such as exons.
-The `GenomicRangesList` allows us to represent this nested structure.
+The `CompressedGenomicRangesList` allows us to represent this nested structure.
 
 As of now, this class has limited functionality, serving as a read-only class with basic accessors.
 
 ```{code-cell}
+from genomicranges import CompressedGenomicRangesList, GenomicRanges
+from iranges import IRanges
+from biocframe import BiocFrame
 
-from genomicranges import GenomicRangesList
 a = GenomicRanges(
     seqnames=["chr1", "chr2", "chr1", "chr3"],
     ranges=IRanges([1, 3, 2, 4], [10, 30, 50, 60]),
@@ -647,10 +646,9 @@ b = GenomicRanges(
     mcols=BiocFrame({"score": [2, 3, 4]}),
 )
 
-grl = GenomicRangesList(ranges=[a,b], names=["gene1", "gene2"])
+grl = CompressedGenomicRangesList.from_list(lst=[a,b], names=["gene1", "gene2"])
 print(grl)
 ```
-
 
 ## Properties
 
@@ -658,21 +656,6 @@ print(grl)
 grl.start
 grl.width
 ```
-
-## Combine `GenomicRangeslist` object
-
-Similar to the combine function from `GenomicRanges`,
-
-```{code-cell}
-grla = GenomicRangesList(ranges=[a], names=["a"])
-grlb = GenomicRangesList(ranges=[b, a], names=["b", "c"])
-
-# or use the combine generic
-from biocutils.combine import combine
-cgrl = combine(grla, grlb)
-```
-
-The functionality in `GenomicRangesLlist` is limited to read-only and a few methods. Updates are expected to be made as more features become available.
 
 ## Empty ranges
 
@@ -686,15 +669,7 @@ empty_gr = GenomicRanges.empty()
 print(empty_gr)
 ```
 
-Similarly, an empty `GenomicRangesList` can be created:
-
-```{code-cell}
-empty_grl = GenomicRangesList.empty(n=100)
-
-print(empty_grl)
-```
-
-----
+---
 
 ## Futher reading
 

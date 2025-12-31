@@ -1,13 +1,13 @@
 <!doctype html>
 <html class="no-js" lang="en" data-content_root="../../">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>genomicranges.SeqInfo - GenomicRanges 0.7.3 documentation</title>
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>genomicranges.sequence_info - GenomicRanges 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
@@ -22,14 +22,14 @@
   }
   @media not print {
     body[data-theme="dark"] {
-      --color-code-background: #2b2b2b;
-  --color-code-foreground: #f8f8f2;
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
     }
     @media (prefers-color-scheme: dark) {
       body:not([data-theme="light"]) {
-        --color-code-background: #2b2b2b;
-  --color-code-foreground: #f8f8f2;
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
       }
     }
@@ -144,14 +144,10 @@
   </symbol>
 </svg>
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
 <a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
@@ -161,17 +157,15 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.7.3 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
           <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
           <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -179,8 +173,7 @@
         </button>
       </div>
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
   </header>
@@ -189,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.7.3 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -214,9 +207,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#comparison-rank-and-order-operations">Comparison, rank and order operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#combine-genomicranges-objects-by-rows">Combine <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> objects by rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#misc-operations">Misc operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#genomicrangeslist-class"><code class="docutils literal notranslate"><span class="pre">GenomicRangesList</span></code> class</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/genomicranges.html">genomicranges package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of genomicranges package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#compressedgenomicrangeslist-class"><code class="docutils literal notranslate"><span class="pre">CompressedGenomicRangesList</span></code> class</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input aria-label="Toggle navigation of Module Reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/genomicranges.html">genomicranges package</a><input aria-label="Toggle navigation of genomicranges package" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/genomicranges.io.html">genomicranges.io package</a></li>
 </ul>
 </li>
@@ -246,8 +239,7 @@
         </a>
         <div class="content-icon-container">
           <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
               <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
               <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -255,12 +247,11 @@
             </button>
           </div>
           <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for genomicranges.SeqInfo</h1><div class="highlight"><pre>
+          <h1>Source code for genomicranges.sequence_info</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
@@ -311,12 +302,12 @@
 
 
 <div class="viewcode-block" id="SeqInfoIterator">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfoIterator">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfoIterator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SeqInfoIterator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An iterator to a :py:class:`~SeqInfo` object.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SeqInfoIterator.__init__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfoIterator.__init__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfoIterator.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the iterator.</span>
 
@@ -329,13 +320,13 @@
 
 
 <div class="viewcode-block" id="SeqInfoIterator.__iter__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfoIterator.__iter__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfoIterator.__iter__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
 <div class="viewcode-block" id="SeqInfoIterator.__next__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfoIterator.__next__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfoIterator.__next__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sinfo</span><span class="p">):</span>
             <span class="n">iter_row_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
@@ -350,13 +341,13 @@
 
 
 <div class="viewcode-block" id="SeqInfo">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SeqInfo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Information about the reference sequences, specifically the name and length of each sequence, whether it is a</span>
 <span class="sd">    circular, and the identity of the genome from which it was derived.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SeqInfo.__init__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__init__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">seqnames</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -474,7 +465,7 @@
     <span class="c1">#########################</span>
 
 <div class="viewcode-block" id="SeqInfo.__deepcopy__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__deepcopy__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.__deepcopy__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -498,7 +489,7 @@
 
 
 <div class="viewcode-block" id="SeqInfo.__copy__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__copy__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.__copy__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -515,7 +506,7 @@
 
 
 <div class="viewcode-block" id="SeqInfo.copy">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.copy">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~__copy__`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
@@ -526,7 +517,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="SeqInfo.__repr__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__repr__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -606,7 +597,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="SeqInfo.get_seqnames">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_seqnames">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.get_seqnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -616,7 +607,7 @@
 
 
 <div class="viewcode-block" id="SeqInfo.set_seqnames">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_seqnames">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.set_seqnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqnames</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -658,7 +649,7 @@
     <span class="c1">############################</span>
 
 <div class="viewcode-block" id="SeqInfo.get_seqlengths">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_seqlengths">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.get_seqlengths">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -670,7 +661,7 @@
 
 
 <div class="viewcode-block" id="SeqInfo.set_seqlengths">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_seqlengths">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.set_seqlengths">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_seqlengths</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">seqlengths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
@@ -724,7 +715,7 @@
     <span class="c1">#############################</span>
 
 <div class="viewcode-block" id="SeqInfo.get_is_circular">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_is_circular">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.get_is_circular">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_is_circular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -735,7 +726,7 @@
 
 
 <div class="viewcode-block" id="SeqInfo.set_is_circular">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_is_circular">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.set_is_circular">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_is_circular</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">is_circular</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]],</span>
@@ -790,7 +781,7 @@
     <span class="c1">########################</span>
 
 <div class="viewcode-block" id="SeqInfo.get_genome">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_genome">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.get_genome">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -801,7 +792,7 @@
 
 
 <div class="viewcode-block" id="SeqInfo.set_genome">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.set_genome">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.set_genome">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_genome</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">genome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
@@ -848,7 +839,7 @@
     <span class="c1">######################################</span>
 
 <div class="viewcode-block" id="SeqInfo.__len__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__len__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.__len__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -858,7 +849,7 @@
 
 
 <div class="viewcode-block" id="SeqInfo.__iter__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__iter__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.__iter__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SeqInfoIterator</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over sequences.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SeqInfoIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
@@ -869,7 +860,7 @@
     <span class="c1">#########################</span>
 
 <div class="viewcode-block" id="SeqInfo.get_subset">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.get_subset">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.get_subset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset ``SeqInfo``, based on their indices or seqnames.</span>
 
@@ -902,14 +893,14 @@
 
 
 <div class="viewcode-block" id="SeqInfo.__getitem__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.__getitem__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.__getitem__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;SeqInfo&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias to :py:attr:`~get_subset`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SeqInfo.empty">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.SeqInfo.empty">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.SeqInfo.empty">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an zero-length `SeqInfo` object.</span>
@@ -928,7 +919,7 @@
 
 
 <div class="viewcode-block" id="merge_SeqInfo">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.SeqInfo.merge_SeqInfo">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.sequence_info.merge_SeqInfo">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">merge_SeqInfo</span><span class="p">(</span><span class="n">objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SeqInfo</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SeqInfo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge multiple :py:class:`~SeqInfo` objects, taking the union of all reference sequences. If the same reference</span>
 <span class="sd">    sequence is present with the same details across ``objects``, only a single instance is present in the final object;</span>
@@ -1004,7 +995,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=c98573da"></script>
+</div><script src="../../_static/documentation_options.js?v=486e5634"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

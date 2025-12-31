@@ -12,26 +12,26 @@ Subpackages
 Submodules
 ----------
 
-genomicranges.GenomicRanges module
-----------------------------------
-
-.. automodule:: genomicranges.GenomicRanges
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-genomicranges.GenomicRangesList module
---------------------------------------
-
-.. automodule:: genomicranges.GenomicRangesList
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-genomicranges.SeqInfo module
+genomicranges.granges module
 ----------------------------
 
-.. automodule:: genomicranges.SeqInfo
+.. automodule:: genomicranges.granges
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+genomicranges.grangeslist module
+--------------------------------
+
+.. automodule:: genomicranges.grangeslist
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+genomicranges.sequence\_info module
+-----------------------------------
+
+.. automodule:: genomicranges.sequence_info
    :members:
    :show-inheritance:
    :undoc-members:
