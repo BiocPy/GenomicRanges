@@ -1,0 +1,83 @@
+import numpy as np
+import pytest
+from iranges import IRanges
+
+from genomicranges import GenomicRanges
+
+__author__ = "jkanche"
+__copyright__ = "jkanche"
+__license__ = "MIT"
+
+
+def test_pintersect_basic():
+    gr1 = GenomicRanges(
+        seqnames=["chr1", "chr1", "chr2", "chr3"],
+        ranges=IRanges([1, 10, 20, 30], [10, 10, 10, 10]),
+        strand=["+", "-", "+", "+"],
+    )
+
+    gr2 = GenomicRanges(
+        seqnames=["chr1", "chr1", "chr2", "chr1"],
+        ranges=IRanges([5, 15, 25, 35], [10, 10, 10, 10]),
+        strand=["+", "+", "+", "+"],
+    )
+
+    res = gr1.pintersect(gr2)
+
+    assert len(res) == 4
+    assert isinstance(res, GenomicRanges)
+    assert res.start[0] == 5
+    assert res.end[0] == 10
+    assert res.width[0] == 6
+    assert res.seqnames[0] == "chr1"
+    assert res.width[1] == 0
+    assert res.start[2] == 25
+    assert res.end[2] == 29
+    assert res.width[2] == 5
+    assert res.width[3] == 0
+
+
+def test_pintersect_ignore_strand():
+    gr1 = GenomicRanges(
+        seqnames=["chr1"],
+        ranges=IRanges([10], [10]),  # 10-19
+        strand=["-"],
+    )
+    gr2 = GenomicRanges(
+        seqnames=["chr1"],
+        ranges=IRanges([15], [10]),  # 15-24
+        strand=["+"],
+    )
+
+    res = gr1.pintersect(gr2, ignore_strand=True)
+
+    assert len(res) == 1
+    assert res.width[0] == 5
+    assert res.start[0] == 15
+    assert res.end[0] == 19
+    assert res.strand[0] == 0
+
+
+def test_pintersect_wildcard_strand():
+    gr1 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([1], [10]), strand=["*"])
+    gr2 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([1], [10]), strand=["+"])
+
+    res = gr1.pintersect(gr2)
+    assert res.width[0] == 10
+    assert res.strand[0] == 1
+
+
+def test_pintersect_no_overlap():
+    gr1 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([1], [5]), strand=["+"])
+    gr2 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([10], [5]), strand=["+"])
+
+    res = gr1.pintersect(gr2)
+    assert res.width[0] == 0
+
+
+def test_pintersect_length_mismatch():
+    gr1 = GenomicRanges.empty()
+    gr2 = GenomicRanges(seqnames=["chr1"], ranges=IRanges([1], [1]))
+
+    with pytest.raises(ValueError, match="must have the same length"):
+        gr1.pintersect(gr2)

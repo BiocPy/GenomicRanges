@@ -4,7 +4,7 @@ import numpy as np
 from biocframe import BiocFrame
 from iranges import IRanges
 
-from genomicranges.GenomicRanges import GenomicRanges
+from genomicranges.granges import GenomicRanges
 import pytest
 
 __author__ = "jkanche"

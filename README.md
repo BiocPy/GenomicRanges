@@ -48,6 +48,7 @@ print(len(gg), len(df))
 
     ## output
     ## 77 77> [!NOTE]
+
 > `ends` are expected to be inclusive to be consistent with Bioconductor representations. If they are not, we recommend subtracting 1 from the `ends`.
 
 #### UCSC or GTF file
@@ -212,16 +213,16 @@ print(hits)
     [1]                1          1677082
     [2]                2          1003411
 
-## `GenomicRangesList`
+## `CompressedGenomicRangesList`
 
-Just as it sounds, a `GenomicRangesList` is a named-list like object. If you are wondering why you need this class, a `GenomicRanges` object lets us specify multiple genomic elements, usually where the genes start and end. Genes are themselves made of many sub-regions, e.g. exons. `GenomicRangesList` allows us to represent this nested structure.
+Just as it sounds, a `CompressedGenomicRangesList` is a named-list like object. If you are wondering why you need this class, a `GenomicRanges` object lets us specify multiple genomic elements, usually where the genes start and end. Genes are themselves made of many sub-regions, e.g. exons. `CompressedGenomicRangesList` allows us to represent this nested structure.
 
 **Currently, this class is limited in functionality.**
 
-To construct a GenomicRangesList
+To construct a CompressedGenomicRangesList
 
 ```python
-from genomicranges import GenomicRanges, GenomicRangesList
+from genomicranges import GenomicRanges, CompressedGenomicRangesList
 from iranges import IRanges
 from biocframe import BiocFrame
 
@@ -238,12 +239,12 @@ gr2 = GenomicRanges(
     strand=["-", "+", "*"],
     mcols=BiocFrame({"score": [2, 3, 4]}),
 )
-grl = GenomicRangesList(ranges=[gr1, gr2], names=["gene1", "gene2"])
+grl = CompressedGenomicRangesList.from_list(lst=[gr1, gr2], names=["gene1", "gene2"])
 print(grl)
 ```
 
     ## output
-    GenomicRangesList with 2 ranges and 2 metadata columns
+    CompressedGenomicRangesList with 2 ranges and 2 metadata columns
 
     Name: gene1
     GenomicRanges with 4 ranges and 4 metadata columns
@@ -270,12 +271,12 @@ print(grl)
 
 Performance comparison between Python and R GenomicRanges implementations. The query dataset contains approximately 564,000 intervals, while the subject dataset contains approximately 71 million intervals.
 
-| Operation | Python/GenomicRanges | Python/GenomicRanges (5 threads) | R/GenomicRanges |
-|-----------|---------------------|-----------------------------------|-----------------|
-| Overlap | 2.80s | 2.06s | 4.40s |
-| Overlap (single chromosome) | 6.73s | 5.19s | 10.06s |
-| Nearest | 2.27s | 1.5s | 42.16s |
-| Nearest (single chromosome) | 4.7s | 4.67s | 11.01s |
+| Operation                   | Python/GenomicRanges | Python/GenomicRanges (5 threads) | R/GenomicRanges |
+| --------------------------- | -------------------- | -------------------------------- | --------------- |
+| Overlap                     | 2.80s                | 2.06s                            | 4.40s           |
+| Overlap (single chromosome) | 6.73s                | 5.19s                            | 10.06s          |
+| Nearest                     | 2.27s                | 1.5s                             | 42.16s          |
+| Nearest (single chromosome) | 4.7s                 | 4.67s                            | 11.01s          |
 
 > [!NOTE]
 > The single chromosome benchmark ignores chromosome/sequence information and performs overlap operations solely on intervals.

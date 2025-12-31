@@ -15,8 +15,8 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .GenomicRanges import GenomicRanges
-from .GenomicRangesList import GenomicRangesList
+from .granges import GenomicRanges
+from .grangeslist import CompressedGenomicRangesList
 from .io.gtf import read_gtf
 from .io.ucsc import read_ucsc
-from .SeqInfo import SeqInfo
+from .sequence_info import SeqInfo

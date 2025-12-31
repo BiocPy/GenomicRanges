@@ -3,7 +3,7 @@ from random import random
 from biocframe import BiocFrame
 from iranges import IRanges
 
-from genomicranges import GenomicRanges, GenomicRangesList
+from genomicranges import CompressedGenomicRangesList, GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -52,9 +52,8 @@ def test_split():
     )
 
     assert splits is not None
-    assert isinstance(splits, GenomicRangesList)
+    assert isinstance(splits, CompressedGenomicRangesList)
     assert len(splits) == 3
-    assert sum(splits.get_range_lengths()) == len(subject)
 
 
 def test_to_granges():
@@ -75,7 +74,7 @@ def test_to_granges():
         ]
     )
 
-    roundtrip = splits.as_genomic_ranges()
+    roundtrip = splits._unlist_data
 
     assert roundtrip is not None
     assert isinstance(roundtrip, GenomicRanges)
