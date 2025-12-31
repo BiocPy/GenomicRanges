@@ -35,3 +35,16 @@ def test_create_grl():
 def test_create_grl_should_fail():
     with pytest.raises(Exception):
         CompressedGenomicRangesList.from_list(lst=[a, 2])
+
+
+def test_empty_grl():
+    grl = CompressedGenomicRangesList.empty(n=100)
+    assert isinstance(grl, CompressedGenomicRangesList)
+
+    subset = grl[0:10]
+    assert isinstance(subset, CompressedGenomicRangesList)
+    assert len(subset) == 10
+
+    subset = grl[1]
+    assert isinstance(subset, GenomicRanges)
+    assert len(subset) == 0

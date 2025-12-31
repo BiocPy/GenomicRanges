@@ -336,6 +336,23 @@ class CompressedGenomicRangesList(CompressedList):
         output.set_mcols(new_mcols, in_place=True)
         return output
 
+    @classmethod
+    def empty(cls, n: int):
+        """Create an zero-length `CompressedGenomicRangesList` object.
+
+        Args:
+            n:
+                Number of elements.
+
+        Returns:
+            same type as caller, in this case a `CompressedGenomicRangesList`.
+        """
+        _range_lengths = [0] * n
+
+        return CompressedGenomicRangesList(
+            unlist_data=GenomicRanges.empty(), partitioning=Partitioning(ends=_range_lengths)
+        )
+
 
 @splitAsCompressedList.register
 def _(
