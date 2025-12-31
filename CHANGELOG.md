@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.8.0
+
+- Rename module files to follow PEP guidelines
+- Rename `GenomicRangesList` to `CompressedGenomicRangesList` and now extends compressed-lists
+
 ## Version 0.7.0 - 0.7.3
 
 - Changes to switch to LTLA/nclist-cpp in the iranges package for overlap and search operations.
