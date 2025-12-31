@@ -5,6 +5,7 @@
 - Rename module files to follow PEP guidelines
 - Rename `GenomicRangesList` to `CompressedGenomicRangesList` and now extends compressed-lists
 - Classes extend `BiocObject` from biocutils, provides a default metadata attribute and helper functions.
+- rename `validate` to `_validate` for consistency with the rest of the packages and classes.
 
 ## Version 0.7.0 - 0.7.3
 

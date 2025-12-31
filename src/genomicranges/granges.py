@@ -259,6 +259,7 @@ class GenomicRanges(ut.BiocObject):
             mcols=_mcols_copy,
             seqinfo=_seqinfo_copy,
             metadata=_metadata_copy,
+            _validate=False,
         )
 
     def __copy__(self):
@@ -275,6 +276,7 @@ class GenomicRanges(ut.BiocObject):
             mcols=self._mcols,
             seqinfo=self._seqinfo,
             metadata=self._metadata,
+            _validate=False,
         )
 
     def copy(self):
