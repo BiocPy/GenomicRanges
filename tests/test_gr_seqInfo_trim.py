@@ -1,4 +1,4 @@
-from genomicranges.SeqInfo import SeqInfo
+from genomicranges.sequence_info import SeqInfo
 from random import random
 from genomicranges.granges import GenomicRanges
 from iranges import IRanges

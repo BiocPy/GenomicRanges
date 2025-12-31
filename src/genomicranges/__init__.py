@@ -19,4 +19,4 @@ from .granges import GenomicRanges
 from .grangeslist import CompressedGenomicRangesList
 from .io.gtf import read_gtf
 from .io.ucsc import read_ucsc
-from .SeqInfo import SeqInfo
+from .sequence_info import SeqInfo

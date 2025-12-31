@@ -315,6 +315,7 @@ intersphinx_mapping = {
     "biocutils": ("https://biocpy.github.io/BiocUtils", None),
     "iranges": ("https://biocpy.github.io/IRanges", None),
     "polars": ("https://docs.pola.rs/api/python/stable/", None),
+    "compressed-lists": ("https://biocpy.github.io/compressed-lists", None),
 }
 
 print(f"loading configurations for {project} {version} ...", file=sys.stderr)

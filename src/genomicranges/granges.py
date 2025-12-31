@@ -10,7 +10,7 @@ import numpy as np
 from biocframe import BiocFrame
 from iranges import IRanges
 
-from .SeqInfo import SeqInfo, merge_SeqInfo
+from .sequence_info import SeqInfo, merge_SeqInfo
 from .utils import (
     STRAND_MAP,
     compute_up_down,
@@ -3122,7 +3122,7 @@ class GenomicRanges(ut.BiocObject):
     #######################
 
     def split(self, groups: list) -> "CompressedGenomicRangesList":
-        """Split the `GenomicRanges` object into a :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList`.
+        """Split the `GenomicRanges` object into a :py:class:`~genomicranges.grangeslist.CompressedGenomicRangesList`.
 
         Args:
             groups:
@@ -3132,7 +3132,7 @@ class GenomicRanges(ut.BiocObject):
                 in the object.
 
         Returns:
-            A `GenomicRangesList` containing the groups and their
+            A `CompressedGenomicRangesList` containing the groups and their
             corresponding elements.
         """
 
@@ -3188,7 +3188,7 @@ class GenomicRanges(ut.BiocObject):
                 Defaults to False.
 
         Returns:
-            A `GenomicRangesList` with the same size as ``self`` containing
+            A `CompressedGenomicRangesList` with the same size as ``self`` containing
             the subtracted regions.
         """
 
@@ -3219,6 +3219,78 @@ class GenomicRanges(ut.BiocObject):
         from .grangeslist import CompressedGenomicRangesList
 
         return CompressedGenomicRangesList.from_list(lst=psetdiff.values(), names=list(psetdiff.keys()))
+
+    ##########################
+    ######>> pairwise <<######
+    ##########################
+
+    def pintersect(self, other: GenomicRanges, ignore_strand: bool = False) -> GenomicRanges:
+        """Parallel intersection of genomic ranges.
+
+        Computes the intersection for each parallel pair of ranges in ``self`` and ``other``.
+        If seqnames mismatch or strands are incompatible (and not ignored), the result
+        for that index is an empty range (width 0).
+
+        Args:
+            other:
+                The other ``GenomicRanges`` object. Must have the same length as ``self``.
+
+            ignore_strand:
+                Whether to ignore strands. Defaults to False.
+
+        Returns:
+            A new ``GenomicRanges`` object.
+        """
+        if len(self) != len(other):
+            raise ValueError("'self' and 'other' must have the same length.")
+
+        merged_seqinfo = merge_SeqInfo([self.seqinfo, other.seqinfo])
+
+        s_names = self.get_seqnames(as_type="list")
+        o_names = other.get_seqnames(as_type="list")
+
+        s_strand = self.get_strand(as_type="numpy")
+        o_strand = other.get_strand(as_type="numpy")
+
+        new_starts = np.maximum(self.start, other.start)
+        new_ends = np.minimum(self.end, other.end)
+
+        match_seqnames = np.array([x == y for x, y in zip(s_names, o_names)])
+
+        if not ignore_strand:
+            match_strands = (s_strand * o_strand) != -1
+            mask = match_seqnames & match_strands
+        else:
+            mask = match_seqnames
+
+        no_overlap = new_starts > new_ends
+        invalid = (~mask) | no_overlap
+
+        final_starts = new_starts.copy()
+        final_ends = new_ends.copy()
+
+        final_starts[invalid] = 1
+        final_ends[invalid] = 0
+
+        final_widths = final_ends - final_starts + 1
+        final_widths[final_widths < 0] = 0
+
+        if ignore_strand:
+            new_strands = np.zeros(len(self), dtype=int)
+        else:
+            new_strands = s_strand.copy()
+            use_other = s_strand == 0
+            new_strands[use_other] = o_strand[use_other]
+            new_strands[invalid] = 0
+
+        new_ranges = IRanges(final_starts, final_widths)
+
+        return GenomicRanges(
+            seqnames=s_names,
+            ranges=new_ranges,
+            strand=new_strands,
+            seqinfo=merged_seqinfo,
+        )
 
 
 def _fast_combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:

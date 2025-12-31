@@ -3,10 +3,13 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Sequence, Union
 
 import biocutils as ut
-from compressed_lists import CompressedList, Partitioning
+import numpy as np
+from compressed_lists import CompressedCharacterList, CompressedList, CompressedNumpyList, Partitioning
 from compressed_lists.split_generic import _generic_register_helper, splitAsCompressedList
+from iranges import CompressedIRangesList, IRanges
 
 from .granges import GenomicRanges, _combine_GenomicRanges
+from .sequence_info import SeqInfo
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -242,6 +245,95 @@ class CompressedGenomicRangesList(CompressedList):
         output += f"element_metadata({str(len(self._element_metadata))}): {ut.print_truncated_list(list(self._element_metadata.keys()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
         output += f"metadata({str(len(self._metadata))}): {ut.print_truncated_list(list(self._metadata.keys()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
 
+        return output
+
+    @property
+    def seqnames(self) -> CompressedCharacterList:
+        """Access sequence names for each element in the list.
+
+        Returns:
+            A CompressedList containing sequence names.
+        """
+        return CompressedCharacterList(self._unlist_data.get_seqnames(), self._partitioning, element_type=str)
+
+    @property
+    def strand(self) -> CompressedCharacterList:
+        """Access strand information for each element in the list.
+
+        Returns:
+            A CompressedList containing strand information.
+        """
+        return CompressedCharacterList(
+            self._unlist_data.get_strand(as_type="list"),
+            self._partitioning,
+            element_type=str,
+        )
+
+    @property
+    def ranges(self) -> CompressedIRangesList:
+        """Access range information for each element in the list.
+
+        Returns:
+            A CompressedList containing IRanges objects.
+        """
+        return CompressedIRangesList(self._unlist_data.get_ranges(), self._partitioning, element_type=IRanges)
+
+    @property
+    def start(self) -> CompressedNumpyList:
+        """Access start positions for all elements.
+
+        Returns:
+            A CompressedList of start positions.
+        """
+        return CompressedNumpyList(self._unlist_data.start, self._partitioning, element_type=int)
+
+    @property
+    def end(self) -> CompressedNumpyList:
+        """Access end positions for all elements.
+
+        Returns:
+            A CompressedList of end positions.
+        """
+        return CompressedNumpyList(self._unlist_data.end, self._partitioning, element_type=int)
+
+    @property
+    def width(self) -> CompressedNumpyList:
+        """Access widths for all elements.
+
+        Returns:
+            A CompressedList of widths.
+        """
+        return CompressedNumpyList(self._unlist_data.width, self._partitioning, element_type=int)
+
+    @property
+    def seqinfo(self) -> SeqInfo:
+        """Access sequence information.
+
+        Returns:
+            The SeqInfo object from the underlying GenomicRanges.
+        """
+        return self._unlist_data.seqinfo
+
+    def stack(self, index_column_name: str = "index") -> GenomicRanges:
+        """Stack all elements into a single GenomicRanges object.
+
+        Args:
+            index_column_name:
+                Name of the column to store the original index/names.
+
+        Returns:
+            A GenomicRanges object.
+        """
+        output = self._unlist_data.copy()
+
+        # Create an index column to map back to the list element
+        if self.names is not None:
+            indices = np.repeat(self.names, self._partitioning.get_element_lengths())
+        else:
+            indices = np.repeat(range(len(self)), self._partitioning.get_element_lengths())
+
+        new_mcols = output.mcols.set_column(index_column_name, indices)
+        output.set_mcols(new_mcols, in_place=True)
         return output
 
 

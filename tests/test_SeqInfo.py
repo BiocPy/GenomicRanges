@@ -3,7 +3,7 @@ from random import random
 import numpy as np
 import pytest
 
-from genomicranges.SeqInfo import SeqInfo, merge_SeqInfo
+from genomicranges.sequence_info import SeqInfo, merge_SeqInfo
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
