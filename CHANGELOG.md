@@ -68,7 +68,6 @@ An rewrite of the package to use the new and improve IRanges packages (>= 0.4.2)
 - Coerce `GenomicRangesList` to `GenomicRanges`.
 - Add tests and documentation.
 
-
 ## Version 0.4.21 - 0.4.24
 
 - Optimize `intersect` operation on large number of genomic regions
