@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>genomicranges.grangeslist - GenomicRanges 0.8.0 documentation</title>
+        <title>genomicranges.grangeslist - GenomicRanges 0.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.8.0 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.8.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.8.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -605,6 +605,26 @@
         <span class="n">new_mcols</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">mcols</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="n">index_column_name</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">set_mcols</span><span class="p">(</span><span class="n">new_mcols</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="CompressedGenomicRangesList.empty">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.grangeslist.CompressedGenomicRangesList.empty">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an zero-length `CompressedGenomicRangesList` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n:</span>
+<span class="sd">                Number of elements.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            same type as caller, in this case a `CompressedGenomicRangesList`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_range_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+        <span class="k">return</span> <span class="n">CompressedGenomicRangesList</span><span class="p">(</span>
+            <span class="n">unlist_data</span><span class="o">=</span><span class="n">GenomicRanges</span><span class="o">.</span><span class="n">empty</span><span class="p">(),</span> <span class="n">partitioning</span><span class="o">=</span><span class="n">Partitioning</span><span class="p">(</span><span class="n">ends</span><span class="o">=</span><span class="n">_range_lengths</span><span class="p">)</span>
+        <span class="p">)</span></div>
 </div>
 
 
@@ -660,7 +680,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=486e5634"></script>
+</div><script src="../../_static/documentation_options.js?v=ec16d22d"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
