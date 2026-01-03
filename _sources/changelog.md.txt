@@ -1,12 +1,12 @@
 # Changelog
 
-## Version 0.8.0 - 0.8.1
+## Version 0.8.0 - 0.8.2
 
-- Rename module files to follow PEP guidelines
-- Rename `GenomicRangesList` to `CompressedGenomicRangesList` and now extends compressed-lists
+- Rename `GenomicRangesList` to `CompressedGenomicRangesList` and now extends compressed-lists.
 - Classes extend `BiocObject` from biocutils, provides a default metadata attribute and helper functions.
 - Rename `validate` to `_validate` for consistency with the rest of the packages and classes.
 - Fix for empty compressed genomic ranges list.
+- Aliases `GRanges` and `CompressedGRangesList`.
 
 ## Version 0.7.0 - 0.7.3
 

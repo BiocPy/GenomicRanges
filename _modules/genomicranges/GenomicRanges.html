@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>genomicranges.granges - GenomicRanges 0.8.1 documentation</title>
+        <title>genomicranges.GenomicRanges - GenomicRanges 0.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">GenomicRanges 0.8.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">GenomicRanges 0.8.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.8.1 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.8.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -251,7 +251,7 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for genomicranges.granges</h1><div class="highlight"><pre>
+          <h1>Source code for genomicranges.GenomicRanges</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
@@ -346,12 +346,12 @@
 
 
 <div class="viewcode-block" id="GenomicRangesIter">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRangesIter">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRangesIter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GenomicRangesIter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An iterator to a :py:class:`~GenomicRanges` object.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="GenomicRangesIter.__init__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRangesIter.__init__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRangesIter.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the iterator.</span>
 
@@ -364,13 +364,13 @@
 
 
 <div class="viewcode-block" id="GenomicRangesIter.__iter__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRangesIter.__iter__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRangesIter.__iter__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
 <div class="viewcode-block" id="GenomicRangesIter.__next__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRangesIter.__next__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRangesIter.__next__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="p">):</span>
             <span class="n">iter_row_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr</span><span class="o">.</span><span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
@@ -385,7 +385,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GenomicRanges</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">BiocObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;``GenomicRanges`` provides a container class to represent and operate over genomic regions and annotations.</span>
 
@@ -394,7 +394,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="GenomicRanges.__init__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__init__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">seqnames</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -507,7 +507,7 @@
     <span class="c1">#########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.__deepcopy__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__deepcopy__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__deepcopy__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -537,7 +537,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.__copy__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__copy__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__copy__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -557,7 +557,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.copy">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.copy">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~__copy__`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
@@ -568,7 +568,7 @@
     <span class="c1">######################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.__len__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__len__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__len__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -578,7 +578,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.__iter__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__iter__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__iter__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRangesIter</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over rows.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">GenomicRangesIter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
@@ -589,7 +589,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.__repr__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__repr__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -727,7 +727,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_seqnames">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_seqnames">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_seqnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;factor&quot;</span><span class="p">,</span> <span class="s2">&quot;list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;list&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ut</span><span class="o">.</span><span class="n">Factor</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Access sequence names.</span>
 
@@ -752,7 +752,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.set_seqnames">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.set_seqnames">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_seqnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqnames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new sequence names.</span>
 
@@ -802,7 +802,7 @@
     <span class="c1">########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_ranges">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_ranges">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_ranges">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -813,7 +813,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.set_ranges">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.set_ranges">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_ranges">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ranges</span><span class="p">:</span> <span class="n">IRanges</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new ranges.</span>
 
@@ -858,7 +858,7 @@
     <span class="c1">########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_strand">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_strand">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_strand">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_strand</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">as_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;factor&quot;</span><span class="p">,</span> <span class="s2">&quot;list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
@@ -902,7 +902,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.set_strand">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.set_strand">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_strand">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_strand</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">strand</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
@@ -958,7 +958,7 @@
     <span class="c1">########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_names">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_names">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_names">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -968,7 +968,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.set_names">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.set_names">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_names">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new names.</span>
 
@@ -1017,7 +1017,7 @@
     <span class="c1">########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_mcols">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_mcols">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_mcols">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BiocFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -1027,7 +1027,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.set_mcols">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.set_mcols">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_mcols">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_mcols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mcols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocFrame</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new range metadata.</span>
 
@@ -1078,7 +1078,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_seqinfo">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_seqinfo">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_seqinfo">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_seqinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SeqInfo</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -1088,7 +1088,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.set_seqinfo">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.set_seqinfo">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_seqinfo">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_seqinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqinfo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqInfo</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new sequence information.</span>
 
@@ -1148,7 +1148,7 @@
     <span class="c1">################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_start">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_start">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_start">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all start positions.</span>
 
@@ -1165,7 +1165,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_end">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_end">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_end">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all end positions.</span>
 
@@ -1182,7 +1182,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_end</span><span class="p">()</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_width">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_width">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_width">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get width of each genomic range.</span>
 
@@ -1199,7 +1199,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_seqlengths">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_seqlengths">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_seqlengths">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_seqlengths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence lengths for each genomic range.</span>
 
@@ -1215,7 +1215,7 @@
     <span class="c1">#########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.get_subset">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_subset">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_subset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset ``GenomicRanges``, based on their indices or names.</span>
 
@@ -1251,14 +1251,14 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.__getitem__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__getitem__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__getitem__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias to :py:attr:`~get_subset`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GenomicRanges.set_subset">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.set_subset">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.set_subset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_subset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="nb">range</span><span class="p">],</span>
@@ -1320,7 +1320,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.__setitem__">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.__setitem__">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.__setitem__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="nb">range</span><span class="p">],</span>
@@ -1344,7 +1344,7 @@
     <span class="c1">################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.to_pandas">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.to_pandas">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.to_pandas">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this ``GenomicRanges`` to a :py:class:`~pandas.DataFrame` object.</span>
 
@@ -1368,7 +1368,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.from_pandas">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.from_pandas">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.from_pandas">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_pandas</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an ``GenomicRanges`` object from a :py:class:`~pandas.DataFrame`.</span>
@@ -1432,7 +1432,7 @@
     <span class="c1">################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.to_polars">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.to_polars">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.to_polars">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_polars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this ``GenomicRanges`` to a :py:class:`~polars.DataFrame` object.</span>
 
@@ -1455,7 +1455,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.from_polars">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.from_polars">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.from_polars">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_polars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an ``GenomicRanges`` object from a :py:class:`~polars.DataFrame`.</span>
@@ -1517,7 +1517,7 @@
     <span class="c1">#####################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.flank">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.flank">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.flank">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">flank</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1601,7 +1601,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.resize">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.resize">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.resize">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">resize</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">width</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -1667,7 +1667,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.shift">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.shift">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.shift">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift all intervals.</span>
 
@@ -1690,7 +1690,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.promoters">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.promoters">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.promoters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">promoters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend ranges to promoter regions.</span>
 
@@ -1724,7 +1724,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.terminators">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.terminators">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.terminators">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">terminators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend ranges to termiantor regions.</span>
 
@@ -1758,7 +1758,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.restrict">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.restrict">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.restrict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">restrict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1884,7 +1884,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.get_out_of_bound_index">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.get_out_of_bound_index">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.get_out_of_bound_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_out_of_bound_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find indices of genomic ranges that are out of bounds.</span>
 
@@ -1910,7 +1910,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.trim">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.trim">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.trim">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">trim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Trim sequences outside of bounds for non-circular chromosomes.</span>
 
@@ -1949,7 +1949,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.narrow">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.narrow">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.narrow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">narrow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2011,7 +2011,7 @@
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grouped_indices</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GenomicRanges.reduce">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.reduce">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.reduce">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reduce</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2085,7 +2085,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.range">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.range">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.range">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate range bounds for each distinct (seqname, strand) pair.</span>
 
@@ -2134,7 +2134,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.gaps">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.gaps">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.gaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">gaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -2207,7 +2207,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.disjoin">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.disjoin">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.disjoin">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">disjoin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_reverse_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate disjoint genomic positions for each distinct (seqname, strand) pair.</span>
 
@@ -2259,7 +2259,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.is_disjoint">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.is_disjoint">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.is_disjoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_disjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate disjoint genomic positions for each distinct (seqname, strand) pair.</span>
 
@@ -2281,7 +2281,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.disjoint_bins">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.disjoint_bins">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.disjoint_bins">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">disjoint_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split ranges into a set of bins so that the ranges in each bin are disjoint.</span>
 
@@ -2305,7 +2305,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.coverage">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.coverage">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.coverage">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">coverage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
@@ -2386,7 +2386,7 @@
     <span class="c1">################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.union">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.union">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.union">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find union of genomic intervals with `other`.</span>
 
@@ -2414,7 +2414,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.setdiff">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.setdiff">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.setdiff">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setdiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find set difference of genomic intervals with `other`.</span>
 
@@ -2457,7 +2457,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.intersect">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.intersect">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.intersect">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find intersecting genomic intervals with `other`.</span>
 
@@ -2498,7 +2498,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.intersect_ncls">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.intersect_ncls">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.intersect_ncls">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">intersect_ncls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">delete_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find intersecting genomic intervals with `other` (uses NCLS index).</span>
 
@@ -2566,7 +2566,7 @@
     <span class="c1">###################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.extract_groups_by_seqnames">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.extract_groups_by_seqnames">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.extract_groups_by_seqnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">extract_groups_by_seqnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seqinfo</span><span class="o">.</span><span class="n">_seqnames</span><span class="p">):</span>
@@ -2590,7 +2590,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">self_groups</span><span class="p">,</span> <span class="n">query_groups</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GenomicRanges.find_overlaps">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.find_overlaps">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.find_overlaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_overlaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
@@ -2715,7 +2715,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.count_overlaps">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.count_overlaps">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.count_overlaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">count_overlaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
@@ -2778,7 +2778,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.subset_by_overlaps">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.subset_by_overlaps">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.subset_by_overlaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">subset_by_overlaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
@@ -2842,7 +2842,7 @@
     <span class="c1">#################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.nearest">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.nearest">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.nearest">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">nearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
@@ -2936,7 +2936,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.precede">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.precede">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.precede">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">precede</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
@@ -3019,7 +3019,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.follow">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.follow">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.follow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">follow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
@@ -3099,7 +3099,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.distance">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.distance">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.distance">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">IRanges</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the pair-wise distance with intervals in query.</span>
 
@@ -3128,7 +3128,7 @@
     <span class="c1">#############################</span>
 
 <div class="viewcode-block" id="GenomicRanges.match">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.match">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.match">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Element wise comparison to find exact match ranges.</span>
 
@@ -3197,7 +3197,7 @@
         <span class="k">return</span> <span class="n">ranges</span>
 
 <div class="viewcode-block" id="GenomicRanges.order">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.order">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.order">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the order of indices for sorting.</span>
 
@@ -3219,7 +3219,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.sort">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.sort">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.sort">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the order of indices for sorting.</span>
 
@@ -3241,7 +3241,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.rank">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.rank">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.rank">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">rank</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get rank of the ``GenomicRanges`` object.</span>
 
@@ -3261,7 +3261,7 @@
     <span class="c1">##############################</span>
 
 <div class="viewcode-block" id="GenomicRanges.sample">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.sample">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Randomly sample ``k`` intervals.</span>
 
@@ -3279,7 +3279,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.invert_strand">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.invert_strand">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.invert_strand">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">invert_strand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Invert strand for each range.</span>
 
@@ -3310,7 +3310,7 @@
     <span class="c1">################################</span>
 
 <div class="viewcode-block" id="GenomicRanges.tile">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.tile">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.tile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split each interval by ``n`` (number of sub intervals) or ``width`` (intervals with equal width).</span>
 
@@ -3358,7 +3358,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.sliding_windows">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.sliding_windows">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.sliding_windows">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sliding_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.</span>
 
@@ -3399,7 +3399,7 @@
 
     <span class="c1"># TODO: should really be a genomicrangeslist</span>
 <div class="viewcode-block" id="GenomicRanges.tile_genome">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.tile_genome">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.tile_genome">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">tile_genome</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
@@ -3535,7 +3535,7 @@
 
 
 <div class="viewcode-block" id="GenomicRanges.binned_average">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.binned_average">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.binned_average">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">binned_average</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">scorename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3599,7 +3599,7 @@
     <span class="c1">#######################</span>
 
 <div class="viewcode-block" id="GenomicRanges.split">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.split">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.split">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CompressedGenomicRangesList&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split the `GenomicRanges` object into a :py:class:`~genomicranges.grangeslist.CompressedGenomicRangesList`.</span>
 
@@ -3637,7 +3637,7 @@
     <span class="c1">#######################</span>
 
 <div class="viewcode-block" id="GenomicRanges.empty">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.empty">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.empty">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an zero-length `GenomicRanges` object.</span>
@@ -3653,7 +3653,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.subtract">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.subtract">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.subtract">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">subtract</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">min_overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CompressedGenomicRangesList&quot;</span><span class="p">:</span>
@@ -3711,7 +3711,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="GenomicRanges.pintersect">
-<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.granges.GenomicRanges.pintersect">[docs]</a>
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GenomicRanges.pintersect">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pintersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parallel intersection of genomic ranges.</span>
 
@@ -3828,6 +3828,13 @@
 <span class="nd">@ut</span><span class="o">.</span><span class="n">extract_row_names</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_rownames_gr</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="GRanges">
+<a class="viewcode-back" href="../../api/genomicranges.html#genomicranges.GenomicRanges.GRanges">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GRanges</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -3860,7 +3867,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=ec16d22d"></script>
+</div><script src="../../_static/documentation_options.js?v=dbee5847"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

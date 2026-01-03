@@ -12,10 +12,10 @@ Subpackages
 Submodules
 ----------
 
-genomicranges.granges module
-----------------------------
+genomicranges.GenomicRanges module
+----------------------------------
 
-.. automodule:: genomicranges.granges
+.. automodule:: genomicranges.GenomicRanges
    :members:
    :show-inheritance:
    :undoc-members:
