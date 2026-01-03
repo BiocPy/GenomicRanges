@@ -1,6 +1,6 @@
 from genomicranges.sequence_info import SeqInfo
 from random import random
-from genomicranges.granges import GenomicRanges
+from genomicranges.GenomicRanges import GenomicRanges
 from iranges import IRanges
 from biocframe import BiocFrame
 import numpy as np

@@ -8,7 +8,7 @@ from compressed_lists import CompressedCharacterList, CompressedList, Compressed
 from compressed_lists.split_generic import _generic_register_helper, splitAsCompressedList
 from iranges import CompressedIRangesList, IRanges
 
-from .granges import GenomicRanges, _combine_GenomicRanges
+from .GenomicRanges import GenomicRanges, _combine_GenomicRanges
 from .sequence_info import SeqInfo
 
 __author__ = "jkanche"
@@ -373,3 +373,7 @@ def _(
     return CompressedGenomicRangesList(
         unlist_data=partitioned_data, partitioning=groups_or_partitions, metadata=metadata
     )
+
+
+class CompressedGRangesList(CompressedGenomicRangesList):
+    pass

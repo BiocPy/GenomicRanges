@@ -3340,3 +3340,7 @@ def _combine_GenomicRanges(*x: GenomicRanges) -> GenomicRanges:
 @ut.extract_row_names.register(GenomicRanges)
 def _rownames_gr(x: GenomicRanges):
     return x.get_names()
+
+
+class GRanges(GenomicRanges):
+    pass

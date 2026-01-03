@@ -4,7 +4,7 @@ import numpy as np
 from biocframe import BiocFrame
 from iranges import IRanges
 
-from genomicranges.granges import GenomicRanges
+from genomicranges.GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
