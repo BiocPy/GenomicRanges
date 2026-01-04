@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.8.0 - 0.8.2
+## Version 0.8.0 - 0.8.3
 
 - Rename `GenomicRangesList` to `CompressedGenomicRangesList` and now extends compressed-lists.
 - Classes extend `BiocObject` from biocutils, provides a default metadata attribute and helper functions.
