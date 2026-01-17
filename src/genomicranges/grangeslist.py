@@ -220,8 +220,7 @@ class CompressedGenomicRangesList(CompressedList):
             else self._element_type
         )
 
-        if len(self._element_metadata) > 0:
-            output += ", element_metadata=" + ut.print_truncated_dict(self._element_metadata)
+        output += ", element_metadata=" + self._element_metadata.__repr__()
 
         if len(self._metadata) > 0:
             output += ", metadata=" + ut.print_truncated_dict(self._metadata)
@@ -242,7 +241,7 @@ class CompressedGenomicRangesList(CompressedList):
 
         output += f"partitioning: {ut.print_truncated_list(self._partitioning)}\n"
 
-        output += f"element_metadata({str(len(self._element_metadata))}): {ut.print_truncated_list(list(self._element_metadata.keys()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
+        output += f"element_metadata({str(len(self._element_metadata))} rows): {ut.print_truncated_list(list(self._element_metadata.get_column_names()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
         output += f"metadata({str(len(self._metadata))}): {ut.print_truncated_list(list(self._metadata.keys()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
 
         return output
