@@ -1,5 +1,4 @@
 import logging
-from typing import Dict, List, Union
 
 # Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py
 
@@ -8,7 +7,7 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def _parse_all_attribute(row: str) -> Dict:
+def _parse_all_attribute(row: str) -> dict:
     """Extract all keys from the gtf/gff attribute string.
 
     Args:
@@ -32,7 +31,7 @@ def _parse_all_attribute(row: str) -> Dict:
 def parse_gtf(
     path: str,
     compressed: bool,
-    skiprows: Union[int, List[int]] = None,
+    skiprows: int | list[int] = None,
     comment: str = "#",
 ):
     """Read a GTF file as :py:class:`~pandas.DataFrame`.
@@ -107,7 +106,7 @@ def parse_gtf(
 
 def read_gtf(
     file: str,
-    skiprows: Union[int, List[int]] = None,
+    skiprows: int | list[int] = None,
     comment: str = "#",
 ) -> "GenomicRanges":
     """Read a GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.

@@ -1,8 +1,10 @@
-import pytest
-from genomicranges import GenomicRanges
-from biocframe import BiocFrame
 from random import random
+
 import pandas as pd
+import pytest
+from biocframe import BiocFrame
+
+from genomicranges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -35,7 +37,7 @@ def test_from_pandas_should_fail():
             "starts": range(100, 110),
             "ends": range(110, 120),
             "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
-            "score": range(0, 10),
+            "score": range(10),
             "GC": [random() for _ in range(10)],
         }
     )

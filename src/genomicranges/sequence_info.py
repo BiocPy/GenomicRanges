@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Sequence, Union
+from collections.abc import Sequence
 from warnings import warn
 
 import biocutils as ut
@@ -81,9 +81,9 @@ class SeqInfo:
     def __init__(
         self,
         seqnames: Sequence[str],
-        seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]] = None,
-        is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]] = None,
-        genome: Optional[Union[str, Sequence[str], Dict[str, str]]] = None,
+        seqlengths: int | Sequence[int] | dict[str, int] | None = None,
+        is_circular: bool | Sequence[bool] | dict[str, bool] | None = None,
+        genome: str | Sequence[str] | dict[str, str] | None = None,
         validate: bool = True,
     ) -> None:
         """
@@ -163,7 +163,7 @@ class SeqInfo:
     def _wipe_reverse_seqnames_index(self):
         self._reverse_seqnames = None
 
-    def _flatten_incoming(self, values, expected) -> List:
+    def _flatten_incoming(self, values, expected) -> list:
         if values is None or isinstance(values, expected):
             return [values] * len(self)
 
@@ -313,7 +313,7 @@ class SeqInfo:
     ######>> seqnames <<######
     ##########################
 
-    def get_seqnames(self) -> List[str]:
+    def get_seqnames(self) -> list[str]:
         """
         Returns:
             List of all chromosome names.
@@ -342,7 +342,7 @@ class SeqInfo:
         return output
 
     @property
-    def seqnames(self) -> List[str]:
+    def seqnames(self) -> list[str]:
         warn("'seqnames' is deprecated, use 'get_seqnames' instead", UserWarning)
         return self.get_seqnames()
 
@@ -359,7 +359,7 @@ class SeqInfo:
     ######>> seqlengths <<######
     ############################
 
-    def get_seqlengths(self) -> List[int]:
+    def get_seqlengths(self) -> list[int]:
         """
         Returns:
             A list of integers is returned containing the lengths of all
@@ -370,7 +370,7 @@ class SeqInfo:
 
     def set_seqlengths(
         self,
-        seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]],
+        seqlengths: int | Sequence[int] | dict[str, int] | None,
         in_place: bool = False,
     ) -> "SeqInfo":
         """
@@ -399,7 +399,7 @@ class SeqInfo:
         return output
 
     @property
-    def seqlengths(self) -> List[int]:
+    def seqlengths(self) -> list[int]:
         warn(
             "'seqlengths' is deprecated, use 'get_seqlengths' instead",
             UserWarning,
@@ -407,7 +407,7 @@ class SeqInfo:
         return self.get_seqlengths()
 
     @seqlengths.setter
-    def seqlengths(self, seqlengths: Optional[Union[int, Sequence[int], Dict[str, int]]]):
+    def seqlengths(self, seqlengths: int | Sequence[int] | dict[str, int] | None):
         warn(
             "Setting property 'seqlengths' is an in-place operation, use 'set_seqlengths' instead",
             UserWarning,
@@ -419,7 +419,7 @@ class SeqInfo:
     ######>> is-circular <<######
     #############################
 
-    def get_is_circular(self) -> List[bool]:
+    def get_is_circular(self) -> list[bool]:
         """
         Returns:
             A list of booleans is returned specifying whether each sequence
@@ -429,7 +429,7 @@ class SeqInfo:
 
     def set_is_circular(
         self,
-        is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]],
+        is_circular: bool | Sequence[bool] | dict[str, bool] | None,
         in_place: bool = False,
     ) -> "SeqInfo":
         """
@@ -459,7 +459,7 @@ class SeqInfo:
         return output
 
     @property
-    def is_circular(self) -> List[bool]:
+    def is_circular(self) -> list[bool]:
         warn(
             "'is_circular' is deprecated, use 'get_is_circular' instead",
             UserWarning,
@@ -467,7 +467,7 @@ class SeqInfo:
         return self.get_is_circular()
 
     @is_circular.setter
-    def is_circular(self, is_circular: Optional[Union[bool, Sequence[bool], Dict[str, bool]]]):
+    def is_circular(self, is_circular: bool | Sequence[bool] | dict[str, bool] | None):
         warn(
             "Setting property 'is_circular' is an in-place operation, use 'set_is_circular' instead",
             UserWarning,
@@ -479,7 +479,7 @@ class SeqInfo:
     ######>> genome <<######
     ########################
 
-    def get_genome(self) -> List[str]:
+    def get_genome(self) -> list[str]:
         """
         Returns:
             A list of strings is returned containing the genome identity for
@@ -489,7 +489,7 @@ class SeqInfo:
 
     def set_genome(
         self,
-        genome: Optional[Union[str, Sequence[str], Dict[str, str]]],
+        genome: str | Sequence[str] | dict[str, str] | None,
         in_place: bool = False,
     ) -> "SeqInfo":
         """
@@ -514,12 +514,12 @@ class SeqInfo:
         return output
 
     @property
-    def genome(self) -> List[str]:
+    def genome(self) -> list[str]:
         warn("'genome' is deprecated, use 'get_genome' instead", UserWarning)
         return self.get_genome()
 
     @genome.setter
-    def genome(self, genome: Optional[Union[bool, Sequence[bool], Dict[str, bool]]]):
+    def genome(self, genome: bool | Sequence[bool] | dict[str, bool] | None):
         warn(
             "Setting property 'genome' is an in-place operation, use 'set_genome' instead",
             UserWarning,
@@ -546,7 +546,7 @@ class SeqInfo:
     ######>> Slicers <<######
     #########################
 
-    def get_subset(self, subset: Union[str, int, bool, Sequence]) -> "SeqInfo":
+    def get_subset(self, subset: str | int | bool | Sequence) -> "SeqInfo":
         """Subset ``SeqInfo``, based on their indices or seqnames.
 
         Args:
@@ -576,7 +576,7 @@ class SeqInfo:
             genome=ut.subset_sequence(self._genome, idx),
         )
 
-    def __getitem__(self, subset: Union[str, int, bool, Sequence]) -> "SeqInfo":
+    def __getitem__(self, subset: str | int | bool | Sequence) -> "SeqInfo":
         """Alias to :py:attr:`~get_subset`."""
         return self.get_subset(subset)
 
@@ -595,7 +595,7 @@ def _combine_SeqInfo(*x: SeqInfo) -> SeqInfo:
     return merge_SeqInfo(x)
 
 
-def merge_SeqInfo(objects: List[SeqInfo]) -> SeqInfo:
+def merge_SeqInfo(objects: list[SeqInfo]) -> SeqInfo:
     """Merge multiple :py:class:`~SeqInfo` objects, taking the union of all reference sequences. If the same reference
     sequence is present with the same details across ``objects``, only a single instance is present in the final object;
     if details are contradictory, they are replaced with None.

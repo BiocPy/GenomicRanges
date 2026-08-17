@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Sequence
 from multiprocessing import Pool, cpu_count
-from typing import Any, Dict, List, Literal, Optional, Sequence, Tuple, Union
+from typing import Any, Literal
 from warnings import warn
 
 import biocutils as ut
@@ -129,11 +130,11 @@ class GenomicRanges(ut.BiocObject):
         self,
         seqnames: Sequence[str],
         ranges: IRanges,
-        strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]] = None,
-        names: Optional[Union[ut.Names, Sequence[str]]] = None,
-        mcols: Optional[BiocFrame] = None,
-        seqinfo: Optional[SeqInfo] = None,
-        metadata: Optional[Union[Dict[str, Any], ut.NamedList]] = None,
+        strand: Sequence[str] | Sequence[int] | np.ndarray | None = None,
+        names: ut.Names | Sequence[str] | None = None,
+        mcols: BiocFrame | None = None,
+        seqinfo: SeqInfo | None = None,
+        metadata: dict[str, Any] | ut.NamedList | None = None,
         _validate: bool = True,
     ):
         """Initialize a ``GenomicRanges`` object.
@@ -437,7 +438,7 @@ class GenomicRanges(ut.BiocObject):
     ######>> seqnames <<######
     ##########################
 
-    def get_seqnames(self, as_type: Literal["factor", "list"] = "list") -> Union[ut.Factor, List[str]]:
+    def get_seqnames(self, as_type: Literal["factor", "list"] = "list") -> ut.Factor | list[str]:
         """Access sequence names.
 
         Args:
@@ -459,7 +460,7 @@ class GenomicRanges(ut.BiocObject):
         else:
             raise ValueError("Argument 'as_type' must be 'factor' or 'list'.")
 
-    def set_seqnames(self, seqnames: Union[Sequence[str], np.ndarray], in_place: bool = False) -> GenomicRanges:
+    def set_seqnames(self, seqnames: Sequence[str] | np.ndarray, in_place: bool = False) -> GenomicRanges:
         """Set new sequence names.
 
         Args:
@@ -486,12 +487,12 @@ class GenomicRanges(ut.BiocObject):
         return output
 
     @property
-    def seqnames(self) -> Union[Union[np.ndarray, List[str]], np.ndarray]:
+    def seqnames(self) -> np.ndarray | list[str]:
         """Alias for :py:meth:`~get_seqnames`."""
         return self.get_seqnames()
 
     @seqnames.setter
-    def seqnames(self, seqnames: Union[Sequence[str], np.ndarray]):
+    def seqnames(self, seqnames: Sequence[str] | np.ndarray):
         """Alias for :py:meth:`~set_seqnames` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -556,9 +557,7 @@ class GenomicRanges(ut.BiocObject):
     ######>> strand <<######
     ########################
 
-    def get_strand(
-        self, as_type: Literal["numpy", "factor", "list"] = "numpy"
-    ) -> Union[Tuple[np.ndarray, dict], List[str]]:
+    def get_strand(self, as_type: Literal["numpy", "factor", "list"] = "numpy") -> tuple[np.ndarray, dict] | list[str]:
         """Access strand information.
 
         Args:
@@ -598,7 +597,7 @@ class GenomicRanges(ut.BiocObject):
             raise ValueError("Argument 'as_type' must be 'factor' or 'list'.")
 
     def set_strand(
-        self, strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]], in_place: bool = False
+        self, strand: Sequence[str] | Sequence[int] | np.ndarray | None, in_place: bool = False
     ) -> GenomicRanges:
         """Set new strand information.
 
@@ -635,7 +634,7 @@ class GenomicRanges(ut.BiocObject):
         return self.get_strand()
 
     @strand.setter
-    def strand(self, strand: Optional[Union[Sequence[str], Sequence[int], np.ndarray]]):
+    def strand(self, strand: Sequence[str] | Sequence[int] | np.ndarray | None):
         """Alias for :py:meth:`~set_strand` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -657,7 +656,7 @@ class GenomicRanges(ut.BiocObject):
         """
         return self._names
 
-    def set_names(self, names: Optional[Union[ut.Names, Sequence[str]]], in_place: bool = False) -> GenomicRanges:
+    def set_names(self, names: ut.Names | Sequence[str] | None, in_place: bool = False) -> GenomicRanges:
         """Set new names.
 
         Args:
@@ -688,7 +687,7 @@ class GenomicRanges(ut.BiocObject):
         return self.get_names()
 
     @names.setter
-    def names(self, names: Optional[Union[ut.Names, Sequence[str]]]):
+    def names(self, names: ut.Names | Sequence[str] | None):
         """Alias for :py:meth:`~set_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -710,7 +709,7 @@ class GenomicRanges(ut.BiocObject):
         """
         return self._mcols
 
-    def set_mcols(self, mcols: Optional[BiocFrame], in_place: bool = False) -> GenomicRanges:
+    def set_mcols(self, mcols: BiocFrame | None, in_place: bool = False) -> GenomicRanges:
         """Set new range metadata.
 
         Args:
@@ -743,7 +742,7 @@ class GenomicRanges(ut.BiocObject):
         return self.get_mcols()
 
     @mcols.setter
-    def mcols(self, mcols: Optional[BiocFrame]):
+    def mcols(self, mcols: BiocFrame | None):
         """Alias for :py:meth:`~set_mcols` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -765,7 +764,7 @@ class GenomicRanges(ut.BiocObject):
         """
         return self._seqinfo
 
-    def set_seqinfo(self, seqinfo: Optional[SeqInfo], in_place: bool = False) -> GenomicRanges:
+    def set_seqinfo(self, seqinfo: SeqInfo | None, in_place: bool = False) -> GenomicRanges:
         """Set new sequence information.
 
         Args:
@@ -806,7 +805,7 @@ class GenomicRanges(ut.BiocObject):
     @seqinfo.setter
     def seqinfo(
         self,
-        seqinfo: Optional[SeqInfo],
+        seqinfo: SeqInfo | None,
     ):
         """Alias for :py:meth:`~set_seqinfo` with ``in_place = True``.
 
@@ -877,7 +876,7 @@ class GenomicRanges(ut.BiocObject):
     ######>> Slicers <<######
     #########################
 
-    def get_subset(self, subset: Union[str, int, bool, Sequence]) -> GenomicRanges:
+    def get_subset(self, subset: str | int | bool | Sequence) -> GenomicRanges:
         """Subset ``GenomicRanges``, based on their indices or names.
 
         Args:
@@ -910,13 +909,13 @@ class GenomicRanges(ut.BiocObject):
             metadata=self._metadata,
         )
 
-    def __getitem__(self, subset: Union[str, int, bool, Sequence]) -> GenomicRanges:
+    def __getitem__(self, subset: str | int | bool | Sequence) -> GenomicRanges:
         """Alias to :py:attr:`~get_subset`."""
         return self.get_subset(subset)
 
     def set_subset(
         self,
-        args: Union[Sequence, int, str, bool, slice, range],
+        args: Sequence | int | str | bool | slice | range,
         value: GenomicRanges,
         in_place: bool = False,
     ) -> GenomicRanges:
@@ -975,7 +974,7 @@ class GenomicRanges(ut.BiocObject):
 
     def __setitem__(
         self,
-        args: Union[Sequence, int, str, bool, slice, range],
+        args: Sequence | int | str | bool | slice | range,
         value: GenomicRanges,
     ) -> GenomicRanges:
         """Alias to :py:attr:`~set_subset`.
@@ -1158,7 +1157,7 @@ class GenomicRanges(ut.BiocObject):
     def flank(
         self,
         width: int,
-        start: Union[bool, np.ndarray, List[bool]] = True,
+        start: bool | np.ndarray | list[bool] = True,
         both: bool = False,
         ignore_strand: bool = False,
         in_place: bool = False,
@@ -1238,8 +1237,8 @@ class GenomicRanges(ut.BiocObject):
 
     def resize(
         self,
-        width: Union[int, List[int], np.ndarray],
-        fix: Union[Literal["start", "end", "center"], List[Literal["start", "end", "center"]]] = "start",
+        width: int | list[int] | np.ndarray,
+        fix: Literal["start", "end", "center"] | list[Literal["start", "end", "center"]] = "start",
         ignore_strand: bool = False,
         in_place: bool = False,
     ) -> GenomicRanges:
@@ -1299,7 +1298,7 @@ class GenomicRanges(ut.BiocObject):
         output._ranges = self._ranges.resize(width=width, fix=fix_arr)
         return output
 
-    def shift(self, shift: Union[int, List[int], np.ndarray] = 0, in_place: bool = False) -> GenomicRanges:
+    def shift(self, shift: int | list[int] | np.ndarray = 0, in_place: bool = False) -> GenomicRanges:
         """Shift all intervals.
 
         Args:
@@ -1383,8 +1382,8 @@ class GenomicRanges(ut.BiocObject):
 
     def restrict(
         self,
-        start: Optional[Union[int, Dict[str, int], np.ndarray]] = None,
-        end: Optional[Union[int, Dict[str, int], np.ndarray]] = None,
+        start: int | dict[str, int] | np.ndarray | None = None,
+        end: int | dict[str, int] | np.ndarray | None = None,
         keep_all_ranges: bool = False,
     ) -> GenomicRanges:
         """Restrict ranges to a given start and end positions.
@@ -1565,9 +1564,9 @@ class GenomicRanges(ut.BiocObject):
 
     def narrow(
         self,
-        start: Optional[Union[int, List[int], np.ndarray]] = None,
-        width: Optional[Union[int, List[int], np.ndarray]] = None,
-        end: Optional[Union[int, List[int], np.ndarray]] = None,
+        start: int | list[int] | np.ndarray | None = None,
+        width: int | list[int] | np.ndarray | None = None,
+        end: int | list[int] | np.ndarray | None = None,
         in_place: bool = False,
     ) -> GenomicRanges:
         """Narrow genomic positions by provided ``start``, ``width`` and ``end`` parameters.
@@ -1742,7 +1741,7 @@ class GenomicRanges(ut.BiocObject):
     def gaps(
         self,
         start: int = 1,
-        end: Optional[Union[int, Dict[str, int]]] = None,
+        end: int | dict[str, int] | None = None,
         ignore_strand: bool = False,
     ) -> GenomicRanges:
         """Identify complemented ranges for each distinct (seqname, strand) pair.
@@ -1899,8 +1898,8 @@ class GenomicRanges(ut.BiocObject):
         return binned_results
 
     def coverage(
-        self, shift: int = 0, width: Optional[int] = None, weight: int = 1, ignore_strand: bool = True
-    ) -> Dict[str, np.ndarray]:
+        self, shift: int = 0, width: int | None = None, weight: int = 1, ignore_strand: bool = True
+    ) -> dict[str, np.ndarray]:
         """
         Calculate coverage for each chromosome. For each position, this method
         counts the number of ranges that cover it.
@@ -2151,7 +2150,7 @@ class GenomicRanges(ut.BiocObject):
             groups.append(idx)
         return groups
 
-    def _get_query_common_groups(self, query: GenomicRanges) -> Tuple[np.ndarray, np.ndarray]:
+    def _get_query_common_groups(self, query: GenomicRanges) -> tuple[np.ndarray, np.ndarray]:
         # smerged = merge_SeqInfo([self._seqinfo, query._seqinfo])
         common_seqlevels = set(self._seqinfo._seqnames).intersection(query._seqinfo._seqnames)
         q_group_idx = [self._seqinfo._seqnames.index(i) for i in common_seqlevels]
@@ -2415,7 +2414,7 @@ class GenomicRanges(ut.BiocObject):
         ignore_strand: bool = False,
         num_threads: int = 1,
         adjacent_equals_overlap: bool = True,
-    ) -> Union[np.ndarray, BiocFrame]:
+    ) -> np.ndarray | BiocFrame:
         """Search nearest positions both upstream and downstream that overlap with each range in ``query``.
 
         Args:
@@ -2505,7 +2504,7 @@ class GenomicRanges(ut.BiocObject):
         select: Literal["all", "first"] = "first",
         ignore_strand: bool = False,
         num_threads: int = 1,
-    ) -> Union[np.ndarray, BiocFrame]:
+    ) -> np.ndarray | BiocFrame:
         """Search nearest positions only downstream that overlap with each range in ``query``.
 
         Args:
@@ -2585,7 +2584,7 @@ class GenomicRanges(ut.BiocObject):
         select: Literal["all", "last"] = "last",
         ignore_strand: bool = False,
         num_threads: int = 1,
-    ) -> Union[np.ndarray, BiocFrame]:
+    ) -> np.ndarray | BiocFrame:
         """Search nearest positions only upstream that overlap with each range in ``query``.
 
         Args:
@@ -2656,7 +2655,7 @@ class GenomicRanges(ut.BiocObject):
         else:
             return BiocFrame({"query_hits": final_qhits, "self_hits": final_shits})
 
-    def distance(self, query: Union[GenomicRanges, IRanges]) -> np.ndarray:
+    def distance(self, query: GenomicRanges | IRanges) -> np.ndarray:
         """Compute the pair-wise distance with intervals in query.
 
         Args:
@@ -2723,7 +2722,7 @@ class GenomicRanges(ut.BiocObject):
 
         return result
 
-    def _get_ranges_as_list(self) -> List[Tuple[int, int, int]]:
+    def _get_ranges_as_list(self) -> list[tuple[int, int, int]]:
         """Internal method to get ranges as a list of tuples.
 
         Returns:
@@ -2786,7 +2785,7 @@ class GenomicRanges(ut.BiocObject):
         output = self._define_output(in_place)
         return output[list(order)]
 
-    def rank(self) -> List[int]:
+    def rank(self) -> list[int]:
         """Get rank of the ``GenomicRanges`` object.
 
         For each range identifies its position is a sorted order.
@@ -2846,7 +2845,7 @@ class GenomicRanges(ut.BiocObject):
     ######>> window methods <<######
     ################################
 
-    def tile(self, n: Optional[int] = None, width: Optional[int] = None) -> List[GenomicRanges]:
+    def tile(self, n: int | None = None, width: int | None = None) -> list[GenomicRanges]:
         """Split each interval by ``n`` (number of sub intervals) or ``width`` (intervals with equal width).
 
         Note: Either ``n`` or ``width`` must be provided but not both.
@@ -2891,7 +2890,7 @@ class GenomicRanges(ut.BiocObject):
 
         return result
 
-    def sliding_windows(self, width: int, step: int = 1) -> List[GenomicRanges]:
+    def sliding_windows(self, width: int, step: int = 1) -> list[GenomicRanges]:
         """Slide along each range by ``width`` (intervals with equal ``width``) and ``step``.
 
         Also, checkout :py:func:`~genomicranges.io.tiling.tile_genome` for splitting
@@ -2932,9 +2931,9 @@ class GenomicRanges(ut.BiocObject):
     @classmethod
     def tile_genome(
         cls,
-        seqlengths: Dict[str, int],
-        ntile: Optional[int] = None,
-        tilewidth: Optional[int] = None,
+        seqlengths: dict[str, int],
+        ntile: int | None = None,
+        tilewidth: int | None = None,
         cut_last_tile_in_chrom: bool = False,
     ) -> GenomicRanges:
         """Tile genome into approximately equal-sized regions.
@@ -3123,7 +3122,7 @@ class GenomicRanges(ut.BiocObject):
     ######>> split <<######
     #######################
 
-    def split(self, groups: list) -> "CompressedGenomicRangesList":
+    def split(self, groups: list) -> CompressedGenomicRangesList:
         """Split the `GenomicRanges` object into a :py:class:`~genomicranges.grangeslist.CompressedGenomicRangesList`.
 
         Args:
@@ -3173,7 +3172,7 @@ class GenomicRanges(ut.BiocObject):
 
     def subtract(
         self, other: GenomicRanges, min_overlap: int = 1, ignore_strand: bool = False
-    ) -> "CompressedGenomicRangesList":
+    ) -> CompressedGenomicRangesList:
         """Subtract searches for features in ``x`` that overlap ``self`` by at least the number of base pairs given by
         ``min_overlap``.
 

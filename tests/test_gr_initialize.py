@@ -30,7 +30,7 @@ def test_create_gr():
         strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
         mcols=BiocFrame(
             {
-                "score": range(0, 10),
+                "score": range(10),
                 "GC": [random() for _ in range(10)],
             }
         ),
@@ -62,7 +62,7 @@ def test_create_gr_with_seqnames():
 
     gr16 = GenomicRanges(
         seqnames=[f"chr{i}" for i in range(500)],
-        ranges=IRanges(start=range(0, 500), width=range(10, 510)),
+        ranges=IRanges(start=range(500), width=range(10, 510)),
     )
 
     assert gr16 is not None
@@ -70,7 +70,7 @@ def test_create_gr_with_seqnames():
 
     gr32 = GenomicRanges(
         seqnames=[f"chr{i}" for i in range(2**16 + 1)],
-        ranges=IRanges(start=range(0, 2**16 + 1), width=range(10, 2**16 + 11)),
+        ranges=IRanges(start=range(2**16 + 1), width=range(10, 2**16 + 11)),
     )
 
     assert gr32 is not None

@@ -1,7 +1,9 @@
-from genomicranges.GenomicRanges import GenomicRanges
 from random import random
-from iranges import IRanges
+
 from biocframe import BiocFrame
+from iranges import IRanges
+
+from genomicranges.GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -19,7 +21,7 @@ gr = GenomicRanges(
     strand=["*", "-", "*", "+", "-"],
     mcols=BiocFrame(
         {
-            "score": range(0, 5),
+            "score": range(5),
             "GC": [random() for _ in range(5)],
         }
     ),
