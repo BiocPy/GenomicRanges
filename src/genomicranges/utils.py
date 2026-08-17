@@ -1,5 +1,5 @@
+from collections.abc import Sequence
 from itertools import groupby
-from typing import List, Sequence, Union
 
 import biocutils as ut
 import numpy as np
@@ -12,7 +12,7 @@ STRAND_MAP = {"+": 1, "-": -1, "*": 0}
 REV_STRAND_MAP = {"1": "+", "-1": "-", "0": "*"}
 
 
-def sanitize_strand_vector(strand: Union[Sequence[str], Sequence[int], np.ndarray]) -> np.ndarray:
+def sanitize_strand_vector(strand: Sequence[str] | Sequence[int] | np.ndarray) -> np.ndarray:
     """Create a numpy representation for ``strand``.
 
     Mapping: 1 for "+" (forward strand), 0 for "*" (any strand) and -1 for "-" (reverse strand).
@@ -79,16 +79,12 @@ def _sanitize_strand_search_ops(query_strand, subject_strand):
     elif query_strand == "-":
         if subject_strand == "+":
             out = None
-        elif subject_strand == "-":
-            out = "-"
-        elif subject_strand == "*":
+        elif subject_strand == "-" or subject_strand == "*":
             out = "-"
     elif query_strand == "*":
         if subject_strand == "*":
             out = "+"
-        elif subject_strand == "-":
-            out = "-"
-        elif subject_strand == "*":
+        elif subject_strand == "-" or subject_strand == "*":
             out = "-"
 
     if out is None:
@@ -97,7 +93,7 @@ def _sanitize_strand_search_ops(query_strand, subject_strand):
     return STRAND_MAP[out]
 
 
-def split_intervals(start: int, end: int, step: int) -> List:
+def split_intervals(start: int, end: int, step: int) -> list:
     """Split an interval range into equal bins.
 
     Args:
@@ -120,7 +116,7 @@ def split_intervals(start: int, end: int, step: int) -> List:
     return bins
 
 
-def slide_intervals(start: int, end: int, width: int, step: int) -> List:
+def slide_intervals(start: int, end: int, width: int, step: int) -> list:
     """Sliding intervals.
 
     Args:

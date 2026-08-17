@@ -27,7 +27,7 @@ subject = GenomicRanges(
     strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
     mcols=BiocFrame(
         {
-            "score": range(0, 10),
+            "score": range(10),
             "GC": [random() for _ in range(10)],
         }
     ),

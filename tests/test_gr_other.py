@@ -1,11 +1,11 @@
 from random import random
 
 import numpy as np
+import pytest
 from biocframe import BiocFrame
 from iranges import IRanges
 
 from genomicranges.GenomicRanges import GenomicRanges
-import pytest
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

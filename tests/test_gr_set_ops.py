@@ -1,8 +1,10 @@
-from genomicranges.GenomicRanges import GenomicRanges
 from random import random
-from iranges import IRanges
-from biocframe import BiocFrame
+
 import numpy as np
+from biocframe import BiocFrame
+from iranges import IRanges
+
+from genomicranges.GenomicRanges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -110,7 +112,7 @@ def test_intersect_complex():
         strand=["*", "-", "-", "*", "*", "+", "+", "+", "-", "-"],
         mcols=BiocFrame(
             {
-                "score": range(0, 10),
+                "score": range(10),
                 "GC": [random() for _ in range(10)],
             }
         ),

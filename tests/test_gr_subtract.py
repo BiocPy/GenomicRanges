@@ -1,7 +1,7 @@
 import numpy as np
 from iranges import IRanges
 
-from genomicranges import GenomicRanges, CompressedGenomicRangesList
+from genomicranges import CompressedGenomicRangesList, GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

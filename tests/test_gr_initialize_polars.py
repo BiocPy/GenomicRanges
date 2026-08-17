@@ -1,9 +1,11 @@
-import pytest
-from genomicranges import GenomicRanges
-from iranges import IRanges
-from biocframe import BiocFrame
 from random import random
+
 import polars as pl
+import pytest
+from biocframe import BiocFrame
+from iranges import IRanges
+
+from genomicranges import GenomicRanges
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -36,7 +38,7 @@ def test_from_polars_should_fail():
             "starts": range(100, 110),
             "ends": range(110, 120),
             "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
-            "score": range(0, 10),
+            "score": range(10),
             "GC": [random() for _ in range(10)],
         }
     )
@@ -79,7 +81,7 @@ def test_to_polars_complex():
         strand=["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"],
         mcols=BiocFrame(
             {
-                "score": range(0, 10),
+                "score": range(10),
                 "GC": [random() for _ in range(10)],
             }
         ),

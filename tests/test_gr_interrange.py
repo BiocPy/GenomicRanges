@@ -56,7 +56,7 @@ def test_reduce_with_contigs():
         strand=["*", "-", "*", "+", "-"],
         mcols=BiocFrame(
             {
-                "score": range(0, 5),
+                "score": range(5),
                 "GC": [random() for _ in range(5)],
             }
         ),
