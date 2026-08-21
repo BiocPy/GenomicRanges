@@ -1085,10 +1085,13 @@ class GenomicRanges(ut.BiocObject):
         import polars as pl
 
         _rdf = self._ranges.to_polars()
-        _rdf = _rdf.with_columns(seqnames=self.get_seqnames(), strand=self.get_strand(as_type="list"))
+        _rdf = _rdf.with_columns(
+            seqnames=pl.Series(self.get_seqnames()), 
+            strand=pl.Series(self.get_strand(as_type="list"))
+        )
 
         if self._names is not None:
-            _rdf = _rdf.with_columns(rownames=list(self._names))
+            _rdf = _rdf.with_columns(rownames=pl.Series(list(self._names)))
 
         if self._mcols is not None:
             if self._mcols.shape[1] > 0:
