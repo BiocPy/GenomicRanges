@@ -1006,12 +1006,12 @@ class GenomicRanges(ut.BiocObject):
         _rdf["seqnames"] = self.get_seqnames()
         _rdf["strand"] = self.get_strand(as_type="list")
 
-        if self._names is not None:
-            _rdf.index = self._names
-
         if self._mcols is not None:
             if self._mcols.shape[1] > 0:
                 _rdf = pd.concat([_rdf, self._mcols.to_pandas()], axis=1)
+
+        if self._names is not None:
+            _rdf.index = self._names
 
         return _rdf
 
