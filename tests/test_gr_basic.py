@@ -113,6 +113,43 @@ def test_export_pandas_with_mcols():
     assert isinstance(df, pd.DataFrame)
 
 
+def test_export_pandas_with_names_and_mcols():
+    from biocframe import BiocFrame
+    from iranges import IRanges
+
+    ranges = IRanges(start=[0, 10, 20], width=[5, 5, 5])
+    mcols = BiocFrame({"gene_id": ["g1", "g2", "g3"], "gene_name": ["A", "B", "C"]})
+    gr_named = GenomicRanges(
+        seqnames=["1", "1", "1"],
+        ranges=ranges,
+        strand=["+", "+", "-"],
+        names=["g1", "g2", "g3"],
+        mcols=mcols,
+    )
+    df = gr_named.to_pandas()
+    assert df is not None
+    assert df.shape == (3, 7)
+    assert df.index.tolist() == ["g1", "g2", "g3"]
+
+def test_export_polars_with_names_and_mcols():
+    from biocframe import BiocFrame
+    from iranges import IRanges
+    import polars as pl
+
+    ranges = IRanges(start=[0, 10, 20], width=[5, 5, 5])
+    mcols = BiocFrame({"gene_id": ["g1", "g2", "g3"], "gene_name": ["A", "B", "C"]})
+    gr_named = GenomicRanges(
+        seqnames=["1", "1", "1"],
+        ranges=ranges,
+        strand=["+", "+", "-"],
+        names=["g1", "g2", "g3"],
+        mcols=mcols,
+    )
+    df = gr_named.to_polars()
+    assert df is not None
+    assert df.shape == (3, 8) # 8 because polars adds a 'rownames' column
+    assert df["rownames"].to_list() == ["g1", "g2", "g3"]
+
 def test_combine():
     g_src = GenomicRanges(
         seqnames=["chr1", "chr2", "chr1", "chr3", "chr2"],
