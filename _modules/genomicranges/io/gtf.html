@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>genomicranges.io.gtf - GenomicRanges 0.8.4 documentation</title>
+        <title>genomicranges.io.gtf - GenomicRanges 0.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">GenomicRanges 0.8.4 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">GenomicRanges 0.8.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.8.4 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.8.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -257,13 +257,13 @@
 
 <span class="c1"># Variation of https://github.com/epiviz/epivizfileserver/src/epivizfileserver/cli.py</span>
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
-<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"jkanche"</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">"jkanche"</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">"MIT"</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_all_attribute</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract all keys from the gtf/gff attribute string.</span>
+<span class="w">    </span><span class="sd">"""Extract all keys from the gtf/gff attribute string.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        row:</span>
@@ -271,15 +271,15 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A dictionary containing extracted keys and their values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">attr</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">]</span>
-    <span class="n">infos</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">attr</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">"group"</span><span class="p">]</span>
+    <span class="n">infos</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">)</span>
     <span class="n">vals</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">infos</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="s2">""</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="n">imap</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">vals</span><span class="p">[</span><span class="n">imap</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">imap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+        <span class="n">imap</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">vals</span><span class="p">[</span><span class="n">imap</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">imap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">'"'</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">row</span><span class="p">,</span> <span class="o">**</span><span class="n">vals</span><span class="p">}</span>
 
 
@@ -289,9 +289,9 @@
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">compressed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">skiprows</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"#"</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a GTF file as :py:class:`~pandas.DataFrame`.</span>
+<span class="w">    </span><span class="sd">"""Read a GTF file as :py:class:`~pandas.DataFrame`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        path:</span>
@@ -305,59 +305,59 @@
 
 <span class="sd">        comment:</span>
 <span class="sd">            Character indicating that the line should not be</span>
-<span class="sd">            parsed. Defaults to &quot;#&quot;.</span>
+<span class="sd">            parsed. Defaults to "#".</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Pandas DataFrame containing annotations from GTF.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">read_csv</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading File - </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Reading File - </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">compressed</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span>
             <span class="n">path</span><span class="p">,</span>
-            <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">sep</span><span class="o">=</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">[</span>
-                <span class="s2">&quot;seqnames&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;source&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;feature&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;starts&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ends&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;score&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;strand&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;frame&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+                <span class="s2">"seqnames"</span><span class="p">,</span>
+                <span class="s2">"source"</span><span class="p">,</span>
+                <span class="s2">"feature"</span><span class="p">,</span>
+                <span class="s2">"starts"</span><span class="p">,</span>
+                <span class="s2">"ends"</span><span class="p">,</span>
+                <span class="s2">"score"</span><span class="p">,</span>
+                <span class="s2">"strand"</span><span class="p">,</span>
+                <span class="s2">"frame"</span><span class="p">,</span>
+                <span class="s2">"group"</span><span class="p">,</span>
             <span class="p">],</span>
-            <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+            <span class="n">compression</span><span class="o">=</span><span class="s2">"gzip"</span><span class="p">,</span>
             <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span>
             <span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span>
             <span class="n">path</span><span class="p">,</span>
-            <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">sep</span><span class="o">=</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">[</span>
-                <span class="s2">&quot;seqnames&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;source&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;feature&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;starts&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ends&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;score&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;strand&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;frame&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+                <span class="s2">"seqnames"</span><span class="p">,</span>
+                <span class="s2">"source"</span><span class="p">,</span>
+                <span class="s2">"feature"</span><span class="p">,</span>
+                <span class="s2">"starts"</span><span class="p">,</span>
+                <span class="s2">"ends"</span><span class="p">,</span>
+                <span class="s2">"score"</span><span class="p">,</span>
+                <span class="s2">"strand"</span><span class="p">,</span>
+                <span class="s2">"frame"</span><span class="p">,</span>
+                <span class="s2">"group"</span><span class="p">,</span>
             <span class="p">],</span>
             <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span>
             <span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="n">records</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s2">"records"</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">2</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_parse_all_attribute</span><span class="p">)(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">records</span><span class="p">)</span>
     <span class="n">gtf</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
-    <span class="n">gtf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;group&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">gtf</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gtf</span><span class="p">[</span><span class="s2">&quot;ends&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">gtf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">"group"</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">gtf</span><span class="p">[</span><span class="s2">"ends"</span><span class="p">]</span> <span class="o">=</span> <span class="n">gtf</span><span class="p">[</span><span class="s2">"ends"</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">gtf</span></div>
 
 
@@ -367,9 +367,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">read_gtf</span><span class="p">(</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">skiprows</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"#"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"GenomicRanges"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Read a GTF file as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file:</span>
@@ -380,12 +380,12 @@
 
 <span class="sd">        comment:</span>
 <span class="sd">            Character indicating that the line should not be</span>
-<span class="sd">            parsed. Defaults to &quot;#&quot;.</span>
+<span class="sd">            parsed. Defaults to "#".</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Genomic Ranges with annotations from the GTF file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">compressed</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;gz&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+<span class="sd">    """</span>
+    <span class="n">compressed</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"gz"</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">parse_gtf</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="n">compressed</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">)</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..GenomicRanges</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicRanges</span>
 
@@ -423,7 +423,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=b41f4c93"></script>
+</div><script src="../../../_static/documentation_options.js?v=1067c88a"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

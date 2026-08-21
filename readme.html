@@ -6,10 +6,10 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="GenomicRanges: Genomic analysis" href="tutorial.html"><link rel="prev" title="GenomicRanges" href="index.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>GenomicRanges - GenomicRanges 0.8.4 documentation</title>
+        <title>GenomicRanges - GenomicRanges 0.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GenomicRanges 0.8.4 documentation</div></a>
+      <a href="index.html"><div class="brand">GenomicRanges 0.8.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.8.4 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.8.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -289,8 +289,8 @@ When reading genomic formats, <code class="docutils literal notranslate"><span c
 
 <span class="n">session</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">new_session</span><span class="p">()</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_gtf_file</span><span class="p">(</span><span class="s2">&quot;path/to/test.gtf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;seqname&quot;</span><span class="p">:</span> <span class="s2">&quot;seqnames&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;starts&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;ends&quot;</span><span class="p">})</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_gtf_file</span><span class="p">(</span><span class="s2">"path/to/test.gtf"</span><span class="p">)</span><span class="o">.</span><span class="n">to_polars</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">"seqname"</span><span class="p">:</span> <span class="s2">"seqnames"</span><span class="p">,</span> <span class="s2">"start"</span><span class="p">:</span> <span class="s2">"starts"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">:</span> <span class="s2">"ends"</span><span class="p">})</span>
 
 <span class="n">gg</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_polars</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
@@ -313,7 +313,7 @@ When reading genomic formats, <code class="docutils literal notranslate"><span c
 
 <span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_gtf</span><span class="p">(</span><span class="o">&lt;</span><span class="n">PATH</span> <span class="n">TO</span> <span class="n">GTF</span><span class="o">&gt;</span><span class="p">)</span>
 <span class="c1"># OR</span>
-<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg19&quot;</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">"hg19"</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span>
 </pre></div>
@@ -335,18 +335,18 @@ When reading genomic formats, <code class="docutils literal notranslate"><span c
 
 <span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
     <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span>
-        <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+        <span class="s2">"chr1"</span><span class="p">,</span>
+        <span class="s2">"chr2"</span><span class="p">,</span>
+        <span class="s2">"chr3"</span><span class="p">,</span>
+        <span class="s2">"chr2"</span><span class="p">,</span>
+        <span class="s2">"chr3"</span><span class="p">,</span>
     <span class="p">],</span>
     <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">106</span><span class="p">)],</span> <span class="n">width</span><span class="o">=</span><span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
-    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">"*"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"+"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">],</span>
     <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">(</span>
         <span class="p">{</span>
-            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-            <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+            <span class="s2">"score"</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="s2">"GC"</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
         <span class="p">}</span>
     <span class="p">),</span>
 <span class="p">)</span>
@@ -377,12 +377,12 @@ seqinfo(3 sequences): chr1 chr2 chr3
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
-        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
-        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
-        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+        <span class="s2">"seqnames"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"chr1"</span><span class="p">,</span> <span class="s2">"chr2"</span><span class="p">,</span> <span class="s2">"chr1"</span><span class="p">,</span> <span class="s2">"chr3"</span><span class="p">,</span> <span class="s2">"chr2"</span><span class="p">],</span>
+        <span class="s2">"starts"</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
+        <span class="s2">"ends"</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
+        <span class="s2">"strand"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"+"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">],</span>
+        <span class="s2">"score"</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="s2">"GC"</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
     <span class="p">}</span>
 <span class="p">)</span>
 
@@ -413,12 +413,12 @@ seqinfo(3 sequences): chr1 chr2 chr3
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
-        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
-        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
-        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+        <span class="s2">"seqnames"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"chr1"</span><span class="p">,</span> <span class="s2">"chr2"</span><span class="p">,</span> <span class="s2">"chr1"</span><span class="p">,</span> <span class="s2">"chr3"</span><span class="p">,</span> <span class="s2">"chr2"</span><span class="p">],</span>
+        <span class="s2">"starts"</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">109</span><span class="p">],</span>
+        <span class="s2">"ends"</span><span class="p">:</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">111</span><span class="p">],</span>
+        <span class="s2">"strand"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"+"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">],</span>
+        <span class="s2">"score"</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="s2">"GC"</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
     <span class="p">}</span>
 <span class="p">)</span>
 
@@ -443,19 +443,19 @@ seqinfo(3 sequences): chr1 chr2 chr3
 <section id="interval-operations">
 <h3>Interval Operations<a class="headerlink" href="#interval-operations" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> supports most <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html">interval based operations</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">&quot;hg38&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">subject</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">read_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s2">"hg38"</span><span class="p">)</span>
 
 <span class="n">query</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span>
     <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="p">{</span>
-            <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">119</span><span class="p">],</span>
-            <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">103</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">],</span>
+            <span class="s2">"seqnames"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"chr1"</span><span class="p">,</span> <span class="s2">"chr2"</span><span class="p">,</span> <span class="s2">"chr3"</span><span class="p">],</span>
+            <span class="s2">"starts"</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">119</span><span class="p">],</span>
+            <span class="s2">"ends"</span><span class="p">:</span> <span class="p">[</span><span class="mi">103</span><span class="p">,</span> <span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">],</span>
         <span class="p">}</span>
     <span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">hits</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="n">hits</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -480,19 +480,19 @@ BiocFrame with 3 rows and 2 columns
 <span class="kn">from</span><span class="w"> </span><span class="nn">biocframe</span><span class="w"> </span><span class="kn">import</span> <span class="n">BiocFrame</span>
 
 <span class="n">gr1</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr3&quot;</span><span class="p">],</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">"chr1"</span><span class="p">,</span> <span class="s2">"chr2"</span><span class="p">,</span> <span class="s2">"chr1"</span><span class="p">,</span> <span class="s2">"chr3"</span><span class="p">],</span>
     <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]),</span>
-    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">],</span>
-    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">"-"</span><span class="p">,</span> <span class="s2">"+"</span><span class="p">,</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"+"</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">"score"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
 <span class="p">)</span>
 
 <span class="n">gr2</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span>
-    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="s2">&quot;chr5&quot;</span><span class="p">],</span>
+    <span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">"chr2"</span><span class="p">,</span> <span class="s2">"chr4"</span><span class="p">,</span> <span class="s2">"chr5"</span><span class="p">],</span>
     <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]),</span>
-    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">],</span>
-    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
+    <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">"-"</span><span class="p">,</span> <span class="s2">"+"</span><span class="p">,</span> <span class="s2">"*"</span><span class="p">],</span>
+    <span class="n">mcols</span><span class="o">=</span><span class="n">BiocFrame</span><span class="p">({</span><span class="s2">"score"</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}),</span>
 <span class="p">)</span>
-<span class="n">grl</span> <span class="o">=</span> <span class="n">CompressedGenomicRangesList</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">lst</span><span class="o">=</span><span class="p">[</span><span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gene1&quot;</span><span class="p">,</span> <span class="s2">&quot;gene2&quot;</span><span class="p">])</span>
+<span class="n">grl</span> <span class="o">=</span> <span class="n">CompressedGenomicRangesList</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">lst</span><span class="o">=</span><span class="p">[</span><span class="n">gr1</span><span class="p">,</span> <span class="n">gr2</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"gene1"</span><span class="p">,</span> <span class="s2">"gene2"</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">grl</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -663,7 +663,7 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=b41f4c93"></script>
+</div><script src="_static/documentation_options.js?v=1067c88a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>genomicranges.io.ucsc - GenomicRanges 0.8.4 documentation</title>
+        <title>genomicranges.io.ucsc - GenomicRanges 0.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">GenomicRanges 0.8.4 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">GenomicRanges 0.8.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">GenomicRanges 0.8.4 documentation</span>
+  <span class="sidebar-brand-text">GenomicRanges 0.8.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -256,18 +256,18 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.gtf</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_gtf</span>
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
-<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"jkanche"</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">"jkanche"</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">"MIT"</span>
 
 
 <div class="viewcode-block" id="access_gtf_ucsc">
 <a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.ucsc.access_gtf_ucsc">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">access_gtf_ucsc</span><span class="p">(</span>
     <span class="n">genome</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;refGene&quot;</span><span class="p">,</span> <span class="s2">&quot;ensGene&quot;</span><span class="p">,</span> <span class="s2">&quot;knownGene&quot;</span><span class="p">,</span> <span class="s2">&quot;ncbiRefSeq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;refGene&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"refGene"</span><span class="p">,</span> <span class="s2">"ensGene"</span><span class="p">,</span> <span class="s2">"knownGene"</span><span class="p">,</span> <span class="s2">"ncbiRefSeq"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"refGene"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a path to a genome gtf file from UCSC,</span>
+<span class="w">    </span><span class="sd">"""Generate a path to a genome gtf file from UCSC,</span>
 <span class="sd">    e.g. for `hg19 genome &lt;http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/genes/&gt;`_.</span>
 
 <span class="sd">    Args:</span>
@@ -275,7 +275,7 @@
 <span class="sd">            Genome shortcode; e.g. hg19, hg38, mm10 etc.</span>
 
 <span class="sd">        type:</span>
-<span class="sd">            Defaults to &quot;refGene&quot;.</span>
+<span class="sd">            Defaults to "refGene".</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        Exception, ValueError:</span>
@@ -283,13 +283,13 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The URI to the file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">base_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://hgdownload.cse.ucsc.edu/goldenPath/</span><span class="si">{</span><span class="n">genome</span><span class="si">}</span><span class="s2">/bigZips/genes/&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">base_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"http://hgdownload.cse.ucsc.edu/goldenPath/</span><span class="si">{</span><span class="n">genome</span><span class="si">}</span><span class="s2">/bigZips/genes/"</span>
 
-    <span class="k">if</span> <span class="nb">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;refGene&quot;</span><span class="p">,</span> <span class="s2">&quot;ensGene&quot;</span><span class="p">,</span> <span class="s2">&quot;knownGene&quot;</span><span class="p">,</span> <span class="s2">&quot;ncbiRefSeq&quot;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;type must be one of refGene, ensGene, knownGene or ncbiRefSeq, provided </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"refGene"</span><span class="p">,</span> <span class="s2">"ensGene"</span><span class="p">,</span> <span class="s2">"knownGene"</span><span class="p">,</span> <span class="s2">"ncbiRefSeq"</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"type must be one of refGene, ensGene, knownGene or ncbiRefSeq, provided </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="n">full_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">genome</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">.gtf.gz&quot;</span>
+    <span class="n">full_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">base_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">genome</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">.gtf.gz"</span>
 
     <span class="k">return</span> <span class="n">full_path</span></div>
 
@@ -299,20 +299,20 @@
 <a class="viewcode-back" href="../../../api/genomicranges.io.html#genomicranges.io.ucsc.read_ucsc">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_ucsc</span><span class="p">(</span>
     <span class="n">genome</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;refGene&quot;</span><span class="p">,</span> <span class="s2">&quot;ensGene&quot;</span><span class="p">,</span> <span class="s2">&quot;knownGene&quot;</span><span class="p">,</span> <span class="s2">&quot;ncbiRefSeq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;refGene&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GenomicRanges&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load a genome annotation from UCSC as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"refGene"</span><span class="p">,</span> <span class="s2">"ensGene"</span><span class="p">,</span> <span class="s2">"knownGene"</span><span class="p">,</span> <span class="s2">"ncbiRefSeq"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"refGene"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"GenomicRanges"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Load a genome annotation from UCSC as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        genome:</span>
 <span class="sd">            Genome shortcode; e.g. hg19, hg38, mm10 etc.</span>
 
 <span class="sd">        type:</span>
-<span class="sd">            Defaults to &quot;refGene&quot;.</span>
+<span class="sd">            Defaults to "refGene".</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The gene model from UCSC.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">access_gtf_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
     <span class="n">compressed</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">parse_gtf</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="n">compressed</span><span class="p">)</span>
@@ -353,7 +353,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=b41f4c93"></script>
+</div><script src="../../../_static/documentation_options.js?v=1067c88a"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
