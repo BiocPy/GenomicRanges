@@ -1011,7 +1011,7 @@ class GenomicRanges(ut.BiocObject):
                 _rdf = pd.concat([_rdf, self._mcols.to_pandas()], axis=1)
 
         if self._names is not None:
-            _rdf.index = self._names
+            _rdf.index = list(self._names)
 
         return _rdf
 
@@ -1088,7 +1088,7 @@ class GenomicRanges(ut.BiocObject):
         _rdf = _rdf.with_columns(seqnames=self.get_seqnames(), strand=self.get_strand(as_type="list"))
 
         if self._names is not None:
-            _rdf = _rdf.with_columns(rownames=self._names)
+            _rdf = _rdf.with_columns(rownames=list(self._names))
 
         if self._mcols is not None:
             if self._mcols.shape[1] > 0:
